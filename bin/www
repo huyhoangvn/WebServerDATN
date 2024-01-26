@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('food-center-sever:server');
 var http = require('http');
+const socket = require('../config/socket-server');
 
 /**
  * Get port from environment and store in Express.
@@ -88,3 +89,4 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+socket.io.attach(server);
