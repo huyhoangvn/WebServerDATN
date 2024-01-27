@@ -8,19 +8,20 @@ var methodOverride = require('method-override')
 const bodyParser = require('body-parser');
 
 //
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
-var adminRouter = require('./routes/admin/index');
-var addRouter  = require('./routes/admin/add')
-var lockRouter = require('./routes/admin/lock')
-var statisticsRouter  = require('./routes/admin/statistics')
-var viewListRouter  = require('./routes/admin/view-list')
-var updateRouter  = require('./routes/admin/update')
-
-
+var webRouter = require('./routes/web/index');
+var apisRouter = require('./routes/api/index');
 
 var app = express();
+
+app.use(
+  "/css",
+  express.static(path.join(__dirname, "node_modules/bootstrap/dist/css"))
+)
+app.use(
+  "/js",
+  express.static(path.join(__dirname, "node_modules/bootstrap/dist/js"))
+)
+app.use("/js", express.static(path.join(__dirname, "node_modules/jquery/dist")))
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -32,23 +33,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/', webRouter);
+app.use('/api', apisRouter);
 
 //
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride("_method"));
 //
-
-//admin
-app.use('/admin', [adminRouter,addRouter,lockRouter,statisticsRouter,viewListRouter,updateRouter]);
-
-
-
-
-
-
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
