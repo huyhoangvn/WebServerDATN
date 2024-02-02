@@ -1,0 +1,14 @@
+const db = require('./mongodbHelper');
+const { ObjectId } = require("mongodb");
+
+const HinhAnhMonSchema = new db.mongodb.Schema(
+    {
+        idMon: { type: mongoose.Schema.Types.ObjectId, ref: 'Mon', required: true },
+        hinhAnh: { type: String, default: 'N/A' },
+        trangThai: { type: Boolean, default: true }
+    }
+);
+
+let model = db.mongodb.model('HinhAnhMon', HinhAnhMonSchema);
+
+module.exports = { model }

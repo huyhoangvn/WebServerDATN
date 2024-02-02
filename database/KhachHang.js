@@ -1,18 +1,19 @@
 const db = require('./mongodbHelper');
+const { ObjectId } = require("mongodb");
 
 const KhachHangSchema = new db.mongodb.Schema(
     {
-        taiKhoan: {type: String, unique: true, required: true},
-        matKhau:{type: String , required: true},
-        tenKH: { type: String, default: "N/A"},
-        gioiTinh:{type: Number, default: 2},
-        hinhAnh:{type: String, default: "N/A"},
-        diaChi: {type: String, default: "N/A"},
-        sdt: {type: String, default: "0000000000"},
-        trangThai:{type: Boolean, required: true}
-    }, { collection: 'KhachHang'}
+        taiKhoan: { type: String, unique: true, required: true },
+        matKhau: { type: String, required: true },
+        tenKH: { type: String, default: "N/A" },
+        gioiTinh: { type: Number, default: 2 },
+        hinhAnh: { type: String, default: "N/A" },
+        diaChi: { type: String, default: "N/A" },
+        sdt: { type: String, default: "0000000000" },
+        trangThai: { type: Boolean, required: true }
+    }, { collection: 'KhachHang' }
 );
 
-let model = db.mongodb.model ('KhachHang', KhachHangSchema );
+let model = db.mongodb.model('KhachHang', KhachHangSchema);
 
-module.exports = {model}
+module.exports = { model }
