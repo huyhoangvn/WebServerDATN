@@ -6,7 +6,8 @@ const dangKy = async(req, res, next)=>{
     const taiKhoan = req.body.taiKhoan
     const matKhau = req.body.matKhau
     
-    //Validate
+    //Validate khách hàng
+    
 
     let foundKhachHang = await KhachHang.model.findOne({
         taiKhoan: taiKhoan
