@@ -1,5 +1,5 @@
-const db = require('./mongodbHelper');
-const { ObjectId } = require("mongodb");
+const db = require('../config/mongodbHelper');
+const mongoose = require('mongoose');
 
 const KhachHangSchema = new db.mongodb.Schema(
     {
