@@ -7,7 +7,7 @@ const DanhGiaSchema = new db.mongodb.Schema(
         idMon: { type: mongoose.Schema.Types.ObjectId, ref: 'Mon', required: true },
         danhGia: { type: String, default: "N/A" },
         trangThai: { type: Boolean, default: true }
-    }
+    }, { collection: 'DanhGia' }
 );
 
 let model = db.mongodb.model('DanhGia', DanhGiaSchema);

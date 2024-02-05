@@ -11,7 +11,7 @@ const KhachHangSchema = new db.mongodb.Schema(
         diaChi: { type: String, default: "N/A" },
         sdt: { type: String, default: "0000000000" },
         trangThai: { type: Boolean, required: true }
-    }
+    }, { collection: 'KhachHang' }
 );
 
 let model = db.mongodb.model('KhachHang', KhachHangSchema);

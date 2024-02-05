@@ -29,7 +29,7 @@ const HoaDonSchema = new db.mongodb.Schema(
             default: 0, // 0 chưa thanh toán ; 1 : đã thanh toán
 
         },
-    }
+    }, { collection: 'HoaDon' }
 );
 
 let model = db.mongodb.model('HoaDon', HoaDonSchema);

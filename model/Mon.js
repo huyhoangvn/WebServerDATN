@@ -8,7 +8,7 @@ const MonSchema = new db.mongodb.Schema(
         tenMon: { type: String, default: "N/A" },
         giaTien: { type: String, default: "N/A" },
         trangThai: { type: Boolean, default: true }
-    }
+    }, { collection: 'Mon' }
 );
 
 let model = db.mongodb.model('Mon', MonSchema);
