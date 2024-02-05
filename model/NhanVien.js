@@ -1,4 +1,4 @@
-const db = require('./mongodbHelper');
+const db = require('../config/mongodbHelper');
 const { ObjectId } = require("mongodb");
 
 const NhanVienSchema = new db.mongodb.Schema(
@@ -15,7 +15,7 @@ const NhanVienSchema = new db.mongodb.Schema(
         phanQuyen: {
             type: Number,
             enum: [0, 1],
-            default: 2, // 1: nhân viên ;0: chủ cửa hàng
+            default: 1, // 1: nhân viên ;0: chủ cửa hàng
         },
     }, { collection: 'NhanVien' }
 );

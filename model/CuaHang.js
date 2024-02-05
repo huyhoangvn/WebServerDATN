@@ -1,4 +1,4 @@
-const db = require('./mongodbHelper');
+const db = require('../config/mongodbHelper');
 const { ObjectId } = require("mongodb");
 
 
@@ -12,7 +12,7 @@ const CuaHangSchema = new db.mongodb.Schema(
         thoiGianDong: { type: String, default: "N/A" },
         hinhAnh: { type: String, default: "N/A" },
         trangThai: { type: Boolean, required: true }
-    }
+    }, { collection: 'CuaHang' }
 )
 
 let model = db.mongodb.model('CuaHang', CuaHangSchema);
