@@ -1,4 +1,5 @@
-const db = require('./mongodbHelper');
+const db = require('../config/mongodbHelper');
+
 const { ObjectId } = require("mongodb");
 
 const HoaDonSchema = new db.mongodb.Schema(
