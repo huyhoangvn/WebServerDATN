@@ -1,4 +1,4 @@
-const KhachHang = require('../database/KhachHang')
+const KhachHang = require('../model/KhachHang')
 
 //Module
 const dangKy = async(req, res, next)=>{
