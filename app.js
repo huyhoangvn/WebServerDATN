@@ -40,7 +40,9 @@ app.use('/api', apisRouter);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride("_method"));
+app.use("/public/images", express.static(path.join(__dirname, 'public/images')));
 //
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
