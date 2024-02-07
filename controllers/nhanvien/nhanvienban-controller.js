@@ -1,4 +1,4 @@
-const { model: NhanVien } = require("../../../model/NhanVien");
+const { model: NhanVien } = require("../../model/NhanVien");
 
 class NhanVienController {
   async addNhanVien(req, res) {
@@ -16,12 +16,10 @@ class NhanVienController {
         throw new Error("Lưu nhân viên không thành công.");
       }
       // ouput -> thông tin nhân viên sau khi đã lưu thành công
-      res
-        .status(200)
-        .json({
-          dataSave: savedNhanVien,
-          msg: "Nhân viên đã được thêm thành công.",
-        });
+      res.status(200).json({
+        dataSave: savedNhanVien,
+        msg: "Nhân viên đã được thêm thành công.",
+      });
     } catch (e) {
       console.error(e);
       res
@@ -44,20 +42,16 @@ class NhanVienController {
       if (!updatedNhanVien) {
         return res.status(404).json({ error: "Không tìm thấy nhân viên" });
       }
-      res
-        .status(200)
-        .json({
-          msg: "Đã cập nhật trạng thái thành công",
-          data: updatedNhanVien,
-        });
+      res.status(200).json({
+        msg: "Đã cập nhật trạng thái thành công",
+        data: updatedNhanVien,
+      });
     } catch (e) {
       console.error(e);
-      res
-        .status(500)
-        .json({
-          success: false,
-          error: e.message || "Đã xảy ra lỗi khi cập nhật trạng thái nhân viên",
-        });
+      res.status(500).json({
+        success: false,
+        error: e.message || "Đã xảy ra lỗi khi cập nhật trạng thái nhân viên",
+      });
     }
   }
 
@@ -75,20 +69,16 @@ class NhanVienController {
         return res.status(404).json({ error: "Không tìm thấy nhân viên" });
       }
       //cập nhật
-      res
-        .status(200)
-        .json({
-          msg: "Đã cập nhật thông tin nhân viên thành công",
-          dataUpdate: updateNV,
-        });
+      res.status(200).json({
+        msg: "Đã cập nhật thông tin nhân viên thành công",
+        dataUpdate: updateNV,
+      });
     } catch (e) {
       console.error(e);
-      res
-        .status(500)
-        .json({
-          success: false,
-          error: e.message || "Đã xảy ra lỗi khi cập nhật trạng thái nhân viên",
-        });
+      res.status(500).json({
+        success: false,
+        error: e.message || "Đã xảy ra lỗi khi cập nhật trạng thái nhân viên",
+      });
     }
   }
 }
