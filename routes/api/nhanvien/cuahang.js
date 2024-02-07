@@ -1,5 +1,5 @@
 var express = require('express');
-const nhanvienbanController = require('../../../controllers/apis/nhanvien/nhanvienban-controller');
+const nhanvienbanController = require('../../../controllers/nhanvien/nhanvienban-controller');
 var router = express.Router();
 
 /* GET users listing. */
