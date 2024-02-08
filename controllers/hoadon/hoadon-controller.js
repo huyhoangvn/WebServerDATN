@@ -66,6 +66,21 @@ const updateHoaDonApi = async (req, res) => {
         res.status(500).json({ message: "Lỗi khi cập nhật hóa đơn", error });
     }
 };
+// Lấy thông tin hóa đơn theo ID
+const getHoaDonByIdApi = async (req, res) => {
+    try {
+        const hoaDon = await HoaDon.model.findById(req.params.id);
+
+        if (!hoaDon) {
+            return res.status(404).json({ message: "Hóa đơn không tồn tại" });
+        }
+
+        res.status(200).json(hoaDon);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Lỗi khi lấy thông tin hóa đơn", error });
+    }
+};
 
 // Export các hàm API
 module.exports = {
@@ -73,4 +88,5 @@ module.exports = {
     getAllHoaDon,
     deleteHoaDonApi,
     updateHoaDonApi,
+    getHoaDonByIdApi
 };
