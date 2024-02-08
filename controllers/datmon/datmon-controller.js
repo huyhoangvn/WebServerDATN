@@ -40,7 +40,7 @@ const getAllMonDat = async (req, res, next) => {
 };
 
 // Xóa món đặt
-const deleteMonDatApi = async (req, res, next) => {
+const deleteMonDatApi = async (req, res) => {
     try {
         await MonDat.model.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: "Xóa món đặt thành công" });
@@ -50,7 +50,7 @@ const deleteMonDatApi = async (req, res, next) => {
 };
 
 // Cập nhật món đặt
-const updateMonDatApi = async (req, res, next) => {
+const updateMonDatApi = async (req, res) => {
     try {
         const updatedMonDat = await MonDat.model.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedMonDat) {
