@@ -1,9 +1,10 @@
 const { model: CuaHang } = require("../../model/CuaHang");
 
-const MulterConfigs = require("../../config/multer-config");
 const moment = require('moment');
 
 // Module
+
+
 
 const addCuaHang = async (req, res, next) => {
     try {
@@ -51,92 +52,109 @@ const addCuaHang = async (req, res, next) => {
     }
 };
 
-
-
-
-
-
 // const updateCuaHang = async (req, res, next) => {
 //     try {
-        
 //         const cuaHangId = req.params.id;
-//         // Tìm cửa hàng
 //         const item = await CuaHang.findById(cuaHangId);
-//         // Kiểm tra xem cửa hàng có k
+
 //         if (!item) {
 //             return res.json({ msg: 'Không tìm thấy cửa hàng để cập nhật', dataSave: null });
 //         }
-//         // Các trường cần cập nhật từ body của request
+
+//         const tenCH = req.body.tenCH || item.tenCH;
+//         const email = req.body.email || item.email;
+//         const sdt = req.body.sdt || item.sdt;
+//         const diaChi = req.body.diaChi || item.diaChi;
+//         const thoiGianMo = req.body.thoiGianMo || item.thoiGianMo;
+//         const thoiGianDong = req.body.thoiGianDong || item.thoiGianDong;
+
+//         let hinhAnh = item.hinhAnh; // Mặc định sử dụng ảnh hiện tại
+//         if (req.files && req.files.length > 0) {
+//             hinhAnh = req.files[0].filename; // Sử dụng tên của file đầu tiên nếu chỉ cho phép một file
+//         }
+//         const trangThai = 0;
+
 //         const updateFields = {
-//             tenCH: req.body.tenCH || item.tenCH,
-//             email: req.body.email || item.email,
-//             sdt: req.body.sdt || item.sdt,
-//             diaChi: req.body.diaChi || item.diaChi,
-//             thoiGianMo: req.body.thoiGianMo || item.thoiGianMo,
-//             thoiGianDong: req.body.thoiGianDong || item.thoiGianDong,
-//             hinhAnh: req.body.hinhAnh || item.hinhAnh,
-//             trangThai: 0, // Đặt trạng thái là 0
+//             tenCH: tenCH,
+//             email: email,
+//             sdt: sdt,
+//             diaChi: diaChi,
+//             thoiGianMo: thoiGianMo,
+//             thoiGianDong: thoiGianDong,
+//             hinhAnh: hinhAnh,
+//             trangThai: trangThai,
 //         };
+
 //         const updatedCH = await CuaHang.findByIdAndUpdate(
 //             cuaHangId,
 //             { $set: updateFields },
 //             { new: true }
 //         );
+
 //         return res.json({ msg: 'Cập nhật thành công', dataSave: updatedCH });
-//     } catch (e) {
-//         // Xử lý lỗi
-//         return res.json(e);
+//     } catch (error) {
+//         // Xử lý lỗi và trả về một thông báo lỗi thân thiện với người dùng
+//         console.error(error);
+//         return res.status(500).json({ msg: 'Đã xảy ra lỗi khi cập nhật cửa hàng', error: 'Lỗi không xác định' });
 //     }
 // };
 
-// Api
-
-const updateCuaHang = async (req, res, next) => {
+const updateCuaHang = async (req, res) => {
     try {
-        const cuaHangId = req.params.id;
-        const item = await CuaHang.findById(cuaHangId);
-
-        if (!item) {
-            return res.json({ msg: 'Không tìm thấy cửa hàng để cập nhật', dataSave: null });
-        }
-
-        const tenCH = req.body.tenCH || item.tenCH;
-        const email = req.body.email || item.email;
-        const sdt = req.body.sdt || item.sdt;
-        const diaChi = req.body.diaChi || item.diaChi;
-        const thoiGianMo = req.body.thoiGianMo || item.thoiGianMo;
-        const thoiGianDong = req.body.thoiGianDong || item.thoiGianDong;
-
-        let hinhAnh = item.hinhAnh; // Mặc định sử dụng ảnh hiện tại
-        if (req.files && req.files.length > 0) {
-            hinhAnh = req.files[0].filename; // Sử dụng tên của file đầu tiên nếu chỉ cho phép một file
-        }
-        const trangThai = 0;
-
-        const updateFields = {
-            tenCH: tenCH,
-            email: email,
-            sdt: sdt,
-            diaChi: diaChi,
-            thoiGianMo: thoiGianMo,
-            thoiGianDong: thoiGianDong,
-            hinhAnh: hinhAnh,
-            trangThai: trangThai,
-        };
-
-        const updatedCH = await CuaHang.findByIdAndUpdate(
-            cuaHangId,
-            { $set: updateFields },
-            { new: true }
-        );
-
-        return res.json({ msg: 'Cập nhật thành công', dataSave: updatedCH });
+      const cuaHangId = req.params.id;
+      const item = await CuaHang.findById(cuaHangId);
+  
+      if (!item) {
+        return res.json({ msg: 'Không tìm thấy cửa hàng để cập nhật', dataSave: null });
+      }
+  
+      const tenCH = req.body.tenCH || item.tenCH;
+      const email = req.body.email || item.email;
+      const sdt = req.body.sdt || item.sdt;
+      const diaChi = req.body.diaChi || item.diaChi;
+      const thoiGianMo = req.body.thoiGianMo || item.thoiGianMo;
+      const thoiGianDong = req.body.thoiGianDong || item.thoiGianDong;
+  
+      let hinhAnh = item.hinhAnh; // Mặc định sử dụng ảnh hiện tại
+  
+      // Kiểm tra xem có tệp được tải lên hay không
+      if (req.files && req.files.length > 0) {
+        // Sử dụng tên của tệp đầu tiên nếu chỉ cho phép một tệp
+        hinhAnh = req.files[0].filename;
+      }
+  
+      const trangThai = 0;
+      const updateFields = {
+        tenCH: tenCH,
+        email: email,
+        sdt: sdt,
+        diaChi: diaChi,
+        thoiGianMo: thoiGianMo,
+        thoiGianDong: thoiGianDong,
+        hinhAnh: hinhAnh,
+        trangThai: trangThai,
+      };
+  
+      const updatedCH = await CuaHang.findByIdAndUpdate(
+        cuaHangId,
+        { $set: updateFields },
+        { new: true }
+      );
+      // Kiểm tra xem đã gửi phản hồi chưa trước khi tiếp tục
+      if (res.headersSent) {
+        console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi kết quả.");
+      } else {
+        // Trả về kết quả thay vì gửi phản hồi trực tiếp
+        return { msg: 'Cập nhật thành công', dataSave: updatedCH };
+      }
     } catch (error) {
-        // Xử lý lỗi và trả về một thông báo lỗi thân thiện với người dùng
-        console.error(error);
-        return res.status(500).json({ msg: 'Đã xảy ra lỗi khi cập nhật cửa hàng', error: 'Lỗi không xác định' });
+      // Xử lý lỗi và cung cấp một thông báo lỗi thân thiện với người dùng
+      console.error(error);
+      return { msg: 'Đã xảy ra lỗi khi cập nhật cửa hàng', error: 'Lỗi không xác định' };
     }
 };
+
+
 
 
 const kichHoatCuaHang = async (req, res, next) => {
@@ -263,13 +281,18 @@ const addCuaHangApi = async (req, res, next) => {
 const updateCuaHangApi = async (req, res, next) => {
     try {
         const result = await updateCuaHang(req, res, next);
-        res.json(result);  // Send the result directly without using JSON.stringify
-    } catch (error) {
-        // Check if headers have already been sent
-        if (res.headersSent) {
-            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        if (!res.headersSent) {
+            // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi
+            res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
         } else {
+            console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi kết quả.");
+        }
+    } catch (error) {
+        // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
+        if (!res.headersSent) {
             res.status(500).json({ msg: 'Đã xảy ra lỗi khi update cửa hàng', error: error.message });
+        } else {
+            console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         }
     }
 }
