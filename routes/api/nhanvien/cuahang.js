@@ -1,16 +1,16 @@
 var express = require('express');
-const nhanvienbanController = require('../../../controllers/nhanvien/nhanvienban-controller');
 var router = express.Router();
+var CuaHangCtr = require("../../../controllers/cuahang/cuahang-controller");
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+router.get('/', CuaHangCtr.getCuaHangCuaHangApi);
+router.post('/', CuaHangCtr.addCuaHangApi);
+router.put('/:id', CuaHangCtr.updateCuaHangApi);
 
-router.post('/',nhanvienbanController.addNhanVien);
+router.post('/kich-hoat/:id', CuaHangCtr.kichHoatCuaHangApi);
 
-router.put('/:id',nhanvienbanController.updateNhanVien)
+router.delete('/huy-kich-hoat/:id', CuaHangCtr.huyKichHoatCuaHangApi);
 
-router.delete('/:id',nhanvienbanController.deleteNhanVien);
+router.get('/chi-tiet/:id', CuaHangCtr.chiTietCuaHangApi);
 
 module.exports = router;
