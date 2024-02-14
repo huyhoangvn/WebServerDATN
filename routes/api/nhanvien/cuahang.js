@@ -1,16 +1,18 @@
 var express = require('express');
-const nhanvienbanController = require('../../../controllers/apis/nhanvien/nhanvienban-controller');
 var router = express.Router();
+const MulterConfigs = require("../../../config/multer-config");
+
+var CuaHangCtr = require("../../../controllers/cuahang/cuahang-controller");
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+router.get('/', CuaHangCtr.getCuaHangCuaHangApi);
+router.post('/', CuaHangCtr.addCuaHangApi);
+router.put('/:id',MulterConfigs.upload.array('hinhAnh', 1), CuaHangCtr.updateCuaHangApi);
 
-router.post('/',nhanvienbanController.addNhanVien);
+router.post('/kich-hoat/:id', CuaHangCtr.kichHoatCuaHangApi);
 
-router.put('/:id',nhanvienbanController.updateNhanVien)
+router.delete('/huy-kich-hoat/:id', CuaHangCtr.huyKichHoatCuaHangApi);
 
-router.delete('/:id',nhanvienbanController.deleteNhanVien);
+router.get('/chi-tiet/:id', CuaHangCtr.chiTietCuaHangApi);
 
 module.exports = router;
