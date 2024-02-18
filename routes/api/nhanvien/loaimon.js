@@ -8,10 +8,15 @@ const loaimonCtrl = require('../../../controllers/loaimon/loaimon-controller')
 // add loai mon 
 router.post('/',loaimonCtrl.loaimonApi);
 // get all 
-router.get('/',loaimonCtrl.getAllloaiMon);
+ router.get('/',loaimonCtrl.getchitietloaiMonApi);
+// get loai mon - tim ten loai mon
+router.get('/',loaimonCtrl.getloaimonApi);
 // delete 
 router.delete('/:id',loaimonCtrl.deleteloaimonApi);
 
 //sua 
 router.put('/:id',loaimonCtrl.updateloaimonApi);
+
+router.post('/kich-hoat/:id', loaimonCtrl.kichhoatloaimonapi);
+
 module.exports = router;
