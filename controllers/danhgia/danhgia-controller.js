@@ -1,6 +1,5 @@
 const { model: DanhGia } = require("../../model/DanhGia");
 const mongo = require('mongoose');
-const { ObjectId } = require('mongodb');
 
 
 const ThemDanhGia = async function(req, res){
@@ -9,38 +8,42 @@ const ThemDanhGia = async function(req, res){
     const danhGia = req.body.danhGia;
     try {
         const daDanhGia = await DanhGia.findOne({idKH:idKH, idMon:idMon})
-        console.log("day la trang thai danh gia"+daDanhGia.trangThai);
-        if(daDanhGia.trangThai !== false){
-            return res.status(404).json({
-                error: 'danh gia nay da ton tai',
-                success: false
-            });
-        }else if(daDanhGia.trangThai === false){
-            await DanhGia.updateOne({ idKH, idMon }, { trangThai: true });
-            const index = await DanhGia.findOne({idKH:idKH, idMon:idMon});
-            res.status(200).json({
-                index,
-                message: 'Thêm đánh giá lại thành công',
-                success: true
-            });
-        }else if(danhGia == ""){
-            res.status(200).json({
-                error: 'Thêm đánh giá lỗi do thiếu đánh giá',
-                success: false
-            });
+        if(daDanhGia){
+            if(daDanhGia.trangThai !== false){
+                return res.status(404).json({
+                    error: 'đánh giá này đã tồn tại',
+                    success: false
+                });
+            }else if(daDanhGia.trangThai === false){
+                await DanhGia.updateOne({ idKH, idMon }, { trangThai: true });
+                const index = await DanhGia.findOne({idKH:idKH, idMon:idMon});
+                res.status(200).json({
+                    index,
+                    message: 'Thêm đánh giá lại thành công',
+                    success: true
+                });
+            }
         }else{
-            const index = await DanhGia.create({
-                idKH: idKH,
-                idMon: idMon,
-                danhGia: danhGia,
-                trangThai: true 
-            })
-            res.status(200).json({
-                index,
-                message: 'Thêm đánh giá thành công',
-                success: true
-            });
-        }    
+            if(danhGia == ""){
+                res.status(200).json({
+                    error: 'Thêm đánh giá lỗi do thiếu đánh giá',
+                    success: false
+                });
+            }else{
+                const index = await DanhGia.create({
+                    idKH: idKH,
+                    idMon: idMon,
+                    danhGia: danhGia,
+                    trangThai: true 
+                })
+                res.status(200).json({
+                    index,
+                    message: 'Thêm đánh giá thành công',
+                    success: true
+                });
+            }    
+        }
+        
     } catch (error) {
         console.error(error);
         res.status(500).json({
@@ -51,16 +54,15 @@ const ThemDanhGia = async function(req, res){
 }
 
 const SuaDanhGia = async function(req, res){
-    const idKH = new mongo.Types.ObjectId(req.params.idKH);
-    const idMon = new mongo.Types.ObjectId(req.params.idMon);
+    const idDG = new mongo.Types.ObjectId(req.params.idDG);
     const danhGia = req.body.danhGia;
 
     try {
-        const filter = {idMon: idMon, idKH: idKH}
+        const filter = {_id: idDG}
         const update = {danhGia : danhGia}
         const index = await DanhGia.findOneAndUpdate(filter, update, { new: true })
 
-        if (!data) {
+        if (!index) {
             return res.status(404).json({
                 error: 'Không tìm thấy đánh giá để sửa',
                 success: false
@@ -89,15 +91,14 @@ const SuaDanhGia = async function(req, res){
 
 
 const XoaDanhGia = async function(req, res){
-    const idKH = new mongo.Types.ObjectId(req.params.idKH);
-    const idMon = new mongo.Types.ObjectId(req.params.idMon);
+    const idDG = new mongo.Types.ObjectId(req.params.idDG);
 
     try {
-        const filter = {idMon: idMon, idKH: idKH}
+        const filter = {_id: idDG}
         const update = {trangThai : false}
         const index = await DanhGia.findOneAndUpdate(filter, update, { new: true })
 
-        if (!data) {
+        if (!index) {
             return res.status(404).json({
                 error: 'Không tìm thấy đánh giá để xóa',
                 success: false
@@ -149,8 +150,6 @@ const GetDanhSachTheoTenMon = async function(req, res){
             },
         ]);
 
-        // console.log(data);
-
         res.status(200).json({
             list,
             count:list.length,
@@ -195,8 +194,6 @@ const GetDanhSachTheoTenKhachHang = async function(req, res){
                 $limit: 10,
             },
         ]);
-
-        // console.log(data);
 
         res.status(200).json({
             list,

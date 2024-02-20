@@ -10,7 +10,7 @@ const KhachHangSchema = new db.mongodb.Schema(
         hinhAnh: { type: String, default: "N/A" },
         diaChi: { type: String, default: "N/A" },
         sdt: { type: String, default: "0000000000" },
-        trangThai: { type: Boolean, required: true }
+        trangThai: { type: Number, default: 1 }
     }, { collection: 'KhachHang' }
 );
 

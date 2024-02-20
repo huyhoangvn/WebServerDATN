@@ -195,24 +195,19 @@ const kichHoatCuaHang = async (req, res, next) => {
             }
     
             if (req.query.thoiGianMo) {
-                // Lọc theo thời gian mở (from 9:00 AM)
                 filter.thoiGianMo = { $gte: moment(req.query.thoiGianMo, 'hh:mm A').format('HH:mm A') };
             }
     
             if (req.query.thoiGianDong) {
-                // Lọc theo thời gian đóng (until 10:00 PM)
                 filter.thoiGianDong = { $lte: moment(req.query.thoiGianDong, 'hh:mm A').format('HH:mm A') };
             }
     
-            const page = req.query.page || 1;
-            const pageSize = req.query.pageSize || 10;
-            const skip = (page - 1) * pageSize;
+            const danhSachCuaHang = await CuaHang.find(filter);
     
-            const danhSachCuaHang = Object.keys(filter).length === 0
-                ? await CuaHang.find().skip(skip).limit(pageSize)
-                : await CuaHang.find(filter).skip(skip).limit(pageSize);
-    
-            res.json({ data: danhSachCuaHang });
+            res.json({
+                data: danhSachCuaHang,
+                soluong: danhSachCuaHang.length,
+            });
         } catch (error) {
             console.error(error);
             res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
