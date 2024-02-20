@@ -1,7 +1,7 @@
+const { error } = require("jquery");
 const { model: NhanVien } = require("../../model/NhanVien");
 
-class NhanVienController {
-  async addNhanVien(req, res) {
+const addNhanVien = async (req, res, next) => {
     try {
       // check thông tin body
       if (!req.body || !req.body.taiKhoan || !req.body.matKhau) {
@@ -28,7 +28,9 @@ class NhanVienController {
     }
   }
 
-  async deleteNhanVien(req, res) {
+
+
+  const deleteNhanVien = async (req, res, next) => {
     try {
       // Lấy id từ params
       const nhanVienId = req.params.id;
@@ -55,7 +57,7 @@ class NhanVienController {
     }
   }
 
-  async updateNhanVien(req, res) {
+ const updateNhanVien = async(req, res) =>{
     try {
       // Lấy id từ params
       const nhanVienId = req.params.id;
@@ -81,6 +83,227 @@ class NhanVienController {
       });
     }
   }
-}
 
-module.exports = new NhanVienController();
+
+  const doiMatKhau = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const matKhauCu = req.body.matKhauCu;
+        const matKhauMoi = req.body.matKhauMoi;
+
+        // Kiểm tra trường matKhauMoi có tồn tại hay không
+        if (!matKhauMoi) {
+            return res.status(400).json({ msg: "Vui lòng cung cấp mật khẩu mới." });
+        }
+
+        const item = await NhanVien.findById(id);
+        if (!item) {
+            return res.json({ msg: 'Không tìm thấy nhân viên' });
+        }
+
+        // Kiểm tra mật khẩu cũ
+        if (matKhauCu !== item.matKhau) {
+            return res.status(401).json({ msg: "Mật khẩu cũ không chính xác." });
+        }
+
+        // Cập nhật mật khẩu mới
+        item.matKhau = matKhauMoi;
+        const savedNhanVien = await item.save();
+
+        res.status(200).json({
+            success: true,
+            msg: "Mật khẩu đã được cập nhật thành công.",
+            dataUpdate: savedNhanVien,
+        });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({
+            success: false,
+            error: e.message || "Đã xảy ra lỗi khi cập nhật mật khẩu nhân viên",
+        });
+    }
+};
+
+// vd postMan: http://localhost:3000/api/nhanvien/nhanvienban?idCuaHang=65c5df2e21788ae1b84da5d9&tenNhanVien=4&page=1&limit=2
+const getListNhanVien = async (req, res) => {
+  try {
+    const idCuaHang = req.params.idCuaHang;
+    const tenNhanVien = req.query.tenNhanVien;
+    const page = parseInt(req.query.page) || 1; // Trang mặc định là 1
+    const limit = parseInt(req.query.limit) || 10; // Số lượng kết quả mỗi trang mặc định là 10
+
+    // Kiểm tra xem idCuaHang có 
+    if (!idCuaHang) {
+      return res.status(400).json({ msg: "Vui lòng cung cấp id của cửa hàng." });
+    }
+
+    // Tạo một query 
+    let query = { idCH: idCuaHang };
+
+    // Nếu tenNhanVien được cung cấp,  tìm kiếm theo tên
+    if (tenNhanVien) {
+      query.tenNV = { $regex: tenNhanVien, $options: "i" };
+    }
+
+    const nhanViens = await NhanVien.find(query).skip((page - 1) * limit).limit(limit);
+
+    res.status(200).json({
+      success: true,
+      msg: 'Tìm kiếm thành công',
+      data: nhanViens,
+      pageInfo: {
+        tranghientai: page,
+        soluong: nhanViens.length,
+        tongtrang: Math.ceil(nhanViens.length / limit), 
+      },
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      success: false,
+      error: e.message || "Đã xảy ra lỗi khi lấy danh sách nhân viên của cửa hàng",
+    });
+  }
+};
+const chiTietNhanVien = async (req, res) => {
+  try {
+    const idNhanVien = req.params.id;
+
+    const nhanVien = await NhanVien.findById(idNhanVien)
+        .select('-taiKhoan -matKhau') // Exclude taiKhoan and matKhau fields
+        .exec();
+
+    if (!nhanVien) {
+        return res.status(404).json({ error: 'Không tìm thấy nhân viên' });
+    }
+
+    res.status(200).json({ success: true, data: nhanVien });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({
+      success: false,
+      error: e.message || "Đã xảy ra lỗi khi lấy chi tiết nhân viên",
+    });
+  }
+};
+
+
+
+
+
+
+
+  //Api
+const addNhanVienApi = async (req, res, next) => {
+    try {
+      const result = await addNhanVien(req, res, next);
+      if (!res.headersSent) {
+        res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
+      }
+    } catch (error) {
+      if (!res.headersSent) {
+        res.status(500).json({
+          msg: "Đã xảy ra lỗi khi kích hoạt cửa hàng",
+          error: error.message,
+        });
+      } else {
+        console.error("Headers have already been sent. Cannot send error response.");
+      }
+    }
+  };
+  
+const deleteNhanVienApi = async (req, res, next) => {
+    try {
+      const result = await deleteNhanVien(req, res, next);
+      if (!res.headersSent) {
+        res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
+      }
+    } catch (error) {
+      if (!res.headersSent) {
+        res.status(500).json({
+          msg: "Đã xảy ra lỗi khi kích hoạt cửa hàng",
+          error: error.message,
+        });
+      } else {
+        console.error("Headers have already been sent. Cannot send error response.");
+      }
+    }
+  };
+  
+const updateNhanVienApi = async (req, res, next) => {
+    try {
+      const result = await updateNhanVien(req, res, next);
+      if (!res.headersSent) {
+        res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
+      }
+    } catch (error) {
+      if (!res.headersSent) {
+        res.status(500).json({
+          msg: "Đã xảy ra lỗi khi kích hoạt cửa hàng",
+          error: error.message,
+        });
+      } else {
+        console.error("Headers have already been sent. Cannot send error response.");
+      }
+    }
+  };
+const doiMatKhauApi = async (req, res, next) => {
+    try {
+      const result = await doiMatKhau(req, res, next);
+      if (!res.headersSent) {
+        res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
+      }
+    } catch (error) {
+      if (!res.headersSent) {
+        res.status(500).json({
+          msg: "Đã xảy ra lỗi khi kích hoạt cửa hàng",
+          error: error.message,
+        });
+      } else {
+        console.error("Headers have already been sent. Cannot send error response.");
+      }
+    }
+  };
+const getListNhanVienApi = async (req, res, next) => {
+    try {
+      const result = await getListNhanVien(req, res, next);
+      if (!res.headersSent) {
+        res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
+      }
+    } catch (error) {
+      if (!res.headersSent) {
+        res.status(500).json({
+          msg: "Đã xảy ra lỗi khi kích hoạt cửa hàng",
+          error: error.message,
+        });
+      } else {
+        console.error("Headers have already been sent. Cannot send error response.");
+      }
+    }
+  };
+const chiTietNhanVienApi = async (req, res, next) => {
+    try {
+      const result = await chiTietNhanVien(req, res, next);
+      if (!res.headersSent) {
+        res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
+      }
+    } catch (error) {
+      if (!res.headersSent) {
+        res.status(500).json({
+          msg: "Đã xảy ra lỗi khi kích hoạt cửa hàng",
+          error: error.message,
+        });
+      } else {
+        console.error("Headers have already been sent. Cannot send error response.");
+      }
+    }
+  };
+  
+  module.exports = {
+    addNhanVienApi,
+    deleteNhanVienApi,
+    updateNhanVienApi,
+    doiMatKhauApi,
+    getListNhanVienApi,
+    chiTietNhanVienApi
+  };
