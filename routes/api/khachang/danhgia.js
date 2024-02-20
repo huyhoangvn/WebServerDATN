@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
 // http://localhost:3000/api/khachhang/danhgia/them-danh-gia/65cc2e9d557054378b5490b2/65cc2e72557054378b5490ad
 router.post("/them-danh-gia/:idKH/:idMon",ThemDanhGia);
 // http://localhost:3000/api/khachhang/danhgia/sua-danh-gia/65cc2e9d557054378b5490b2/65cc2e72557054378b5490ad
-router.put("/sua-danh-gia/:idKH/:idMon",SuaDanhGia);
+router.put("/sua-danh-gia/:idDG",SuaDanhGia);
 // http://localhost:3000/api/khachhang/danhgia/xoa-danh-gia/65cc2e9d557054378b5490b2/65cc2e72557054378b5490ad
 router.put("/xoa-danh-gia/:idKH/:idMon",XoaDanhGia);
 // http://localhost:3000/api/khachhang/danhgia/get-danh-gia-theo-ten-mon/65cc2e72557054378b5490ad
