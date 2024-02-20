@@ -10,8 +10,12 @@ const HoaDonSchema = new db.mongodb.Schema(
         ghiChu: { type: String, default: 'N/A' },
         thoiGianTao: { type: String, default: Date.now },
         thoiGianGiaoHangDuKien: { type: String, default: 'N/A' },
-        xacNhanKhachHang: { type: Boolean, default: false },
         trangThai: { type: Boolean, default: true },
+        xacNhanKhachHang: {
+            type: Number,
+            enum: [0, 1],
+            default: 0, //0 chưa được nhận ; 1 : đã nhận được
+        },
         trangThaiGiaoHang: {
             type: Number,
             enum: [0, 1, 2],
