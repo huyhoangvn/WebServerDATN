@@ -5,7 +5,6 @@ const passport = require('passport')
 const passportConfig = require('../../config/auth/jwt-decode-khachhang')
 const sessionAdmin = require('../../config/auth/session-admin')
 
-router.post('/',sessionAdmin.setTokenHeader, AdminCtrl.dangNhapWeb);
-router.get('/sign-out', AdminCtrl.dangXuatWeb)
+router.get('/doanh-thu',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), AdminCtrl.getViewThongKeDoanhThuWeb);
  
 module.exports = router;

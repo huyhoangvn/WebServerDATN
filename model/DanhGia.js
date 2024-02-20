@@ -10,6 +10,6 @@ const DanhGiaSchema = new db.mongodb.Schema(
     }, { collection: 'DanhGia' }
 );
 
-let model = db.mongodb.model('DanhGia', DanhGiaSchema);
+const model = db.mongodb.model('DanhGia', DanhGiaSchema);
 
 module.exports = { model }

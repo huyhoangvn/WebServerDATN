@@ -1,14 +1,14 @@
 const db = require('../config/mongodbHelper');
 const mongoose = require('mongoose');
 
-const LoaiMonSchema = new db.mongodb.Schema(
+const GioHangSchema = new db.mongodb.Schema(
     {
         idKH: { type: mongoose.Schema.Types.ObjectId, ref: 'KhachHang', required: true },
         idMon: { type: mongoose.Schema.Types.ObjectId, ref: 'Mon', required: true },
-        trangThai: { type: Boolean, default: true }
+        trangThai: { type: Number, default: 1 }
     }, { collection: 'GioHang' }
 );
 
-let model = db.mongodb.model('LoaiMon', LoaiMonSchema);
+let model = db.mongodb.model('GioHang', GioHangSchema);
 
 module.exports = { model }
