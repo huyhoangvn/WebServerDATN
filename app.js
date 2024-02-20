@@ -1,8 +1,10 @@
 var createError = require('http-errors');
 var express = require('express');
+const session = require('express-session');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var {SESSION_SECRET} = require("./config/auth/secret")
 /// put, delete
 var methodOverride = require('method-override')
 const bodyParser = require('body-parser');
@@ -22,6 +24,12 @@ app.use(
   express.static(path.join(__dirname, "node_modules/bootstrap/dist/js"))
 )
 app.use("/js", express.static(path.join(__dirname, "node_modules/jquery/dist")))
+
+app.use(session({
+  secret: SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
