@@ -46,29 +46,29 @@ const getchitietloaiMonApi = async (req, res, next) => {
 // tìm kiếm tên http://localhost:3000/api/nhanvien/loaimon?ten=lợn
 const getloaimonApi = async (req, res) => {
   try {
-    let filter = {};
-
-    if (req.query.ten) {
-      filter.tenLM = new RegExp(req.query.ten, "i");
+    const { tenLM } = req.query;
+    const query = {};
+    
+    if (tenLM) {
+        query.tenLM = { $regex: tenLM, $options: "i" };
     }
+    const projection = {  tenLM: 1 };
 
-    const page = req.query.page || 1;
-    const pageSize = req.query.pageSize || 10;
-    const skip = (page - 1) * pageSize;
-
-    const danhsachloaimon =
-      Object.keys(filter).length === 0
-        ? await Loaimon.model.find().skip(skip).limit(pageSize)
-        : await Loaimon.model.find(filter).skip(skip).limit(pageSize);
+    // Thực hiện truy vấn để lấy danh sách nhân viên quản lý
+    const danhsachloaimon = await Loaimon.model.find(query, projection);
 
     res.status(200).json({
-      msg: "Hiển thị danh sách loại món thành công",
-      data: danhsachloaimon,
+        success: true,
+        data: danhsachloaimon,
+        soluong: danhsachloaimon.length
     });
-  } catch (error) {
+} catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Đã xảy ra lỗi khi lấy danh sách loại món" });
-  }
+    res.status(500).json({
+        success: false,
+        error: "Đã xảy ra lỗi khi lấy danh sách nhân viên quản lý.",
+    });
+}
 };
 // kich hoat loai mon
 const kichhoatloaimonapi = async (req, res) => {
@@ -87,7 +87,7 @@ const kichhoatloaimonapi = async (req, res) => {
       data: kichhoat,
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi kích hoạt loaimon", error: error });
+    res.status(500).json({ message: "Lỗi kích hoạt loại món", error: error });
   }
 };
 // Delete
