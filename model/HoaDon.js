@@ -4,16 +4,16 @@ const mongoose = require('mongoose');
 const HoaDonSchema = new db.mongodb.Schema(
     {
         idKH: { type: mongoose.Schema.Types.ObjectId, ref: 'KhachHang', required: true },
-        idNV: { type: mongoose.Schema.Types.ObjectId, ref: 'NhanVien', required: true },
+        idNV: { type: mongoose.Schema.Types.ObjectId, ref: 'NhanVien' },
         idKM: { type: mongoose.Schema.Types.ObjectId, ref: 'KhuyenMai' },
         idCH: { type: mongoose.Schema.Types.ObjectId, ref: 'CuaHang', required: true },
         maHD: { type: String, default: 'N/A' },
         phanTramKhuyenMaiDat: { type: Number, default: 0 },
         diaChiGiaoHang: { type: String, default: 'N/A' },
         ghiChu: { type: String, default: 'N/A' },
-        thoiGianTao: { type: String, default: Date.now },
+        thoiGianTao: { type: Date, default: Date.now() },
         tongTien: { type: Number, default: 0 },
-        thoiGianGiaoHangDuKien: { type: String, default: 'N/A' },
+        thoiGianGiaoHangDuKien: { type: Date, default: '' },
         trangThaiThanhToan: {
             type: Number,
             enum: [0, 1],

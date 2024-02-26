@@ -16,14 +16,8 @@ const addHoaDonApi = async (req, res, next) => {
         }
         await HoaDon.create({
             idKH,
-            idNV,
             idCH,
-            phanTramKhuyenMaiDat,
             diaChiGiaoHang,
-            ghiChu,
-            thoiGianTao,
-            tongTien,
-            thoiGianGiaoHangDuKien,
             trangThaiMua: 0,
             trangThai: true,
             trangThaiThanhToan: 0,
