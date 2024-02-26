@@ -6,23 +6,26 @@ const moment = require('moment');
 const addHoaDonApi = async (req, res, next) => {
 
     try {
-        const { idKH, idNV, diaChiGiaoHang, thoiGianTao } = req.body;
-        if (!idKH || !diaChiGiaoHang || !thoiGianTao) {
+        const { idKH, idCH, diaChiGiaoHang } = req.body;
+        if (!idKH || !diaChiGiaoHang || !idCH) {
             return res.status(400).json({ msg: 'Vui lòng điền đầy đủ thông tin' });
         }
-        let foundHoaDon = await HoaDon.findOne({ idKH, idNV, diaChiGiaoHang, thoiGianTao });
+        let foundHoaDon = await HoaDon.findOne({ idKH, idCH, diaChiGiaoHang });
         if (foundHoaDon) {
             return res.status(400).json({ msg: "Hóa đơn đã tồn tại" });
         }
         await HoaDon.create({
             idKH,
             idNV,
+            idCH,
+            phanTramKhuyenMaiDat,
             diaChiGiaoHang,
+            ghiChu,
             thoiGianTao,
-            xacNhanKhachHang: 0,
-            trangThai: 0,
-            trangThaiGiaoHang: 0,
-            trangThaiDuyet: 0,
+            tongTien,
+            thoiGianGiaoHangDuKien,
+            trangThaiMua: 0,
+            trangThai: true,
             trangThaiThanhToan: 0,
         });
         res.status(201).json({ message: "Thêm mới hóa đơn thành công" });
@@ -44,10 +47,8 @@ const updateHoaDon = async (req, res) => {
         const ghiChu = req.body.ghiChu || item.ghiChu;
         const thoiGianTao = req.body.thoiGianTao || item.thoiGianTao;
         const thoiGianGiaoHangDuKien = req.body.thoiGianGiaoHangDuKien || item.thoiGianGiaoHangDuKien;
-        const trangThai = true;
-        const xacNhanKhachHang = 0;
-        const trangThaiGiaoHang = 0;
-        const trangThaiDuyet = 0;
+        const trangThai = false;
+        const trangThaiMua = 0;
         const trangThaiThanhToan = 0;
 
         const updateFields = {
@@ -56,9 +57,7 @@ const updateHoaDon = async (req, res) => {
             thoiGianTao: thoiGianTao,
             thoiGianGiaoHangDuKien: thoiGianGiaoHangDuKien,
             trangThai: trangThai,
-            xacNhanKhachHang: xacNhanKhachHang,
-            trangThaiGiaoHang: trangThaiGiaoHang,
-            trangThaiDuyet: trangThaiDuyet,
+            trangThaiMua: trangThaiMua,
             trangThaiThanhToan: trangThaiThanhToan,
         }
         const updatedHD = await HoaDon.findByIdAndUpdate(
@@ -83,25 +82,21 @@ const updateHoaDon = async (req, res) => {
 const getHoaDon = async (req, res, next) => {
     try {
         const {
+            trangThai,
             trangThaiThanhToan,
-            trangThaiGiaoHang,
-            xacNhanKhachHang,
-            trangThaiDuyet,
+            trangThaiMua,
             thoiGianTao,
         } = req.query;
         let filter = {};
 
-        if (trangThaiGiaoHang !== undefined) {
-            filter.trangThaiGiaoHang = trangThaiGiaoHang;
-        }
-        if (xacNhanKhachHang !== undefined) {
-            filter.xacNhanKhachHang = xacNhanKhachHang;
-        }
         if (trangThaiThanhToan !== undefined) {
             filter.trangThaiThanhToan = trangThaiThanhToan;
         }
-        if (trangThaiDuyet !== undefined) {
-            filter.trangThaiDuyet = trangThaiDuyet;
+        if (trangThaiMua !== undefined) {
+            filter.trangThaiMua = trangThaiMua;
+        }
+        if (trangThai !== undefined) {
+            filter.trangThai = trangThai;
         }
         if (thoiGianTao !== undefined) {
             filter.thoiGianTao = thoiGianTao;
@@ -137,93 +132,112 @@ const chiTietHoaDon = async (req, res, next) => {
         res.status(500).json({ error: "Đã xảy ra lỗi khi lấy chi tiết hóa đơn" });
     }
 };
-const updateTrangThaiDuyet = async (req, res, next) => {
+const updatetrangThaiThanhToan = async (req, res, next) => {
     try {
         const id = req.params.id;
-        const trangThaiDuyet = req.body.trangThaiDuyet;
-        if (trangThaiDuyet !== 0 && trangThaiDuyet !== 1 && trangThaiDuyet !== 2) {
-            return res.status(400).json({ error: "Trạng thái duyệt không hợp lệ" });
-        }
-        const updateTrangThaiDuyet = await HoaDon.findOneAndUpdate(
+
+        const updatetrangThaiThanhToan = await HoaDon.findOneAndUpdate(
             { _id: id },
-            { $set: { trangThaiDuyet: trangThaiDuyet } },
+            { $set: { trangThaiThanhToan: 1 } },
             { new: true },
         );
-        if (!updateTrangThaiDuyet) {
+        if (!updatetrangThaiThanhToan) {
             return res.status(404).json({ error: "Không tìm thấy hoa đơn" });
         }
         res.status(200).json({
-            msg: "Đã hủy update",
-            data: updateTrangThaiDuyet,
+            msg: "update thành công",
+            data: updatetrangThaiThanhToan,
         });
     } catch (e) {
         console.log(e);
         res.status(500).json({ error: "Đã xảy ra lỗi khi update " });
     }
 }
-const updateTrangThanhToan = async (req, res, next) => {
+const updatetrangThaiMuaDangChuanBi = async (req, res, next) => {
     try {
         const id = req.params.id;
-        const trangThaiThanhToan = req.body.trangThaiThanhToan;
-        const updateTrangThaiThanhToan = await HoaDon.findOneAndUpdate(
+
+        const updatetrangThaiMua = await HoaDon.findOneAndUpdate(
             { _id: id },
-            { $set: { trangThaiThanhToan: trangThaiThanhToan } },
+            { $set: { trangtrangThaiMua: 1 } },
             { new: true },
         );
-        if (!updateTrangThaiThanhToan) {
+        if (!updatetrangThaiMua) {
             return res.status(404).json({ error: "Không tìm thấy hoa đơn" });
         }
         res.status(200).json({
-            msg: "Đã hủy update",
-            data: updateTrangThaiThanhToan,
+            msg: "update thành công",
+            data: updatetrangThaiMua,
         });
     } catch (e) {
         console.log(e);
         res.status(500).json({ error: "Đã xảy ra lỗi khi update " });
     }
 }
-const updateXacNhanKhachHang = async (req, res, next) => {
-    try {
-        const idHoaDon = req.params.id;
-        const xacNhanKhachHang = req.body.xacNhanKhachHang;
-        const updateXacNhanKhachHang = await HoaDon.findOneAndUpdate(
-            { _id: idHoaDon },
-            { $set: { xacNhanKhachHang: xacNhanKhachHang } },
-            { new: true },
-        );
-        if (!updateXacNhanKhachHang) {
-            return res.status(404).json({ error: "Không tìm thấy hoa đơn" });
-        }
-        res.status(200).json({
-            msg: "Đã hủy update",
-            data: updateXacNhanKhachHang,
-        });
-    } catch (e) {
-        console.log(e);
-        res.status(500).json({ error: "Đã xảy ra lỗi khi update " });
-    }
-}
-const updateTrangThaiGiaoHang = async (req, res, next) => {
+const updatetrangThaiMuaDangGiaoHang = async (req, res, next) => {
     try {
         const id = req.params.id;
-        const trangThaiGiaoHang = req.body.trangThaiGiaoHang;
-        const updateTrangThaiGiaoHang = await HoaDon.findOneAndUpdate(
+
+        const updatetrangThaiMua = await HoaDon.findOneAndUpdate(
             { _id: id },
-            { $set: { trangThaiGiaoHang: trangThaiGiaoHang } },
+            { $set: { trangtrangThaiMua: 2 } },
             { new: true },
         );
-        if (!updateTrangThaiGiaoHang) {
+        if (!updatetrangThaiMua) {
             return res.status(404).json({ error: "Không tìm thấy hoa đơn" });
         }
         res.status(200).json({
-            msg: "Đã hủy update",
-            data: updateTrangThaiGiaoHang,
+            msg: "update thành công",
+            data: updatetrangThaiMua,
         });
     } catch (e) {
         console.log(e);
         res.status(500).json({ error: "Đã xảy ra lỗi khi update " });
     }
 }
+const updatetrangThaiMuaGiaoHangThatBai = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        const updatetrangThaiMua = await HoaDon.findOneAndUpdate(
+            { _id: id },
+            { $set: { trangtrangThaiMua: 3 } },
+            { new: true },
+        );
+        if (!updatetrangThaiMua) {
+            return res.status(404).json({ error: "Không tìm thấy hoa đơn" });
+        }
+        res.status(200).json({
+            msg: "update thành công",
+            data: updatetrangThaiMua,
+        });
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({ error: "Đã xảy ra lỗi khi update " });
+    }
+}
+const updatetrangThaiMuaGiaoHangThanhCong = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        const updatetrangThaiMua = await HoaDon.findOneAndUpdate(
+            { _id: id },
+            { $set: { trangtrangThaiMua: 4 } },
+            { new: true },
+        );
+        if (!updatetrangThaiMua) {
+            return res.status(404).json({ error: "Không tìm thấy hoa đơn" });
+        }
+        res.status(200).json({
+            msg: "update thành công",
+            data: updatetrangThaiMua,
+        });
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({ error: "Đã xảy ra lỗi khi update " });
+    }
+}
+
 const deleteHoaDon = async (req, res, next) => {
     try {
         const id = req.params.id;
@@ -294,9 +308,9 @@ const chiTietHoaDonApi = async (req, res, next) => {
     }
 }
 
-const updateTrangThaiDuyetApi = async (req, res, next) => {
+const updatetrangThaiThanhToanApi = async (req, res, next) => {
     try {
-        const result = await updateTrangThaiDuyet(req, res, next);
+        const result = await updatetrangThaiThanhToan(req, res, next);
         res.json(result);  // Send the result directly without using JSON.stringify
     } catch (error) {
         // Check if headers have already been sent
@@ -307,9 +321,9 @@ const updateTrangThaiDuyetApi = async (req, res, next) => {
         }
     }
 }
-const updateTrangThaiThanhToanApi = async (req, res, next) => {
+const updatetrangThaiMuaDangChuanBiApi = async (req, res, next) => {
     try {
-        const result = await updateTrangThanhToan(req, res, next);
+        const result = await updatetrangThaiMuaDangChuanBi(req, res, next);
         res.json(result);  // Send the result directly without using JSON.stringify
     } catch (error) {
         // Check if headers have already been sent
@@ -320,9 +334,9 @@ const updateTrangThaiThanhToanApi = async (req, res, next) => {
         }
     }
 }
-const updatexacNhanKhachHangApi = async (req, res, next) => {
+const updatetrangThaiMuaDangGiaoHangApi = async (req, res, next) => {
     try {
-        const result = await updateXacNhanKhachHang(req, res, next);
+        const result = await updatetrangThaiMuaDangGiaoHang(req, res, next);
         res.json(result);  // Send the result directly without using JSON.stringify
     } catch (error) {
         // Check if headers have already been sent
@@ -333,9 +347,9 @@ const updatexacNhanKhachHangApi = async (req, res, next) => {
         }
     }
 }
-const updateTrangThaiGiaoHangApi = async (req, res, next) => {
+const updatetrangThaiMuaGiaoHangThatBaiApi = async (req, res, next) => {
     try {
-        const result = await updateTrangThaiGiaoHang(req, res, next);
+        const result = await updatetrangThaiMuaGiaoHangThatBai(req, res, next);
         res.json(result);  // Send the result directly without using JSON.stringify
     } catch (error) {
         // Check if headers have already been sent
@@ -346,6 +360,21 @@ const updateTrangThaiGiaoHangApi = async (req, res, next) => {
         }
     }
 }
+const updatetrangThaiMuaGiaoHangThanhCongApi = async (req, res, next) => {
+    try {
+        const result = await updatetrangThaiMuaGiaoHangThanhCong(req, res, next);
+        res.json(result);  // Send the result directly without using JSON.stringify
+    } catch (error) {
+        // Check if headers have already been sent
+        if (res.headersSent) {
+            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        } else {
+            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
+        }
+    }
+}
+
+
 const deleteHoaDonApi = async (req, res, next) => {
     try {
         const result = await deleteHoaDon(req, res, next);
@@ -359,17 +388,57 @@ const deleteHoaDonApi = async (req, res, next) => {
         }
     }
 }
+const getDanhSachHoaDonByIdKhachHangApi = async (req, res, next) => {
+    try {
+        const idKhachHang = req.params.id; // Lấy ID của khách hàng từ tham số trong đường dẫn
+
+        // Kiểm tra tính hợp lệ của ID khách hàng
+        if (!idKhachHang) {
+            return res.status(400).json({ msg: 'Vui lòng cung cấp ID khách hàng' });
+        }
+
+        // Lấy danh sách hóa đơn của khách hàng dựa trên ID
+        const danhSachHoaDon = await HoaDon.find({ idKH: idKhachHang });
+
+        // Trả về danh sách hóa đơn
+        res.json({ data: danhSachHoaDon });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của khách hàng', error: error.message });
+    }
+};
+const getDanhSachHoaDonByIdCuaHangApi = async (req, res, next) => {
+    try {
+        const idCuaHang = req.params.id; // Lấy ID của khách hàng từ tham số trong đường dẫn
+
+        // Kiểm tra tính hợp lệ của ID khách hàng
+        if (!idCuaHang) {
+            return res.status(400).json({ msg: 'Vui lòng cung cấp ID cửa hàng' });
+        }
+
+        // Lấy danh sách hóa đơn của khách hàng dựa trên ID
+        const danhSachHoaDon = await HoaDon.find({ idCH: idCuaHang });
+
+        // Trả về danh sách hóa đơn
+        res.json({ data: danhSachHoaDon });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của cửa hàng', error: error.message });
+    }
+};
 
 // Export các hàm API
 module.exports = {
     addHoaDonApi,
     deleteHoaDonApi,
     getHoaDonApi,
+    getDanhSachHoaDonByIdKhachHangApi,
+    getDanhSachHoaDonByIdCuaHangApi,
     chiTietHoaDonApi,
     updateHoaDonApi,
-    updatexacNhanKhachHangApi,
-    updateTrangThaiDuyetApi,
-    updateTrangThaiGiaoHangApi,
-    updateTrangThaiThanhToanApi
-
+    updatetrangThaiThanhToanApi,
+    updatetrangThaiMuaDangChuanBiApi,
+    updatetrangThaiMuaDangGiaoHangApi,
+    updatetrangThaiMuaGiaoHangThatBaiApi,
+    updatetrangThaiMuaGiaoHangThanhCongApi,
 };
