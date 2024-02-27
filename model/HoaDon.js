@@ -1,13 +1,17 @@
 const db = require('../config/mongodbHelper');
 const mongoose = require('mongoose');
 
+function generateRandomNumber() {
+    return Math.floor(10000000 + Math.random() * 90000000).toString();
+}
+
 const HoaDonSchema = new db.mongodb.Schema(
     {
         idKH: { type: mongoose.Schema.Types.ObjectId, ref: 'KhachHang', required: true },
         idNV: { type: mongoose.Schema.Types.ObjectId, ref: 'NhanVien' },
         idKM: { type: mongoose.Schema.Types.ObjectId, ref: 'KhuyenMai' },
         idCH: { type: mongoose.Schema.Types.ObjectId, ref: 'CuaHang', required: true },
-        maHD: { type: String, default: 'N/A' },
+        maHD: { type: String, default: generateRandomNumber },
         phanTramKhuyenMaiDat: { type: Number, default: 0 },
         diaChiGiaoHang: { type: String, default: 'N/A' },
         ghiChu: { type: String, default: 'N/A' },
