@@ -3,26 +3,22 @@ var router = express.Router();
 const nhanVienQuanLyController = require('../../../controllers/nhanvien/nhanvienquanly-controller');
 
 /* GET users listing. */
-router.get('/', nhanVienQuanLyController.getListNhanVienQuanlyApi);
-router.post('/',nhanVienQuanLyController.addNhanVienQuanLyApi)
-router.delete('/:id',nhanVienQuanLyController.xoaCungNhanVienQuanLyApi);
-router.put('/:id',nhanVienQuanLyController.updateNhanvienQuanLyApi)
+router.get('/', nhanVienQuanLyController.getListNhanVienQuanlyApi);// -> web
+router.post('/',nhanVienQuanLyController.addNhanVienQuanLyApi)//-> cả web cả api
+// router.delete('/:id',nhanVienQuanLyController.xoaCungNhanVienQuanLyApi);//-> web
+// router.put('/:id',nhanVienQuanLyController.updateNhanvienQuanLyApi)//-> web nếu trạng thái 1 (Đã duyệt rồi)
+router.put('/:id',nhanVienQuanLyController.updateNhanvienQuanLyApi)//-> api nếu trạng thái 0 (Chưa duyệt)
 
-router.post('/sua-cua-hang/:id',nhanVienQuanLyController.updateCuahangApi)
-router.post('/doi-mat-khau/:id',nhanVienQuanLyController.updateMatKhauApi)
-router.post('/xoa-nhan-vien-quanly/:id', nhanVienQuanLyController.xoaNhanVienQuanLyApi)
-router.post('/kich-hoat-nhan-vien-quanly/:id', nhanVienQuanLyController.kichHoatnhanVienQuanLyApi)
-router.get('/chi-tiet-nhan-vien-quanly/:id',nhanVienQuanLyController.chiTietNhanVienQuanLyApi);
+// router.post('/sua-cua-hang/:id',nhanVienQuanLyController.updateCuahangApi)// -> web nếu trạng thái 1 (Đã duyệt rồi)
+router.post('/sua-cua-hang/:id',nhanVienQuanLyController.updateCuahangApi)// -> api nếu trạng thái 0 (Chưa duyệt)
+router.post('/doi-mat-khau/:id',nhanVienQuanLyController.updateMatKhauApi)// -> api
+// router.post('/xoa-nhan-vien-quanly/:id', nhanVienQuanLyController.xoaNhanVienQuanLyApi)// -> web
+// router.post('/kich-hoat-nhan-vien-quanly/:id', nhanVienQuanLyController.kichHoatnhanVienQuanLyApi)// -> web
+router.get('/chi-tiet-nhan-vien-quanly/:id',nhanVienQuanLyController.chiTietNhanVienQuanLyApi);// -> cả web và api
 
-router.post('/them-nhanvien-ban/:id', nhanVienQuanLyController.addNhanVienBanApi)
-router.put('/sua-nhanvien-ban/:id/:idNhanVienBan', nhanVienQuanLyController.suaNhanVienBanApi)
-router.post('/xoa-nhan-vien-ban/:id/:idNhanVienBan', nhanVienQuanLyController.xoaNhanVienBanApi)
-router.post('/kich-hoat-nhan-vien-ban/:id/:idNhanVienBan', nhanVienQuanLyController.kichHoatnhanVienBanApi)
-
-
-
-
-
-
+router.post('/them-nhanvien-ban/:id', nhanVienQuanLyController.addNhanVienBanApi)//->api
+router.put('/sua-nhanvien-ban/:id/:idNhanVienBan', nhanVienQuanLyController.suaNhanVienBanApi)//->api
+router.post('/xoa-nhan-vien-ban/:id/:idNhanVienBan', nhanVienQuanLyController.xoaNhanVienBanApi)//->api
+router.post('/kich-hoat-nhan-vien-ban/:id/:idNhanVienBan', nhanVienQuanLyController.kichHoatnhanVienBanApi)//->api
 
 module.exports = router;

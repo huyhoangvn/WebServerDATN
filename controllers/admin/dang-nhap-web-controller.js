@@ -66,35 +66,6 @@ const dangNhap = async(req, res, next)=>{
     }
 }
 
-const getThongTin = async(req, res, next)=>{
-    try{
-        const id = req.user._id
-        let admin = await Admin.model.findOne({
-            _id: id
-        })
-        if(admin){
-            index = {
-                ten: admin.ten
-            }
-            return {
-                index: index,
-                success: true,
-                msg: "Lấy dữ liệu thành công"
-            }
-        }
-        return {
-            success: false,
-            msg: "Không lấy được dữ liệu từ tài khoản hiện tại"
-        }
-    } catch(error) {
-        return {
-            error: error,
-            success: false,
-            msg: "Có lỗi trong quá trình xác thực tài khoản"
-        }
-    }
-}
-
 //Website
 const dangNhapWeb = async(req, res, next)=>{
     result = await dangNhap(req, res, next)
@@ -103,8 +74,9 @@ const dangNhapWeb = async(req, res, next)=>{
         if(result.success){
             let token = auth.encodedToken(result.index.id)
             req.session.token = token
-            res.render("thongke/doanhthu", {
-                index: result.index.ten,
+            req.session.ten = result.index.ten
+            res.render("thongke/doanh-thu", {
+                admin: result.index.ten,
                 msg: result.msg
             })
         } else {
@@ -116,16 +88,9 @@ const dangNhapWeb = async(req, res, next)=>{
 }
 
 const getViewThongKeDoanhThuWeb =  async (req, res, next)=>{
-    result = await getThongTin(req, res, next)
-    if(result.success){
-        res.render("thongke/doanhthu", {
-            index: result.index.ten,
-            msg: result.msg
-        })
-    } 
-    res.render("thongke/doanhthu", {
-        index: "N/A",
-        msg: result.msg
+    res.render("thongke/doanh-thu", {
+        admin: req.session.ten,
+        msg: ""
     })
 }
 
@@ -135,6 +100,7 @@ const getViewDangNhapWeb = async (req, res, next)=>{
 
 const dangXuatWeb = async (req, res, next)=>{
     req.session.token = ""
+    req.session.ten = "N/A"
     res.render("index")
 }
 
