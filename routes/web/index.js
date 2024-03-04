@@ -1,22 +1,16 @@
 var express = require('express');
 var router = express.Router();
+var AdminCtrl = require("../../controllers/admin/dang-nhap-web-controller");
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-    res.render('index', {title: "Welcome Page"})
-});
-
+router.get('/', AdminCtrl.getViewDangNhapWeb);
 router.use('/auth', require('./auth'))
-router.use('/khachhang', require('./khachhang'))
-router.use('/nhanvien', require('./nhanvien'))
-router.use('/cuahang', require('./cuahang'))
-router.use('/hoadon', require('./hoadon'))
-router.use('/datmon', require('./datmon'))
-router.use('/giohang', require('./giohang'))
-router.use('/danhgia', require('./danhgia'))
-router.use('/khuyenmai', require('./khuyenmai'))
-router.use('/loaimon', require('./loaimon'))
+router.use('/khach-hang', require('./khachhang'))
+router.use('/quan-ly', require('./quanly'))
+router.use('/cua-hang', require('./cuahang'))
+router.use('/khuyen-mai', require('./khuyenmai'))
+router.use('/loai-mon', require('./loaimon'))
 router.use('/mon', require('./mon'))
-router.use('/hinhanh', require('./hinhanhmon'))
+router.use('/thong-ke', require('./thongke'))
 
 module.exports = router;

@@ -2,14 +2,16 @@ var express = require('express');
 var router = express.Router();
 const nhanvienbanController = require('../../../controllers/nhanvien/nhanvienban-controller');
 /* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+router.get('/:idCuaHang', nhanvienbanController.getListNhanVienApi);
 
-router.post('/',nhanvienbanController.addNhanVien);
+router.post('/',nhanvienbanController.addNhanVienApi);
 
-router.put('/:id',nhanvienbanController.updateNhanVien)
+router.put('/:id',nhanvienbanController.updateNhanVienApi)
 
-router.delete('/:id',nhanvienbanController.deleteNhanVien);
+router.delete('/:id',nhanvienbanController.deleteNhanVienApi);
+
+router.post('/doi-mat-khau/:id',nhanvienbanController.doiMatKhauApi);
+
+router.get('/chi-tiet-nhan-vien/:id',nhanvienbanController.chiTietNhanVienApi);
 
 module.exports = router;

@@ -5,7 +5,8 @@ const MonDatSchema = new db.mongodb.Schema(
     {
         idHD: { type: mongoose.Schema.Types.ObjectId, ref: 'HoaDon', required: true },
         idMon: { type: mongoose.Schema.Types.ObjectId, ref: 'Mon', required: true },
-        soLuong: { type: Number }
+        giaTienDat: { type: Number, required: true },
+        soLuong: { type: Number, required: true }
     }, { collection: 'MonDat' }
 );
 

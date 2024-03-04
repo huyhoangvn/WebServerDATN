@@ -1,10 +1,44 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
   <head>
-    <title><%= (!!locals.title)?title:'' %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/b5123099c5.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
   </head>
   <body>
-    <h1><%= (!!locals.title)?title:'' %></h1>
+    <main style="background: url('../public/images/background.svg') no-repeat center fixed; background-size: cover;">
+      <div class="container vh-100 d-flex justify-content-center align-items-center">
+        <div class="card d-flex p-3 card-outline card-success">
+          <h4 class="text-primary d-flex justify-content-center  m-1 text-success">Đăng nhập</h4>
+          <form action="/auth" method="post" class="card-body d-flex justify-content-center align-items-center flex-column">
+            <div class="mb-3 d-flex flex-column">
+              <label for="" class="form-label">Tên tài khoản:</label>
+              <input type="text" style="width: 350px;"
+                class="form-control" name="taiKhoan" id="username" aria-describedby="helpId" placeholder="Tên tài khoản">
+            </div>
+            <div class="mb-3 d-flex flex-column">
+              <label for="" class="form-label">Mật khẩu</label>
+              <input type="password" style="width: 350px;"
+               class="form-control" name="matKhau" id="password" placeholder="Mật khẩu">
+            </div>
+            <% if (locals.msg && typeof locals.msg === "string" && locals.msg.trim().length > 0) { %>
+              <span class="text-danger"><%= locals.msg %></span>
+            <% } %>
+            <button type="submit" class="btn btn-primary bg-success mt-3 btn-outline-success">Đăng nhập</button>
+          </form>
+        </div>
+      </div>
+    </main>
+    <!-- Optional JavaScript -->
   </body>
 </html>
