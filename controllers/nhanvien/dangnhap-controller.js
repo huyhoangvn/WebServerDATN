@@ -84,7 +84,7 @@ const dangNhapApi = async (req, res, next) => {
             });
         } else {
             // If login fails, send JSON response with error message
-            res.status(401).json({ msg: result.msg });
+            res.json({ msg: result.msg });
         }
     } catch (error) {
         // Handle errors appropriately
