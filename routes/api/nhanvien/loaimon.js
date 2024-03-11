@@ -10,7 +10,7 @@ router.post('/',loaimonCtrl.loaimonApi);
 // get all 
  router.get('/',loaimonCtrl.getchitietloaiMonApi);
 // get loai mon - tim ten loai mon
-router.get('/',loaimonCtrl.getloaimonApi);
+router.get('/get-all',loaimonCtrl.getloaimonApi);
 // delete 
 router.delete('/:id',loaimonCtrl.deleteloaimonApi);
 
