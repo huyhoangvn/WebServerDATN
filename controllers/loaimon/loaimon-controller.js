@@ -32,8 +32,8 @@ const addloaimonApi = async (req, res, next) => {
 // Get All
 const getchitietloaiMonApi = async (req, res, next) => {
   try {
-    const id = req.params.id;
-    const loaimon = await Loaimon.model.find(id);
+    const idLM = req.params.idLM;
+    const loaimon = await Loaimon.model.findOne({ _id: idLM });
     if (!loaimon) {
       res.status(500).json({ error: "không tìm thấy cửa hàng" });
     }
