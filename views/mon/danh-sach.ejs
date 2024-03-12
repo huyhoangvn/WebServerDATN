@@ -198,22 +198,49 @@
         <div class="container-fluid bg-white m-2">
           <!-- Main content nằm ở dây -->
 
-          <!-- tìm theo tên món và tên cửa hàng -->
-          <div class="d-flex row justify-content-between mb-1">
-            <div class="col-6">
-                <input type="text" id="searchMon" class="form-control" placeholder="Nhập tên món để tìm kiếm">
+          <form action="/mon/danh-sach" method="GET">
+            <!-- tìm theo tên món và tên cửa hàng -->
+            <div class="d-flex row justify-content-between mb-1">
+              <div class="col-6">
+                  <input type="text" id="searchMon" class="form-control" name="tenMon" placeholder="Nhập tên món để tìm kiếm">
+              </div>
+              <div class="col-6">
+                  <input type="text" id="searchCuaHang" class="form-control" name="tenCH" placeholder="Nhập tên của hàng để tìm kiếm">
+              </div>
             </div>
-            <div class="col-6">
-                <input type="text" id="searchCuaHang" class="form-control" placeholder="Nhập tên của hàng để tìm kiếm">
-            </div>
-          </div>
 
-          <!-- tìm theo tên loại món, trạng thái, giá tiền -->
-          <!-- <div class="d-flex row justify-content-between mb-1"></div>
-            <div>
-              
+            <!-- tìm theo tên loại món, trạng thái, giá tiền -->
+            <div class="d-flex row justify-content-between mb-1">
+              <div class="col-6">
+                <input type="text" class="form-control" name="tenLM" placeholder="Nhập tên loại món để tìm kiếm">
+              </div>
+
+              <div class="col-2">
+                <select class="form-control" name="giaTien">
+                  <option value="-1">Tất cả giá tiền</option>
+                  <option value="10000">10000đ</option>
+                  <option value="20000">20000đ</option>
+                  <option value="30000">30000đ</option>
+                  <option value="40000">40000đ</option>
+                  <option value="50000">50000đ</option>
+                </select>
+              </div>
+
+              <div class="col-2">
+                <select class="form-control" name="trangThai">
+                  <option value="-1">Tất cả trạng thái</option>
+                  <option value="true">Hoạt động</option>
+                  <option value="false">Khóa</option>
+                </select>
+              </div>
+
+              <div class="col-2">
+                <button class="btn btn-dark w-100" type="submit">Tìm kiếm</button>
+              </div>
             </div>
-          </div> -->
+          </form>
+          
+            
 
           <!-- Bảng hiển thị -->
           <table class="table table-bordered border-secondary">
@@ -258,7 +285,7 @@
                 <% } %>
             </ul>
           </nav>
-
+        </div>
         </div>
       </section>
 

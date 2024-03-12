@@ -7,13 +7,36 @@ const mongo = require('mongoose');
 
 const getList =  async (req, res)=>{
     try {
+        const tenMon = req.query.tenMon != "" ? "^" + req.query.tenMon : "\\w+";
+        const tenCH = req.query.tenCH != "" ? "^" + req.query.tenCH : "\\w+";
+        const tenLM = req.query.tenLM != "" ? "^" + req.query.tenLM : "\\w+";
+        const giaTien = req.query.giaTien != -1 ? req.query.giaTien : Array.from({ length: 10000 }, (_, index) => index - 1);
+        const trangThai = req.query.trangThai;
+
+        // const tenMon = req.query.tenMon || "";
+        // const tenCH = req.query.tenCH || "";
+        // const tenLM = req.query.tenLM || "";
+        // const giaTien = req.query.giaTien !== "-1" ? parseInt(req.query.giaTien) : -1;
+        // const trangThai = req.query.trangThai !== "-1" ? JSON.parse(req.query.trangThai) : -1;
+
+        // const query = {
+        //     // Dùng $regex để kiểm tra giá trị có chứa hay không, tương tự như "LIKE" trong SQL
+        //     tenMon: tenMon !== "" ? { $regex: new RegExp(tenMon, "i") } : { $exists: true },
+        //     tenCH: tenCH !== "" ? { $regex: new RegExp(tenCH, "i") } : { $exists: true },
+        //     tenLM: tenLM !== "" ? { $regex: new RegExp(tenLM, "i") } : { $exists: true },
+        //     giaTien: giaTien !== -1 ? giaTien : { $exists: true },
+        //     trangThai: trangThai !== -1 ? trangThai : { $exists: true },
+        // };
+
         const trang = parseInt(req.query.trang) || 1;
         const soMonTrenTrang = 8; 
         const soLuongMon = await Mon.countDocuments({});
         const totalPages = Math.ceil(soLuongMon / soMonTrenTrang);
+
         const data1 = await Mon.find({})
-            .skip((trang - 1) * soMonTrenTrang)
-            .limit(soMonTrenTrang);
+        .skip((trang - 1) * soMonTrenTrang)
+        .limit(soMonTrenTrang);
+
 
 
         const allData = [];
