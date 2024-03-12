@@ -79,12 +79,16 @@ const dangNhapApi = async (req, res, next) => {
 
             // Send the response with user data and message
             res.status(200).json({
+                success: result.success,
                 index: result.index,
                 msg: result.msg
             });
         } else {
             // If login fails, send JSON response with error message
-            res.json({ msg: result.msg });
+            res.json({ 
+                success: result.success,
+                msg: result.msg 
+            });
         }
     } catch (error) {
         // Handle errors appropriately
