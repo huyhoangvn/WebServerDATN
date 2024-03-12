@@ -29,7 +29,7 @@ const addMonDat = async (req, res, next) => {
 // Lấy tất cả món đặt
 const getAllMonDat = async (req, res, next) => {
     try {
-        const monDats = await MonDat.model.find();
+        const monDats = await MonDat.find();
         res.status(200).json(monDats);
     } catch (error) {
         res.status(500).json({ message: "Lỗi khi lấy danh sách món đặt", error });

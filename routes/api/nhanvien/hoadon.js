@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const hoadonctrl = require('../../../controllers/hoadon/hoadon-controller')
+const hoadonctrl = require('../../../controllers/hoadon/hoadon-controller-api')
 /* GET users listing. */
 router.post('/add', hoadonctrl.addHoaDonApi);
 // get all 
