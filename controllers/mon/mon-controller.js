@@ -100,9 +100,8 @@ const deletemonapi = async (req, res) => {
   }
 };
 
-const gettatcamonapi = async (req, res) => {
+const getTatCaMon = async (req, res) => {
     try {
- 
 
       const trangThai = req.params.trangThai;
       const trang = parseInt( req.query.trang ) || 1;
@@ -187,21 +186,26 @@ const gettatcamonapi = async (req, res) => {
         ])
       
         console.log( list );
-        res.status(200).json({
+        return {
             count:list.length,
             list:list,
             message: 'Get số lượng đánh giá theo tên khách hàng thành công',
             success: true,
             
-        });
+        };
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        return {
             error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
             success: false
-        });
+        };
     }
 };
+
+const getTatCaMonApi = async (req, res) => {
+  const result = await getTatCaMon(req, res);
+  res.json(result)
+}
 
 const getMonCuaCuaHang = async (req, res) => {
   try {
@@ -550,7 +554,7 @@ const kichhoatMon = async (req, res, next) => {
 module.exports = {
   //Api
   addmonapi,
-  gettatcamonapi,
+  getTatCaMonApi,
   deletemonapi,
   updatemonapi,
   getMonTheoid,

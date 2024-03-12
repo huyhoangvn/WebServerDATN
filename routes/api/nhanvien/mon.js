@@ -8,7 +8,7 @@ const monCtrl = require("../../../controllers/mon/mon-controller");
 //   res.send("respond with a resource");
 // });
 router.post("/them-mon/:id", monCtrl.addmonapi ); // http://localhost:3000/api/nhanvien/mon/65d81fb5a5096f5042f92c1a
-router.get("/", monCtrl.gettatcamonapi );
+router.get("/", monCtrl.getTatCaMonApi );
 router.get("/:idCH", monCtrl.getMonCuaCuaHang ); //http://localhost:3000/api/nhanvien/mon/65edaf041b25866e0cc9e5ab
 router.get("/:idLM", monCtrl.getMonCuaLoaiMon ); 
 router.delete("/:idMon", monCtrl.deletemonapi); // http://localhost:3000/api/khachhang/danhgia/xoa-danh-gia/65cc2e9d557054378b5490b2/65cc2e72557054378b5490ad
