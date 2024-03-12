@@ -204,15 +204,33 @@
     <section class="content">
       <div class="container-fluid bg-white m-2">
 
-        <!-- Main content nằm ở dây -->
-        <div class="d-flex row justify-content-between mb-1">
-          <div class="col-6">
-            <input type="text" id="searchTenKH" class="form-control" placeholder="Nhập tên khách hàng để tìm kiếm">
+        <form action="/khachhang/danh-sach">
+          <!-- Main content nằm ở dây -->
+          <div class="d-flex row justify-content-between mb-1">
+            <div class="col-6">
+              <input type="text" id="searchTenKH" class="form-control" name="tenKH"
+                placeholder="Nhập tên khách hàng để tìm kiếm">
+            </div>
+            <div class="col-6">
+              <input type="text" id="searchTaiKhoanKH" class="form-control" name="taiKhoanKH"
+                placeholder="Nhập tên tài khoản để tìm kiếm">
+            </div>
+
+            <div class="col-2">
+              <select class="form-control" name="trangThai">
+                <option value="-1">Tất cả trạng thái</option>
+                <option value="1">Hoạt động</option>
+                <option value="2">Khóa</option>
+              </select>
+            </div>
+
+            <div class="col-2">
+              <button class="btn btn-dark w-100" type="submit">Tìm kiếm</button>
+            </div>
           </div>
-          <div class="col-6">
-            <input type="text" id="searchTaiKhoanKH" class="form-control" placeholder="Nhập tên tài khoản để tìm kiếm">
-          </div>
-        </div>
+        </form>
+
+
         <!-- Bảng hiển thị -->
         <table class="table table-bordered border-secondary">
           <thead>
