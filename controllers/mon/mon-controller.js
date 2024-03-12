@@ -71,11 +71,7 @@ const addmonapi = async (req, res, next) => {
   }
 };
 
-const getAnmonapi = async (req, res) => {
-  try {
-    const mon = await Mon.model.findById(req.params.id).populate("");
-  } catch (error) {}
-};
+
 
 const deletemonapi = async (req, res) => {
   try {
@@ -104,52 +100,323 @@ const deletemonapi = async (req, res) => {
   }
 };
 
-const getAllmonapi = async (req, res) => {
+const gettatcamonapi = async (req, res) => {
+    try {
+ 
+
+      const trangThai = req.params.trangThai;
+      const trang = parseInt( req.query.trang ) || 1;
+      const timkiem = {
+
+      };
+      let giaTienMin = 0;
+      let giaTienMax = 100000;
+       if (typeof(req.query.tenMon) !== 'undefined' && req.query.tenMon !== "" ) {
+        timkiem.tenMon = { $regex: req.query.tenMon, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+       }
+       if (typeof(req.query.tenCH) !== 'undefined' && req.query.tenCH !== "" ) {
+        timkiem["KetQuaCuaHang.tenCH"] = { $regex: req.query.tenCH, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+       }
+       if (typeof(req.query.tenLM) !== 'undefined' && req.query.tenLM !== "" ) {
+        timkiem["KetQuaCuaHang.tenLM"] = { $regex: req.query.tenLM, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+       }
+       if (typeof(req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+        const trangThaiValue = parseInt(req.query.trangThai);
+        if(trangThaiValue === 1 || trangThaiValue === 0){
+          timkiem.trangThai = trangThaiValue === 1;
+        }
+       }
+       if (typeof(req.query.giaTienMin) !== 'undefined' && !isNaN(parseInt(req.query.giaTienMin))) {
+        giaTienMin = parseInt(req.query.giaTienMin); 
+
+       }
+       if (typeof(req.query.giaTienMax) !== 'undefined' && !isNaN(parseInt(req.query.giaTienMax))) {
+        giaTienMax = parseInt(req.query.giaTienMax); 
+
+       }
+     
+
+       console.log( timkiem );
+        const list = await Mon.model.aggregate([
+           {$lookup: {
+                from: "CuaHang",
+                localField: "idCH",
+                foreignField: "_id",
+                as: "KetQuaCuaHang"
+            }},
+            {$lookup: {
+              from: "LoaiMon",
+              localField: "idLM",
+              foreignField: "_id",
+              as: "KetQuaLoaiMon"
+            }},
+            {$match: 
+              timkiem,
+            },
+           
+            {$unwind: {
+                path: "$KetQuaCuaHang",
+                preserveNullAndEmptyArrays: false
+            }},
+            {$unwind: {
+              path: "$KetQuaLoaiMon",
+              preserveNullAndEmptyArrays: false
+            }},
+            {$project : {
+                "tenMon":  "$tenMon",
+                "giaTien": "$giaTien",
+                "trangThai" : "$trangThai",
+                "tenCH": "$KetQuaCuaHang.tenCH", // Thay vì "$tenCH"
+                "tenLM": "$KetQuaLoaiMon.tenLM", 
+                "idMon": "$idMON",
+            }},
+            {
+              $match: {
+                giaTien: {
+                   $gte: giaTienMin,
+                   $lte: giaTienMax
+                   }
+              }
+            },
+            {
+              $skip: (trang-1)*10,
+            },
+            {
+              $limit: 10,
+            },
+        ])
+      
+        console.log( list );
+        res.status(200).json({
+            count:list.length,
+            list:list,
+            message: 'Get số lượng đánh giá theo tên khách hàng thành công',
+            success: true,
+            
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+            success: false
+        });
+    }
+};
+
+const getMonCuaCuaHang = async (req, res) => {
   try {
-    const idCuaHang = req.params.idCuaHang;
-    const tenMon = req.query.tenMon;
-    const page = parseInt(req.query.page) || 1; // Trang mặc định là 1
-    const limit = parseInt(req.query.limit) || 10; // Số lượng kết quả mỗi trang mặc định là 10
+ 
+    const idCH = new mongo.Types.ObjectId(req.params.idCH);    
+   
+    const trangThai = req.params.trangThai;
+    const trang = parseInt( req.query.trang ) || 1;
+    const timkiem = {
 
-    // Kiểm tra xem idCuaHang có
-    if (!idCuaHang) {
-      return res
-        .status(400)
-        .json({ msg: "Vui lòng cung cấp id của cửa hàng." });
-    }
+    };
+    let giaTienMin = 0;
+    let giaTienMax = 100000;
+     if (typeof(req.query.tenMon) !== 'undefined' && req.query.tenMon !== "" ) {
+      timkiem.tenMon = { $regex: req.query.tenMon, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+     }
+     if (typeof(req.query.tenCH) !== 'undefined' && req.query.tenCH !== "" ) {
+      timkiem["KetQuaCuaHang.tenCH"] = { $regex: req.query.tenCH, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+     }
+     if (typeof(req.query.tenLM) !== 'undefined' && req.query.tenLM !== "" ) {
+      timkiem["KetQuaCuaHang.tenLM"] = { $regex: req.query.tenLM, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+     }
+     if (typeof(req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+      const trangThaiValue = parseInt(req.query.trangThai);
+      if(trangThaiValue === 1 || trangThaiValue === 0){
+        timkiem.trangThai = trangThaiValue === 1;
+      }
+     }
+     if (typeof(req.query.giaTienMin) !== 'undefined' && !isNaN(parseInt(req.query.giaTienMin))) {
+      giaTienMin = parseInt(req.query.giaTienMin); 
 
-    // Tạo một query
-    let query = { idCH: idCuaHang };
+     }
+     if (typeof(req.query.giaTienMax) !== 'undefined' && !isNaN(parseInt(req.query.giaTienMax))) {
+      giaTienMax = parseInt(req.query.giaTienMax); 
 
-    // Nếu tenNhanVien được cung cấp,  tìm kiếm theo tên
-    if (tenMon) {
-      query.tenMon = { $regex: tenMon, $options: "i" };
-    }
+     }
+    
 
-    const mons = await Mon.model
-      .find(query)
-      .skip((page - 1) * limit)
-      .limit(limit);
-
-    res.status(200).json({
-      success: true,
-      msg: "Tìm kiếm thành công",
-      data: mons,
-      pageInfo: {
-        tranghientai: page,
-        soluong: mons.length,
-        tongtrang: Math.ceil(mons.length / limit),
-      },
-    });
-  } catch (e) {
-    console.error(e);
-    res.status(500).json({
-      success: false,
-      error:
-        e.message || "Đã xảy ra lỗi khi lấy danh sách nhân viên của cửa hàng",
-    });
+     console.log( timkiem );
+      const list = await Mon.model.aggregate([
+         {$lookup: {
+              from: "CuaHang",
+              localField: "idCH",
+              foreignField: "_id",
+              as: "KetQuaCuaHang"
+          }},
+          {$lookup: {
+            from: "LoaiMon",
+            localField: "idLM",
+            foreignField: "_id",
+            as: "KetQuaLoaiMon"
+          }},
+          {$match: {
+            idCH: idCH       
+          }},
+          {$match: 
+            timkiem,
+          },
+          
+          {$unwind: {
+              path: "$KetQuaCuaHang",
+              preserveNullAndEmptyArrays: false
+          }},
+          {$unwind: {
+            path: "$KetQuaLoaiMon",
+            preserveNullAndEmptyArrays: false
+          }},
+          {$project : {
+            "tenMon":  "$tenMon",
+            "giaTien": "$giaTien",
+            "trangThai" : "$trangThai",
+            "tenCH": "$KetQuaCuaHang.tenCH", // Thay vì "$tenCH"
+            "tenLM": "$KetQuaLoaiMon.tenLM", 
+            "idMon": "$idMON",
+          }},
+          {
+            $match: {
+              giaTien: {
+                 $gte: giaTienMin,
+                 $lte: giaTienMax
+                 }
+            }
+          },
+          {
+            $skip: (trang-1)*10,
+          },
+          {
+            $limit: 10,
+          },
+      ])
+    
+      console.log( list );
+      res.status(200).json({
+          count:list.length,
+          list:list,
+          message: 'Get số lượng đánh giá theo tên khách hàng thành công',
+          success: true,
+          
+      });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({
+          error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+          success: false
+      });
   }
 };
+
+const getMonCuaLoaiMon = async (req, res) => {
+  try {
+ 
+    const idLM = new mongo.Types.ObjectId(req.params.idLM);
+   
+    const trangThai = req.params.trangThai;
+    const trang = parseInt( req.query.trang ) || 1;
+    const timkiem = {
+
+    };
+    let giaTienMin = 0;
+    let giaTienMax = 100000;
+     if (typeof(req.query.tenMon) !== 'undefined' && req.query.tenMon !== "" ) {
+      timkiem.tenMon = { $regex: req.query.tenMon, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+     }
+     if (typeof(req.query.tenCH) !== 'undefined' && req.query.tenCH !== "" ) {
+      timkiem["KetQuaCuaHang.tenCH"] = { $regex: req.query.tenCH, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+     }
+     if (typeof(req.query.tenLM) !== 'undefined' && req.query.tenLM !== "" ) {
+      timkiem["KetQuaCuaHang.tenLM"] = { $regex: req.query.tenLM, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+     }
+     if (typeof(req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+      const trangThaiValue = parseInt(req.query.trangThai);
+      if(trangThaiValue === 1 || trangThaiValue === 0){
+        timkiem.trangThai = trangThaiValue === 1;
+      }
+     }
+     if (typeof(req.query.giaTienMin) !== 'undefined' && !isNaN(parseInt(req.query.giaTienMin))) {
+      giaTienMin = parseInt(req.query.giaTienMin); 
+
+     }
+     if (typeof(req.query.giaTienMax) !== 'undefined' && !isNaN(parseInt(req.query.giaTienMax))) {
+      giaTienMax = parseInt(req.query.giaTienMax); 
+
+     }
+   
+     console.log( timkiem );
+      const list = await Mon.model.aggregate([
+         {$lookup: {
+              from: "CuaHang",
+              localField: "idCH",
+              foreignField: "_id",
+              as: "KetQuaCuaHang"
+          }},
+          {$lookup: {
+            from: "LoaiMon",
+            localField: "idLM",
+            foreignField: "_id",
+            as: "KetQuaLoaiMon"
+          }},
+          {$match: {
+            idLM: idLM,      
+          }},
+          {$match: 
+            timkiem,
+          },
+          
+          {$unwind: {
+              path: "$KetQuaCuaHang",
+              preserveNullAndEmptyArrays: false
+          }},
+          {$unwind: {
+            path: "$KetQuaLoaiMon",
+            preserveNullAndEmptyArrays: false
+          }},
+          {$project : {
+            "tenMon":  "$tenMon",
+            "giaTien": "$giaTien",
+            "trangThai" : "$trangThai",
+            "tenCH": "$KetQuaCuaHang.tenCH", // Thay vì "$tenCH"
+            "tenLM": "$KetQuaLoaiMon.tenLM", 
+            "idMon": "$idMON",
+          }},
+          {
+            $match: {
+              giaTien: {
+                 $gte: giaTienMin,
+                 $lte: giaTienMax
+                 }
+            }
+          },
+          {
+            $skip: (trang-1)*10,
+          },
+          {
+            $limit: 10,
+          },
+      ])
+    
+      console.log( list );
+      res.status(200).json({
+          count:list.length,
+          list:list,
+          message: 'Get số lượng đánh giá theo tên khách hàng thành công',
+          success: true,
+          
+      });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({
+          error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+          success: false
+      });
+  }
+};
+
+
 const updatemonapi = async (req, res) => {
   const idNV = new mongo.Types.ObjectId(req.params.idNV);
   const idCH = new mongo.Types.ObjectId(req.params.idCH);
@@ -283,10 +550,12 @@ const kichhoatMon = async (req, res, next) => {
 module.exports = {
   //Api
   addmonapi,
-  getAllmonapi,
+  gettatcamonapi,
   deletemonapi,
   updatemonapi,
   getMonTheoid,
   getDanhSachTenCuaHang,
-  kichhoatMon
+  kichhoatMon,
+  getMonCuaCuaHang,
+  getMonCuaLoaiMon
 };

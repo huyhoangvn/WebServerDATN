@@ -8,7 +8,7 @@ const loaimonCtrl = require('../../../controllers/loaimon/loaimon-controller')
 // add loai mon 
 router.post('/',loaimonCtrl.loaimonApi);
 // get all 
- router.get('/',loaimonCtrl.getchitietloaiMonApi);
+ router.get('/:idLM',loaimonCtrl.getchitietloaiMonApi);
 // get loai mon - tim ten loai mon
 router.get('/',loaimonCtrl.getloaimonApi);
 // delete 
