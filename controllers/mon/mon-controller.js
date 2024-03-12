@@ -561,5 +561,6 @@ module.exports = {
   getDanhSachTenCuaHang,
   kichhoatMon,
   getMonCuaCuaHang,
-  getMonCuaLoaiMon
+  getMonCuaLoaiMon,
+  getTatCaMon
 };
