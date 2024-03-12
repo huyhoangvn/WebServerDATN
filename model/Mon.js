@@ -7,7 +7,7 @@ const MonSchema = new db.mongodb.Schema(
         idNV: { type: mongoose.Schema.Types.ObjectId, ref: 'NhanVien', required: true },
         idCH: { type: mongoose.Schema.Types.ObjectId, ref: 'CuaHang', required: true },
         tenMon: { type: String, default: "N/A" },
-        giaTien: { type: String, default: "N/A" },
+        giaTien: { type: Number, default: 0 },
         hinhAnh: { type: String, default: "N/A" },
         trangThai: { type: Boolean, default: true }
     }, { collection: 'Mon' }

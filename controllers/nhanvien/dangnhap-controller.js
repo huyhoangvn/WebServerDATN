@@ -1,4 +1,4 @@
-const Admin = require('../../model/Admin')
+const NhanVien = require('../../model/NhanVien')
 const auth = require('../../config/auth/jwt-encode')
 
 const dangNhap = async(req, res, next)=>{
@@ -34,13 +34,13 @@ const dangNhap = async(req, res, next)=>{
         }
     }
 
-    let foundKhachHang = await Admin.model.findOne({
+    let foundKhachHang = await NhanVien.model.findOne({
         taiKhoan: taiKhoan
     })
 
     //Nếu người dùng tồn tại
     if(foundKhachHang){
-        let loginResult = await Admin.model.findOne({
+        await NhanVien.model.findOne({
             taiKhoan: taiKhoan,
             matKhau: matKhau,
             trangThai: 1
@@ -49,7 +49,8 @@ const dangNhap = async(req, res, next)=>{
             msg = "Đăng nhập thành công"
             index = {
                 id: loginResult.id,
-                ten: loginResult.ten
+                tenNV: loginResult.tenNV,
+                phanQuyen: loginResult.phanQuyen
             }
         })
         .catch((e)=>{
@@ -66,48 +67,36 @@ const dangNhap = async(req, res, next)=>{
     }
 }
 
-//Website
-const dangNhapWeb = async(req, res, next)=>{
-    result = await dangNhap(req, res, next)
-    .then((result)=>{
-        console.log(result.success)
-        if(result.success){
-            let token = auth.encodedToken(result.index.id)
-            req.session.token = token
-            req.session.ten = result.index.ten
-            res.render("thongke/doanh-thu", {
-                admin: result.index.ten,
+const dangNhapApi = async (req, res, next) => {
+    try {
+        const result = await dangNhap(req, res, next);
+
+        if (result.success) {
+            const token = auth.encodedToken(result.index.id);
+
+            // Set the Authorization header with the token
+            res.setHeader('Authorization', token);
+
+            // Send the response with user data and message
+            res.status(200).json({
+                index: result.index,
                 msg: result.msg
-            })
+            });
         } else {
-            res.render("index", {
-                msg: result.msg
-            })
+            // If login fails, send JSON response with error message
+            res.json({ msg: result.msg });
         }
-    })
-}
+    } catch (error) {
+        // Handle errors appropriately
+        res.status(500).json({ msg: "Internal Server Error" });
+    }
+};
 
-const getViewThongKeDoanhThuWeb =  async (req, res, next)=>{
-    res.render("thongke/doanh-thu", {
-        admin: req.session.ten,
-        msg: ""
-    })
-}
+const dangXuatApi = async (req, res, next)=>{
 
-const getViewDangNhapWeb = async (req, res, next)=>{
-    res.render("index");
-}
-
-const dangXuatWeb = async (req, res, next)=>{
-    req.session.token = ""
-    req.session.ten = "N/A"
-    res.render("index")
 }
 
 module.exports = {
     //Api
-    dangNhapWeb,
-    dangXuatWeb,
-    getViewDangNhapWeb,
-    getViewThongKeDoanhThuWeb
+    dangNhapApi
 }
