@@ -135,7 +135,6 @@ const getTatCaMon = async (req, res) => {
        }
      
 
-       console.log( timkiem );
         const list = await Mon.model.aggregate([
            {$lookup: {
                 from: "CuaHang",
@@ -185,7 +184,6 @@ const getTatCaMon = async (req, res) => {
             },
         ])
       
-        console.log( list );
         return {
             count:list.length,
             list:list,
@@ -200,6 +198,90 @@ const getTatCaMon = async (req, res) => {
             success: false
         };
     }
+};
+
+const getSoLuongTatCaMon = async (req, res) => {
+  try {
+
+    const trangThai = req.params.trangThai;
+    const trang = parseInt( req.query.trang ) || 1;
+    const timkiem = {
+
+    };
+    let giaTienMin = 0;
+    let giaTienMax = 100000;
+     if (typeof(req.query.tenMon) !== 'undefined' && req.query.tenMon !== "" ) {
+      timkiem.tenMon = { $regex: req.query.tenMon, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+     }
+     if (typeof(req.query.tenCH) !== 'undefined' && req.query.tenCH !== "" ) {
+      timkiem["KetQuaCuaHang.tenCH"] = { $regex: req.query.tenCH, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+     }
+     if (typeof(req.query.tenLM) !== 'undefined' && req.query.tenLM !== "" ) {
+      timkiem["KetQuaCuaHang.tenLM"] = { $regex: req.query.tenLM, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+     }
+     if (typeof(req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+      const trangThaiValue = parseInt(req.query.trangThai);
+      if(trangThaiValue === 1 || trangThaiValue === 0){
+        timkiem.trangThai = trangThaiValue === 1;
+      }
+     }
+     if (typeof(req.query.giaTienMin) !== 'undefined' && !isNaN(parseInt(req.query.giaTienMin))) {
+      giaTienMin = parseInt(req.query.giaTienMin); 
+
+     }
+     if (typeof(req.query.giaTienMax) !== 'undefined' && !isNaN(parseInt(req.query.giaTienMax))) {
+      giaTienMax = parseInt(req.query.giaTienMax); 
+
+     }
+   
+    const result = await Mon.model.aggregate([
+         {$lookup: {
+              from: "CuaHang",
+              localField: "idCH",
+              foreignField: "_id",
+              as: "KetQuaCuaHang"
+          }},
+          {$lookup: {
+            from: "LoaiMon",
+            localField: "idLM",
+            foreignField: "_id",
+            as: "KetQuaLoaiMon"
+          }},
+          {$match: 
+            timkiem,
+          },
+          {$unwind: {
+              path: "$KetQuaCuaHang",
+              preserveNullAndEmptyArrays: false
+          }},
+          {$unwind: {
+            path: "$KetQuaLoaiMon",
+            preserveNullAndEmptyArrays: false
+          }},
+          {
+            $match: {
+              giaTien: {
+                 $gte: giaTienMin,
+                 $lte: giaTienMax
+                 }
+            }
+          },
+          {
+            $count: "count",
+          }
+      ])
+      return {
+          count: result[0].count,
+          success: true,
+          msg: "Thành công"
+      };
+  } catch (error) {
+      console.error(error);
+      return {
+          error: 'Lỗi khi lấy số lượng',
+          success: false
+      };
+  }
 };
 
 const getTatCaMonApi = async (req, res) => {
@@ -244,7 +326,6 @@ const getMonCuaCuaHang = async (req, res) => {
      }
     
 
-     console.log( timkiem );
       const list = await Mon.model.aggregate([
          {$lookup: {
               from: "CuaHang",
@@ -297,7 +378,6 @@ const getMonCuaCuaHang = async (req, res) => {
           },
       ])
     
-      console.log( list );
       res.status(200).json({
           count:list.length,
           list:list,
@@ -350,7 +430,6 @@ const getMonCuaLoaiMon = async (req, res) => {
 
      }
    
-     console.log( timkiem );
       const list = await Mon.model.aggregate([
          {$lookup: {
               from: "CuaHang",
@@ -403,7 +482,6 @@ const getMonCuaLoaiMon = async (req, res) => {
           },
       ])
     
-      console.log( list );
       res.status(200).json({
           count:list.length,
           list:list,
@@ -562,5 +640,6 @@ module.exports = {
   kichhoatMon,
   getMonCuaCuaHang,
   getMonCuaLoaiMon,
-  getTatCaMon
+  getTatCaMon,
+  getSoLuongTatCaMon
 };
