@@ -219,7 +219,7 @@
                 <select class="form-control" name="giaTien">
                   <option value="0">Tất cả giá tiền</option>
                   <option value="1">1000000đ</option>
-                  <option value="1"> 1000000đ</option>
+                  <option value="2"> 2000000đ</option>
                 </select>
               </div>
 
@@ -257,8 +257,8 @@
               <tr>
                 <td scope="col-1"><%=i+1%></td>
                 <td scope="col-2"><%=data[i].tenMon%></td>
-                <td scope="col-2"><%=data[i].loaiMon%></td>
-                <td scope="col-2"><%=data[i].cuaHang%></td>
+                <td scope="col-2"><%=data[i].tenLM%></td>
+                <td scope="col-2"><%=data[i].tenCH%></td>
                 <td scope="col-1"><%=data[i].giaTien%></td>
                 <% if(data[i].trangThai == true){%>
                   <td class="text-success" scope="col-2">Hoạt động</td>
