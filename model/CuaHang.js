@@ -8,6 +8,7 @@ const CuaHangSchema = new db.mongodb.Schema(
         email: { type: String, default: "N/A" },
         sdt: { type: String, default: "0000000000" },
         diaChi: { type: String, default: "N/A" },
+        thoiGianTao: { type: Date, default: Date.now() },
         thoiGianMo: { type: String, default: "N/A" },
         thoiGianDong: { type: String, default: "N/A" },
         hinhAnh: { type: String, default: "N/A" },
