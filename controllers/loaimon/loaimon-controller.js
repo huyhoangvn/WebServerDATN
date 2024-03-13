@@ -32,8 +32,8 @@ const addloaimonApi = async (req, res, next) => {
 // Get All
 const getchitietloaiMonApi = async (req, res, next) => {
   try {
-    const id = req.params.id;
-    const loaimon = await Loaimon.model.find(id);
+    const idLM = req.params.idLM;
+    const loaimon = await Loaimon.model.findOne({ _id: idLM });
     if (!loaimon) {
       res.status(500).json({ error: "không tìm thấy cửa hàng" });
     }
@@ -46,28 +46,44 @@ const getchitietloaiMonApi = async (req, res, next) => {
 // tìm kiếm tên http://localhost:3000/api/nhanvien/loaimon?ten=lợn
 const getloaimonApi = async (req, res) => {
   try {
-    let filter = {};
+    const tenLM = req.query.tenLM;
+    const trang = parseInt( req.query.trang ) || 1;
+    const timkiem1 = {
+    };
+  
+    
+     if (typeof(req.query.tenLM) !== 'undefined' && req.query.tenLM !== "") {
+      timkiem1.tenLM = { $regex: req.query.tenLM, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+     }
+     console.log(" tenLM = " +tenLM );
+     const list = await Loaimon.model.aggregate([
+       { $match:
+        timkiem1,
+        
+       },
 
-    if (req.query.ten) {
-      filter.tenLM = new RegExp(req.query.ten, "i");
-    }
+       {
+            $skip: (trang-1)*10,
+       },
 
-    const page = req.query.page || 1;
-    const pageSize = req.query.pageSize || 10;
-    const skip = (page - 1) * pageSize;
-
-    const danhsachloaimon =
-      Object.keys(filter).length === 0
-        ? await Loaimon.model.find().skip(skip).limit(pageSize)
-        : await Loaimon.model.find(filter).skip(skip).limit(pageSize);
-
-    res.status(200).json({
-      msg: "Hiển thị danh sách loại món thành công",
-      data: danhsachloaimon,
+       {
+            $limit: 10,
+       },
+    ]);
+     
+      console.log(  list );
+      res.status(200).json({
+        list,
+        count:list.length,
+        message: 'Get đánh giá theo tên món thành công',
+        success: true
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Đã xảy ra lỗi khi lấy danh sách loại món" });
+       console.error(error);
+       res.status(500).json({
+        error: 'Lỗi khi lấy đánh giá theo tên món',
+        success: false
+    });
   }
 };
 // kich hoat loai mon
@@ -87,7 +103,7 @@ const kichhoatloaimonapi = async (req, res) => {
       data: kichhoat,
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi kích hoạt loaimon", error: error });
+    res.status(500).json({ message: "Lỗi kích hoạt loại món", error: error });
   }
 };
 // Delete

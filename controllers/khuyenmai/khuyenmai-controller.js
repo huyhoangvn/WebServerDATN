@@ -1,23 +1,33 @@
 const { model: KhuyenMai } = require("../../model/KhuyenMai");
 const mongo = require('mongoose');
-const { parse} = require('date-fns');
+const { parse, startOfDay, endOfDay } = require('date-fns');
 
+// Hàm này để lấy ra 6 kí tự ngẫu nhiên có cả chữ cái viết hoa và số 
+function generateRandomString(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let randomString = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      randomString += characters.charAt(randomIndex);
+    }
+    return randomString;
+  }
 
+//   Hàm này để thêm khuyến mãi 
 const ThemKhuyenMai = async function(req, res){
-    console.log("đã chạy");
     const tieuDe = req.body.tieuDe;
-    const noiDung = req.body.noiDung;
-    const ngayBatDau = req.body.ngayBatDau;
-    const ngayHetHan = req.body.ngayHetHan;
+    const maKhuyenMai = generateRandomString(6);
+    const ngayBatDau =  new Date(req.body.ngayBatDau);
+    const ngayHetHan = new Date(req.body.ngayHetHan);
     const phanTramKhuyenMai = req.body.phanTramKhuyenMai;
     const donToiThieu = req.body.donToiThieu;
 
     try {
-        const khuyenMaiDaCo = await KhuyenMai.findOne({tieuDe:tieuDe, noiDung:noiDung})
+        const khuyenMaiDaCo = await KhuyenMai.findOne({maKhuyenMai:maKhuyenMai})
         if(khuyenMaiDaCo){
             if(khuyenMaiDaCo.trangThai === false){
-                await KhuyenMai.updateOne({ tieuDe, noiDung }, { trangThai: true });
-                const index = await KhuyenMai.findOne({tieuDe:tieuDe, noiDung:noiDung});
+                await KhuyenMai.updateOne({maKhuyenMai }, { trangThai: true });
+                const index = await KhuyenMai.findOne({maKhuyenMai:maKhuyenMai});
                 res.status(200).json({
                     index,
                     message: 'Thêm khuyến mãi lại thành công',
@@ -29,7 +39,7 @@ const ThemKhuyenMai = async function(req, res){
                     success: false
                 });
             }
-        }else if(tieuDe == "" || noiDung == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu==""){
+        }else if(tieuDe == "" || maKhuyenMai == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu==""){
             res.status(200).json({
                 error: 'Thêm khuyễn mãi lỗi do thiếu thông tin',
                 success: false
@@ -37,7 +47,7 @@ const ThemKhuyenMai = async function(req, res){
         }else{
             const index = await KhuyenMai.create({
                 tieuDe: tieuDe,
-                noiDung: noiDung,
+                maKhuyenMai: maKhuyenMai,
                 ngayBatDau: ngayBatDau,
                 ngayHetHan: ngayHetHan,
                 phanTramKhuyenMai: phanTramKhuyenMai,
@@ -58,10 +68,12 @@ const ThemKhuyenMai = async function(req, res){
         });
     }
 }
+
+// Hàm này để sửa khuyến mãi 
 const SuaKhuyenMai = async function(req, res){
     const idKM = new mongo.Types.ObjectId(req.params.idKM);
     const tieuDe = req.body.tieuDe;
-    const noiDung = req.body.noiDung;
+    const maKhuyenMai = req.body.maKhuyenMai;
     const ngayBatDau = req.body.ngayBatDau;
     const ngayHetHan = req.body.ngayHetHan;
     const phanTramKhuyenMai = req.body.phanTramKhuyenMai;
@@ -70,7 +82,7 @@ const SuaKhuyenMai = async function(req, res){
         const filter = {_id: idKM}
         const update = {
             tieuDe : tieuDe,
-            noiDung : noiDung,
+            maKhuyenMai : maKhuyenMai,
             ngayBatDau : ngayBatDau,
             ngayHetHan : ngayHetHan,
             phanTramKhuyenMai : phanTramKhuyenMai,
@@ -78,13 +90,12 @@ const SuaKhuyenMai = async function(req, res){
             
         }
         const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
-        console.log(index);
         if (!index) {
             return res.status(404).json({
                 error: 'Không tìm thấy khuyến mãi để sửa',
                 success: false
             });
-        }else if(tieuDe == "" || noiDung == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu==""){
+        }else if(tieuDe == "" || maKhuyenMai == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu==""){
             return res.status(404).json({
                 error: 'Sửa khuyến mãi lỗi do thiếu thông tin',
                 success: false
@@ -106,6 +117,7 @@ const SuaKhuyenMai = async function(req, res){
     
 }
 
+// Hàm này để xóa khuyến mãi (xóa mềm: chuyển trạng thái true thành false)
 const XoaKhuyenMai = async function(req, res){
     const idKM = new mongo.Types.ObjectId(req.params.idKM);
 
@@ -136,13 +148,14 @@ const XoaKhuyenMai = async function(req, res){
     
 } 
 
+// hàm này để lấy ra tất cả khuyến mãi theo tiêu đề 
 const GetKhuyenMaiTheoTieuDe = async function(req, res){
     const trang = parseInt(req.query.trang) || 1;
     const tieuDe = req.query.tieuDe != "-1" ? "^" + req.query.tieuDe : "\\w+";
     try {
         var list = await KhuyenMai.find({
             tieuDe: { $regex: tieuDe },
-            trangThai:1
+            trangThai:true
         })
         .skip((trang - 1) * 10)
         .limit(10);
@@ -170,13 +183,14 @@ const GetKhuyenMaiTheoTieuDe = async function(req, res){
     }
 }
 
-const GetKhuyenMaiTheoNoiDung = async function(req, res){
+// Hàm này để lấy ra khuyến mãi theo maKhuyenMai 
+const GetKhuyenMaiTheoMaKhuyenMai = async function(req, res){
     const trang = parseInt(req.query.trang) || 1;
-    const noiDung = req.query.noiDung != "-1" ? "^" + req.query.noiDung : "\\w+";
+    const maKhuyenMai = req.query.maKhuyenMai != "-1" ? "^" + req.query.maKhuyenMai : "\\w+";
     try {
         var list = await KhuyenMai.find({
-            noiDung: { $regex: noiDung },
-            trangThai:1
+            maKhuyenMai: { $regex: maKhuyenMai },
+            trangThai:true
         })
         .skip((trang - 1) * 10)
         .limit(10);
@@ -184,7 +198,7 @@ const GetKhuyenMaiTheoNoiDung = async function(req, res){
         if(list.length == 0){
             res.status(200).json({
                 message: 'không có khuyến mãi này',
-                success: true
+                success: false 
             });
         }else{
             res.status(200).json({
@@ -204,6 +218,7 @@ const GetKhuyenMaiTheoNoiDung = async function(req, res){
     }
 }
 
+// Hàm này để lấy khuyến mãi theo phanTramKhuyenMai
 const GetKhuyenMaiTheoPhanTram = async function(req, res){
     const trang = parseInt(req.query.trang) || 1;
     let phanTramKhuyenMai = req.query.phanTramKhuyenMai != -1 ? req.query.phanTramKhuyenMai : Array.from({ length: 102 }, (_, index) => index - 1);
@@ -238,6 +253,7 @@ const GetKhuyenMaiTheoPhanTram = async function(req, res){
     }
 }
 
+// hàm này để lấy khuyến mãi theo đơn tối thiểu 
 const GetKhuyenMaiTheoDonToiThieu = async function(req, res){
     const trang = parseInt(req.query.trang) || 1;
     const MAX_DON_TOI_THIEU = 9999999;
@@ -273,6 +289,7 @@ const GetKhuyenMaiTheoDonToiThieu = async function(req, res){
     }
 }
 
+// Hàm này để lấy khuyến mãi theo idKM 
 const GetKhuyenMaiTheoId = async function(req, res){
     const idKM = new mongo.Types.ObjectId(req.params.idKM);
     try{
@@ -292,13 +309,13 @@ const GetKhuyenMaiTheoId = async function(req, res){
      
 }
 
+// Hàm này để lấy khuyến mãi theo ngày 
 const GetKhuyenMaiTheoNgay = async function(req, res){
     const trang = parseInt(req.query.trang) || 1;
     const ngayCanTim = req.query.ngayCanTim;
 
-    const ngayCanTimObj = parse(ngayCanTim, 'dd/MM/yyyy', new Date());
-    const startOfDayNgayCanTim = startOfDay(ngayCanTimObj);
-    const endOfDayNgayCanTim = endOfDay(ngayCanTimObj);
+    const startOfDayNgayCanTim = startOfDay(ngayCanTim);
+    const endOfDayNgayCanTim = endOfDay(ngayCanTim);
 
     try {
         var list = await KhuyenMai.find({
@@ -342,6 +359,6 @@ module.exports = {
     GetKhuyenMaiTheoDonToiThieu,
     GetKhuyenMaiTheoId,
     GetKhuyenMaiTheoNgay,
-    GetKhuyenMaiTheoNoiDung
+    GetKhuyenMaiTheoMaKhuyenMai
     
 }
