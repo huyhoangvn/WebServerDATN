@@ -450,7 +450,7 @@ const chiTietNhanVienQuanLy = async (req, res, next) => {
         console.error(error);
         res.status(500).json({
             success: false,
-            error: "Đã xảy ra lỗi khi lấy danh sách nhân viên quản lý.",
+            error: "Đã xảy ra lỗi khi lấy chi tiết nhân viên quản lý.",
         });
     }
 };
@@ -699,5 +699,4 @@ const chiTietNhanVienQuanLyApi= async (req, res, next) => {
     updateMatKhauApi,
     getListNhanVienQuanlyApi,
     chiTietNhanVienQuanLyApi,
-
   };
