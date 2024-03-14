@@ -45,12 +45,17 @@ const dangNhap = async(req, res, next)=>{
             matKhau: matKhau,
             trangThai: 1
         }).then((loginResult)=>{
-            success = true,
-            msg = "Đăng nhập thành công"
-            index = {
-                id: loginResult.id,
-                tenNV: loginResult.tenNV,
-                phanQuyen: loginResult.phanQuyen
+            if(loginResult){
+                success = true,
+                msg = "Đăng nhập thành công"
+                index = {
+                    id: loginResult.id,
+                    tenNV: loginResult.tenNV,
+                    phanQuyen: loginResult.phanQuyen
+                }   
+            } else {
+                success = false
+                msg = "Sai mật khẩu"
             }
         })
         .catch((e)=>{
