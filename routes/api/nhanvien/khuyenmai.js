@@ -9,7 +9,8 @@ const {
   GetKhuyenMaiTheoDonToiThieu,
   GetKhuyenMaiTheoId,
   GetKhuyenMaiTheoNgay,
-  GetKhuyenMaiTheoMaKhuyenMai
+  GetKhuyenMaiTheoMaKhuyenMai,
+  getTatCaKhuyenMai
   } = require('../../../controllers/khuyenmai/khuyenmai-controller');
 
 /* GET users listing. */
@@ -67,6 +68,8 @@ router.get("/get-khuyen-mai-theo-id/:idKM",GetKhuyenMaiTheoId);
 //http://localhost:3000/api/nhanvien/khuyenmai/get-khuyen-mai-theo-ngay?ngayCanTim=2024/03/30
 // nhập ngày bất kỳ vào query để tìm 
 router.get("/get-khuyen-mai-theo-ngay",GetKhuyenMaiTheoNgay);
+
+router.get("/get-tat-ca-khuyen-mai",getTatCaKhuyenMai);
 
 
 
