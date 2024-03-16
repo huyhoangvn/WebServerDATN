@@ -18,14 +18,14 @@ const addCuaHang = async (req, res, next) => {
         const hinhAnh = 'default_image.png';
         const trangThai = 0; // Đặt trạng thái là 0
         // Kiểm tra tính hợp lệ của dữ liệu
-        if (!tenCH || !email || !sdt || !diaChi || !thoiGianMo || !thoiGianDong || !hinhAnh) {
-            return res.status(400).json({ msg: 'Vui lòng điền đầy đủ thông tin' });
+        if (!tenCH || !email || !sdt || !diaChi) {
+            return res.json({success:false, msg: 'Vui lòng điền đầy đủ thông tin' });
         }
 
         // Kiểm tra xem cửa hàng đã tồn tại hay chưa
         const item = await CuaHang.findOne({ tenCH: tenCH });
         if (item) {
-            return res.status(400).json({ msg: 'Cửa hàng đã tồn tại', dataSave: undefined });
+            return res.json({success:false, msg: 'Cửa hàng đã tồn tại', dataSave: undefined });
         }
 
         // Tạo mới cửa hàng
@@ -45,10 +45,10 @@ const addCuaHang = async (req, res, next) => {
         });
 
         // Trả về kết quả
-        return res.json({ msg: 'Thêm thành công', dataSave: saveCH });
+        return res.json({success:true, msg: 'Thêm thành công', index: saveCH});
     } catch (e) {
         // Xử lý lỗi
-        return res.status(500).json({ msg: 'Đã xảy ra lỗi khi thêm cửa hàng', error: e.message });
+        return res.json({success:false, msg: 'Đã xảy ra lỗi khi thêm cửa hàng', error: e.message });
     }
 };
 
@@ -95,7 +95,7 @@ const addCuaHang = async (req, res, next) => {
 //     } catch (error) {
 //         // Xử lý lỗi và trả về một thông báo lỗi thân thiện với người dùng
 //         console.error(error);
-//         return res.status(500).json({ msg: 'Đã xảy ra lỗi khi cập nhật cửa hàng', error: 'Lỗi không xác định' });
+//         return res.json({ msg: 'Đã xảy ra lỗi khi cập nhật cửa hàng', error: 'Lỗi không xác định' });
 //     }
 // };
 
@@ -145,12 +145,13 @@ const updateCuaHang = async (req, res) => {
         console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi kết quả.");
       } else {
         // Trả về kết quả thay vì gửi phản hồi trực tiếp
-        return { msg: 'Cập nhật thành công', dataSave: updatedCH };
+        return {        success:true,
+            msg: 'Cập nhật thành công', dataSave: updatedCH };
       }
     } catch (error) {
       // Xử lý lỗi và cung cấp một thông báo lỗi thân thiện với người dùng
       console.error(error);
-      return { msg: 'Đã xảy ra lỗi khi cập nhật cửa hàng', error: 'Lỗi không xác định' };
+      return {  success:false,msg: 'Đã xảy ra lỗi khi cập nhật cửa hàng', error: 'Lỗi không xác định' };
     }
 };
 
@@ -166,9 +167,10 @@ const kichHoatCuaHang = async (req, res, next) => {
             { new: true } // Trả về bản ghi đã được cập nhật
           );
           if(!kichHoat){
-            return res.status(404).json({ error: "Không tìm thấy cửa hàng" });
+            return res.json({ success:false,msg: "Không tìm thấy cửa hàng" });
           }
-          res.status(200).json({
+          res.json({
+            success:true,
             msg: "đã kích hoạt cửa hàng",
             data: kichHoat,
           });
@@ -210,7 +212,7 @@ const kichHoatCuaHang = async (req, res, next) => {
             });
         } catch (error) {
             console.error(error);
-            res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
+            res.json({success:false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
         }
     }
     
@@ -225,16 +227,17 @@ const huyKichHoatCuaHang = async (req, res, next) => {
           );
 
         if (!huyKichHoat) {
-            return res.status(404).json({ error: "Không tìm thấy cửa hàng" });
+            return res.json({ success:false,msg: "Không tìm thấy cửa hàng" });
         }
 
-        res.status(200).json({
+        res.json({
+            success:true,
             msg: "Đã hủy kích hoạt cửa hàng",
             data: huyKichHoat,
         });
     } catch (e) {
         console.log(e);
-        res.status(500).json({ error: "Đã xảy ra lỗi khi hủy kích hoạt cửa hàng" });
+        res.json({success:false, msg: "Đã xảy ra lỗi khi hủy kích hoạt cửa hàng" });
     }
 };
 
@@ -245,15 +248,15 @@ const chiTietCuaHang = async (req, res, next) => {
         const id = req.params.id;
         const item = await CuaHang.findById(id)
         if(!item) {
-            res.status(500).json({ error: "không tìm thấy cửa hàng" });
+            res.json({success:false, msg: "không tìm thấy cửa hàng" });
         }
-        res.status(200).json({
+        res.json({success:true,
             msg: "Lấy chi tiết thành công",
             data: item,
         });
     } catch (e) {
         console.log(e);
-        res.status(500).json({ error: "Đã xảy ra lỗi khi tlấy chi tiết cửa hàng" });
+        res.json({success:false, msg: "Đã xảy ra lỗi khi tlấy chi tiết cửa hàng" });
     }
 };
 
@@ -268,7 +271,7 @@ const addCuaHangApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi thêm cửa hàng', error: error.message });
+            res.json({success:false, msg: 'Đã xảy ra lỗi khi thêm cửa hàng', error: error.message });
         }
     }
 }
@@ -285,7 +288,7 @@ const updateCuaHangApi = async (req, res, next) => {
     } catch (error) {
         // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
         if (!res.headersSent) {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi update cửa hàng', error: error.message });
+            res.json({success:false, msg: 'Đã xảy ra lỗi khi update cửa hàng', error: error.message });
         } else {
             console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         }
@@ -303,7 +306,7 @@ const kichHoatCuaHangApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt cửa hàng', error: error.message });
+            res.json({success:false, msg: 'Đã xảy ra lỗi khi kích hoạt cửa hàng', error: error.message });
         }
     }
 }
@@ -317,7 +320,7 @@ const huyKichHoatCuaHangApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt cửa hàng', error: error.message });
+            res.json({success:false, msg: 'Đã xảy ra lỗi khi kích hoạt cửa hàng', error: error.message });
         }
     }
 }
@@ -332,7 +335,7 @@ const getCuaHangCuaHangApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt cửa hàng', error: error.message });
+            res.json({success:false, msg: 'Đã xảy ra lỗi khi kích hoạt cửa hàng', error: error.message });
         }
     }
 }
@@ -347,7 +350,7 @@ const chiTietCuaHangApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt cửa hàng', error: error.message });
+            res.json({ success:false,msg: 'Đã xảy ra lỗi khi kích hoạt cửa hàng', error: error.message });
         }
     }
 }
