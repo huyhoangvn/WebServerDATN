@@ -204,7 +204,7 @@
     <section class="content">
       <div class="container-fluid bg-white m-2">
 
-        <form action="/khachhang/danh-sach">
+        <form action="/khach-hang/danh-sach">
           <!-- Main content nằm ở dây -->
           <div class="d-flex row justify-content-between mb-1">
             <div class="col-6">
@@ -220,7 +220,7 @@
               <select class="form-control" name="trangThai">
                 <option value="-1">Tất cả trạng thái</option>
                 <option value="1">Hoạt động</option>
-                <option value="2">Khóa</option>
+                <option value="0">Khóa</option>
               </select>
             </div>
 
@@ -263,7 +263,7 @@
 
                       <% if(data[i].trangThai==true){%>
                         <td class="text-success" scope="col-2">Hoạt động</td>
-                        <%}else{%>
+                        <%}else if(data[i].trangThai==false){%>
                           <td class="text-danger" scope="col-2">Khóa</td>
                           <%}%>
 
