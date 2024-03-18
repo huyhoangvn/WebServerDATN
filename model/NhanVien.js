@@ -8,7 +8,6 @@ const NhanVienSchema = new db.mongodb.Schema(
         matKhau: { type: String, required: true },
         tenNV: { type: String, default: "N/A" },
         gioiTinh: { type: Number, default: 2 },
-        thoiGianTao: { type: Date, default: Date.now() },
         hinhAnh: { type: String, default: "N/A" },
         diaChi: { type: String, default: "N/A" },
         sdt: { type: String, default: "0000000000" },

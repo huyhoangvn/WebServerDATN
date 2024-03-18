@@ -5,6 +5,7 @@ const KhachHangSchema = new db.mongodb.Schema(
     {
         taiKhoan: { type: String, unique: true, required: true },
         matKhau: { type: String, required: true },
+        email: { type: String, required: true},
         tenKH: { type: String, default: "N/A" },
         gioiTinh: { type: Number, default: 2 },
         hinhAnh: { type: String, default: "N/A" },

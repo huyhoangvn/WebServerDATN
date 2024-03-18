@@ -192,7 +192,7 @@ const kichHoatNhanVienBan = async (req, res, next) => {
 const addNhanVienQuanLy = async (req, res, next) => {
   try {
     const existingNhanVien = await NhanVien.findOne({
-      taiKhoan: req.body.taiKhoan,
+      email: req.body.taiKhoan,
     });
     if (existingNhanVien) {
       // Nếu tài khoản đã tồn tại, trả về thông báo lỗi
