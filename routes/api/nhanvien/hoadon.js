@@ -25,7 +25,7 @@ router.get('/1-ngay', thongke.thongKeDoanhThuTheoNgayApi);
 router.get('/10-ngay', thongke.thongKeDoanhThuTheo10NgayApi);
 router.get('/30-ngay', thongke.thongKeDoanhThuTheo30NgayApi);
 router.get('/:nam', thongke.thongKeDoanhThuTheoNamApi);
-router.get('/thang/:nam', thongke.thongKeDoanhThuTheoThangTrongNamApi);
+router.get('/12-thang/:nam', thongke.thongKeDoanhThuTheoThangTrongNamApi);
 
 
 
