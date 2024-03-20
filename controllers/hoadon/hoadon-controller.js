@@ -168,7 +168,7 @@ const updatetrangThaiMuaGiaoHangThatBai = async (req, res, next) => {
 
         const updatetrangThaiMua = await HoaDon.findOneAndUpdate(
             { _id: id },
-            { $set: { trangtrangThaiMua: 3 } },
+            { $set: { trangtrangThaiMua: 4 } },
             { new: true },
         );
         if (!updatetrangThaiMua) {
@@ -189,7 +189,7 @@ const updatetrangThaiMuaGiaoHangThanhCong = async (req, res, next) => {
 
         const updatetrangThaiMua = await HoaDon.findOneAndUpdate(
             { _id: id },
-            { $set: { trangtrangThaiMua: 4 } },
+            { $set: { trangtrangThaiMua: 3 } },
             { new: true },
         );
         if (!updatetrangThaiMua) {
