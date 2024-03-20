@@ -1,48 +1,39 @@
 const Mon = require("../../model/Mon");
 const NhanVien = require("../../model/NhanVien");
 const mongo = require("mongoose");
-const addmonapi = async (req, res, next) => {
+
+const themMon = async (req, res, next) => {
   try {
-    const idNhanVien = req.params.id;
-    // Kiểm tra xem nhân viên có quyền quản lý không
-    const item = await NhanVien.model.findById(idNhanVien);
-
-    if (!item) {
-      return res.status(404).json({ msg: "Nhân viên không tồn tại." });
+    const idLM = new mongo.Types.ObjectId(req.body.idLM);
+    const idNV = new mongo.Types.ObjectId(req.body.idNV);
+    let tenMon = req.body.tenMon;
+    let giaTien = req.body.giaTien;
+    let hinhAnh = "default_image.png";//Ảnh mặc định trong trường hợp ảnh bị lỗi
+    if(typeof(req.files.hinhAnh) != 'undefined' || typeof(req.files) != 'undefined'){
+      hinhAnh = req.files.hinhAnh.map((file) => file.filename)[0]
     }
-    if (item && item.phanQuyen === 0) {
-      // Kiểm tra xem tài khoản đã tồn tại hay chưa
-      const existingNhanVien = await NhanVien.model.findOne({
-        idNV: req.body.idNV,
-      });
+    //lấy cửa hàng từ nhân viên
+    const nhanVien = await NhanVien.model.findById(idNV)
+    const idCH = new mongo.Types.ObjectId(nhanVien.idCH);
 
-      if (existingNhanVien) {
-        // Nếu tài khoản đã tồn tại, trả về thông báo lỗi
-        return res.status(400).json({ msg: "Tên tài khoản đã tồn tại" });
+    //Validate đầy đủ
+    if(typeof tenMon === "string" && tenMon.trim().length === 0){
+      return {
+        success: false, 
+        msg: "Chưa nhập tên món"
+      };
+    }
+    if(typeof giaTien === "string" && giaTien.trim().length === 0){
+      let msg = "Chưa nhập giá tiền"
+      if(isNaN(giaTien)){
+        msg = "Giá tiền sai định dạng";
+      }
+      return {
+        success: false, 
+        msg
       }
     }
-
-    // Lấy dữ liệu từ request body
-    const idLM = req.body.idLM;
-    const idNV = req.body.idNV;
-    const idCH = req.body.idCH;
-    const tenMon = req.body.tenMon;
-    const giaTien = req.body.giaTien;
-    const hinhAnh = "default_image.png";
-    const trangThai = 1; // Đặt trạng thái là 0
-    // Kiểm tra tính hợp lệ của dữ liệu
-    if (!idLM || !idNV || !idCH || !tenMon || !giaTien || !hinhAnh) {
-      return res.status(400).json({ msg: "Vui lòng điền đầy đủ thông tin" });
-    }
-
-    // Kiểm tra xem Món đã tồn tại hay chưa
-    const index = await Mon.model.findOne({ tenMon: tenMon });
-    if (index) {
-      return res
-        .status(400)
-        .json({ msg: "Món đã tồn tại", dataSave: undefined });
-    }
-
+    console.log(hinhAnh)
     // Tạo mới Món
     const saveMon = await Mon.model.create({
       idLM: idLM,
@@ -50,28 +41,75 @@ const addmonapi = async (req, res, next) => {
       idCH: idCH,
       tenMon: tenMon,
       giaTien: giaTien,
-      hinhAnh:
-        req.protocol + "://" + req.get("host") + "/public/images/" + hinhAnh,
-      trangThai: trangThai,
+      hinhAnh: hinhAnh,
+      trangThai: true,
     });
 
+    console.log("Here")
     // Trả về kết quả
-    return res.json({
+    return {
       msg: "Thêm thành công",
-      dataSave: saveMon,
+      index: saveMon,
       success: true,
-    });
+    };
   } catch (e) {
-    // Xử lý lỗi
-    return res.status(500).json({
-      msg: "Đã xảy ra lỗi khi thêm cửa hàng",
-      error: e.message,
+    //Các lỗi về định dạng object Id
+    return {
+      msg: e,
       success: false,
-    });
+    };
   }
 };
 
+const kiemTraPhanQuyen = async (req, res, next) => {
+  try {
+    const idNV = new mongo.Types.ObjectId(req.body.idNV);
+    let nhanVien = await NhanVien.model.findById(idNV)
+    //Nhân viên bán hàng không thể thêm món
+    if (!nhanVien || nhanVien.phanQuyen === 1 || !nhanVien.trangThai || !nhanVien.idCH){
+      return {
+        msg: "Người dùng không thể thêm món",
+        success: false,
+      }
+    }
+    return {
+      success: true,
+    }
+  } catch (e) {
+    //Các lỗi về định dạng object Id
+    return {
+      msg: e,
+      success: false,
+    };
+  }
+}
 
+const themMonApi = async (req, res, next) => {
+    //Kiểm tra xem có phân quyền nhân viên quản lý
+    let kiemTraResult = await kiemTraPhanQuyen(req, res, next)
+    if(!kiemTraResult.success){
+      return res.json({
+        msg: kiemTraResult.msg,
+        success: false
+      })
+    }
+
+    //Thêm món
+    let themResult = await themMon(req, res, next)
+    if(!themResult.success){
+      return res.json({
+        msg: themResult.msg,
+        success: false
+      })
+    }
+
+    //Thành công
+    return res.json({
+      index: themResult.index,
+      msg: themResult.msg,
+      success: true
+    })
+}
 
 const deletemonapi = async (req, res) => {
   try {
@@ -630,8 +668,12 @@ const kichhoatMon = async (req, res, next) => {
   }
 };
 module.exports = {
+  //Module
+  kiemTraPhanQuyen,
+  themMon,
   //Api
-  addmonapi,
+  themMonApi,
+
   getTatCaMonApi,
   deletemonapi,
   updatemonapi,

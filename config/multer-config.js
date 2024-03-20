@@ -8,8 +8,7 @@ const storage = multer.diskStorage({
     },
     filename: function(req, file, cb) {
         //dat ten file dc uploade len de khong bi trung lap
-        const filename = file.originalname.substring(0, file.originalname.indexOf(".")) + "_" +
-        new Date(Date.now()).toLocaleString().split(',')[0].replaceAll("/", "-") + '_' + Math.round(Math.random() * 10000) + "." + file.mimetype.replace("image/", "");
+        const filename = file.originalname.substring(0, file.originalname.indexOf(".")) + "_" + Math.round(Math.random() * 10000) + "." + file.mimetype.replace("image/", "");
         cb(null, filename)
     },
 });
