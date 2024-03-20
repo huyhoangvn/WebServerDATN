@@ -10,7 +10,15 @@ const themMon = async (req, res, next) => {
     let giaTien = req.body.giaTien;
     let hinhAnh = "default_image.png";//Ảnh mặc định trong trường hợp ảnh bị lỗi
     if(typeof(req.files.hinhAnh) != 'undefined' || typeof(req.files) != 'undefined'){
-      hinhAnh = req.files.hinhAnh.map((file) => file.filename)[0]
+      try {
+        hinhAnh = req.files.hinhAnh.map((file) => file.filename)[0]
+      } catch (e) {
+        //Lỗi định dạng ảnh bỏ qua luôn cũng được vì có ảnh default hoặc return báo lỗi như dưới
+        return {
+          msg: "Sai định dạng ảnh",
+          success: false,
+        };
+      }
     }
     //lấy cửa hàng từ nhân viên
     const nhanVien = await NhanVien.model.findById(idNV)
@@ -25,15 +33,13 @@ const themMon = async (req, res, next) => {
     }
     if(typeof giaTien === "string" && giaTien.trim().length === 0){
       let msg = "Chưa nhập giá tiền"
-      if(isNaN(giaTien)){
-        msg = "Giá tiền sai định dạng";
-      }
+      //Kiểm tra giá tiền nhập lỗi định dạng sẽ bị catch ở error
       return {
         success: false, 
         msg
       }
     }
-    console.log(hinhAnh)
+
     // Tạo mới Món
     const saveMon = await Mon.model.create({
       idLM: idLM,
@@ -45,7 +51,6 @@ const themMon = async (req, res, next) => {
       trangThai: true,
     });
 
-    console.log("Here")
     // Trả về kết quả
     return {
       msg: "Thêm thành công",
@@ -55,7 +60,7 @@ const themMon = async (req, res, next) => {
   } catch (e) {
     //Các lỗi về định dạng object Id
     return {
-      msg: e,
+      msg: e.message,
       success: false,
     };
   }
@@ -78,7 +83,7 @@ const kiemTraPhanQuyen = async (req, res, next) => {
   } catch (e) {
     //Các lỗi về định dạng object Id
     return {
-      msg: e,
+      msg: e.message,
       success: false,
     };
   }

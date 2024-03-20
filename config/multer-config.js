@@ -16,12 +16,9 @@ const filter = (req, file, cb) => {
     if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){ // check file type to be png, jpeg, or jpg
         cb(null, true);
     }else{
-        cb(new Error("Ảnh không phải đuổi png/jpeg nên không upload được"), false);
+        // cb(new Error("Ảnh không phải đuổi png/jpeg nên không upload được"), false);
+        cb(null, false);
     }
-    // const fileSize = parseInt(req.headers["content-length"])
-    // if (fileSize >  maxSize ){
-    //   return cb(new Error("File qua to"), false);
-    // }
 }
 var upload = multer({ storage: storage, limits:{fileSize : maxSize}, fileFilter: filter});
 
