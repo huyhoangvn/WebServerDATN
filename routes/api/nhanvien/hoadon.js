@@ -21,11 +21,11 @@ router.post('/dang-giao-hang/:id', hoadonctrl.updatetrangThaiMuaDangGiaoHangApi)
 router.post('/giao-hang-that-bai/:id', hoadonctrl.updatetrangThaiMuaGiaoHangThatBaiApi);
 router.post('/giao-hang-thanh-cong/:id', hoadonctrl.updatetrangThaiMuaGiaoHangThanhCongApi);
 
-router.post('/1-ngay', thongke.thongKeDoanhThuTheoNgayApi);
-router.post('/10-ngay', thongke.thongKeDoanhThuTheo10NgayApi);
-router.post('/30-ngay', thongke.thongKeDoanhThuTheo30NgayApi);
-router.post('/:nam', thongke.thongKeDoanhThuTheoNamApi);
-router.post('/thang/:nam', thongke.thongKeDoanhThuTheoThangTrongNamApi);
+router.get('/1-ngay', thongke.thongKeDoanhThuTheoNgayApi);
+router.get('/10-ngay', thongke.thongKeDoanhThuTheo10NgayApi);
+router.get('/30-ngay', thongke.thongKeDoanhThuTheo30NgayApi);
+router.get('/:nam', thongke.thongKeDoanhThuTheoNamApi);
+router.get('/thang/:nam', thongke.thongKeDoanhThuTheoThangTrongNamApi);
 
 
 
