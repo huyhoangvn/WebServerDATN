@@ -43,16 +43,26 @@ const dangNhap = async(req, res, next)=>{
         await NhanVien.model.findOne({
             taiKhoan: taiKhoan,
             matKhau: matKhau,
-            trangThai: 1
         }).then((loginResult)=>{
             if(loginResult){
-                success = true,
-                msg = "Đăng nhập thành công"
-                index = {
-                    id: loginResult.id,
-                    tenNV: loginResult.tenNV,
-                    phanQuyen: loginResult.phanQuyen
-                }   
+                if(loginResult.trangThai === 0 && loginResult.phanQuyen === 0){
+                    success = false
+                    msg = "Tài khoản quản lý đang chờ xét duyệt để hoạt động"
+                } 
+                else if(loginResult.trangThai === 0 && loginResult.phanQuyen === 1) {
+                    success = false
+                    msg = "Tài khoản nhân viên bán hàng đang bị khóa"
+                }
+                else {
+                    success = true,
+                    msg = "Đăng nhập thành công với tư cách " + (loginResult.phanQuyen)?"quản lý":"nhân viên bán"
+                    index = {
+                        id: loginResult.id,
+                        tenNV: loginResult.tenNV,
+                        idCH: loginResult.idCH,
+                        phanQuyen: loginResult.phanQuyen
+                    }  
+                }
             } else {
                 success = false
                 msg = "Sai mật khẩu"
