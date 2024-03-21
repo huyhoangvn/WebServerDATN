@@ -41,10 +41,18 @@ const thongKeDoanhThuTheoNgay = async (req, res, next) => {
         ]);
         const tongTienTongHop = result.reduce((accumulator, currentValue) => accumulator + currentValue.tongTien, 0);
 
-        return { result, tongTienTongHop };
+        return {
+            index: result,
+            tongTien: tongTienTongHop,
+            success: true,
+            msg: "thành công"
+        }
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).json({ message: 'Đã xảy ra lỗi khi thực hiện thống kê.' });
+        return {
+            success: false,
+            message: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+        };
     }
 };
 
@@ -87,10 +95,18 @@ const thongKeDoanhThuTheo10Ngay = async (req, res, next) => {
 
         const tongTienTongHop = result.reduce((accumulator, currentValue) => accumulator + currentValue.tongTien, 0);
 
-        return { result, tongTienTongHop };
+        return {
+            index: result,
+            tongTien: tongTienTongHop,
+            success: true,
+            msg: "thành công"
+        }
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).json({ message: 'Đã xảy ra lỗi khi thực hiện thống kê.' });
+        return {
+            success: false,
+            message: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+        };
     }
 };
 
@@ -135,17 +151,26 @@ const thongKeDoanhThuTheo30Ngay = async (req, res, next) => {
         ]);
         const tongTienTongHop = result.reduce((accumulator, currentValue) => accumulator + currentValue.tongTien, 0);
 
-        return { result, tongTienTongHop };
+        return {
+            index: result,
+            tongTien: tongTienTongHop,
+            success: true,
+            msg: "thành công"
+        }
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).json({ message: 'Đã xảy ra lỗi khi thực hiện thống kê.' });
+        return {
+            success: false,
+            message: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+        };
     }
 };
 
 const thongKeDoanhThuTheoNam = async (req, res, next) => {
     try {
         // Lấy năm được nhập từ request hoặc thay thế bằng năm cụ thể
-        const nam = req.params.nam; // Giả sử năm được nhập qua tham số yêu cầu
+        const nam = req.query.nam || new Date().getFullYear().toString();
+        // const nam = req.params.nam
 
         // Tạo ngày bắt đầu và ngày kết thúc của năm được nhập
         const startDate = moment(`${nam}-01-01`).startOf('year').toDate();
@@ -174,10 +199,17 @@ const thongKeDoanhThuTheoNam = async (req, res, next) => {
         ]);
 
         // Trả về tổng tiền của các hóa đơn thỏa mãn điều kiện trong năm
-        return (result);
+        return {
+            index: result,
+            success: true,
+            msg: "thành công"
+        }
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).json({ message: 'Đã xảy ra lỗi khi thực hiện thống kê.' });
+        return {
+            success: false,
+            message: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+        };
     }
 };
 
@@ -237,10 +269,17 @@ const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
         }
 
         // Gửi kết quả dưới dạng đối tượng JSON
-        return (monthlyRevenue);
+        return {
+            index: monthlyRevenue,
+            success: true,
+            msg: "thành công"
+        }
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).json({ message: 'Đã xảy ra lỗi khi thực hiện thống kê.' });
+        return {
+            success: false,
+            message: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+        };
     }
 };
 
@@ -249,7 +288,9 @@ const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
 const thongKeDoanhThuTheoNgayApi = async (req, res, next) => {
     try {
         const result = await thongKeDoanhThuTheoNgay(req, res, next);
-        res.status(200).json(result);  // Send the result directly without using JSON.stringify
+        res.status(200).json(result);
+        // Send the result directly without using JSON.stringify
+
     } catch (error) {
         // Check if headers have already been sent
         if (res.headersSent) {
