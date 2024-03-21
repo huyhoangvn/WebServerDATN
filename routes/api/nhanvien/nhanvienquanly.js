@@ -1,9 +1,11 @@
 var express = require('express');
 var router = express.Router();
 const nhanVienQuanLyController = require('../../../controllers/nhanvien/nhanvienquanly-controller');
+const passportConfig = require('../../../config/auth/jwt-decode-khachhang')
+const passport = require('passport')
 
 /* GET users listing. */
-router.get('/', nhanVienQuanLyController.getListNhanVienQuanlyApi);// -> web
+router.get('/',passport.authenticate('jwt', {session : false}), nhanVienQuanLyController.getListNhanVienQuanlyApi);// -> web
 router.post('/',nhanVienQuanLyController.addNhanVienQuanLyApi)//-> cả web cả api
 // router.delete('/:id',nhanVienQuanLyController.xoaCungNhanVienQuanLyApi);//-> web
 // router.put('/:id',nhanVienQuanLyController.updateNhanvienQuanLyApi)//-> web nếu trạng thái 1 (Đã duyệt rồi)

@@ -436,7 +436,7 @@ const updateMatKhau = async (req, res, next) => {
 };
 const getListNhanVienQuanly = async (req, res, next) => {
   try {
-    const { tenNV, trangThai } = req.query;
+    const { tenNV, phanQuyen, trangThai, limit } = req.query;
 
     // Sử dụng mô hình NhanVien để thực hiện truy vấn
     const query = {};
@@ -445,19 +445,31 @@ const getListNhanVienQuanly = async (req, res, next) => {
       query.tenNV = { $regex: tenNV, $options: "i" };
     }
 
-    if (trangThai !== undefined) {
-      query.trangThai = trangThai; // Giả sử trangThai là một trường boolean
+    if (phanQuyen) {
+      query.phanQuyen = phanQuyen;
+    }
+
+    if (trangThai !== undefined && trangThai !== '') {
+      query.trangThai = trangThai === 'true'; // Chuyển đổi từ chuỗi sang boolean
     }
 
     // Chỉ định trường cần hiển thị
-    const projection = { email: 1, sdt: 1, tenNV: 1, trangThai: 1, _id: 0 };
+    const projection = { email: 1, sdt: 1, tenNV: 1, trangThai: 1, _id: 1, phanQuyen: 1,hinhAnh: 1 };
 
     // Thực hiện truy vấn để lấy danh sách nhân viên quản lý
-    const listNhanVienQuanLy = await NhanVien.find(query, projection);
+    let listNhanVienQuanLy = NhanVien.find(query, projection);
+
+    // Áp dụng giới hạn dữ liệu nếu có
+    if (limit) {
+      listNhanVienQuanLy = listNhanVienQuanLy.limit(parseInt(limit));
+    }
+
+    // Thực hiện truy vấn
+    listNhanVienQuanLy = await listNhanVienQuanLy;
 
     res.json({
       success: true,
-      data: listNhanVienQuanLy,
+      index: listNhanVienQuanLy,
       soluong: listNhanVienQuanLy.length,
     });
   } catch (error) {
@@ -468,6 +480,8 @@ const getListNhanVienQuanly = async (req, res, next) => {
     });
   }
 };
+
+
 
 const chiTietNhanVienQuanLy = async (req, res, next) => {
   try {
