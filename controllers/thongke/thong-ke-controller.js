@@ -169,7 +169,8 @@ const thongKeDoanhThuTheo30Ngay = async (req, res, next) => {
 const thongKeDoanhThuTheoNam = async (req, res, next) => {
     try {
         // Lấy năm được nhập từ request hoặc thay thế bằng năm cụ thể
-        const nam = req.params.nam; // Giả sử năm được nhập qua tham số yêu cầu
+        const nam = req.query.nam || new Date().getFullYear().toString();
+        // const nam = req.params.nam
 
         // Tạo ngày bắt đầu và ngày kết thúc của năm được nhập
         const startDate = moment(`${nam}-01-01`).startOf('year').toDate();
@@ -302,7 +303,7 @@ const thongKeDoanhThuTheoNgayApi = async (req, res, next) => {
 const thongKeDoanhThuTheo10NgayApi = async (req, res, next) => {
     try {
         const result = await thongKeDoanhThuTheo10Ngay(req, res, next);
-        res.status(200).json(result.tongTienTongHop);  // Send the result directly without using JSON.stringify
+        res.status(200).json(result);  // Send the result directly without using JSON.stringify
     } catch (error) {
         // Check if headers have already been sent
         if (res.headersSent) {
@@ -315,7 +316,7 @@ const thongKeDoanhThuTheo10NgayApi = async (req, res, next) => {
 const thongKeDoanhThuTheo30NgayApi = async (req, res, next) => {
     try {
         const result = await thongKeDoanhThuTheo30Ngay(req, res, next);
-        res.status(200).json(result.tongTienTongHop);  // Send the result directly without using JSON.stringify
+        res.status(200).json(result);  // Send the result directly without using JSON.stringify
     } catch (error) {
         // Check if headers have already been sent
         if (res.headersSent) {
@@ -329,7 +330,7 @@ const thongKeDoanhThuTheo30NgayApi = async (req, res, next) => {
 const thongKeDoanhThuTheoNamApi = async (req, res, next) => {
     try {
         const result = await thongKeDoanhThuTheoNam(req, res, next);
-        res.status(200).json(result.tongTienTongHop);  // Send the result directly without using JSON.stringify
+        res.status(200).json(result);  // Send the result directly without using JSON.stringify
     } catch (error) {
         // Check if headers have already been sent
         if (res.headersSent) {
