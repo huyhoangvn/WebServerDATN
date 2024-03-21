@@ -1,5 +1,6 @@
 const { model: MonDat } = require("../../model/MonDat");
 const { model: HoaDon } = require("../../model/HoaDon");
+const { model: Mon } = require("../../model/Mon");
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 
@@ -9,14 +10,15 @@ const addMonDat = async (req, res, next) => {
     try {
         const idHD = req.params.idHD; // Lấy id hóa đơn từ params
 
-        if (!req.body.idMon || !req.body.giaTienDat || !req.body.soLuong) {
+        if (!req.body || !req.body.idMon) {
             throw new Error("Thông tin món đặt không đầy đủ hoặc không hợp lệ.");
         }
-        let foundMonDat = await MonDat.findOne({ idMon: req.body.idMon });
-        if (foundMonDat) {
-            return res.status(400).json({ msg: "Món đặt đã tồn tại" });
-        }
 
+        const idMon = req.body.idMon;
+        if (!idMon) {
+            throw new Error("ID món không hợp lệ.");
+        }
+        const mon = await Mon.findOne({ _id: idMon });
         // Kiểm tra hóa đơn
         const hoaDon = await HoaDon.findById(idHD);
         if (!hoaDon) {
@@ -32,7 +34,8 @@ const addMonDat = async (req, res, next) => {
             throw new Error("Hóa đơn không ở trạng thái Đợi duyệt.");
         }
 
-        const tongTienMoi = hoaDon.tongTien + (req.body.giaTienDat * req.body.soLuong);
+
+        const tongTienMoi = hoaDon.tongTien + (mon.giaTien * req.body.soLuong);
 
 
         await HoaDon.findByIdAndUpdate(idHD, { tongTien: tongTienMoi }, { new: true });
@@ -42,7 +45,7 @@ const addMonDat = async (req, res, next) => {
         await MonDat.create({
             idHD: idHD,
             idMon: req.body.idMon,
-            giaTienDat: req.body.giaTienDat,
+            giaTienDat: mon.giaTien,
             soLuong: req.body.soLuong
         })
 
