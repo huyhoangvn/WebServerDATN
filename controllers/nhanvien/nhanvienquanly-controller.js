@@ -70,10 +70,10 @@ const suaNhanVienBan = async (req, res, next) => {
   try {
     const idNhanVien = req.params.id;
     const idEdit = req.params.idNhanVienBan;
-    const { tenNV, gioiTinh, diaChi, sdt } = req.body;
+    const { tenNV, diaChi, sdt } = req.body;
 
     // Kiểm tra trống dữ liệu cho các trường
-    if (!tenNV || !gioiTinh || !diaChi || !sdt) {
+    if (!tenNV || !diaChi || !sdt) {
       return res.json({
         success: false,
         msg: "Thông tin nhân viên không đầy đủ hoặc không hợp lệ.",
@@ -90,7 +90,6 @@ const suaNhanVienBan = async (req, res, next) => {
         { _id: idEdit },
         {
           tenNV: tenNV,
-          gioiTinh: gioiTinh,
           diaChi: diaChi,
           sdt: sdt,
         },
@@ -454,7 +453,7 @@ const getListNhanVienQuanly = async (req, res, next) => {
     }
 
     // Chỉ định trường cần hiển thị
-    const projection = { email: 1, sdt: 1, tenNV: 1, trangThai: 1, _id: 1, phanQuyen: 1,hinhAnh: 1 };
+    const projection = { email: 1, sdt: 1, tenNV: 1, trangThai: 1, _id: 1, phanQuyen: 1,hinhAnh: 1,gioiTinh: 1,taiKhoan: 1, diaChi: 1};
 
     // Thực hiện truy vấn để lấy danh sách nhân viên quản lý
     let listNhanVienQuanLy = NhanVien.find(query, projection);
