@@ -1,17 +1,15 @@
 var express = require('express');
 var router = express.Router();
 const datmonCtrl = require('../../../controllers/datmon/datmon-controller')
-/* GET users listing. */
-// router.get('/', function(req, res, next) {
-//   res.send('respond with a resource');
-// });
-// add loai mon 
-router.post('/', datmonCtrl.MonDatApi);
-// get all 
-router.get('/', datmonCtrl.getAllMonDat);
-// delete 
-router.delete('/:id', datmonCtrl.deleteMonDatApi);
 
+// add loai mon 
+router.post('/them/:idHD', datmonCtrl.addMonDatApi);
+// get mon dat theo id hoa don 
+router.get('/:id', datmonCtrl.getDanhSachMonDatByIdHoaDonApi);
+// delete cung
+router.delete('/:id', datmonCtrl.deleteMonDatApi);
+// delete mem
+router.post('/:id', datmonCtrl.deleteMonDatMemApi);
 //sua 
 router.put('/:id', datmonCtrl.updateMonDatApi);
 
