@@ -6,6 +6,7 @@ const passportConfig = require('../../config/auth/jwt-decode-admin')
 const sessionAdmin = require('../../config/auth/session-admin')
 
 router.get('/danh-sach',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), MonCtrl.getList);
-router.get('/chi-tiet/:idMon',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), ()=>{ res.end("Chi tiết") });
+// router.get('/chi-tiet/:idMon',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), ()=>{ res.end("Chi tiết") });
+router.get('/chi-tiet/:idMon',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), MonCtrl.getChiTietMon );
 
 module.exports = router;
