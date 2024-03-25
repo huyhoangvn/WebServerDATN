@@ -5,7 +5,7 @@ const { model: LoaiMon } = require("../../model/LoaiMon");
 const { model: DanhGia } = require("../../model/DanhGia");
 const mongo = require('mongoose');
 const { getTatCaMon, getSoLuongTatCaMon } = require("./mon-controller");
-const { GetSoLuongDanhGiaTheoMon,GetSoLuongDanhGiaTheoMonVoiFilter} = require("../danhgia/danhgia-controller");
+const { GetSoLuongDanhGiaTheoMon,GetSoLuongDanhGiaTheoMonVoiFilter } = require("../danhgia/danhgia-controller");
 
 
 const getList =  async (req, res)=>{
@@ -68,16 +68,20 @@ const getChiTietMon = async (req, res) => {
         });
         const danhGiaTrungBinh = (query.length > 0 ? (danhGiaTong / query.length) : 0);//kết thúc tính tổng số lượng và trung bình
 
-        const soLuongDanhGia = await GetSoLuongDanhGiaTheoMonVoiFilter(req, res);//đây là để lấy ra tất cả đánh giá của món
+        const layDanhSach = await GetSoLuongDanhGiaTheoMonVoiFilter(req, res);//đây là để lấy ra tất cả đánh giá của món
+        console.log(idMon, data, cuaHang, loaiMon);
         res.render("mon/chi-tiet", {
-            list:soLuongDanhGia.list,
+            list:layDanhSach.list,
             danhGiaTrungBinh: parseFloat(danhGiaTrungBinh.toFixed(1)),
             count:query.length,
-            data:data,
+            index:data,
+            idMon:idMon,
             cuaHang:cuaHang,
             loaiMon:loaiMon,
             admin: req.session.ten
         });
+
+        //Thiếu phân trang
     } catch (error) {
         console.error("Error fetching data:", error);
     }
