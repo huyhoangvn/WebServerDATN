@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-const thongkeCrl = require('../../../controllers/thongke/thong-ke-controller');
+const thongkeCrl = require('../../../controllers/thongke/thong-ke-controller-api');
 
 router.get('/1-ngay', thongkeCrl.thongKeDoanhThuTheoNgayApi);
 router.get('/10-ngay', thongkeCrl.thongKeDoanhThuTheo10NgayApi);
