@@ -202,22 +202,22 @@
 <!-- Chi tiết món -->
           <div class="row d-flex d-inline-block h-25">
             <div class="row col-3 w-25 h-25">
-              <img class="w-100 h-100 " src="../../public/images/default-avatar.png" alt="">
+              <img style="height: 300px; width: 300px;" src="../../public/images/<%= index.hinhAnh%>" alt="">
             </div>
 
             <div class="col-9">
-              <h2><%= data.tenMon%></h2>
+              <h2><%= index.tenMon%></h2>
               <label for="" class="p-0 m-0 font-weight-normal">Loại món: <%=loaiMon.tenLM%></label>
               <br>
               <label for="" class="p-0 m-0 font-weight-normal">Của hàng: <%=cuaHang.tenCH%></label>
               <br>
-              <label for="" class="p-0 m-0 font-weight-normal">Giá tiền: <%=data.giaTien%>đ</label>
+              <label for="" class="p-0 m-0 font-weight-normal">Giá tiền: <%=index.giaTien%>đ</label>
               <br>
               <label for="" class="p-0 m-0 font-weight-normal">Số lượt đánh giá: <%=count%></label>
               <br>
               <label for="" class="p-0 m-0 font-weight-normal">Trung bình điểm đánh giá: <%=danhGiaTrungBinh%></label>
               <br>
-              <% if(data.trangThai == true){%>
+              <% if(index.trangThai == true){%>
                 <label class="font-weight-normal">Trạng thái: </label>
                 <label class="text-success font-weight-normal" class="p-0 m-0">hoạt động</label>
               <%}else{%>
@@ -231,10 +231,10 @@
           <h3>Danh sách đánh giá</h3>
 
 <!-- Filter -->
-          <form action="/danhGia/danh-sach" method="GET">
+          <form action="/mon/chi-tiet/<%=idMon%>" method="GET">
             <div class="d-flex row justify-content-between mb-1">
 
-              <div class="col-3">
+              <div class="col-5">
                 <select class="form-control" name="danhGia">
                   <option value="-1">Tất cả số sao</option>
                   <option value="1">1</option>
@@ -245,17 +245,14 @@
                 </select>
               </div>
   
-              <div class="col-3">
+              <div class="col-5">
                 <select class="form-control" name="trangThai">
                   <option value="-1">Tất cả trạng thái</option>
-                  <option value="1">Hoạt động</option>
-                  <option value="2">Khóa</option>
+                  <option value="0">Hoạt động</option>
+                  <option value="1">Khóa</option>
                 </select>
               </div>
 
-              <div class="col-4">
-                <input type="date" class="form-control" name="thoiGianTao" id="ngayBatDau" placeholder="Nhập thời gian tạo">
-              </div>
   
               <div class="col-2">
                 <button class="btn btn-dark w-100" type="submit">Tìm kiếm</button>
@@ -277,13 +274,6 @@
               </tr>
             </thead>
             <tbody>
-              <!-- <td scope="col-1">1</td>
-                <td scope="col-4">Thời gian tạo</td>
-                <td scope="col-4">Số sao</td>
-                <td class="text-success" scope="col-2">Trạng thái</td>
-                <td class="text-primary" scope="col-1">
-                  <a href="">Chi tiết</a> 
-              </td> -->
               <% for (var i = 0; i<list.length; i++) {%>
               <tr>
                 <td scope="col-1"><%=i+1%></td>

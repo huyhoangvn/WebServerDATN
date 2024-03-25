@@ -198,6 +198,27 @@
         <div class="container-fluid bg-white m-2">
 
           <!-- Main content nằm ở dây -->
+<!--form thêm mới  -->
+          <label class="form-label">Thêm mới loại món</label>
+          <form action="/mon/loaimon/add" method="post">
+            <div class="d-flex row justify-content-between mb-1">
+              <div class="form-group col-10">
+                <input type="text" class="form-control" name="tenLM" placeholder="Nhập tên loại món ">
+              </div>
+
+              <div class="col text-center col-2">
+                <button type="submit" class="btn btn-default btn-dark">Thêm mới</button>
+              </div>
+            </div>
+
+          <% if(typeof msg==="string" && !(msg.trim().length===0)){%>
+            <span class="text-danger">
+              <%= msg %>
+            </span>
+          <%}%>
+          </form>
+<!-- Hết form thêm mới -->
+
 
         </div>
       </section>

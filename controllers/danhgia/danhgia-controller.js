@@ -221,7 +221,7 @@ const GetDanhGiaTheoId = async function(req, res){
     }
      
 }
-const GetSoLuongDanhGiaTheoMon = async function(req, res){
+const GetTrungBinhDanhGiaTheoMon = async function(req, res){
     const idMon = new mongo.Types.ObjectId(req.params.idMon);
     try {
         const query = await DanhGia.aggregate([
@@ -253,7 +253,7 @@ const GetSoLuongDanhGiaTheoMon = async function(req, res){
         const danhGiaTrungBinh = (query.length > 0 ? (danhGiaTong / query.length) : 0);
 
         return({
-            danhGiaTrungBinh: parseFloat(danhGiaTrungBinh.toFixed(2)),
+            danhGiaTrungBinh: parseFloat(danhGiaTrungBinh.toFixed(1)),
             count:query.length,
             message: 'Get số lượng đánh giá theo tên món thành công',
             success: true
@@ -271,15 +271,22 @@ const getTatCaDanhGiaTheoMonApi = async (req, res) => {
 }
 
 const GetSoLuongDanhGiaTheoMonVoiFilter = async function(req, res){
-    const idMon = new mongo.Types.ObjectId(req.params.idMon);
     try {
+        const idMon = new mongo.Types.ObjectId(req.params.idMon);
         const timkiem = {};
-        if (typeof(req.query.ngayTao) !== 'undefined' && req.query.ngayTao !== "" ) {
-            timkiem.ngayTao = { $regex: req.query.ngayTao, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+        console.log(typeof(req.query.danhGia));
+        if (typeof(req.query.danhGia) !== 'undefined' && req.query.danhGia !== "" && req.query.danhGia !== "-1") {
+            timkiem.danhGia = parseInt(req.query.danhGia); 
+        }
+        if (typeof(req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+            const trangThaiValue = parseInt(req.query.trangThai);
+            if(trangThaiValue === 1 || trangThaiValue === 0){
+              timkiem.trangThai = trangThaiValue === 1;
+            }
            }
         const query = await DanhGia.aggregate([
             {$match: {
-                idMon: idMon
+                idMon: idMon,
             }},
             {$lookup: {
                 from: "Mon",
@@ -294,13 +301,14 @@ const GetSoLuongDanhGiaTheoMonVoiFilter = async function(req, res){
             {$project : {
                 "danhGia" : "$danhGia",
                 "trangThai" : "$trangThai",
-                "thoiGianTao" : { $dateToString: { format: "%d/%m/%Y %H:%M:%S", date: { $add: ["$thoiGianTao", 7 * 60 * 60 * 1000] }, timezone: "Asia/Ho_Chi_Minh" } },
+                "thoiGianTao" : { $dateToString: { format: "%d/%m/%Y %H:%M:%S", date: { $add: ["$thoiGianTao", 7 * 60 * 60 * 1000] } } },
                 "tenMon" : "$KetQuaMon.tenMon",
             }},
             {$match: 
                 timkiem,
             },
         ]);
+        console.log(query);
         return({
             list:query,
             message: 'Get số lượng đánh giá theo tên món thành công',
@@ -313,6 +321,11 @@ const GetSoLuongDanhGiaTheoMonVoiFilter = async function(req, res){
         });
     }
 }
+
+const GetSoLuongDanhGiaTheoMonVoiFilterApi = async (req, res) => {
+    const result = await GetSoLuongDanhGiaTheoMonVoiFilter(req, res);
+    res.json(result)
+  }
 
 const GetSoLuongDanhGiaTheoKhachHang = async function(req, res){
     const idKH = new mongo.Types.ObjectId(req.params.idKH);
@@ -357,8 +370,9 @@ module.exports = {
     GetDanhSachTheoTenMon,
     GetDanhSachTheoTenKhachHang,
     GetDanhGiaTheoId,
-    GetSoLuongDanhGiaTheoMon,
+    GetTrungBinhDanhGiaTheoMon,
     GetSoLuongDanhGiaTheoKhachHang,
     getTatCaDanhGiaTheoMonApi,
-    GetSoLuongDanhGiaTheoMonVoiFilter
+    GetSoLuongDanhGiaTheoMonVoiFilter,
+    GetSoLuongDanhGiaTheoMonVoiFilterApi
 }
