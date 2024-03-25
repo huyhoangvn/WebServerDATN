@@ -542,7 +542,7 @@ const getMonCuaLoaiMon = async (req, res) => {
 };
 
 
-const updatemonapi = async (req, res) => {
+const  updatemonapi = async (req, res) => {
   const idNV = new mongo.Types.ObjectId(req.params.idNV);
   const idCH = new mongo.Types.ObjectId(req.params.idCH);
   const tenMon = req.body.tenMon;
