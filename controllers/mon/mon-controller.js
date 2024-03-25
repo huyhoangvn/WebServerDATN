@@ -209,7 +209,7 @@ const getTatCaMon = async (req, res) => {
                 "trangThai" : "$trangThai",
                 "tenCH": "$KetQuaCuaHang.tenCH", // Thay vì "$tenCH"
                 "tenLM": "$KetQuaLoaiMon.tenLM", 
-                "idMon": "$idMON",
+                "idMon": "$_id",
             }},
             {
               $match: {

@@ -70,10 +70,10 @@ const suaNhanVienBan = async (req, res, next) => {
   try {
     const idNhanVien = req.params.id;
     const idEdit = req.params.idNhanVienBan;
-    const { tenNV, gioiTinh, diaChi, sdt } = req.body;
+    const { tenNV, diaChi, sdt } = req.body;
 
     // Kiểm tra trống dữ liệu cho các trường
-    if (!tenNV || !gioiTinh || !diaChi || !sdt) {
+    if (!tenNV || !diaChi || !sdt) {
       return res.json({
         success: false,
         msg: "Thông tin nhân viên không đầy đủ hoặc không hợp lệ.",
@@ -90,7 +90,6 @@ const suaNhanVienBan = async (req, res, next) => {
         { _id: idEdit },
         {
           tenNV: tenNV,
-          gioiTinh: gioiTinh,
           diaChi: diaChi,
           sdt: sdt,
         },
@@ -434,9 +433,59 @@ const updateMatKhau = async (req, res, next) => {
     res.json({ success: false, msg: "Đã xảy ra lỗi khi đổi mật khẩu" });
   }
 };
+// const getListNhanVienQuanly = async (req, res, next) => {
+//   try {
+//     const { tenNV, phanQuyen, trangThai, limit } = req.query;
+
+//     // Sử dụng mô hình NhanVien để thực hiện truy vấn
+//     const query = {};
+
+//     if (tenNV) {
+//       query.tenNV = { $regex: tenNV, $options: "i" };
+//     }
+
+//     if (phanQuyen) {
+//       query.phanQuyen = phanQuyen;
+//     }
+
+//     if (trangThai !== undefined && trangThai !== '') {
+//       query.trangThai = trangThai === 'true'; // Chuyển đổi từ chuỗi sang boolean
+//     }
+
+//     // Chỉ định trường cần hiển thị
+//     const projection = { email: 1, sdt: 1, tenNV: 1, trangThai: 1, _id: 1, phanQuyen: 1,hinhAnh: 1,gioiTinh: 1,taiKhoan: 1, diaChi: 1};
+
+//     // Thực hiện truy vấn để lấy danh sách nhân viên quản lý
+//     let listNhanVienQuanLy = NhanVien.find(query, projection);
+
+//     // Áp dụng giới hạn dữ liệu nếu có
+//     if (limit) {
+//       listNhanVienQuanLy = listNhanVienQuanLy.limit(parseInt(limit));
+//     }
+
+//     // Thực hiện truy vấn
+//     listNhanVienQuanLy = await listNhanVienQuanLy;
+
+//     res.json({
+//       success: true,
+//       index: listNhanVienQuanLy,
+//       soluong: listNhanVienQuanLy.length,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.json({
+//       success: false,
+//       msg: "Đã xảy ra lỗi khi lấy danh sách nhân viên quản lý.",
+//     });
+//   }
+// };
+
+
 const getListNhanVienQuanly = async (req, res, next) => {
   try {
-    const { tenNV, phanQuyen, trangThai, limit } = req.query;
+    const { tenNV, phanQuyen, trangThai, page } = req.query;
+    const limitPerPage = 10;
+    const currentPage = parseInt(page) || 1;
 
     // Sử dụng mô hình NhanVien để thực hiện truy vấn
     const query = {};
@@ -454,15 +503,13 @@ const getListNhanVienQuanly = async (req, res, next) => {
     }
 
     // Chỉ định trường cần hiển thị
-    const projection = { email: 1, sdt: 1, tenNV: 1, trangThai: 1, _id: 1, phanQuyen: 1,hinhAnh: 1 };
+    const projection = { email: 1, sdt: 1, tenNV: 1, trangThai: 1, _id: 1, phanQuyen: 1,hinhAnh: 1,gioiTinh: 1,taiKhoan: 1, diaChi: 1};
 
     // Thực hiện truy vấn để lấy danh sách nhân viên quản lý
     let listNhanVienQuanLy = NhanVien.find(query, projection);
 
-    // Áp dụng giới hạn dữ liệu nếu có
-    if (limit) {
-      listNhanVienQuanLy = listNhanVienQuanLy.limit(parseInt(limit));
-    }
+    // Áp dụng phân trang
+    listNhanVienQuanLy = listNhanVienQuanLy.skip((currentPage - 1) * limitPerPage).limit(limitPerPage);
 
     // Thực hiện truy vấn
     listNhanVienQuanLy = await listNhanVienQuanLy;
@@ -470,7 +517,9 @@ const getListNhanVienQuanly = async (req, res, next) => {
     res.json({
       success: true,
       index: listNhanVienQuanLy,
-      soluong: listNhanVienQuanLy.length,
+      currentPage,
+      totalPages: Math.ceil(listNhanVienQuanLy.length / limitPerPage),
+      totalItems: listNhanVienQuanLy.length,
     });
   } catch (error) {
     console.error(error);
@@ -480,6 +529,7 @@ const getListNhanVienQuanly = async (req, res, next) => {
     });
   }
 };
+
 
 
 
