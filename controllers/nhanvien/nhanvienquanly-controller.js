@@ -485,7 +485,12 @@ const getListNhanVienQuanly = async (req, res, next) => {
   try {
     const { tenNV, phanQuyen, trangThai, page } = req.query;
     const limitPerPage = 10;
-    const currentPage = parseInt(page) || 1;
+    let currentPage = parseInt(page) || 1;
+
+    // Kiểm tra nếu page là '' thì gán currentPage bằng 1
+    if (page === '') {
+      currentPage = 1;
+    }
 
     // Sử dụng mô hình NhanVien để thực hiện truy vấn
     const query = {};
@@ -508,8 +513,11 @@ const getListNhanVienQuanly = async (req, res, next) => {
     // Thực hiện truy vấn để lấy danh sách nhân viên quản lý
     let listNhanVienQuanLy = NhanVien.find(query, projection);
 
-    // Áp dụng phân trang
-    listNhanVienQuanLy = listNhanVienQuanLy.skip((currentPage - 1) * limitPerPage).limit(limitPerPage);
+    // Kiểm tra nếu page là '' thì không áp dụng phân trang
+    if (page !== '') {
+      // Áp dụng phân trang
+      listNhanVienQuanLy = listNhanVienQuanLy.skip((currentPage - 1) * limitPerPage).limit(limitPerPage);
+    }
 
     // Thực hiện truy vấn
     listNhanVienQuanLy = await listNhanVienQuanLy;
@@ -529,7 +537,6 @@ const getListNhanVienQuanly = async (req, res, next) => {
     });
   }
 };
-
 
 
 
