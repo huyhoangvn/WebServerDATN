@@ -27,7 +27,7 @@ const HoaDonSchema = new db.mongodb.Schema(
         trangThaiMua: {
             type: Number,
             enum: [0, 1, 2, 3, 4],
-            default: 0, // 0 đợi duyệt  ; 1 : đang chuẩn bị ; 2: đang giao hàng ; 3: giao hàng thất bại ; 4: giao hàng thành công
+            default: 0, // 0 đợi duyệt  ; 1 : đang chuẩn bị ; 2: đang giao hàng ; 3: giao hàng thành công ; 4: giao hàng thất bại
 
         },
         trangThai: { type: Boolean, default: true },
