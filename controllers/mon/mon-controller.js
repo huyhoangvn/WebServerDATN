@@ -8,6 +8,7 @@ const themMon = async (req, res, next) => {
     const idNV = new mongo.Types.ObjectId(req.body.idNV);
     let tenMon = req.body.tenMon;
     let giaTien = req.body.giaTien;
+    let trangThai = req.body.trangThai;
     let hinhAnh = "default_image.png";//Ảnh mặc định trong trường hợp ảnh bị lỗi
     if(typeof(req.files.hinhAnh) != 'undefined' || typeof(req.files) != 'undefined'){
       try {
@@ -48,7 +49,7 @@ const themMon = async (req, res, next) => {
       tenMon: tenMon,
       giaTien: giaTien,
       hinhAnh: hinhAnh,
-      trangThai: true,
+      trangThai: trangThai,
     });
 
     // Trả về kết quả
@@ -210,6 +211,15 @@ const getTatCaMon = async (req, res) => {
                 "tenCH": "$KetQuaCuaHang.tenCH", // Thay vì "$tenCH"
                 "tenLM": "$KetQuaLoaiMon.tenLM", 
                 "idMon": "$_id",
+                "hinhAnh":{
+                  $concat: [
+                    req.protocol + "://",
+                    req.get("host"),
+                    "/public/images/",
+                    "$hinhAnh"
+                  ]
+                },
+                
             }},
             {
               $match: {
@@ -404,6 +414,7 @@ const getMonCuaCuaHang = async (req, res) => {
             "tenCH": "$KetQuaCuaHang.tenCH", // Thay vì "$tenCH"
             "tenLM": "$KetQuaLoaiMon.tenLM", 
             "idMon": "$idMON",
+            "hinhAnh":"$hinhAnh"
           }},
           {
             $match: {

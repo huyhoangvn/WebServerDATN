@@ -58,7 +58,6 @@ const getloaimonApi = async (req, res) => {
      if (typeof(req.query.tenLM) !== 'undefined' && req.query.tenLM !== "") {
       timkiem1.tenLM = { $regex: req.query.tenLM, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
      }
-     console.log(" tenLM = " +tenLM );
      const list = await Loaimon.model.aggregate([
        { $match:
         timkiem1,
@@ -74,7 +73,6 @@ const getloaimonApi = async (req, res) => {
        },
     ]);
      
-      console.log(  list );
       res.status(200).json({
         list,
         count:list.length,
