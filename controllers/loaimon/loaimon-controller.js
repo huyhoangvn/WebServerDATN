@@ -240,4 +240,5 @@ module.exports = {
   updateLoaiMonApi,
   kichhoatLoaiMonapi,
   getloaimonApi,
+  themLoaiMon
 };

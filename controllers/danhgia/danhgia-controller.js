@@ -274,16 +274,15 @@ const GetSoLuongDanhGiaTheoMonVoiFilter = async function(req, res){
     try {
         const idMon = new mongo.Types.ObjectId(req.params.idMon);
         const timkiem = {};
-        console.log(typeof(req.query.danhGia));
         if (typeof(req.query.danhGia) !== 'undefined' && req.query.danhGia !== "" && req.query.danhGia !== "-1") {
             timkiem.danhGia = parseInt(req.query.danhGia); 
         }
-        if (typeof(req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
-            const trangThaiValue = parseInt(req.query.trangThai);
-            if(trangThaiValue === 1 || trangThaiValue === 0){
-              timkiem.trangThai = trangThaiValue === 1;
+        if (typeof(req.query.trangThai) !== 'undefined' && !isNaN(typeof(req.query.trangThai))) {
+            const trangThaiValue = typeof(req.query.trangThai);
+            if(trangThaiValue === true || trangThaiValue === false){
+              timkiem.trangThai = trangThaiValue === true;
             }
-           }
+        }
         const query = await DanhGia.aggregate([
             {$match: {
                 idMon: idMon,
@@ -308,7 +307,6 @@ const GetSoLuongDanhGiaTheoMonVoiFilter = async function(req, res){
                 timkiem,
             },
         ]);
-        console.log(query);
         return({
             list:query,
             message: 'Get số lượng đánh giá theo tên món thành công',

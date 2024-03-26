@@ -200,26 +200,83 @@
           <!-- Main content nằm ở dây -->
 <!--form thêm mới  -->
           <label class="form-label">Thêm mới loại món</label>
-          <form action="/mon/loaimon/add" method="post">
+          <form action="loai-mon/add" method="post">
             <div class="d-flex row justify-content-between mb-1">
               <div class="form-group col-10">
                 <input type="text" class="form-control" name="tenLM" placeholder="Nhập tên loại món ">
               </div>
 
-              <div class="col text-center col-2">
+              <div class="form-group col-auto">
                 <button type="submit" class="btn btn-default btn-dark">Thêm mới</button>
               </div>
             </div>
-
+          </form>
           <% if(typeof msg==="string" && !(msg.trim().length===0)){%>
             <span class="text-danger">
               <%= msg %>
             </span>
+          <%}else if(msg == "Thêm mới loại món thất bại"){%>
+            <span class="text-danger">
+            </span>
           <%}%>
-          </form>
+          <br>
 <!-- Hết form thêm mới -->
+<!-- Filter loại món -->
+          <label>Danh sách loại món</label>
+          <br>
+          <form action="/loaimon/danhsach" method="GET">
+            <div class="d-flex row justify-content-between mb-1">
+              <div class="col-8">
+                <input type="text" class="form-control" name="tenLM" placeholder="Nhập tên loại món để tìm kiếm">
+              </div>
+              <div class="col-2">
+                <select class="form-control" name="trangThai">
+                  <option value="-1">Tất cả trạng thái</option>
+                  <option value="0">Hoạt động</option>
+                  <option value="1">Khóa</option>
+                </select>
+              </div>
 
+  
+              <div class="col-auto">
+                <button class="btn btn-dark w-100" type="submit">Tìm kiếm</button>
+              </div>
+            </div>
+            
+          </form>
+<!-- Hết filter loại món -->
 
+<!-- Bảng hiển thị -->
+          <table class="table table-bordered border-secondary">
+            <thead>
+              <tr class="table-secondary">
+                <td scope="col-1">STT</td>
+                <td scope="col-2">Loại món</td>
+                <td scope="col-2">Số lượng món</td>
+                <td scope="col-2">Trạng thái</td>
+                <td scope="col-1">Chức năng</td>
+              </tr>
+            </thead>
+            <tbody>
+              <% for (var i = 0; i<listLM.length; i++) {%>
+              <tr>
+                <td scope="col-1"><%=i+1%></td>
+                <td scope="col-2"><%=listLM[i].tenLM%></td>
+                <td scope="col-2">số lượng món</td>
+                <% if(listLM[i].trangThai == true){%>
+                  <td class="text-success" scope="col-2">Hoạt động</td>
+                <%}else{%>
+                  <td class="text-danger" scope="col-2">Khóa</td>
+                <%}%>
+                
+                <td class="text-primary" scope="col-1">
+                    <a href="/mon/chi-tiet/>">Chi tiết</a> 
+                </td>
+              </tr>
+              <%}%>
+            </tbody>
+          </table>
+<!-- hết bảng hiển thị -->
         </div>
       </section>
     </div>
