@@ -30,6 +30,9 @@ const addMonDat = async (req, res, next) => {
             throw new Error("Hóa đơn không ở trạng thái hoạt động.");
         }
         // kiểm tra trạng thái mua của hóa đơn
+        if (hoaDon.trangThaiThanhToan !== 0) {
+            throw new Error("Hóa đơn đã được thanh toán.");
+        }
         if (hoaDon.trangThaiMua !== 0) {
             throw new Error("Hóa đơn không ở trạng thái Đợi duyệt.");
         }
@@ -83,6 +86,7 @@ const updateMonDat = async (req, res, next) => {
         if (hoaDon.trangThaiMua !== 0) {
             throw new Error("Hóa đơn không ở trạng thái mua.");
         }
+
 
         // Tính tổng tiền mới
         let tongTienMoi = hoaDon.tongTien;
