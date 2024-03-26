@@ -69,7 +69,6 @@ const getChiTietMon = async (req, res) => {
         const danhGiaTrungBinh = (query.length > 0 ? (danhGiaTong / query.length) : 0);//kết thúc tính tổng số lượng và trung bình
 
         const layDanhSach = await GetSoLuongDanhGiaTheoMonVoiFilter(req, res);//đây là để lấy ra tất cả đánh giá của món
-        console.log(idMon, data, cuaHang, loaiMon);
         res.render("mon/chi-tiet", {
             list:layDanhSach.list,
             danhGiaTrungBinh: parseFloat(danhGiaTrungBinh.toFixed(1)),
