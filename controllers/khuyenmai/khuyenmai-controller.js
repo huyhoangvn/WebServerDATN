@@ -71,6 +71,7 @@ const ThemKhuyenMai = async function (req, res) {
 
 // Hàm này để sửa khuyến mãi 
 const SuaKhuyenMai = async function (req, res) {
+    console.log(req.params.idKM);
     const idKM = new mongo.Types.ObjectId(req.params.idKM);
     const tieuDe = req.body.tieuDe;
     const maKhuyenMai = req.body.maKhuyenMai;
@@ -78,6 +79,7 @@ const SuaKhuyenMai = async function (req, res) {
     const ngayHetHan = req.body.ngayHetHan;
     const phanTramKhuyenMai = req.body.phanTramKhuyenMai;
     const donToiThieu = req.body.donToiThieu;
+
     try {
         const filter = { _id: idKM }
         const update = {
@@ -101,11 +103,11 @@ const SuaKhuyenMai = async function (req, res) {
                 success: false
             });
         } else {
-            res.status(200).json({
+            return {
                 index,
                 message: 'Sửa khuyến mãi thành công',
                 success: true
-            });
+            };
         }
     } catch (error) {
         console.error(error);
@@ -115,6 +117,10 @@ const SuaKhuyenMai = async function (req, res) {
         });
     }
 
+}
+const SuaKhuyenMaiApi = async (req, res) => {
+    const result = await SuaKhuyenMai(req, res);
+    res.json(result)
 }
 
 // Hàm này để xóa khuyến mãi (xóa mềm: chuyển trạng thái true thành false)
@@ -443,6 +449,7 @@ module.exports = {
     GetKhuyenMaiTheoNgay,
     GetKhuyenMaiTheoMaKhuyenMai,
     getTatCaKhuyenMai,
-    getTatCaKhuyenMaiApi
+    getTatCaKhuyenMaiApi,
+    SuaKhuyenMaiApi
 
 }

@@ -4,7 +4,7 @@ const mongo = require('mongoose');
 const { parse, startOfDay, endOfDay } = require('date-fns');
 const { json } = require("body-parser");
 const { data, error } = require('jquery');
-const { getTatCaKhuyenMai, ThemKhuyenMai } = require('../../controllers/khuyenmai/khuyenmai-controller');
+const { getTatCaKhuyenMai, ThemKhuyenMai, SuaKhuyenMai } = require('../../controllers/khuyenmai/khuyenmai-controller');
 const getList = async (req, res) => {
     try {
         const trang = parseInt(req.query.trang) || 1;
@@ -94,8 +94,18 @@ const getAdd = async (req, res) => {
     }
 
 }
+const updateKhuyenMai = async (req, res) => {
+
+    const index = await SuaKhuyenMai(req, res);
+    res.render("khuyenmai/danh-sach", {
+        index: index,
+        admin: req.session.ten,
+    });
+}
+
 module.exports = {
     getList,
     getAdd,
-    getViewAdd
+    getViewAdd,
+    updateKhuyenMai
 }

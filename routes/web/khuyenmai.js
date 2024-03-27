@@ -11,4 +11,6 @@ router.get('/them-moi', sessionAdmin.setTokenHeader, passport.authenticate('jwt'
 
 router.post('/ADD', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), KhuyenMaiCtrl.getAdd);
 
+router.post('/sua/:idKM', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), KhuyenMaiCtrl.updateKhuyenMai)
+
 module.exports = router;
