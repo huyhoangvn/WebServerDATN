@@ -1,4 +1,5 @@
 const { model: HoaDon } = require("../../model/HoaDon");
+const { model: CuaHang } = require("../../model/CuaHang");
 const HoaDonController = require("../../controllers/hoadon/hoadon-controller");
 
 
@@ -6,13 +7,15 @@ const addHoaDonApi = async (req, res, next) => {
 
     try {
         const { idKH, idCH, diaChiGiaoHang } = req.body;
-        if (!idKH || !diaChiGiaoHang || !idCH) {
+        if (!idKH || !idCH || !diaChiGiaoHang) {
             return res.status(400).json({ msg: 'Vui lòng điền đầy đủ thông tin' });
         }
-        let foundHoaDon = await HoaDon.findOne({ idKH, idCH, diaChiGiaoHang });
-        if (foundHoaDon) {
-            return res.status(400).json({ msg: "Hóa đơn đã tồn tại" });
+        // Kiểm tra xem cửa hàng có tồn tại không
+        const cuaHang = await CuaHang.findById(idCH);
+        if (!cuaHang) {
+            return res.status(400).json({ msg: "Cửa hàng không tồn tại" });
         }
+
         await HoaDon.create({
             idKH,
             idCH,

@@ -37,6 +37,12 @@ const addMonDat = async (req, res, next) => {
             throw new Error("Hóa đơn không ở trạng thái Đợi duyệt.");
         }
 
+        const cuaHangMonDat = mon.idCH.toString();
+        const cuaHangHoaDon = hoaDon.idCH.toString();
+        if (cuaHangMonDat !== cuaHangHoaDon) {
+            throw new Error("Món đặt không thuộc cùng một cửa hàng với các món trong hóa đơn.");
+        }
+
 
         const tongTienMoi = hoaDon.tongTien + (mon.giaTien * req.body.soLuong);
 
