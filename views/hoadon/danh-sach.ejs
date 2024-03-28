@@ -223,6 +223,31 @@
             <div class="container-fluid bg-white m-2">
 
                 <!-- Main content nằm ở dây -->
+                <form action="/hoa-don/danh-sach">
+                    <!-- Main content nằm ở dây -->
+                    <div class="d-flex row justify-content-between mb-1">
+                        <div class="col-6">
+                            <input type="text" id="searchMaHD" class="form-control" name="maHD"
+                                placeholder="Nhập mã hóa đơn để tìm kiếm">
+                        </div>
+                        <div class="mb-3">
+                            <input type="date" class="form-control" name="ngayTao" id="ngayTao" placeholder="Ngày tạo">
+                        </div>
+
+                        <div class="mb-3">
+                            <select class="form-control" name="trangThai">
+                                <option value="-1">trạng thái thanh toán</option>
+                                <option value="1">Đã thanh toán</option>
+                                <option value="0">Chưa thanh toán</option>
+                            </select>
+                        </div>
+
+                        <div class="col-2">
+                            <button class="btn btn-dark w-100" type="submit">Tìm kiếm</button>
+                        </div>
+                    </div>
+                </form>
+
 
             </div>
         </section>

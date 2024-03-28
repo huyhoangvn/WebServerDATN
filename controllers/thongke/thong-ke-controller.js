@@ -181,11 +181,13 @@ const thongKeDoanhThuTheoNam = async (req, res, next) => {
                     tongTien: { $sum: "$tongTien" } // Tính tổng tiền của tất cả các hóa đơn
                 }
             }
+
         ]);
+        const tongTien = result.length > 0 ? result[0].tongTien : 0;
 
         // Trả về tổng tiền của các hóa đơn thỏa mãn điều kiện trong năm
         return {
-            index: result,
+            index: tongTien,
             success: true,
             msg: "thành công"
         }
@@ -201,20 +203,17 @@ const thongKeDoanhThuTheoNam = async (req, res, next) => {
 const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
     try {
         // Nhận năm từ request params
-        const nam = req.params.nam;
+        const nam = req.query.nam;
 
         if (!nam) {
             return res.status(400).json({ message: 'Yêu cầu cung cấp năm.' });
         }
 
         // Tạo mảng chứa tên của các tháng
-        const monthNames = [
-            "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
-            "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"
-        ];
+        const monthNames = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
         // Khởi tạo mảng để lưu trữ doanh thu của từng tháng
-        const monthlyRevenue = {};
+        const monthlyRevenue = [];
 
         // Lặp qua từng tháng trong năm
         for (let month = 0; month < 12; month++) {
@@ -246,14 +245,14 @@ const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
             ]);
 
             // Lưu tổng doanh thu vào mảng monthlyRevenue
+            const monthRevenueObj = { month: monthNames[month], tong: 0 };
             if (result.length > 0) {
-                monthlyRevenue[monthNames[month]] = result[0].tongTien;
-            } else {
-                monthlyRevenue[monthNames[month]] = 0;
+                monthRevenueObj.tong = result[0].tongTien;
             }
+            monthlyRevenue.push(monthRevenueObj);
         }
 
-        // Gửi kết quả dưới dạng đối tượng JSON
+        // Gửi kết quả dưới dạng mảng
         return {
             index: monthlyRevenue,
             success: true,
