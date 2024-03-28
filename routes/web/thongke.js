@@ -11,6 +11,7 @@ const sessionAdmin = require('../../config/auth/session-admin')
 
 //
 router.get('/doanh-thu',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), DoanhThuCtrl.getView);
+router.get('/doanh-thu/theo-nam',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), DoanhThuCtrl.getChiTietDoanhThuTheoNam);
 router.get('/mon-ban-chay',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), MonBanChayCtrl.getView);
 router.get('/giao-dich',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), GiaoDichCtrl.getView);
  
