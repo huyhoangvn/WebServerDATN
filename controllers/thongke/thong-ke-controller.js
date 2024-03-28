@@ -7,23 +7,16 @@ const moment = require('moment');
 
 const thongKeDoanhThuTheoNgay = async (req, res, next) => {
     try {
-        // Lấy ngày hôm qua
-        const startDate = moment().utc().startOf('day').toDate();
-        const endDate = moment().utc().subtract(1, 'days').endOf('day').toDate();
+        // Lấy ngày cụ thể, ví dụ: ngày hôm nay
+        const currentDate = moment().utc().startOf('day').toDate();
 
         const result = await HoaDon.aggregate([
-            {
-                $addFields: {
-                    thoiGianTaoString: { $dateToString: { format: "%Y/%m/%d", date: "$thoiGianTao" } },
-                    startDateString: { $dateToString: { format: "%Y/%m/%d", date: startDate } }
-                }
-            },
             {
                 $match: {
                     $expr: {
                         $and: [
-                            { $gte: ["$thoiGianTaoString", "$startDateString"] }, // Hóa đơn được tạo trong ngày hôm nay
-                            { $lte: ["$thoiGianTaoString", endDate] },
+                            { $gte: ["$thoiGianTao", currentDate] }, // Hóa đơn được tạo trong ngày hôm nay hoặc sau ngày hôm nay
+                            { $lt: ["$thoiGianTao", moment(currentDate).add(1, 'days').toDate()] }, // Hóa đơn được tạo trước ngày hôm sau
                             { $eq: ["$trangThaiMua", 3] }, // Trạng thái mua là 3
                             { $eq: ["$trangThaiThanhToan", 1] }, // Trạng thái thanh toán là đã thanh toán
                             { $eq: ["$trangThai", true] }
@@ -31,24 +24,25 @@ const thongKeDoanhThuTheoNgay = async (req, res, next) => {
                     }
                 }
             },
-
             {
                 $group: {
                     _id: { $dateToString: { format: "%Y/%m/%d", date: "$thoiGianTao" } }, // Group theo ngày (năm-tháng-ngày)
                     tongTien: { $sum: "$tongTien" } // Tính tổng tiền
                 }
-            },
-            {
-                $sort: { _id: 1 } // Sắp xếp kết quả theo ngày tăng dần
             }
         ]);
-        const tongTienTongHop = result.reduce((accumulator, currentValue) => accumulator + currentValue.tongTien, 0);
+
+        // Lấy kết quả cho ngày cụ thể
+        const filteredResult = result.find(item => item._id === moment(currentDate).format("YYYY/MM/DD"));
+
+        // Tính tổng tiền
+        const tongTien = filteredResult ? filteredResult.tongTien : 0;
+
         return {
-            index: result,
-            tongTien: tongTienTongHop,
+            tongTien: tongTien,
             success: true,
-            msg: "thành công"
-        }
+            msg: "Thành công"
+        };
     } catch (error) {
         console.error("Error:", error);
         return {
@@ -60,23 +54,20 @@ const thongKeDoanhThuTheoNgay = async (req, res, next) => {
 
 const thongKeDoanhThuTheo10Ngay = async (req, res, next) => {
     try {
-        // Lấy 10 ngày trước
-        const startDate10 = moment().utc().subtract(10, 'days').startOf('day').toDate();
-        const endDate10 = moment().utc().subtract(1, 'days').endOf('day').toDate();
+        // Lấy ngày cụ thể, ví dụ: ngày hôm nay
+        const currentDate = moment().utc().startOf('day').toDate();
+
+        // Lấy ngày 10 ngày trước
+        const startDate = moment(currentDate).subtract(10, 'days').startOf('day').toDate();
 
         const result = await HoaDon.aggregate([
-            {
-                $addFields: {
-                    thoiGianTaoString: { $dateToString: { format: "%Y/%m/%d", date: "$thoiGianTao" } },
-                    startDateString: { $dateToString: { format: "%Y/%m/%d", date: startDate10 } }
-                }
-            },
+
             {
                 $match: {
                     $expr: {
                         $and: [
-                            { $gte: ["$thoiGianTaoString", "$startDateString"] }, // Hóa đơn được tạo trong ngày hôm nay
-                            { $lte: ["$thoiGianTaoString", endDate10] },
+                            { $gte: ["$thoiGianTao", startDate] }, // Hóa đơn được tạo từ ngày startDate
+                            { $lt: ["$thoiGianTao", moment(currentDate).add(1, 'days').toDate()] }, // Hóa đơn được tạo trước ngày hôm sau
                             { $eq: ["$trangThaiMua", 3] }, // Trạng thái mua là 3
                             { $eq: ["$trangThaiThanhToan", 1] }, // Trạng thái thanh toán là đã thanh toán
                             { $eq: ["$trangThai", true] }
@@ -86,23 +77,21 @@ const thongKeDoanhThuTheo10Ngay = async (req, res, next) => {
             },
             {
                 $group: {
-                    _id: { $dateToString: { format: "%Y/%m/%d", date: "$thoiGianTao" } }, // Group theo ngày (năm-tháng-ngày)
+                    _id: null,
                     tongTien: { $sum: "$tongTien" } // Tính tổng tiền
                 }
-            },
-            {
-                $sort: { _id: 1 } // Sắp xếp kết quả theo ngày tăng dần
+
             }
         ]);
 
-        const tongTienTongHop = result.reduce((accumulator, currentValue) => accumulator + currentValue.tongTien, 0);
+        // Tính tổng tiền
+        const tongTien = result.length > 0 ? result[0].tongTien : 0;
 
         return {
-            index: result,
-            tongTien: tongTienTongHop,
+            tongTien: tongTien,
             success: true,
-            msg: "thành công"
-        }
+            msg: "Thành công"
+        };
     } catch (error) {
         console.error("Error:", error);
         return {
@@ -115,26 +104,22 @@ const thongKeDoanhThuTheo10Ngay = async (req, res, next) => {
 
 const thongKeDoanhThuTheo30Ngay = async (req, res, next) => {
     try {
-        // Lấy 30 ngày hôm qua
-        const startDate30 = moment().utc().subtract(30, 'days').startOf('day').toDate();
-        const endDate30 = moment().utc().subtract(1, 'days').endOf('day').toDate();
+        // Lấy ngày cụ thể, ví dụ: ngày hôm nay
+        const currentDate = moment().utc().startOf('day').toDate();
 
+        // Lấy ngày 30 ngày trước
+        const startDate = moment(currentDate).subtract(30, 'days').startOf('day').toDate();
 
         const result = await HoaDon.aggregate([
-            {
-                $addFields: {
-                    thoiGianTaoString: { $dateToString: { format: "%Y/%m/%d", date: "$thoiGianTao" } },
-                    startDateString: { $dateToString: { format: "%Y/%m/%d", date: startDate30 } }
-                }
-            },
+
             {
                 $match: {
                     $expr: {
                         $and: [
-                            { $gte: ["$thoiGianTaoString", "$startDateString"] }, // Hóa đơn được tạo trong ngày hôm nay
-                            { $lte: ["$thoiGianTaoString", endDate30] },
+                            { $gte: ["$thoiGianTao", startDate] }, // Hóa đơn được tạo từ ngày startDate
+                            { $lt: ["$thoiGianTao", moment(currentDate).add(1, 'days').toDate()] }, // Hóa đơn được tạo trước ngày hôm sau
                             { $eq: ["$trangThaiMua", 3] }, // Trạng thái mua là 3
-                            { $eq: ["$trangThaiThanhToan", 1] },// Trạng thái thanh toán là đã thanh toán
+                            { $eq: ["$trangThaiThanhToan", 1] }, // Trạng thái thanh toán là đã thanh toán
                             { $eq: ["$trangThai", true] }
                         ]
                     }
@@ -142,22 +127,21 @@ const thongKeDoanhThuTheo30Ngay = async (req, res, next) => {
             },
             {
                 $group: {
-                    _id: { $dateToString: { format: "%Y/%m/%d", date: "$thoiGianTao" } }, // Group theo ngày (năm-tháng-ngày)
+                    _id: null,
                     tongTien: { $sum: "$tongTien" } // Tính tổng tiền
                 }
-            },
-            {
-                $sort: { _id: 1 } // Sắp xếp kết quả theo ngày tăng dần
+
             }
         ]);
-        const tongTienTongHop = result.reduce((accumulator, currentValue) => accumulator + currentValue.tongTien, 0);
+
+        // Tính tổng tiền
+        const tongTien = result.length > 0 ? result[0].tongTien : 0;
 
         return {
-            index: result,
-            tongTien: tongTienTongHop,
+            tongTien: tongTien,
             success: true,
-            msg: "thành công"
-        }
+            msg: "Thành công"
+        };
     } catch (error) {
         console.error("Error:", error);
         return {
@@ -287,24 +271,18 @@ const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
 
 const thongKeMonBanChay1Ngay = async () => {
     try {
-        // Lấy ngày hôm qua
-        const startDate = moment().utc().startOf('day').toDate();
-        const endDate = moment().utc().subtract(1, 'days').endOf('day').toDate();
+
+        const currentDate = moment().utc().startOf('day').toDate();
 
         // Bước 1: Lấy danh sách các hóa đơn phù hợp với điều kiện
         const hoaDon = await HoaDon.aggregate([
-            {
-                $addFields: {
-                    thoiGianTaoString: { $dateToString: { format: "%Y/%m/%d", date: "$thoiGianTao" } },
-                    startDateString: { $dateToString: { format: "%Y/%m/%d", date: startDate } }
-                }
-            },
+
             {
                 $match: {
                     $expr: {
                         $and: [
-                            { $gte: ["$thoiGianTaoString", "$startDateString"] }, // Hóa đơn được tạo trong ngày hôm nay
-                            { $lte: ["$thoiGianTaoString", endDate] },
+                            { $gte: ["$thoiGianTao", currentDate] }, // Hóa đơn được tạo trong ngày hôm nay hoặc sau ngày hôm nay
+                            { $lt: ["$thoiGianTao", moment(currentDate).add(1, 'days').toDate()] }, // 
                             { $eq: ["$trangThaiMua", 3] }, // Trạng thái mua là 3
                             { $eq: ["$trangThaiThanhToan", 1] }, // Trạng thái thanh toán là đã thanh toán
                             { $eq: ["$trangThai", true] }
@@ -377,23 +355,19 @@ const thongKeMonBanChay1Ngay = async () => {
 const thongKeMonBanChay10Ngay = async () => {
     try {
         // Lấy ngày hôm qua
-        const startDate = moment().utc().subtract(10, 'days').startOf('day').toDate();
-        const endDate = moment().utc().subtract(1, 'days').endOf('day').toDate();
+        const currentDate = moment().utc().startOf('day').toDate();
+
+        // Lấy ngày 10 ngày trước
+        const startDate = moment(currentDate).subtract(10, 'days').startOf('day').toDate();
 
         // Bước 1: Lấy danh sách các hóa đơn phù hợp với điều kiện
         const hoaDon = await HoaDon.aggregate([
             {
-                $addFields: {
-                    thoiGianTaoString: { $dateToString: { format: "%Y/%m/%d", date: "$thoiGianTao" } },
-                    startDateString: { $dateToString: { format: "%Y/%m/%d", date: startDate } }
-                }
-            },
-            {
                 $match: {
                     $expr: {
                         $and: [
-                            { $gte: ["$thoiGianTaoString", "$startDateString"] }, // Hóa đơn được tạo trong ngày hôm nay
-                            { $lte: ["$thoiGianTaoString", endDate] },
+                            { $gte: ["$thoiGianTao", startDate] }, // Hóa đơn được tạo trong ngày hôm nay
+                            { $lte: ["$thoiGianTao", moment(currentDate).add(1, 'days').toDate()] },
                             { $eq: ["$trangThaiMua", 3] }, // Trạng thái mua là 3
                             { $eq: ["$trangThaiThanhToan", 1] }, // Trạng thái thanh toán là đã thanh toán
                             { $eq: ["$trangThai", true] }
@@ -466,23 +440,19 @@ const thongKeMonBanChay10Ngay = async () => {
 const thongKeMonBanChay30Ngay = async () => {
     try {
         // Lấy ngày hôm qua
-        const startDate = moment().utc().subtract(30, 'days').startOf('day').toDate();
-        const endDate = moment().utc().subtract(1, 'days').endOf('day').toDate();
+        const currentDate = moment().utc().startOf('day').toDate();
+
+        // Lấy ngày 10 ngày trước
+        const startDate = moment(currentDate).subtract(30, 'days').startOf('day').toDate();
 
         // Bước 1: Lấy danh sách các hóa đơn phù hợp với điều kiện
         const hoaDon = await HoaDon.aggregate([
             {
-                $addFields: {
-                    thoiGianTaoString: { $dateToString: { format: "%Y/%m/%d", date: "$thoiGianTao" } },
-                    startDateString: { $dateToString: { format: "%Y/%m/%d", date: startDate } }
-                }
-            },
-            {
                 $match: {
                     $expr: {
                         $and: [
-                            { $gte: ["$thoiGianTaoString", "$startDateString"] }, // Hóa đơn được tạo trong ngày hôm nay
-                            { $lte: ["$thoiGianTaoString", endDate] },
+                            { $gte: ["$thoiGianTao", startDate] }, // Hóa đơn được tạo trong ngày hôm nay
+                            { $lte: ["$thoiGianTao", moment(currentDate).add(1, 'days').toDate()] },
                             { $eq: ["$trangThaiMua", 3] }, // Trạng thái mua là 3
                             { $eq: ["$trangThaiThanhToan", 1] }, // Trạng thái thanh toán là đã thanh toán
                             { $eq: ["$trangThai", true] }
@@ -559,9 +529,7 @@ const thongKeMonBanChay30Ngay = async () => {
 const thongKeMonBanChay1NgayTheoTenLoaiMon = async (req, res) => {
     try {
         const tenLM = req.query.tenLM;
-
-        const startDate = moment().utc().startOf('day').toDate();
-        const endDate = moment().utc().subtract(1, 'days').endOf('day').toDate();
+        const currentDate = moment().utc().startOf('day').toDate();
 
         // Bước 1: Lấy ID của loại món dựa trên tên loại món
         const loaiMon = await LoaiMon.findOne({ tenLM: tenLM });
@@ -575,17 +543,11 @@ const thongKeMonBanChay1NgayTheoTenLoaiMon = async (req, res) => {
         // Bước 2: Lấy danh sách các hóa đơn phù hợp với điều kiện
         const hoaDon = await HoaDon.aggregate([
             {
-                $addFields: {
-                    thoiGianTaoString: { $dateToString: { format: "%Y/%m/%d", date: "$thoiGianTao" } },
-                    startDateString: { $dateToString: { format: "%Y/%m/%d", date: startDate } }
-                }
-            },
-            {
                 $match: {
                     $expr: {
                         $and: [
-                            { $gte: ["$thoiGianTaoString", "$startDateString"] }, // Hóa đơn được tạo trong ngày hôm nay
-                            { $lte: ["$thoiGianTaoString", endDate] },
+                            { $gte: ["$thoiGianTao", currentDate] }, // Hóa đơn được tạo trong ngày hôm nay
+                            { $lte: ["$thoiGianTao", moment(currentDate).add(1, 'days').toDate()] },
                             { $eq: ["$trangThaiMua", 3] }, // Trạng thái mua là 3
                             { $eq: ["$trangThaiThanhToan", 1] }, // Trạng thái thanh toán là đã thanh toán
                             { $eq: ["$trangThai", true] }
@@ -657,8 +619,10 @@ const thongKeMonBanChay10NgayTheoTenLoaiMon = async (req, res) => {
     try {
         const tenLM = req.query.tenLM;
 
-        const startDate = moment().utc().subtract(10, 'days').startOf('day').toDate();
-        const endDate = moment().utc().subtract(1, 'days').endOf('day').toDate();
+        const currentDate = moment().utc().startOf('day').toDate();
+
+        // Lấy ngày 10 ngày trước
+        const startDate = moment(currentDate).subtract(10, 'days').startOf('day').toDate();
 
         // Bước 1: Lấy ID của loại món dựa trên tên loại món
         const loaiMon = await LoaiMon.findOne({ tenLM: tenLM });
@@ -672,17 +636,11 @@ const thongKeMonBanChay10NgayTheoTenLoaiMon = async (req, res) => {
         // Bước 2: Lấy danh sách các hóa đơn phù hợp với điều kiện
         const hoaDon = await HoaDon.aggregate([
             {
-                $addFields: {
-                    thoiGianTaoString: { $dateToString: { format: "%Y/%m/%d", date: "$thoiGianTao" } },
-                    startDateString: { $dateToString: { format: "%Y/%m/%d", date: startDate } }
-                }
-            },
-            {
                 $match: {
                     $expr: {
                         $and: [
-                            { $gte: ["$thoiGianTaoString", "$startDateString"] }, // Hóa đơn được tạo trong ngày hôm nay
-                            { $lte: ["$thoiGianTaoString", endDate] },
+                            { $gte: ["$thoiGianTaoString", startDate] }, // Hóa đơn được tạo trong ngày hôm nay
+                            { $lte: ["$thoiGianTaoString", moment(currentDate).add(1, 'days').toDate()] },
                             { $eq: ["$trangThaiMua", 3] }, // Trạng thái mua là 3
                             { $eq: ["$trangThaiThanhToan", 1] }, // Trạng thái thanh toán là đã thanh toán
                             { $eq: ["$trangThai", true] }
@@ -753,9 +711,10 @@ const thongKeMonBanChay10NgayTheoTenLoaiMon = async (req, res) => {
 const thongKeMonBanChay30NgayTheoTenLoaiMon = async (req, res) => {
     try {
         const tenLM = req.query.tenLM;
+        const currentDate = moment().utc().startOf('day').toDate();
 
-        const startDate = moment().utc().subtract(30, 'days').startOf('day').toDate();
-        const endDate = moment().utc().subtract(1, 'days').endOf('day').toDate();
+        // Lấy ngày 10 ngày trước
+        const startDate = moment(currentDate).subtract(30, 'days').startOf('day').toDate();
 
         // Bước 1: Lấy ID của loại món dựa trên tên loại món
         const loaiMon = await LoaiMon.findOne({ tenLM: tenLM });
@@ -769,17 +728,11 @@ const thongKeMonBanChay30NgayTheoTenLoaiMon = async (req, res) => {
         // Bước 2: Lấy danh sách các hóa đơn phù hợp với điều kiện
         const hoaDon = await HoaDon.aggregate([
             {
-                $addFields: {
-                    thoiGianTaoString: { $dateToString: { format: "%Y/%m/%d", date: "$thoiGianTao" } },
-                    startDateString: { $dateToString: { format: "%Y/%m/%d", date: startDate } }
-                }
-            },
-            {
                 $match: {
                     $expr: {
                         $and: [
-                            { $gte: ["$thoiGianTaoString", "$startDateString"] }, // Hóa đơn được tạo trong ngày hôm nay
-                            { $lte: ["$thoiGianTaoString", endDate] },
+                            { $gte: ["$thoiGianTaoString", startDate] }, // Hóa đơn được tạo trong ngày hôm nay
+                            { $lte: ["$thoiGianTaoString", moment(currentDate).add(1, 'days').toDate()] },
                             { $eq: ["$trangThaiMua", 3] }, // Trạng thái mua là 3
                             { $eq: ["$trangThaiThanhToan", 1] }, // Trạng thái thanh toán là đã thanh toán
                             { $eq: ["$trangThai", true] }
