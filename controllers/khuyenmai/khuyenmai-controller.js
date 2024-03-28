@@ -71,14 +71,16 @@ const ThemKhuyenMai = async function (req, res) {
 
 // Hàm này để sửa khuyến mãi 
 const SuaKhuyenMai = async function (req, res) {
-    const idKM = new mongo.Types.ObjectId(req.params.idKM);
-    const tieuDe = req.body.tieuDe;
-    const maKhuyenMai = req.body.maKhuyenMai;
-    const ngayBatDau = req.body.ngayBatDau;
-    const ngayHetHan = req.body.ngayHetHan;
-    const phanTramKhuyenMai = req.body.phanTramKhuyenMai;
-    const donToiThieu = req.body.donToiThieu;
+
     try {
+        const idKM = new mongo.Types.ObjectId(req.params.idKM);
+        const tieuDe = req.body.tieuDe;
+        const maKhuyenMai = new Date(req.body.maKhuyenMai);
+        const ngayBatDau = new Date(req.body.ngayBatDau);
+        const ngayHetHan = req.body.ngayHetHan;
+        const phanTramKhuyenMai = req.body.phanTramKhuyenMai;
+        const donToiThieu = req.body.donToiThieu;
+
         const filter = { _id: idKM }
         const update = {
             tieuDe: tieuDe,
@@ -101,11 +103,11 @@ const SuaKhuyenMai = async function (req, res) {
                 success: false
             });
         } else {
-            res.status(200).json({
+            return {
                 index,
                 message: 'Sửa khuyến mãi thành công',
                 success: true
-            });
+            };
         }
     } catch (error) {
         console.error(error);
@@ -116,6 +118,10 @@ const SuaKhuyenMai = async function (req, res) {
     }
 
 }
+const SuaKhuyenMaiApi = async (req, res) => {
+    const result = await SuaKhuyenMai(req, res);
+    res.json(result)
+}
 
 // Hàm này để xóa khuyến mãi (xóa mềm: chuyển trạng thái true thành false)
 const XoaKhuyenMai = async function (req, res) {
@@ -125,31 +131,31 @@ const XoaKhuyenMai = async function (req, res) {
         const filter = { _id: idKM }
         // const update = { trangThai: false }
         const KM = await KhuyenMai.findOne(filter)
-        if(KM.trangThai == true){
+        if (KM.trangThai == true) {
             const update = { trangThai: false }
             const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
             if (!index) {
-                return({
+                return ({
                     error: 'Không tìm thấy khuyến mãi để xóa',
                     success: false
                 });
             } else {
-                return({
+                return ({
                     index,
                     message: 'Xóa khuyến mãi thành công',
                     success: true
                 });
             }
-        }else{
+        } else {
             const update = { trangThai: true }
             const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
             if (!index) {
-                return({
+                return ({
                     error: 'Không tìm thấy khuyến mãi để xóa',
                     success: false
                 });
             } else {
-                return({
+                return ({
                     index,
                     message: 'Xóa khuyến mãi thành công',
                     success: true
@@ -169,7 +175,7 @@ const XoaKhuyenMai = async function (req, res) {
 const xoaKhuyenMaiApi = async (req, res) => {
     const result = await XoaKhuyenMai(req, res);
     res.json(result)
-  }
+}
 
 // hàm này để lấy ra tất cả khuyến mãi theo tiêu đề 
 const GetKhuyenMaiTheoTieuDe = async function (req, res) {
@@ -467,6 +473,7 @@ module.exports = {
     GetKhuyenMaiTheoNgay,
     GetKhuyenMaiTheoMaKhuyenMai,
     getTatCaKhuyenMai,
-    getTatCaKhuyenMaiApi
+    getTatCaKhuyenMaiApi,
+    SuaKhuyenMaiApi
 
 }

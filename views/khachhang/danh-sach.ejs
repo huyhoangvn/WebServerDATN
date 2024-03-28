@@ -240,7 +240,6 @@
               <td scope="col-2">Giới Tính</td>
               <td scope="col-2">Tài Khoản</td>
               <td scope="col-2">Trạng Thái</td>
-              <td scope="col-1">Chức năng</td>
             </tr>
           </thead>
           <tbody>
@@ -260,16 +259,11 @@
                       <td scope="col-2">
                         <%=data[i].taiKhoan%>
                       </td>
-
                       <% if(data[i].trangThai==true){%>
                         <td class="text-success" scope="col-2">Hoạt động</td>
                         <%}else if(data[i].trangThai==false){%>
                           <td class="text-danger" scope="col-2">Khóa</td>
                           <%}%>
-
-                            <td class="text-primary" scope="col-1">
-                              <a href="/khach-hang/chi-tiet/<%=data[i]._id%>">Chi tiết</a>
-                            </td>
               </tr>
               <%}%>
           </tbody>
