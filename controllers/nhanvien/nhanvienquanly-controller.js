@@ -72,6 +72,14 @@ const suaNhanVienBan = async (req, res, next) => {
     const idEdit = req.params.idNhanVienBan;
     const { tenNV, diaChi, sdt } = req.body;
 
+    let hinhAnh = null; // Khởi tạo hình ảnh mặc định là null
+  
+    // Kiểm tra xem có tệp hình ảnh được tải lên hay không
+    if (req.files && req.files.length > 0) {
+      // Lưu tên của tệp hình ảnh vào biến hinhAnh
+      hinhAnh = req.files[0].filename;
+    }
+    
     // Kiểm tra trống dữ liệu cho các trường
     if (!tenNV || !diaChi || !sdt) {
       return res.json({
@@ -79,42 +87,53 @@ const suaNhanVienBan = async (req, res, next) => {
         msg: "Thông tin nhân viên không đầy đủ hoặc không hợp lệ.",
       });
     }
-    const item = await NhanVien.findById(idNhanVien);
 
+    // Kiểm tra xem nhân viên có tồn tại không
+    const item = await NhanVien.findById(idNhanVien);
     if (!item) {
       return res.json({ success: false, msg: "Không tìm thấy nhân viên." });
     }
 
-    if (item && item.phanQuyen === 0) {
-      const updateNV = await NhanVien.findByIdAndUpdate(
-        { _id: idEdit },
-        {
-          tenNV: tenNV,
-          diaChi: diaChi,
-          sdt: sdt,
-        },
-        { new: true }
-      );
-
-      // Kiểm tra xem có nhân viên không
-      if (!updateNV) {
-        return json({ success: false, error: "Không tìm thấy nhân viên" });
-      }
-      // Cập nhật thành công
-      res.json({
-        success: true,
-        dataUpdate: updateNV,
-        msg: "Đã cập nhật thông tin nhân viên thành công",
-      });
-    } else {
-      res.json({ success: false, msg: "Nhân viên không có quyền cập nhật" });
+    // Kiểm tra quyền của nhân viên
+    if (item.phanQuyen !== 0) {
+      return res.json({ success: false, msg: "Nhân viên không có quyền cập nhật." });
     }
+
+    // Cập nhật thông tin nhân viên và hình ảnh mới (nếu có)
+    const updateData = {
+      tenNV: tenNV,
+      diaChi: diaChi,
+      sdt: sdt,
+    };
+    if (hinhAnh) {
+      updateData.hinhAnh = req.protocol + "://" + req.get("host") + "/public/images/" + hinhAnh;
+    }
+
+    // Thực hiện cập nhật thông tin nhân viên
+    const updateNV = await NhanVien.findByIdAndUpdate(
+      { _id: idEdit },
+      updateData,
+      { new: true }
+    );
+
+    // Kiểm tra xem có nhân viên được cập nhật không
+    if (!updateNV) {
+      return res.json({ success: false, msg: "Không tìm thấy hoặc không thể cập nhật thông tin nhân viên." });
+    }
+
+    // Trả về kết quả thành công
+    res.json({
+      success: true,
+      dataUpdate: updateNV,
+      msg: "Đã cập nhật thông tin nhân viên thành công",
+    });
   } catch (e) {
     console.error(e);
     res.json({ success: false, msg: "Đã xảy ra lỗi khi cập nhật nhân viên." });
   }
 };
-const xoaNhanVienBan = async (req, res, next) => {
+
+const huyKichHoatNhanVien = async (req, res, next) => {
   try {
     const idNhanVien = req.params.id;
     const idEdit = req.params.idNhanVienBan;
@@ -125,31 +144,39 @@ const xoaNhanVienBan = async (req, res, next) => {
     }
 
     if (item && item.phanQuyen === 0) {
+      const projection = { trangThai: 1 }; // Di chuyển việc khai báo lên trước khi sử dụng
+      const editUser = await NhanVien.findById(idEdit, projection); // Sử dụng projection chỉ hiển thị trường trangThai
+      console.log("🚀 ~ huyKichHoatNhanVien ~ editUser:", editUser);
+      
+      const newTrangThai = !editUser.trangThai;
       const updateNV = await NhanVien.findByIdAndUpdate(
         { _id: idEdit },
-        { $set: { trangThai: 0 } },
-        { new: true }
+        { $set: { trangThai: newTrangThai } },
+        { new: true, projection } // Sử dụng projection để chỉ định trường trả về
       );
 
-      // Kiểm tra xem có nhân viên không
       if (!updateNV) {
-        return json({ success: false, error: "Không tìm thấy nhân viên" });
+        return res.json({ success: false, error: "Không tìm thấy nhân viên" });
       }
+
       // Cập nhật thành công
       res.json({
         success: true,
-
-        dataUpdate: updateNV,
-        msg: "xoá thành công",
+        index:  updateNV,// Chỉ trả về trường trangThai
+        msg: "Đã cập nhật trạng thái thành công",
       });
     } else {
       res.json({ success: false, msg: "Nhân viên không có quyền cập nhật" });
     }
   } catch (e) {
     console.error(e);
-    res.json({ success: false, msg: "Đã xảy ra lỗi khi cập nhật nhân viên." });
+    res.json({ success: false, msg: "Đã xảy ra lỗi khi cập nhật trạng thái nhân viên." });
   }
 };
+
+
+
+
 const kichHoatNhanVienBan = async (req, res, next) => {
   try {
     const idNhanVien = req.params.id;
@@ -544,13 +571,13 @@ const chiTietNhanVienQuanLy = async (req, res, next) => {
   try {
     const idNhanVien = req.params.id;
     const nhanVien = await NhanVien.findById(idNhanVien)
-      .select("-taiKhoan -matKhau") // Exclude taiKhoan and matKhau fields
+      .select("-matKhau") // Exclude taiKhoan and matKhau fields
       .exec();
     if (!nhanVien) {
       return json({ error: "Không tìm thấy nhân viên" });
     }
-
-    res.json({ success: true, data: nhanVien });
+    res.json({ success: true, index: nhanVien, msg: "Lấy dữ liệu thành công",
+  });
   } catch (error) {
     console.error(error);
     res.json({
@@ -603,9 +630,9 @@ const suaNhanVienBanApi = async (req, res, next) => {
   }
 };
 
-const xoaNhanVienBanApi = async (req, res, next) => {
+const huyKichHoatNhanVienApi = async (req, res, next) => {
   try {
-    const result = await xoaNhanVienBan(req, res, next);
+    const result = await huyKichHoatNhanVien(req, res, next);
     if (!res.headersSent) {
       res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
     }
@@ -623,6 +650,7 @@ const xoaNhanVienBanApi = async (req, res, next) => {
     }
   }
 };
+
 const kichHoatnhanVienBanApi = async (req, res, next) => {
   try {
     const result = await kichHoatNhanVienBan(req, res, next);
@@ -827,7 +855,7 @@ const chiTietNhanVienQuanLyApi = async (req, res, next) => {
 module.exports = {
   addNhanVienBanApi,
   suaNhanVienBanApi,
-  xoaNhanVienBanApi,
+  huyKichHoatNhanVienApi,
   kichHoatnhanVienBanApi,
   addNhanVienQuanLyApi,
   xoaNhanVienQuanLyApi,
