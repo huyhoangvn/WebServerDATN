@@ -4,6 +4,7 @@ const {
   ThemKhuyenMai,
   SuaKhuyenMai,
   XoaKhuyenMai,
+  xoaKhuyenMaiApi,
   GetKhuyenMaiTheoTieuDe,
   GetKhuyenMaiTheoPhanTram,
   GetKhuyenMaiTheoDonToiThieu,
@@ -44,7 +45,7 @@ router.put("/sua-khuyen-mai/:idKM", SuaKhuyenMaiApi);
 
 // http://localhost:3000/api/nhanvien/khuyenmai/xoa-khuyen-mai/65d2d024b680727a505006ae
 // chọn khuyến mãi có trạng thái true để test 
-router.put("/xoa-khuyen-mai/:idKM", XoaKhuyenMai);
+router.put("/xoa-khuyen-mai/:idKM", xoaKhuyenMaiApi);
 
 // http://localhost:3000/api/nhanvien/khuyenmai/get-khuyen-mai-theo-tieu-de?tieuDe=sale&limit=1
 // viết 1 từ bất kì vào query để tìm 
