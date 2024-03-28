@@ -275,7 +275,7 @@
                           endDate.getFullYear() %>
                 </td>
                 <td class="text-primary" scope="col-1">
-                  <a data-toggle="modal" data-target="#suaKhuyenMaiModal" data-idkm="123"
+                  <a data-toggle="modal" data-target="#suaKhuyenMaiModal" data-idkm="<%=data[i]._id%>"
                     data-tieude="<%=data[i].tieuDe%>" data-makhuyenmai="<%=data[i].maKhuyenMai%>"
                     data-ngaybatdau="<%=data[i].ngayBatDau%>" data-ngayhethan="<%=data[i].ngayHetHan%>"
                     data-phantramkhuyenmai="<%=data[i].phanTramKhuyenMai%>" data-dontoithieu="<%=data[i].donToiThieu%>"
@@ -283,20 +283,21 @@
                     Sửa </a>
                 </td>
 
-                <% if(data[i].trangThai==true){%>
-                  <td class="text-success" scope="col-2">Hoạt động</td>
-                  <%}else if(data[i].trangThai==false){%>
-                    <td class="text-danger" scope="col-2">Khóa</td>
-                    <%}%>
+                <td class="text-primary scope-col-2">
+                  <a data-toggle="modal" data-target="#suaTrangThaiModal"
+                    class=" <%= data[i].trangThai ? 'text-success' : 'text-danger' %>" data-idkm="<%=data[i]._id%>"
+                    data-trangthai="<%=data[i].trangThai%>">
+                    <%= data[i].trangThai ? 'Hoạt động' : 'Khóa' %>
+                  </a>
+                </td>
 
-                      <td class="text-primary" scope="col-1">
-                        <a data-toggle="modal" data-target="#exampleModal" data-tieude="<%=data[i].tieuDe%>"
-                          data-makhuyenmai="<%=data[i].maKhuyenMai%>" data-ngaybatdau="<%=data[i].ngayBatDau%>"
-                          data-ngayhethan="<%=data[i].ngayHetHan%>"
-                          data-phantramkhuyenmai="<%=data[i].phanTramKhuyenMai%>"
-                          data-dontoithieu="<%=data[i].donToiThieu%>" data-trangthai="<%=data[i].trangThai%>">
-                          Chi tiết</a>
-                      </td>
+                <td class="text-primary" scope="col-1">
+                  <a data-toggle="modal" data-target="#exampleModal" data-tieude="<%=data[i].tieuDe%>"
+                    data-makhuyenmai="<%=data[i].maKhuyenMai%>" data-ngaybatdau="<%=data[i].ngayBatDau%>"
+                    data-ngayhethan="<%=data[i].ngayHetHan%>" data-phantramkhuyenmai="<%=data[i].phanTramKhuyenMai%>"
+                    data-dontoithieu="<%=data[i].donToiThieu%>" data-trangthai="<%=data[i].trangThai%>">
+                    Chi tiết</a>
+                </td>
               </tr>
               <%}%>
           </tbody>
@@ -375,13 +376,35 @@
                     <input type="text" class="form-control" name="donToiThieu" id="donToiThieu"
                       placeholder="Đơn tối thiểu">
                   </div>
-
-                  <div class="form-group">
-                    <label for="idKM">id KM</label>
-                    <input type="text" class="form-control" name="idKM" id="idKM">
-                  </div>
+                  <input type="hidden" class="form-control" name="idKM" id="idKM">
                   <br>
                   <button type="submit" class="btn btn-primary">Lưu</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Modal Sửa Trạng Thái -->
+        <div class="modal fade" id="suaTrangThaiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sửa Trạng Thái</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form id="formSuaTrangThai" action="/khuyen-mai/xoa" method="post">
+                  <div class="form-group">
+                    <label for="trangThai">bạn có muốn sửa trạng thái không</label>
+                  </div>
+                  <input type="hidden" class="form-control" name="idKM" id="idKM">
+                  <br>
+                  <button type="submit" class="btn btn-primary">Sửa</button>
                 </form>
               </div>
             </div>
@@ -456,18 +479,10 @@
         var idKM = $(this).data('idkm');
         var tieuDe = $(this).data('tieude');
         var maKhuyenMai = $(this).data('makhuyenmai');
-        var ngayBatDau = moment($(this).data('ngaybatdau')).format('DD/MM/YYYY');
-        var ngayHetHan = moment($(this).data('ngayhethan')).format('DD/MM/YYYY');
+        var ngayBatDau = $(this).data('ngaybatdau');
+        var ngayHetHan = $(this).data('ngayhethan');
         var phanTramKhuyenMai = $(this).data('phantramkhuyenmai');
         var donToiThieu = $(this).data('dontoithieu');
-
-        console.log("idKM:", idKM);
-        console.log("tieuDe:", tieuDe);
-        console.log("maKhuyenMai:", maKhuyenMai);
-        console.log("ngayBatDau:", ngayBatDau);
-        console.log("ngayHetHan:", ngayHetHan);
-        console.log("phanTramKhuyenMai:", phanTramKhuyenMai);
-        console.log("donToiThieu:", donToiThieu);
 
         // Thiết lập value cho từng trường input
         $('#tieuDe').val(tieuDe);
@@ -476,7 +491,7 @@
         $('#ngayHetHan').val(ngayHetHan);
         $('#phanTramKhuyenMai').val(phanTramKhuyenMai);
         $('#donToiThieu').val(donToiThieu);
-        $('idKM').val(idKM);
+        $('#idKM').val(idKM);
 
 
 
@@ -484,8 +499,20 @@
       });
     });
 
+    // sửa trạng thái
+    $(document).ready(function () {
+      $('a[data-target="#suaTrangThaiModal"]').on('click', function () {
+
+        var idKM = $(this).data('idkm');
+
+        $('#idKM').val(idKM);
+
+        $('#formSuaTrangThai').attr('action', '/khuyen-mai/xoa/' + idKM);
+      });
+    });
 
   </script>
+
 </body>
 
 </html>
