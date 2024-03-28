@@ -1,5 +1,6 @@
 const Admin = require('../../model/Admin')
 const auth = require('../../config/auth/jwt-encode')
+const ThongKeCtrl = require("../../controllers/thongke/thong-ke-controller");
 
 const dangNhap = async(req, res, next)=>{
     let msg = ""
@@ -69,16 +70,12 @@ const dangNhap = async(req, res, next)=>{
 //Website
 const dangNhapWeb = async(req, res, next)=>{
     result = await dangNhap(req, res, next)
-    .then((result)=>{
-        console.log(result.success)
+    .then(async(result)=>{
         if(result.success){
             let token = auth.encodedToken(result.index.id)
             req.session.token = token
             req.session.ten = result.index.ten
-            res.render("thongke/doanh-thu", {
-                admin: result.index.ten,
-                msg: result.msg
-            })
+            res.redirect("thong-ke/doanh-thu")
         } else {
             res.render("index", {
                 msg: result.msg

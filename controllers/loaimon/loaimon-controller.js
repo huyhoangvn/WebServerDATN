@@ -230,6 +230,59 @@ const updateLoaiMonApi = async (req, res, next) => {
     }
   }
 };
+
+const GetSoLuongMonTheoLoaiMon = async (req, res) =>{
+  try {
+    const timkiem = {};
+
+    if (typeof(req.query.tenLM) !== 'undefined' && typeof(req.query.tenLM) !== "") {
+        timkiem.tenLM = { $regex: req.query.tenLM, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+    }
+    if (typeof(req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+        const trangThaiValue = parseInt(req.query.trangThai);
+        if(trangThaiValue === 1 || trangThaiValue === 0){
+          timkiem.trangThai = trangThaiValue === 1;
+        }
+       }
+
+    const result = await Loaimon.model.aggregate([ 
+        { $match: timkiem },
+        {
+            $lookup: {
+                from: "Mon",
+                localField: "_id",
+                foreignField: "idLM",
+                as: "monData"
+            }
+        },
+        {
+            $project: {
+                "idLM": "$_id",
+                "tenLM": "$tenLM",
+                "trangThai":"$trangThai",
+                "soLuongMon": { $size: "$monData" } // Đếm số lượng phần tử trong mảng "monData"
+            }
+        },
+        // {
+        //     $skip: (trang-1)*10,
+        // },
+    
+        // {
+        //         $limit: 10,
+        // },
+    ]);
+
+    return( {
+        list: result,
+        message: 'lấy số lượng món thành công',
+    });
+  } catch (error) {
+      return({
+          msg: 'Lỗi khi lấy số lượng món theo loại món',
+          success: false
+      });
+  }
+}
 module.exports = {
   //Api
   addloaimonApi,
@@ -238,5 +291,6 @@ module.exports = {
   updateLoaiMonApi,
   kichhoatLoaiMonapi,
   getloaimonApi,
-  themLoaiMon
+  themLoaiMon,
+  GetSoLuongMonTheoLoaiMon
 };
