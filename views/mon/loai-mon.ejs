@@ -224,7 +224,7 @@
 <!-- Filter loại món -->
           <label>Danh sách loại món</label>
           <br>
-          <form action="/loaimon/danhsach" method="GET">
+          <form action="/loai-mon/danh-sach" method="GET">
             <div class="d-flex row justify-content-between mb-1">
               <div class="col-8">
                 <input type="text" class="form-control" name="tenLM" placeholder="Nhập tên loại món để tìm kiếm">
@@ -232,8 +232,8 @@
               <div class="col-2">
                 <select class="form-control" name="trangThai">
                   <option value="-1">Tất cả trạng thái</option>
-                  <option value="0">Hoạt động</option>
-                  <option value="1">Khóa</option>
+                  <option value="1">Hoạt động</option>
+                  <option value="0">Khóa</option>
                 </select>
               </div>
 
@@ -262,7 +262,7 @@
               <tr>
                 <td scope="col-1"><%=i+1%></td>
                 <td scope="col-2"><%=listLM[i].tenLM%></td>
-                <td scope="col-2">số lượng món</td>
+                <td scope="col-2"><%=listLM[i].soLuongMon%></td>
                 <% if(listLM[i].trangThai == true){%>
                   <td class="text-success" scope="col-2">Hoạt động</td>
                 <%}else{%>

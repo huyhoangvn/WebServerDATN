@@ -123,20 +123,38 @@ const XoaKhuyenMai = async function (req, res) {
 
     try {
         const filter = { _id: idKM }
-        const update = { trangThai: false }
-        const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
-
-        if (!index) {
-            return res.status(404).json({
-                error: 'Không tìm thấy khuyến mãi để xóa',
-                success: false
-            });
-        } else {
-            res.status(200).json({
-                index,
-                message: 'Xóa khuyến mãi thành công',
-                success: true
-            });
+        // const update = { trangThai: false }
+        const KM = await KhuyenMai.findOne(filter)
+        if(KM.trangThai == true){
+            const update = { trangThai: false }
+            const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
+            if (!index) {
+                return({
+                    error: 'Không tìm thấy khuyến mãi để xóa',
+                    success: false
+                });
+            } else {
+                return({
+                    index,
+                    message: 'Xóa khuyến mãi thành công',
+                    success: true
+                });
+            }
+        }else{
+            const update = { trangThai: true }
+            const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
+            if (!index) {
+                return({
+                    error: 'Không tìm thấy khuyến mãi để xóa',
+                    success: false
+                });
+            } else {
+                return({
+                    index,
+                    message: 'Xóa khuyến mãi thành công',
+                    success: true
+                });
+            }
         }
     } catch (error) {
         console.error(error);
@@ -147,6 +165,11 @@ const XoaKhuyenMai = async function (req, res) {
     }
 
 }
+
+const xoaKhuyenMaiApi = async (req, res) => {
+    const result = await XoaKhuyenMai(req, res);
+    res.json(result)
+  }
 
 // hàm này để lấy ra tất cả khuyến mãi theo tiêu đề 
 const GetKhuyenMaiTheoTieuDe = async function (req, res) {
@@ -436,6 +459,7 @@ module.exports = {
     ThemKhuyenMai,
     SuaKhuyenMai,
     XoaKhuyenMai,
+    xoaKhuyenMaiApi,
     GetKhuyenMaiTheoTieuDe,
     GetKhuyenMaiTheoPhanTram,
     GetKhuyenMaiTheoDonToiThieu,
