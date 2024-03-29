@@ -9,15 +9,9 @@ router.get('/30-ngay', thongkeCrl.thongKeDoanhThuTheo30NgayApi);
 router.get('/', thongkeCrl.thongKeDoanhThuTheoNamApi);
 router.get('/12-thang', thongkeCrl.thongKeDoanhThuTheoThangTrongNamApi);
 
-// thống kê món bán chạy tất cả
-
-router.get('/1-ngay-tat-ca', thongkeCrl.thongKeMonBanChay1NgayTatCaApi);
-router.get('/10-ngay-tat-ca', thongkeCrl.thongKeMonBanChay10NgayTatCaApi);
-router.get('/30-ngay-tat-ca', thongkeCrl.thongKeMonBanChay30NgayTatCaApi);
-
 // thống kê món bán chạy theo tên loai món
 
-router.get('/1-ngay-ten', thongkeCrl.thongKeMonBanChay1NgayTheoTenLoaiMonApi);
-router.get('/10-ngay-ten', thongkeCrl.thongKeMonBanChay10NgayTheoTenLoaiMonApi);
-router.get('/30-ngay-ten', thongkeCrl.thongKeMonBanChay30NgayTheoTenLoaiMonApi);
+router.get('/tenLM', thongkeCrl.thongKeMonBanChayTheoTenLoaiMonApi);// hàm này dùng để tìm kiếm theo tên LM năm và tháng
+router.get('/nam-tenLM', thongkeCrl.thongKeMonBanChayTheoNamApi);// hàm này dùng để tìm kiếm theo năm và tháng
+
 module.exports = router;
