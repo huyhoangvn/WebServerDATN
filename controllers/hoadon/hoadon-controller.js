@@ -52,40 +52,119 @@ const updateHoaDon = async (req, res) => {
 
 const getHoaDon = async (req, res, next) => {
     try {
-        const {
-            trangThaiThanhToan,
-            trangThaiMua,
-            thoiGianTao,
-            maHD,
-        } = req.query;
-        let filter = {};
-
-        if (trangThaiThanhToan !== undefined) {
-            filter.trangThaiThanhToan = trangThaiThanhToan;
-        }
-        if (trangThaiMua !== undefined) {
-            filter.trangThaiMua = trangThaiMua;
-        }
-        if (maHD !== undefined) {
-            filter.maHD = maHD;
-        }
-        if (thoiGianTao !== undefined) {
-            filter.thoiGianTao = thoiGianTao;
+        const filter = {};
+        if (typeof (req.query.maHD) !== 'undefined' && req.query.maHD !== "") {
+            filter.maHD = { $regex: req.query.maHD, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
         }
 
-        const page = req.query.page || 1;
-        const pageSize = req.query.pageSize || 10;
-        const skip = (page - 1) * pageSize;
+        // Xử lý tìm kiếm theo trạng thái thanh toán
+        if (typeof req.query.trangThaiThanhToan !== 'undefined' && !isNaN(parseInt(req.query.trangThaiThanhToan))) {
+            const trangThaiValue = parseInt(req.query.trangThaiThanhToan);
+            if ([0, 1].includes(trangThaiValue)) {
+                filter.trangThaiThanhToan = trangThaiValue;
+            }
+        }
 
-        const danhSachHoaDon = Object.keys(filter).length === 0
-            ? await HoaDon.find().skip(skip).limit(pageSize)
-            : await HoaDon.find({ $and: [filter] }).skip(skip).limit(pageSize);
+        // Xử lý tìm kiếm theo trạng thái mua
+        if (typeof req.query.trangThaiMua !== 'undefined' && !isNaN(parseInt(req.query.trangThaiMua))) {
+            const trangThaiValue = parseInt(req.query.trangThaiMua);
+            if ([0, 1, 2, 3, 4].includes(trangThaiValue)) {
+                filter.trangThaiMua = trangThaiValue;
+            }
+        }
+
+        // Xử lý tìm kiếm theo thời gian tạo
+        if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
+            const parts = req.query.thoiGianTao.split('/');
+            const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`; // Chuyển định dạng thành yyyy-mm-dd
+            filter.thoiGianTao = { $gte: new Date(formattedDate) };
+        }
+
+        const trang = parseInt(req.query.trang) || 1;
+
+        const list = await HoaDon.aggregate([
+            {
+                $match: filter,
+            },
+            {
+                $project: {
+                    "maHD": "$maHD",
+                    "thoiGianTao": "$thoiGianTao",
+                    "trangThaiThanhToan": "$trangThaiThanhToan",
+                    "trangThaiMua": "$trangThaiMua",
+                }
+            },
+            {
+                $skip: (trang - 1) * 10,
+            },
+            {
+                $limit: 10,
+            },
+        ]);
 
         return {
-            data: danhSachHoaDon,
-            count: danhSachHoaDon.length,
+            list: list,
+            count: list.length,
             success: true,
             msg: 'thành công'
+        };
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn' });
+    }
+}
+
+const getSoLuongHoaDon = async (req, res, next) => {
+    try {
+        const filter = {};
+        if (typeof (req.query.maHD) !== 'undefined' && req.query.maHD !== "") {
+            filter.maHD = { $regex: req.query.maHD, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+        }
+
+        // Xử lý tìm kiếm theo trạng thái thanh toán
+        if (typeof req.query.trangThaiThanhToan !== 'undefined' && !isNaN(parseInt(req.query.trangThaiThanhToan))) {
+            const trangThaiValue = parseInt(req.query.trangThaiThanhToan);
+            if ([0, 1].includes(trangThaiValue)) {
+                filter.trangThaiThanhToan = trangThaiValue;
+            }
+        }
+
+        // Xử lý tìm kiếm theo trạng thái mua
+        if (typeof req.query.trangThaiMua !== 'undefined' && !isNaN(parseInt(req.query.trangThaiMua))) {
+            const trangThaiValue = parseInt(req.query.trangThaiMua);
+            if ([0, 1, 2, 3, 4].includes(trangThaiValue)) {
+                filter.trangThaiMua = trangThaiValue;
+            }
+        }
+
+        // Xử lý tìm kiếm theo thời gian tạo
+        if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
+            const parts = req.query.thoiGianTao.split('/');
+            const formattedDate = `${parts[1]}/${parts[0]}/${parts[2]}`; // Chuyển định dạng thành mm/dd/yyyy
+            filter.thoiGianTao = { $gte: new Date(formattedDate) };
+        }
+
+        const result = await HoaDon.aggregate([
+            {
+                $match: filter,
+            },
+            {
+                $project: {
+                    "maHD": "$maHD",
+                    "thoiGianTao": "$thoiGianTao",
+                    "trangThaiThanhToan": "$trangThaiThanhToan",
+                    "trangThaiMua": "$trangThaiMua",
+                }
+            },
+            {
+                $count: "count",
+            }
+        ]);
+
+        return {
+            count: result[0].count,
+            success: true,
+            msg: "Thành công"
         };
     } catch (error) {
         console.error(error);
@@ -308,37 +387,36 @@ const chiTietHoaDon = async (req, res, next) => {
                     idHD: 1,
                     idMon: 1,
                     giaTienDat: 1,
-                    mon: "$mon.tenMon",
+                    tenMon: "$mon.tenMon",
                     tenCH: "$cuahang.tenCH",
                     tenLM: "$loaiMon.tenLM"
                 }
             }
         ]);
 
-        return res.status(200).json({
-            data: {
-                hoaDon: {
-                    _id: item._id,
-                    idKH: item.idKH,
-                    idCH: item.idCH,
-                    phanTramKhuyenMaiDat: item.phanTramKhuyenMaiDat,
-                    diaChiGiaoHang: item.diaChiGiaoHang,
-                    ghiChu: item.ghiChu,
-                    thoiGianTao: item.thoiGianTao,
-                    tongTien: item.tongTien,
-                    thoiGianGiaoHangDuKien: item.thoiGianGiaoHangDuKien,
-                    trangThaiThanhToan: item.trangThaiThanhToan,
-                    trangThaiMua: item.trangThaiMua,
-                    trangThai: item.trangThai,
-                    maHD: item.maHD,
-                    tenKH: khachHang ? khachHang.tenKH : "", // Lấy tên khách hàng từ bảng KhachHang
-                    tenCH: cuaHang ? cuaHang.tenCH : "" // Lấy tên cửa hàng từ bảng CuaHang
-                },
-                monDat: result
-            }, // Trả về cả hóa đơn và danh sách món đặt
+        return {
+            hoaDon: {
+                _id: item._id,
+                idKH: item.idKH,
+                idCH: item.idCH,
+                phanTramKhuyenMaiDat: item.phanTramKhuyenMaiDat,
+                diaChiGiaoHang: item.diaChiGiaoHang,
+                ghiChu: item.ghiChu,
+                thoiGianTao: item.thoiGianTao,
+                tongTien: item.tongTien,
+                thoiGianGiaoHangDuKien: item.thoiGianGiaoHangDuKien,
+                trangThaiThanhToan: item.trangThaiThanhToan,
+                trangThaiMua: item.trangThaiMua,
+                trangThai: item.trangThai,
+                maHD: item.maHD,
+                tenKH: khachHang ? khachHang.tenKH : "", // Lấy tên khách hàng từ bảng KhachHang
+                tenCH: cuaHang ? cuaHang.tenCH : "" // Lấy tên cửa hàng từ bảng CuaHang
+            },
+            monDat: result,
+            count: result.length,
             msg: "Lấy chi tiết thành công",
             success: true
-        });
+        };
 
     } catch (e) {
         console.log(e);
@@ -349,6 +427,7 @@ const chiTietHoaDon = async (req, res, next) => {
 module.exports = {
     updateHoaDon,
     getHoaDon,
+    getSoLuongHoaDon,
     chiTietHoaDon,
     deleteHoaDon,
     updatetrangThaiMuaDangChuanBi,

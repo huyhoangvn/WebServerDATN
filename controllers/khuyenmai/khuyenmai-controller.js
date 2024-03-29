@@ -454,6 +454,77 @@ const getTatCaKhuyenMai = async (req, res) => {
         };
     }
 };
+const getSoLuongKhuyenMai = async (req, res) => {
+    try {
+
+        const trangThai = req.params.trangThai;
+        const trang = parseInt(req.query.trang) || 1;
+        const timkiem = {};
+        if (typeof (req.query.tieuDe) !== 'undefined' && req.query.tieuDe !== "") {
+            timkiem.tieuDe = { $regex: req.query.tieuDe, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+        }
+        if (typeof (req.query.ngayBatDau) !== 'undefined' && req.query.ngayBatDau !== "") {
+            const parts = req.query.ngayBatDau.split('/');
+            const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            timkiem.ngayBatDau = { $gte: new Date(formattedDate) };
+        }
+
+        if (typeof (req.query.ngayHetHan) !== 'undefined' && req.query.ngayHetHan !== "") {
+            const parts = req.query.ngayHetHan.split('/');
+            const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            timkiem.ngayHetHan = { $lte: new Date(formattedDate) };
+        }
+
+        if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+            const trangThaiValue = parseInt(req.query.trangThai);
+            if (trangThaiValue === 1 || trangThaiValue === 0) {
+                timkiem.trangThai = trangThaiValue === 1;
+            }
+        }
+
+
+        const result = await KhuyenMai.aggregate([
+            {
+                $match:
+                    timkiem,
+            },
+            {
+                $project: {
+                    "tieuDe": "$tieuDe",
+                    "maKhuyenMai": "$maKhuyenMai",
+                    "ngayBatDau": "$ngayBatDau",
+                    "ngayHetHan": "$ngayHetHan", // Thay vì "$tenCH"
+                    "phanTramKhuyenMai": "$phanTramKhuyenMai",
+                    "donToiThieu": "$donToiThieu",
+                    "trangThai": "$trangThai",
+                }
+            },
+            {
+                $count: "count",
+            }
+        ])
+
+        return {
+            count: result[0].count,
+            success: true,
+            msg: "Thành công"
+        };
+
+        // return {
+        //     count:list.length,
+        //     list:list,
+        //     message: 'Get tat ca khuyen mai thanh cong',
+        //     success: true,
+
+        // };
+    } catch (error) {
+        console.error(error);
+        return {
+            error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+            success: false
+        };
+    }
+};
 
 const getTatCaKhuyenMaiApi = async (req, res) => {
     const result = await getTatCaKhuyenMai(req, res);
@@ -473,6 +544,7 @@ module.exports = {
     GetKhuyenMaiTheoNgay,
     GetKhuyenMaiTheoMaKhuyenMai,
     getTatCaKhuyenMai,
+    getSoLuongKhuyenMai,
     getTatCaKhuyenMaiApi,
     SuaKhuyenMaiApi
 

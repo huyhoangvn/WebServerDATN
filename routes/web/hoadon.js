@@ -7,6 +7,6 @@ const sessionAdmin = require('../../config/auth/session-admin')
 
 router.get('/danh-sach', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), HoaDonCtrl.getList);
 
-router.get('/chi-tiet/:idCH', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), HoaDonCtrl.getChiTiet);
+router.get('/chi-tiet/:id', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), HoaDonCtrl.getChiTiet);
 
 module.exports = router;

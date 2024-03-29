@@ -232,19 +232,17 @@
         <form action="/khuyen-mai/danh-sach">
           <!-- Main content nằm ở dây -->
           <div class="d-flex row justify-content-between mb-1">
-            <div class="col-6">
+            <div class="col-4">
               <input type="text" id="searchTieuDe" class="form-control" name="tieuDe"
                 placeholder="Nhập tiêu đề để tìm kiếm">
             </div>
 
-            <div class="col-6">
-              <input type="text" id="searchNgaybatDau" class="form-control" name="ngayBatDau"
-                placeholder="Nhập ngày bắt đầu để tìm kiếm">
+            <div class="mb-3">
+              <input type="date" class="form-control" name="ngayBatDau" id="ngayBatDau" placeholder="Ngày bắt đầu">
             </div>
 
-            <div class="col-6">
-              <input type="text" id="searchNgayHetHan" class="form-control" name="ngayHetHan"
-                placeholder="Nhập ngày bắt đầu để tìm kiếm">
+            <div class="mb-3">
+              <input type="date" class="form-control" name="ngayHetHan" id="ngayHetHan" placeholder="Ngày hết hạn">
             </div>
             <div class="col-2">
               <select class="form-control" name="trangThai">
