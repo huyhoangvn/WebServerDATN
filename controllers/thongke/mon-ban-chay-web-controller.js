@@ -4,6 +4,8 @@ const { model: LoaiMon } = require("../../model/LoaiMon");
 const mongo = require('mongoose');
 
 const getView =  async (req, res, next)=>{
+    var currentMonth = new Date().getMonth() + 1;
+    console.log(currentMonth);
     const idLM = new mongo.Types.ObjectId(req.query.idLM);
     const tenLM = req.query.tenLM;
     const AllLoaiMon = await LoaiMon.find({});
@@ -18,6 +20,7 @@ const getView =  async (req, res, next)=>{
         console.log("day la list",list.monBanChay.data);
     }
     res.render("thongke/mon-ban-chay", {
+        currentMonth,
         AllLoaiMon,
         monBanChay: list.monBanChay.data,
         admin: req.session.ten,
