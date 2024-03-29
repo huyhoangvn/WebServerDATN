@@ -554,7 +554,7 @@ const getMonCuaLoaiMon = async (req, res) => {
 };
 
 
-const updatemonapi = async (req, res) => {
+const updatemon = async (req, res) => {
   try {
     const idMon = new mongo.Types.ObjectId(req.params.idMon);
     let updateFields = {};
@@ -609,6 +609,10 @@ const updatemonapi = async (req, res) => {
     });
   }
 };
+const updatemonapi = async (req, res) => {
+  const result = await updatemon(req, res);
+  res.json(result)
+}
 
 // Hiển thị chi tiết món với id cụ thể
 
@@ -689,6 +693,7 @@ module.exports = {
   getTatCaMonApi,
   deletemonapi,
   updatemonapi,
+  updatemon,
   getMonTheoid,
   getDanhSachTenCuaHang,
   kichhoatMon,
