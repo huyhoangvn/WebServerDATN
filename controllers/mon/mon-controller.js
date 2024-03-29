@@ -1,5 +1,6 @@
 const Mon = require("../../model/Mon");
 const NhanVien = require("../../model/NhanVien");
+const LoaiMon = require("../../model/LoaiMon");
 const mongo = require("mongoose");
 
 const themMon = async (req, res, next) => {
@@ -553,58 +554,53 @@ const getMonCuaLoaiMon = async (req, res) => {
 };
 
 
-const  updatemonapi = async (req, res) => {
-  const idNV = new mongo.Types.ObjectId(req.params.idNV);
-  const idCH = new mongo.Types.ObjectId(req.params.idCH);
-  const tenMon = req.body.tenMon;
-  const giaTien = req.body.giaTien;
-
+const updatemonapi = async (req, res) => {
   try {
-    const filter = { idNV: idNV, idCH: idCH };
-    const update = { tenMon: tenMon, giaTien: giaTien };
-    const index = await Mon.model.findOneAndUpdate(filter, update, {
-      new: true,
-    });
-    // if (!index) {
-    //   return res.status(404).json({
-    //     error: "Không tìm thấy món để sửa",
-    //     success: false,
-    //   });
-    // }
+    const idMon = new mongo.Types.ObjectId(req.params.idMon);
+    let updateFields = {};
 
-    // // Check if the user belongs to the same store as the item being updated
-    // if (index.idCH !== idNV) {
-    //   return res.status(403).json({
-    //     error: "Bạn không có quyền sửa món này.",
-    //     success: false,
-    //   });
-    // }
+    // Kiểm tra từng trường và thêm vào object updateFields nếu tồn tại giá trị
+    if (req.body.tenMon !== undefined) {
+      updateFields.tenMon = req.body.tenMon;
+    }
+    if (req.body.giaTien !== undefined) {
+      updateFields.giaTien = req.body.giaTien;
+    }
+    if (req.body.idLM !== undefined) {
+      updateFields.idLM = new mongo.Types.ObjectId(req.body.idLM);
+    }
+    if (req.body.trangThai !== undefined) {
+      updateFields.trangThai = req.body.trangThai;
+    }
+    if (req.files.hinhAnh && req.files.hinhAnh.length > 0) {
+      updateFields.hinhAnh = req.files.hinhAnh.map((file) => file.filename)[0];
+    }
 
-    // // Check if the user has management permission
-    // if (index.phanQuyen !== 1) {
-    //   // Assuming 1 is the management permission level
-    //   return res.status(403).json({
-    //     error: "Bạn không có quyền quản lý để thực hiện thao tác này.",
-    //     success: false,
-    //   });
-    // }
+    const index = await Mon.model.findOne({_id: idMon});
     if (!index) {
       return res.status(404).json({
         error: "Không tìm thấy món để sửa",
         success: false,
       });
-    } else if (tenMon == "" || giaTien == "") {
-      return res.status(404).json({
-        error: "Sửa món lỗi do thiếu thông tin",
+    }
+
+    // Nếu không có trường nào cần cập nhật, trả về lỗi
+    if (Object.keys(updateFields).length === 0) {
+      return res.status(400).json({
+        error: "Không có trường nào cần cập nhật",
         success: false,
       });
-    } else {
-      res.status(200).json({
-        index,
-        message: "Sửa món thành công",
-        success: true,
-      });
     }
+
+    // Thực hiện cập nhật chỉ với các trường cần thiết
+    const filter = { _id: idMon };
+    const monUpdate = await Mon.model.findOneAndUpdate(filter, updateFields, { new: true });
+    res.status(200).json({
+      monUpdate,
+      message: "Sửa món thành công",
+      success: true,
+    });
+    
   } catch (error) {
     console.error(error);
     res.status(500).json({
