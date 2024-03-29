@@ -322,7 +322,7 @@ const thongKeMonBanChay1Ngay = async () => {
                 accumulator.push({
                     _id: currentValue.idMon,
                     tenMon: currentValue.mon.tenMon,
-                    tenLoaiMon: currentValue.loaiMon.tenLoaiMon,
+                    tenLoaiMon: currentValue.loaiMon.tenLM,
                     soLuong: currentValue.soLuong,
                     doanhThu: currentValue.giaTienDat * currentValue.soLuong
                 });
@@ -334,7 +334,7 @@ const thongKeMonBanChay1Ngay = async () => {
         }, []);
 
         // Sắp xếp kết quả theo số lượng giảm dần và giới hạn số lượng kết quả trả về là 10
-        finalResult.sort((a, b) => b.soLuong - a.soLuong);
+        finalResult.sort((a, b) => b.doanhThu - a.doanhThu);
         const top10Result = finalResult.slice(0, 10);
 
 
@@ -407,7 +407,7 @@ const thongKeMonBanChay10Ngay = async () => {
                 accumulator.push({
                     _id: currentValue.idMon,
                     tenMon: currentValue.mon.tenMon,
-                    tenLoaiMon: currentValue.loaiMon.tenLoaiMon,
+                    tenLoaiMon: currentValue.loaiMon.tenLM,
                     soLuong: currentValue.soLuong,
                     doanhThu: currentValue.giaTienDat * currentValue.soLuong
                 });
@@ -419,7 +419,7 @@ const thongKeMonBanChay10Ngay = async () => {
         }, []);
 
         // Sắp xếp kết quả theo số lượng giảm dần và giới hạn số lượng kết quả trả về là 10
-        finalResult.sort((a, b) => b.soLuong - a.soLuong);
+        finalResult.sort((a, b) => b.doanhThu - a.doanhThu);
         const top10Result = finalResult.slice(0, 10);
 
 
@@ -492,7 +492,7 @@ const thongKeMonBanChay30Ngay = async () => {
                 accumulator.push({
                     _id: currentValue.idMon,
                     tenMon: currentValue.mon.tenMon,
-                    tenLoaiMon: currentValue.loaiMon.tenLoaiMon,
+                    tenLoaiMon: currentValue.loaiMon.tenLM,
                     soLuong: currentValue.soLuong,
                     doanhThu: currentValue.giaTienDat * currentValue.soLuong
                 });
@@ -504,7 +504,7 @@ const thongKeMonBanChay30Ngay = async () => {
         }, []);
 
         // Sắp xếp kết quả theo số lượng giảm dần và giới hạn số lượng kết quả trả về là 10
-        finalResult.sort((a, b) => b.soLuong - a.soLuong);
+        finalResult.sort((a, b) => b.doanhThu - a.doanhThu);
         const top10Result = finalResult.slice(0, 10);
 
 
@@ -595,7 +595,7 @@ const thongKeMonBanChay1NgayTheoTenLoaiMon = async (req, res) => {
         }, []);
 
         // Sắp xếp kết quả theo số lượng giảm dần
-        finalResult.sort((a, b) => b.soLuong - a.soLuong);
+        finalResult.sort((a, b) => b.doanhThu - a.doanhThu);
 
         // Giới hạn số lượng kết quả trả về là 10
         const top10Result = finalResult.slice(0, 10);
@@ -688,7 +688,7 @@ const thongKeMonBanChay10NgayTheoTenLoaiMon = async (req, res) => {
         }, []);
 
         // Sắp xếp kết quả theo số lượng giảm dần
-        finalResult.sort((a, b) => b.soLuong - a.soLuong);
+        finalResult.sort((a, b) => b.doanhThu - a.doanhThu);
 
         // Giới hạn số lượng kết quả trả về là 10
         const top10Result = finalResult.slice(0, 10);
@@ -780,7 +780,7 @@ const thongKeMonBanChay30NgayTheoTenLoaiMon = async (req, res) => {
         }, []);
 
         // Sắp xếp kết quả theo số lượng giảm dần
-        finalResult.sort((a, b) => b.soLuong - a.soLuong);
+        finalResult.sort((a, b) => b.doanhThu - a.doanhThu);
 
         // Giới hạn số lượng kết quả trả về là 10
         const top10Result = finalResult.slice(0, 10);
