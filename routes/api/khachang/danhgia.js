@@ -7,8 +7,10 @@ const {
   GetDanhSachTheoTenMon,
   GetDanhSachTheoTenKhachHang,
   GetDanhGiaTheoId, 
-  GetSoLuongDanhGiaTheoMon,
-  GetSoLuongDanhGiaTheoKhachHang} = require('../../../controllers/danhgia/danhgia-controller');
+  GetTrungBinhDanhGiaTheoMon,
+  GetSoLuongDanhGiaTheoKhachHang,
+  getTatCaDanhGiaTheoMonApi,
+  GetSoLuongDanhGiaTheoMonVoiFilterApi} = require('../../../controllers/danhgia/danhgia-controller');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -30,8 +32,10 @@ router.get("/get-danh-gia-theo-ten-khach-hang/:idKH",GetDanhSachTheoTenKhachHang
 //http://localhost:3000/api/khachhang/danhgia/get-danh-gia-theo-id/65ceb821bf407aaa4e0a3fb9
 router.get("/get-danh-gia-theo-id/:idDanhGia",GetDanhGiaTheoId);
 //http://localhost:3000/api/khachhang/danhgia/get-so-luong-danh-gia-theo-mon/65cc2e72557054378b5490ad
-router.get("/get-so-luong-danh-gia-theo-mon/:idMon",GetSoLuongDanhGiaTheoMon);
+router.get("/get-so-luong-danh-gia-theo-mon/:idMon",getTatCaDanhGiaTheoMonApi);
 // http://localhost:3000/api/khachhang/danhgia/get-so-luong-danh-gia-theo-khach-hang/65cc2e72557054378b5490ad
 router.get("/get-so-luong-danh-gia-theo-khach-hang/:idKH",GetSoLuongDanhGiaTheoKhachHang);
+
+router.get("/get-so-luong-danh-gia-theo-mon-filter/:idMon",GetSoLuongDanhGiaTheoMonVoiFilterApi);
 
 module.exports = router;

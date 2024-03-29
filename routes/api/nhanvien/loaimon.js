@@ -6,17 +6,17 @@ const loaimonCtrl = require('../../../controllers/loaimon/loaimon-controller')
 //   res.send('respond with a resource');
 // });
 // add loai mon 
-router.post('/',loaimonCtrl.loaimonApi);
+router.post('/',loaimonCtrl.addloaimonApi);
 // get all 
  router.get('/:idLM',loaimonCtrl.getchitietloaiMonApi);
 // get loai mon - tim ten loai mon
 router.get('/',loaimonCtrl.getloaimonApi);
 // delete 
-router.delete('/:id',loaimonCtrl.deleteloaimonApi);
+router.delete('/:idLM',loaimonCtrl.deleteLoaiMonApi);
 
 //sua 
-router.put('/:id',loaimonCtrl.updateloaimonApi);
+router.put('/:idLM',loaimonCtrl.updateLoaiMonApi);
 
-router.post('/kich-hoat/:id', loaimonCtrl.kichhoatloaimonapi);
+router.post('/kich-hoat/:id', loaimonCtrl.kichhoatLoaiMonapi);
 
 module.exports = router;

@@ -196,8 +196,8 @@
 
       <section class="content">
         <div class="container-fluid bg-white m-2">
+          
           <!-- Main content nằm ở dây -->
-
           <form action="/mon/danh-sach" method="GET">
             <!-- tìm theo tên món và tên cửa hàng -->
             <div class="d-flex row justify-content-between mb-1">
@@ -266,7 +266,9 @@
                   <td class="text-danger" scope="col-2">Khóa</td>
                 <%}%>
                 
-                <td class="text-primary" scope="col-1">Chi tiết</td>
+                <td class="text-primary" scope="col-1">
+                    <a href="/mon/chi-tiet/<%=data[i].idMon%>">Chi tiết</a> 
+                </td>
               </tr>
               <%}%>
             </tbody>
