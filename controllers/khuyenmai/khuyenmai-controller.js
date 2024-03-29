@@ -71,14 +71,16 @@ const ThemKhuyenMai = async function (req, res) {
 
 // Hàm này để sửa khuyến mãi 
 const SuaKhuyenMai = async function (req, res) {
-    const idKM = new mongo.Types.ObjectId(req.params.idKM);
-    const tieuDe = req.body.tieuDe;
-    const maKhuyenMai = req.body.maKhuyenMai;
-    const ngayBatDau = req.body.ngayBatDau;
-    const ngayHetHan = req.body.ngayHetHan;
-    const phanTramKhuyenMai = req.body.phanTramKhuyenMai;
-    const donToiThieu = req.body.donToiThieu;
+
     try {
+        const idKM = new mongo.Types.ObjectId(req.params.idKM);
+        const tieuDe = req.body.tieuDe;
+        const maKhuyenMai = new Date(req.body.maKhuyenMai);
+        const ngayBatDau = new Date(req.body.ngayBatDau);
+        const ngayHetHan = req.body.ngayHetHan;
+        const phanTramKhuyenMai = req.body.phanTramKhuyenMai;
+        const donToiThieu = req.body.donToiThieu;
+
         const filter = { _id: idKM }
         const update = {
             tieuDe: tieuDe,
@@ -101,11 +103,11 @@ const SuaKhuyenMai = async function (req, res) {
                 success: false
             });
         } else {
-            res.status(200).json({
+            return {
                 index,
                 message: 'Sửa khuyến mãi thành công',
                 success: true
-            });
+            };
         }
     } catch (error) {
         console.error(error);
@@ -116,6 +118,10 @@ const SuaKhuyenMai = async function (req, res) {
     }
 
 }
+const SuaKhuyenMaiApi = async (req, res) => {
+    const result = await SuaKhuyenMai(req, res);
+    res.json(result)
+}
 
 // Hàm này để xóa khuyến mãi (xóa mềm: chuyển trạng thái true thành false)
 const XoaKhuyenMai = async function (req, res) {
@@ -125,31 +131,31 @@ const XoaKhuyenMai = async function (req, res) {
         const filter = { _id: idKM }
         // const update = { trangThai: false }
         const KM = await KhuyenMai.findOne(filter)
-        if(KM.trangThai == true){
+        if (KM.trangThai == true) {
             const update = { trangThai: false }
             const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
             if (!index) {
-                return({
+                return ({
                     error: 'Không tìm thấy khuyến mãi để xóa',
                     success: false
                 });
             } else {
-                return({
+                return ({
                     index,
                     message: 'Xóa khuyến mãi thành công',
                     success: true
                 });
             }
-        }else{
+        } else {
             const update = { trangThai: true }
             const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
             if (!index) {
-                return({
+                return ({
                     error: 'Không tìm thấy khuyến mãi để xóa',
                     success: false
                 });
             } else {
-                return({
+                return ({
                     index,
                     message: 'Xóa khuyến mãi thành công',
                     success: true
@@ -169,7 +175,7 @@ const XoaKhuyenMai = async function (req, res) {
 const xoaKhuyenMaiApi = async (req, res) => {
     const result = await XoaKhuyenMai(req, res);
     res.json(result)
-  }
+}
 
 // hàm này để lấy ra tất cả khuyến mãi theo tiêu đề 
 const GetKhuyenMaiTheoTieuDe = async function (req, res) {
@@ -448,6 +454,77 @@ const getTatCaKhuyenMai = async (req, res) => {
         };
     }
 };
+const getSoLuongKhuyenMai = async (req, res) => {
+    try {
+
+        const trangThai = req.params.trangThai;
+        const trang = parseInt(req.query.trang) || 1;
+        const timkiem = {};
+        if (typeof (req.query.tieuDe) !== 'undefined' && req.query.tieuDe !== "") {
+            timkiem.tieuDe = { $regex: req.query.tieuDe, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+        }
+        if (typeof (req.query.ngayBatDau) !== 'undefined' && req.query.ngayBatDau !== "") {
+            const parts = req.query.ngayBatDau.split('/');
+            const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            timkiem.ngayBatDau = { $gte: new Date(formattedDate) };
+        }
+
+        if (typeof (req.query.ngayHetHan) !== 'undefined' && req.query.ngayHetHan !== "") {
+            const parts = req.query.ngayHetHan.split('/');
+            const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            timkiem.ngayHetHan = { $lte: new Date(formattedDate) };
+        }
+
+        if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+            const trangThaiValue = parseInt(req.query.trangThai);
+            if (trangThaiValue === 1 || trangThaiValue === 0) {
+                timkiem.trangThai = trangThaiValue === 1;
+            }
+        }
+
+
+        const result = await KhuyenMai.aggregate([
+            {
+                $match:
+                    timkiem,
+            },
+            {
+                $project: {
+                    "tieuDe": "$tieuDe",
+                    "maKhuyenMai": "$maKhuyenMai",
+                    "ngayBatDau": "$ngayBatDau",
+                    "ngayHetHan": "$ngayHetHan", // Thay vì "$tenCH"
+                    "phanTramKhuyenMai": "$phanTramKhuyenMai",
+                    "donToiThieu": "$donToiThieu",
+                    "trangThai": "$trangThai",
+                }
+            },
+            {
+                $count: "count",
+            }
+        ])
+
+        return {
+            count: result[0].count,
+            success: true,
+            msg: "Thành công"
+        };
+
+        // return {
+        //     count:list.length,
+        //     list:list,
+        //     message: 'Get tat ca khuyen mai thanh cong',
+        //     success: true,
+
+        // };
+    } catch (error) {
+        console.error(error);
+        return {
+            error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+            success: false
+        };
+    }
+};
 
 const getTatCaKhuyenMaiApi = async (req, res) => {
     const result = await getTatCaKhuyenMai(req, res);
@@ -467,6 +544,8 @@ module.exports = {
     GetKhuyenMaiTheoNgay,
     GetKhuyenMaiTheoMaKhuyenMai,
     getTatCaKhuyenMai,
-    getTatCaKhuyenMaiApi
+    getSoLuongKhuyenMai,
+    getTatCaKhuyenMaiApi,
+    SuaKhuyenMaiApi
 
 }

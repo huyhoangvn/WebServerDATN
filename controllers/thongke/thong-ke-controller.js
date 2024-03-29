@@ -181,11 +181,13 @@ const thongKeDoanhThuTheoNam = async (req, res, next) => {
                     tongTien: { $sum: "$tongTien" } // Tính tổng tiền của tất cả các hóa đơn
                 }
             }
+
         ]);
+        const tongTien = result.length > 0 ? result[0].tongTien : 0;
 
         // Trả về tổng tiền của các hóa đơn thỏa mãn điều kiện trong năm
         return {
-            index: result,
+            index: tongTien,
             success: true,
             msg: "thành công"
         }
@@ -201,20 +203,17 @@ const thongKeDoanhThuTheoNam = async (req, res, next) => {
 const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
     try {
         // Nhận năm từ request params
-        const nam = req.params.nam;
+        const nam = req.query.nam;
 
         if (!nam) {
             return res.status(400).json({ message: 'Yêu cầu cung cấp năm.' });
         }
 
         // Tạo mảng chứa tên của các tháng
-        const monthNames = [
-            "Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
-            "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"
-        ];
+        const monthNames = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 
         // Khởi tạo mảng để lưu trữ doanh thu của từng tháng
-        const monthlyRevenue = {};
+        const monthlyRevenue = [];
 
         // Lặp qua từng tháng trong năm
         for (let month = 0; month < 12; month++) {
@@ -246,14 +245,14 @@ const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
             ]);
 
             // Lưu tổng doanh thu vào mảng monthlyRevenue
+            const monthRevenueObj = { month: monthNames[month], tong: 0 };
             if (result.length > 0) {
-                monthlyRevenue[monthNames[month]] = result[0].tongTien;
-            } else {
-                monthlyRevenue[monthNames[month]] = 0;
+                monthRevenueObj.tong = result[0].tongTien;
             }
+            monthlyRevenue.push(monthRevenueObj);
         }
 
-        // Gửi kết quả dưới dạng đối tượng JSON
+        // Gửi kết quả dưới dạng mảng
         return {
             index: monthlyRevenue,
             success: true,
@@ -323,7 +322,7 @@ const thongKeMonBanChay1Ngay = async () => {
                 accumulator.push({
                     _id: currentValue.idMon,
                     tenMon: currentValue.mon.tenMon,
-                    tenLoaiMon: currentValue.loaiMon.tenLoaiMon,
+                    tenLoaiMon: currentValue.loaiMon.tenLM,
                     soLuong: currentValue.soLuong,
                     doanhThu: currentValue.giaTienDat * currentValue.soLuong
                 });
@@ -335,7 +334,7 @@ const thongKeMonBanChay1Ngay = async () => {
         }, []);
 
         // Sắp xếp kết quả theo số lượng giảm dần và giới hạn số lượng kết quả trả về là 10
-        finalResult.sort((a, b) => b.soLuong - a.soLuong);
+        finalResult.sort((a, b) => b.doanhThu - a.doanhThu);
         const top10Result = finalResult.slice(0, 10);
 
 
@@ -408,7 +407,7 @@ const thongKeMonBanChay10Ngay = async () => {
                 accumulator.push({
                     _id: currentValue.idMon,
                     tenMon: currentValue.mon.tenMon,
-                    tenLoaiMon: currentValue.loaiMon.tenLoaiMon,
+                    tenLoaiMon: currentValue.loaiMon.tenLM,
                     soLuong: currentValue.soLuong,
                     doanhThu: currentValue.giaTienDat * currentValue.soLuong
                 });
@@ -420,7 +419,7 @@ const thongKeMonBanChay10Ngay = async () => {
         }, []);
 
         // Sắp xếp kết quả theo số lượng giảm dần và giới hạn số lượng kết quả trả về là 10
-        finalResult.sort((a, b) => b.soLuong - a.soLuong);
+        finalResult.sort((a, b) => b.doanhThu - a.doanhThu);
         const top10Result = finalResult.slice(0, 10);
 
 
@@ -493,7 +492,7 @@ const thongKeMonBanChay30Ngay = async () => {
                 accumulator.push({
                     _id: currentValue.idMon,
                     tenMon: currentValue.mon.tenMon,
-                    tenLoaiMon: currentValue.loaiMon.tenLoaiMon,
+                    tenLoaiMon: currentValue.loaiMon.tenLM,
                     soLuong: currentValue.soLuong,
                     doanhThu: currentValue.giaTienDat * currentValue.soLuong
                 });
@@ -505,7 +504,7 @@ const thongKeMonBanChay30Ngay = async () => {
         }, []);
 
         // Sắp xếp kết quả theo số lượng giảm dần và giới hạn số lượng kết quả trả về là 10
-        finalResult.sort((a, b) => b.soLuong - a.soLuong);
+        finalResult.sort((a, b) => b.doanhThu - a.doanhThu);
         const top10Result = finalResult.slice(0, 10);
 
 
@@ -596,7 +595,7 @@ const thongKeMonBanChay1NgayTheoTenLoaiMon = async (req, res) => {
         }, []);
 
         // Sắp xếp kết quả theo số lượng giảm dần
-        finalResult.sort((a, b) => b.soLuong - a.soLuong);
+        finalResult.sort((a, b) => b.doanhThu - a.doanhThu);
 
         // Giới hạn số lượng kết quả trả về là 10
         const top10Result = finalResult.slice(0, 10);
@@ -689,7 +688,7 @@ const thongKeMonBanChay10NgayTheoTenLoaiMon = async (req, res) => {
         }, []);
 
         // Sắp xếp kết quả theo số lượng giảm dần
-        finalResult.sort((a, b) => b.soLuong - a.soLuong);
+        finalResult.sort((a, b) => b.doanhThu - a.doanhThu);
 
         // Giới hạn số lượng kết quả trả về là 10
         const top10Result = finalResult.slice(0, 10);
@@ -781,7 +780,7 @@ const thongKeMonBanChay30NgayTheoTenLoaiMon = async (req, res) => {
         }, []);
 
         // Sắp xếp kết quả theo số lượng giảm dần
-        finalResult.sort((a, b) => b.soLuong - a.soLuong);
+        finalResult.sort((a, b) => b.doanhThu - a.doanhThu);
 
         // Giới hạn số lượng kết quả trả về là 10
         const top10Result = finalResult.slice(0, 10);

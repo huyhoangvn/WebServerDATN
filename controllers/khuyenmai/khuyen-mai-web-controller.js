@@ -4,18 +4,17 @@ const mongo = require('mongoose');
 const { parse, startOfDay, endOfDay } = require('date-fns');
 const { json } = require("body-parser");
 const { data, error } = require('jquery');
-const { getTatCaKhuyenMai, ThemKhuyenMai } = require('../../controllers/khuyenmai/khuyenmai-controller');
+const { getTatCaKhuyenMai, SuaKhuyenMai, XoaKhuyenMai, getSoLuongKhuyenMai } = require('../../controllers/khuyenmai/khuyenmai-controller');
 const getList = async (req, res) => {
     try {
         const trang = parseInt(req.query.trang) || 1;
         const soLuongKhuyenMaiTrenTrang = 10;
-        const soLuongKhuyenMai = await getTatCaKhuyenMai(req, res);
+        const soLuongKhuyenMai = await getSoLuongKhuyenMai(req, res);
         const totalPages = Math.ceil(soLuongKhuyenMai.count / soLuongKhuyenMaiTrenTrang);
         const result = await getTatCaKhuyenMai(req, res);
         res.render("khuyenmai/danh-sach", {
             data: result.list,
             admin: req.session.ten,
-            msg: result.list,
             totalPages: totalPages,
             currentPage: trang,
         });
@@ -94,8 +93,22 @@ const getAdd = async (req, res) => {
     }
 
 }
+const updateKhuyenMai = async (req, res) => {
+
+    const index = await SuaKhuyenMai(req, res);
+    await getList(req, res);
+}
+
+const updateTrangThai = async (req, res) => {
+
+    const index = await XoaKhuyenMai(req, res);
+    await getList(req, res);
+}
+
 module.exports = {
     getList,
     getAdd,
-    getViewAdd
+    getViewAdd,
+    updateKhuyenMai,
+    updateTrangThai
 }

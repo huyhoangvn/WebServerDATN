@@ -7,7 +7,7 @@ router.get('/1-ngay', thongkeCrl.thongKeDoanhThuTheoNgayApi);
 router.get('/10-ngay', thongkeCrl.thongKeDoanhThuTheo10NgayApi);
 router.get('/30-ngay', thongkeCrl.thongKeDoanhThuTheo30NgayApi);
 router.get('/', thongkeCrl.thongKeDoanhThuTheoNamApi);
-router.get('/12-thang/:nam', thongkeCrl.thongKeDoanhThuTheoThangTrongNamApi);
+router.get('/12-thang', thongkeCrl.thongKeDoanhThuTheoThangTrongNamApi);
 
 // thống kê món bán chạy tất cả
 

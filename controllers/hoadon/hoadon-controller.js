@@ -1,4 +1,8 @@
 const { model: HoaDon } = require("../../model/HoaDon");
+const { model: MonDat } = require("../../model/MonDat");
+const { model: KhachHang } = require("../../model/KhachHang");
+const { model: CuaHang } = require("../../model/CuaHang");
+const mongoose = require("mongoose");
 
 const moment = require('moment');
 
@@ -48,58 +52,127 @@ const updateHoaDon = async (req, res) => {
 
 const getHoaDon = async (req, res, next) => {
     try {
-        const {
-            trangThai,
-            trangThaiThanhToan,
-            trangThaiMua,
-            thoiGianTao,
-        } = req.query;
-        let filter = {};
-
-        if (trangThaiThanhToan !== undefined) {
-            filter.trangThaiThanhToan = trangThaiThanhToan;
-        }
-        if (trangThaiMua !== undefined) {
-            filter.trangThaiMua = trangThaiMua;
-        }
-        if (trangThai !== undefined) {
-            filter.trangThai = trangThai;
-        }
-        if (thoiGianTao !== undefined) {
-            filter.thoiGianTao = thoiGianTao;
+        const filter = {};
+        if (typeof (req.query.maHD) !== 'undefined' && req.query.maHD !== "") {
+            filter.maHD = { $regex: req.query.maHD, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
         }
 
-        const page = req.query.page || 1;
-        const pageSize = req.query.pageSize || 10;
-        const skip = (page - 1) * pageSize;
+        // Xử lý tìm kiếm theo trạng thái thanh toán
+        if (typeof req.query.trangThaiThanhToan !== 'undefined' && !isNaN(parseInt(req.query.trangThaiThanhToan))) {
+            const trangThaiValue = parseInt(req.query.trangThaiThanhToan);
+            if ([0, 1].includes(trangThaiValue)) {
+                filter.trangThaiThanhToan = trangThaiValue;
+            }
+        }
 
-        const danhSachHoaDon = Object.keys(filter).length === 0
-            ? await HoaDon.find().skip(skip).limit(pageSize)
-            : await HoaDon.find({ $and: [filter] }).skip(skip).limit(pageSize);
+        // Xử lý tìm kiếm theo trạng thái mua
+        if (typeof req.query.trangThaiMua !== 'undefined' && !isNaN(parseInt(req.query.trangThaiMua))) {
+            const trangThaiValue = parseInt(req.query.trangThaiMua);
+            if ([0, 1, 2, 3, 4].includes(trangThaiValue)) {
+                filter.trangThaiMua = trangThaiValue;
+            }
+        }
 
-        res.json({ data: danhSachHoaDon });
+        // Xử lý tìm kiếm theo thời gian tạo
+        if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
+            const parts = req.query.thoiGianTao.split('/');
+            const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`; // Chuyển định dạng thành yyyy-mm-dd
+            filter.thoiGianTao = { $gte: new Date(formattedDate) };
+        }
+
+        const trang = parseInt(req.query.trang) || 1;
+
+        const list = await HoaDon.aggregate([
+            {
+                $match: filter,
+            },
+            {
+                $project: {
+                    "maHD": "$maHD",
+                    "thoiGianTao": "$thoiGianTao",
+                    "trangThaiThanhToan": "$trangThaiThanhToan",
+                    "trangThaiMua": "$trangThaiMua",
+                }
+            },
+            {
+                $skip: (trang - 1) * 10,
+            },
+            {
+                $limit: 10,
+            },
+        ]);
+
+        return {
+            list: list,
+            count: list.length,
+            success: true,
+            msg: 'thành công'
+        };
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn' });
     }
 }
-const chiTietHoaDon = async (req, res, next) => {
+
+const getSoLuongHoaDon = async (req, res, next) => {
     try {
-        const id = req.params.id;
-        const item = await HoaDon.findById(id)
-        if (!item) {
-            res.status(500).json({ error: "không tìm thấy Hoa Đơn chi tiết" });
+        const filter = {};
+        if (typeof (req.query.maHD) !== 'undefined' && req.query.maHD !== "") {
+            filter.maHD = { $regex: req.query.maHD, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
         }
-        res.status(200).json({
-            msg: "Lấy chi tiết thành công",
-            data: item,
-        });
-    } catch (e) {
-        console.log(e);
-        res.status(500).json({ error: "Đã xảy ra lỗi khi lấy chi tiết hóa đơn" });
+
+        // Xử lý tìm kiếm theo trạng thái thanh toán
+        if (typeof req.query.trangThaiThanhToan !== 'undefined' && !isNaN(parseInt(req.query.trangThaiThanhToan))) {
+            const trangThaiValue = parseInt(req.query.trangThaiThanhToan);
+            if ([0, 1].includes(trangThaiValue)) {
+                filter.trangThaiThanhToan = trangThaiValue;
+            }
+        }
+
+        // Xử lý tìm kiếm theo trạng thái mua
+        if (typeof req.query.trangThaiMua !== 'undefined' && !isNaN(parseInt(req.query.trangThaiMua))) {
+            const trangThaiValue = parseInt(req.query.trangThaiMua);
+            if ([0, 1, 2, 3, 4].includes(trangThaiValue)) {
+                filter.trangThaiMua = trangThaiValue;
+            }
+        }
+
+        // Xử lý tìm kiếm theo thời gian tạo
+        if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
+            const parts = req.query.thoiGianTao.split('/');
+            const formattedDate = `${parts[1]}/${parts[0]}/${parts[2]}`; // Chuyển định dạng thành mm/dd/yyyy
+            filter.thoiGianTao = { $gte: new Date(formattedDate) };
+        }
+
+        const result = await HoaDon.aggregate([
+            {
+                $match: filter,
+            },
+            {
+                $project: {
+                    "maHD": "$maHD",
+                    "thoiGianTao": "$thoiGianTao",
+                    "trangThaiThanhToan": "$trangThaiThanhToan",
+                    "trangThaiMua": "$trangThaiMua",
+                }
+            },
+            {
+                $count: "count",
+            }
+        ]);
+
+        return {
+            count: result[0].count,
+            success: true,
+            msg: "Thành công"
+        };
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn' });
     }
-};
-const updatetrangThaiThanhToan = async (req, res, next) => {
+}
+
+const updatetrangThaiThanhToanTrue = async (req, res, next) => {
     try {
         const id = req.params.id;
 
@@ -111,10 +184,33 @@ const updatetrangThaiThanhToan = async (req, res, next) => {
         if (!updatetrangThaiThanhToan) {
             return res.status(404).json({ error: "Không tìm thấy hoa đơn" });
         }
-        res.status(200).json({
+        return {
             msg: "update thành công",
             data: updatetrangThaiThanhToan,
-        });
+            success: true,
+        };
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({ error: "Đã xảy ra lỗi khi update " });
+    }
+}
+const updatetrangThaiThanhToanFalse = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        const updatetrangThaiThanhToan = await HoaDon.findOneAndUpdate(
+            { _id: id },
+            { $set: { trangThaiThanhToan: 0 } },
+            { new: true },
+        );
+        if (!updatetrangThaiThanhToan) {
+            return res.status(404).json({ error: "Không tìm thấy hoa đơn" });
+        }
+        return {
+            msg: "update thành công",
+            data: updatetrangThaiThanhToan,
+            success: true,
+        };
     } catch (e) {
         console.log(e);
         res.status(500).json({ error: "Đã xảy ra lỗi khi update " });
@@ -132,10 +228,11 @@ const updatetrangThaiMuaDangChuanBi = async (req, res, next) => {
         if (!updatetrangThaiMua) {
             return res.status(404).json({ error: "Không tìm thấy hoa đơn" });
         }
-        res.status(200).json({
+        return {
             msg: "update thành công",
             data: updatetrangThaiMua,
-        });
+            success: true,
+        };
     } catch (e) {
         console.log(e);
         res.status(500).json({ error: "Đã xảy ra lỗi khi update " });
@@ -153,10 +250,11 @@ const updatetrangThaiMuaDangGiaoHang = async (req, res, next) => {
         if (!updatetrangThaiMua) {
             return res.status(404).json({ error: "Không tìm thấy hoa đơn" });
         }
-        res.status(200).json({
+        return {
             msg: "update thành công",
             data: updatetrangThaiMua,
-        });
+            success: true,
+        };
     } catch (e) {
         console.log(e);
         res.status(500).json({ error: "Đã xảy ra lỗi khi update " });
@@ -174,10 +272,11 @@ const updatetrangThaiMuaGiaoHangThatBai = async (req, res, next) => {
         if (!updatetrangThaiMua) {
             return res.status(404).json({ error: "Không tìm thấy hoa đơn" });
         }
-        res.status(200).json({
+        return {
             msg: "update thành công",
             data: updatetrangThaiMua,
-        });
+            success: true,
+        };
     } catch (e) {
         console.log(e);
         res.status(500).json({ error: "Đã xảy ra lỗi khi update " });
@@ -195,10 +294,11 @@ const updatetrangThaiMuaGiaoHangThanhCong = async (req, res, next) => {
         if (!updatetrangThaiMua) {
             return res.status(404).json({ error: "Không tìm thấy hoa đơn" });
         }
-        res.status(200).json({
+        return {
             msg: "update thành công",
             data: updatetrangThaiMua,
-        });
+            success: true,
+        };
     } catch (e) {
         console.log(e);
         res.status(500).json({ error: "Đã xảy ra lỗi khi update " });
@@ -218,25 +318,123 @@ const deleteHoaDon = async (req, res, next) => {
             return res.status(404).json({ error: "Không tìm thấy hoa don" });
         }
 
-        res.status(200).json({
+        return {
             msg: "Đã xoa hoa don thanh công",
             data: deleteHoaDon,
-        });
+            success: true,
+        };
     } catch (e) {
         console.log(e);
         res.status(500).json({ error: "Đã xảy ra lỗi khi xóa hóa đơn" });
     }
 };
-//api
+
+const chiTietHoaDon = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        // Lấy chi tiết hóa đơn
+        const item = await HoaDon.findById(id);
+
+        if (!item) {
+            return res.status(404).json({ error: "Không tìm thấy Hóa Đơn" });
+        }
+
+        // Lookup để lấy tên khách hàng từ bảng KhachHang
+        const khachHang = await KhachHang.findById(item.idKH);
+
+        // Lookup để lấy tên cửa hàng từ bảng CuaHang
+        const cuaHang = await CuaHang.findById(item.idCH);
+
+        // Thực hiện aggregation để lấy thông tin món đặt trong hóa đơn
+        const result = await MonDat.aggregate([
+            { $match: { idHD: new mongoose.Types.ObjectId(id) } }, // Chỉ lấy các món đặt có idHD trong danh sách idHDs
+            {
+                $lookup: {
+                    from: "Mon",
+                    localField: "idMon",
+                    foreignField: "_id",
+                    as: "mon"
+                }
+            },
+            { $unwind: "$mon" },
+            {
+                $lookup: {
+                    from: "LoaiMon",
+                    localField: "mon.idLM",
+                    foreignField: "_id",
+                    as: "loaiMon"
+                }
+            },
+            { $unwind: "$loaiMon" },
+            {
+                $lookup: {
+                    from: "CuaHang",
+                    localField: "mon.idCH",
+                    foreignField: "_id",
+                    as: "cuahang"
+                }
+            },
+            { $unwind: "$cuahang" },
+            {
+                $addFields: {
+                    "giaTienDat": { $multiply: ["$soLuong", "$mon.giaTien"] }
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    idHD: 1,
+                    idMon: 1,
+                    giaTienDat: 1,
+                    tenMon: "$mon.tenMon",
+                    tenCH: "$cuahang.tenCH",
+                    tenLM: "$loaiMon.tenLM"
+                }
+            }
+        ]);
+
+        return {
+            hoaDon: {
+                _id: item._id,
+                idKH: item.idKH,
+                idCH: item.idCH,
+                phanTramKhuyenMaiDat: item.phanTramKhuyenMaiDat,
+                diaChiGiaoHang: item.diaChiGiaoHang,
+                ghiChu: item.ghiChu,
+                thoiGianTao: item.thoiGianTao,
+                tongTien: item.tongTien,
+                thoiGianGiaoHangDuKien: item.thoiGianGiaoHangDuKien,
+                trangThaiThanhToan: item.trangThaiThanhToan,
+                trangThaiMua: item.trangThaiMua,
+                trangThai: item.trangThai,
+                maHD: item.maHD,
+                tenKH: khachHang ? khachHang.tenKH : "", // Lấy tên khách hàng từ bảng KhachHang
+                tenCH: cuaHang ? cuaHang.tenCH : "" // Lấy tên cửa hàng từ bảng CuaHang
+            },
+            monDat: result,
+            count: result.length,
+            msg: "Lấy chi tiết thành công",
+            success: true
+        };
+
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({ error: "Đã xảy ra lỗi khi lấy chi tiết hóa đơn" });
+    }
+};
+
 module.exports = {
     updateHoaDon,
     getHoaDon,
+    getSoLuongHoaDon,
     chiTietHoaDon,
     deleteHoaDon,
     updatetrangThaiMuaDangChuanBi,
     updatetrangThaiMuaDangGiaoHang,
     updatetrangThaiMuaGiaoHangThanhCong,
     updatetrangThaiMuaGiaoHangThatBai,
-    updatetrangThaiThanhToan,
+    updatetrangThaiThanhToanTrue,
+    updatetrangThaiThanhToanFalse,
 
 }
