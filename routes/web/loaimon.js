@@ -6,6 +6,6 @@ const passportConfig = require('../../config/auth/jwt-decode-admin')
 const sessionAdmin = require('../../config/auth/session-admin')
 
 router.get('/danh-sach',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), LoaiMonCtrl.getList);
-router.post('/loai-mon/add',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), LoaiMonCtrl.AddLoaiMon);
+router.post('/add',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), LoaiMonCtrl.AddLoaiMon);
 
 module.exports = router;

@@ -17,6 +17,7 @@ const AddLoaiMon =  async (req, res, next)=>{
             admin: req.session.ten,
             msg: "thiếu tên loại món"
         })
+        // res.redirect("/mon/loai-mon")
     }else{
         const data = await LoaiMonCtrl.themLoaiMon(req, res, next)
         const result = await LoaiMonCtrl.GetSoLuongMonTheoLoaiMon(req, res);
@@ -25,6 +26,7 @@ const AddLoaiMon =  async (req, res, next)=>{
             admin: req.session.ten,
             msg: data.msg
         })
+        // res.redirect("/mon/loai-mon")
     }
 }
 
