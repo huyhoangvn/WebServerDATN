@@ -190,7 +190,12 @@ const getDanhSachHoaDonByIdKhachHangApi = async (req, res, next) => {
         const danhSachHoaDon = await HoaDon.find({ idKH: idKhachHang });
 
         // Trả về danh sách hóa đơn
-        res.json({ data: danhSachHoaDon });
+        res.json({
+            data: danhSachHoaDon,
+            count: danhSachHoaDon.length,
+            msg: "thành công",
+            success: true,
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của khách hàng', error: error.message });
@@ -209,7 +214,12 @@ const getDanhSachHoaDonByIdCuaHangApi = async (req, res, next) => {
         const danhSachHoaDon = await HoaDon.find({ idCH: idCuaHang });
 
         // Trả về danh sách hóa đơn
-        res.json({ data: danhSachHoaDon });
+        res.json({
+            data: danhSachHoaDon,
+            count: danhSachHoaDon.length,
+            msg: "thành công",
+            success: true,
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của cửa hàng', error: error.message });
