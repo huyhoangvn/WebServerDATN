@@ -19,7 +19,7 @@ const ThemDanhGia = async function(req, res){
                 const index = await DanhGia.findOne({idKH:idKH, idMon:idMon});
                 res.json({
                     index,
-                    message: 'Thêm đánh giá lại thành công',
+                    msg: 'Thêm đánh giá lại thành công',
                     success: true
                 });
             }
@@ -38,7 +38,7 @@ const ThemDanhGia = async function(req, res){
                 })
                 res.json({
                     index,
-                    message: 'Thêm đánh giá thành công',
+                    msg: 'Thêm đánh giá thành công',
                     success: true
                 });
             }    
@@ -74,7 +74,7 @@ const SuaDanhGia = async function(req, res){
         }else{
             res.json({
                 index,
-                message: 'Sửa đánh giá thành công',
+                msg: 'Sửa đánh giá thành công',
                 success: true
             });
         }
@@ -104,7 +104,7 @@ const XoaDanhGia = async function(req, res){
         }else{
             res.json({
                 index,
-                message: 'Xóa đánh giá thành công',
+                msg: 'Xóa đánh giá thành công',
                 success: true
             });
         }
@@ -145,12 +145,14 @@ const GetDanhSachTheoTenMon = async function(req, res){
             {
                 $limit: 10,
             },
+            {
+              $count: "count",
+            }
         ]);
 
         res.json({
-            list,
-            count:list.length,
-            message: 'Get đánh giá theo tên món thành công',
+            count:list[0].count,
+            msg: 'Get đánh giá theo tên món thành công',
             success: true
         });
     } catch (error) {
@@ -194,7 +196,7 @@ const GetDanhSachTheoTenKhachHang = async function(req, res){
         res.json({
             list,
             count:list.length,
-            message: 'Get đánh giá theo tên khách hàng thành công',
+            msg: 'Get đánh giá theo tên khách hàng thành công',
             success: true
         });
     } catch (error) {
@@ -210,7 +212,7 @@ const GetDanhGiaTheoId = async function(req, res){
         const index = await DanhGia.findOne({_id:idDanhGia});
         res.json({
             index,
-            message: 'Get đánh giá theo id thành công',
+            msg: 'Get đánh giá theo id thành công',
             success: true
         });
     }catch (error) {
@@ -255,7 +257,7 @@ const GetTrungBinhDanhGiaTheoMon = async function(req, res){
         return({
             danhGiaTrungBinh: parseFloat(danhGiaTrungBinh.toFixed(1)),
             count:query.length,
-            message: 'Get số lượng đánh giá theo tên món thành công',
+            msg: 'Get số lượng đánh giá theo tên món thành công',
             success: true
         });
     } catch (error) {
@@ -270,7 +272,7 @@ const getTatCaDanhGiaTheoMonApi = async (req, res) => {
     res.json(result)
 }
 
-const GetSoLuongDanhGiaTheoMonVoiFilter = async function(req, res){
+const GetDanhSachDanhGiaTheoMonVoiFilter = async function(req, res){
     try {
         const idMon = new mongo.Types.ObjectId(req.params.idMon);
         const timkiem = {};
@@ -309,7 +311,7 @@ const GetSoLuongDanhGiaTheoMonVoiFilter = async function(req, res){
         ]);
         return({
             list:query,
-            message: 'Get số lượng đánh giá theo tên món thành công',
+            msg: 'Get số lượng đánh giá theo tên món thành công',
             success: true
         });
     } catch (error) {
@@ -320,8 +322,8 @@ const GetSoLuongDanhGiaTheoMonVoiFilter = async function(req, res){
     }
 }
 
-const GetSoLuongDanhGiaTheoMonVoiFilterApi = async (req, res) => {
-    const result = await GetSoLuongDanhGiaTheoMonVoiFilter(req, res);
+const GetDanhSachDanhGiaTheoMonVoiFilterApi = async (req, res) => {
+    const result = await GetDanhSachDanhGiaTheoMonVoiFilter(req, res);
     res.json(result)
   }
 
@@ -350,7 +352,7 @@ const GetSoLuongDanhGiaTheoKhachHang = async function(req, res){
 
         res.json({
             count:query.length,
-            message: 'Get số lượng đánh giá theo tên khách hàng thành công',
+            msg: 'Get số lượng đánh giá theo tên khách hàng thành công',
             success: true
         });
     } catch (error) {
@@ -371,6 +373,6 @@ module.exports = {
     GetTrungBinhDanhGiaTheoMon,
     GetSoLuongDanhGiaTheoKhachHang,
     getTatCaDanhGiaTheoMonApi,
-    GetSoLuongDanhGiaTheoMonVoiFilter,
-    GetSoLuongDanhGiaTheoMonVoiFilterApi
+    GetDanhSachDanhGiaTheoMonVoiFilter,
+    GetDanhSachDanhGiaTheoMonVoiFilterApi
 }
