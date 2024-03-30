@@ -13,7 +13,7 @@ router.get('/khach-hang/:id', hoadonctrl.getDanhSachHoaDonByIdKhachHangApi);
 
 router.get('/cua-hang/:id', hoadonctrl.getDanhSachHoaDonByIdCuaHangApi);
 // delete 
-router.delete('delete/:id', hoadonctrl.deleteHoaDonApi);
+router.delete('/delete/:id', hoadonctrl.deleteHoaDonApi);
 //update
 router.put('/update/:id', hoadonctrl.updateHoaDonApi);
 // update trang thái xác nhận khách hàng

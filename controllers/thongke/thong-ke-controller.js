@@ -448,7 +448,8 @@ const thongKeMonBanChayTheoNam = async (req, res) => {
                     tenMon: currentValue.mon.tenMon,
                     tenLM: currentValue.loaiMon.tenLM, // Sửa đổi tên loại món
                     soLuong: currentValue.soLuong,
-                    doanhThu: currentValue.giaTienDat * currentValue.soLuong
+                    doanhThu: currentValue.giaTienDat * currentValue.soLuong,
+                    hinhAnhMon: currentValue.mon.hinhAnh,
                 });
             } else {
                 accumulator[index].soLuong += currentValue.soLuong;
