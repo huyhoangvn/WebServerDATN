@@ -228,50 +228,35 @@
         <!-- Main content nằm ở dây -->
 <!-- Bắt đầu filter -->
         <form action="/thong-ke/mon-ban-chay" method="GET">
-          <!-- tìm theo tên món  -->
-          <div class="d-flex row justify-content-between mb-1">
-            <div class="col-12">
-              <input type="text" id="searchMon" class="form-control" name="tenMon"
-                placeholder="Nhập tên món để tìm kiếm">
-            </div>
-          </div>
 
           <!-- tìm theo tên loại món, theo ngày-->
           <div class="d-flex row justify-content-between mb-1">
 
-            <!-- <div class="col-3">
+            <div class="col-3">
               <select class="form-control" name="tenLM">
                 <option value="">Tất cả lọai món</option>
                 <% for (var i = 0; i<AllLoaiMon.length; i++) {%>
                   <option value="<%=AllLoaiMon[i].tenLM%>"><%=AllLoaiMon[i].tenLM%></option>
                 <%}%>
               </select>
-            </div> -->
+            </div>
 
             <div class="col-3">
               <select class="form-control" name="thang" id="thangSelect">
                   <option value="">Tháng</option>
                   <% for (var i = 1; i <= 12; i++) { %>
-                      <% if (i === currentMonth) { %>
+                      <% if (currentMonth && currentMonth == i) { %>
                           <option value="<%= i %>" selected>Tháng <%= i %></option>
                       <% } else { %>
                           <option value="<%= i %>">Tháng <%= i %></option>
                       <% } %>
                   <% } %>
               </select>
-            </div>
+          </div>
 
-            <div class="col-3">
-              <select class="form-control" name="thang">
-                <option value="">Tháng</option>
-                <% for (var i = 0; i<12; i++) {%>
-                  <option value="<%=i+1%>">tháng <%=i+1%></option>
-                <%}%>
-              </select>
-            </div>
 
             <div class="input-group col-3">
-              <input type="text" class="form-control" id="yearPicker" placeholder="Chọn năm" autocomplete="off">
+              <input type="text" class="form-control" value="<%=currentYear%>" name="nam" id="yearPicker" placeholder="Chọn năm" autocomplete="off">
             </div>
 
             <div class="col-2">
@@ -297,7 +282,7 @@
                 <tr>
                   <td scope="col-1"><%=i+1%></td>
                   <td scope="col-2" ><%=monBanChay[i].tenMon%></td>
-                  <td scope="col-9" ><%=monBanChay[i].tenLoaiMon%></td>
+                  <td scope="col-9" ><%=monBanChay[i].tenLM%></td>
                   <td scope="col-9" ><%=monBanChay[i].doanhThu%></td>
                 </tr>
                 <%}%>
@@ -344,6 +329,54 @@
         $('#yearPicker').val('');
       });
       });
+
+
+      // Lưu các giá trị của các trường khi form được submit
+      document.querySelector('form').addEventListener('submit', function() {
+          var selectedLM = document.querySelector('select[name="tenLM"]').value;
+          var selectedMonth = document.querySelector('select[name="thang"]').value;
+          var selectedYear = document.querySelector('input[name="nam"]').value;
+
+          localStorage.setItem('selectedLM', selectedLM);
+          localStorage.setItem('selectedMonth', selectedMonth);
+          localStorage.setItem('selectedYear', selectedYear);
+      });
+
+      // Thiết lập lại các giá trị của các trường sau khi trang được tải lại
+      window.onload = function() {
+          var selectedLM = localStorage.getItem('selectedLM');
+          var selectedMonth = localStorage.getItem('selectedMonth');
+          var selectedYear = localStorage.getItem('selectedYear');
+
+          // Kiểm tra xem trang đã được tải lại từ tìm kiếm hay không
+          var isReloaded = localStorage.getItem('isReloaded');
+
+          if (isReloaded) {
+              // Trang đã được tải lại từ tìm kiếm, sử dụng các giá trị đã lưu
+              if (selectedLM) {
+                  document.querySelector('select[name="tenLM"]').value = selectedLM;
+              }
+              if (selectedMonth) {
+                  document.querySelector('select[name="thang"]').value = selectedMonth;
+              }
+              if (selectedYear) {
+                  document.querySelector('input[name="nam"]').value = selectedYear;
+              }
+          } else {
+              // Trang mới được tải, chọn tháng hiện tại
+              var currentMonth = new Date().getMonth() + 1;
+              document.querySelector('select[name="thang"]').value = currentMonth;
+          }
+
+          // Đánh dấu trang đã được tải lại từ tìm kiếm
+          localStorage.removeItem('isReloaded');
+      };
+
+      // Thêm sự kiện cho nút tìm kiếm để đánh dấu trang đã được tải lại từ tìm kiếm
+      document.querySelector('button[type="submit"]').addEventListener('click', function() {
+          localStorage.setItem('isReloaded', true);
+      });
+
 
 
   </script>
