@@ -346,8 +346,7 @@ const thongKeMonBanChayTheoTenLoaiMon = async (req, res) => {
                     tenLM: currentValue.loaiMon.tenLM, // Sửa đổi tên loại món
                     soLuong: currentValue.soLuong,
                     doanhThu: currentValue.giaTienDat * currentValue.soLuong,
-                    hinhAnh: currentValue.mon.hinhAnh,
-
+                    hinhAnh: `${req.protocol}://${req.get("host")}/public/images/${currentValue.mon.hinhAnh}`
                 });
             } else {
                 accumulator[index].soLuong += currentValue.soLuong;
@@ -451,8 +450,7 @@ const thongKeMonBanChayTheoNam = async (req, res) => {
                     tenLM: currentValue.loaiMon.tenLM, // Sửa đổi tên loại món
                     soLuong: currentValue.soLuong,
                     doanhThu: currentValue.giaTienDat * currentValue.soLuong,
-                    hinhAnh: currentValue.mon.hinhAnh,
-                });
+                    hinhAnh: `${req.protocol}://${req.get("host")}/public/images/${currentValue.mon.hinhAnh}`                });
             } else {
                 accumulator[index].soLuong += currentValue.soLuong;
                 accumulator[index].doanhThu += currentValue.giaTienDat * currentValue.soLuong;
