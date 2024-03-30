@@ -56,6 +56,7 @@ const getHoaDon = async (req, res, next) => {
     try {
 
         const trang = parseInt(req.query.trang) || 1;
+        const currentPage = trang;
         const filter = {};
         if (typeof (req.query.maHD) !== 'undefined' && req.query.maHD !== "") {
             filter.maHD = { $regex: req.query.maHD, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
@@ -112,6 +113,7 @@ const getHoaDon = async (req, res, next) => {
             list: list,
             count: list.length,
             totalPages: totalPages,
+            currentPage: currentPage,
             success: true,
             msg: 'thành công'
         };
