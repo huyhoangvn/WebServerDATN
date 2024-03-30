@@ -61,6 +61,7 @@ const addMonDat = async (req, res, next) => {
         // Trả về kết quả thành công
         return {
             msg: "Món đặt đã được thêm thành công",
+            success: true
         };
     } catch (e) {
         console.error(e);
@@ -115,6 +116,7 @@ const updateMonDat = async (req, res, next) => {
         // Trả về kết quả thành công
         return {
             msg: "Món đặt đã được cập nhật thành công",
+            success: true,
         };
     } catch (e) {
         console.error(e);
@@ -155,6 +157,7 @@ const deleteMonDat = async (req, res, next) => {
         // Trả về kết quả thành công
         return {
             msg: "Món đặt đã được xóa thành công",
+            success: true,
         };
     } catch (e) {
         console.error(e);
@@ -196,7 +199,10 @@ const getDanhSachMonDatByIdHoaDon = async (req, res, next) => {
         const danhSachMonDat = await MonDat.find({ idHD: id });
 
         // Trả về danh sách hóa đơn
-        return { data: danhSachMonDat };
+        return {
+            data: danhSachMonDat,
+            success: true
+        };
     } catch (error) {
         console.error(error);
         res.status(500).json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của món đặt', error: error.message });

@@ -52,6 +52,8 @@ const updateHoaDon = async (req, res) => {
 
 const getHoaDon = async (req, res, next) => {
     try {
+
+        const trang = parseInt(req.query.trang) || 1;
         const filter = {};
         if (typeof (req.query.maHD) !== 'undefined' && req.query.maHD !== "") {
             filter.maHD = { $regex: req.query.maHD, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
@@ -80,7 +82,7 @@ const getHoaDon = async (req, res, next) => {
             filter.thoiGianTao = { $gte: new Date(formattedDate) };
         }
 
-        const trang = parseInt(req.query.trang) || 1;
+        const totalHoaDon = await HoaDon.countDocuments(filter);
 
         const list = await HoaDon.aggregate([
             {
@@ -92,6 +94,7 @@ const getHoaDon = async (req, res, next) => {
                     "thoiGianTao": "$thoiGianTao",
                     "trangThaiThanhToan": "$trangThaiThanhToan",
                     "trangThaiMua": "$trangThaiMua",
+                    "tongTien": "$tongTien",
                 }
             },
             {
@@ -102,9 +105,11 @@ const getHoaDon = async (req, res, next) => {
             },
         ]);
 
+        const totalPages = Math.ceil(totalHoaDon / 10);
         return {
             list: list,
             count: list.length,
+            totalPages: totalPages,
             success: true,
             msg: 'thành công'
         };
