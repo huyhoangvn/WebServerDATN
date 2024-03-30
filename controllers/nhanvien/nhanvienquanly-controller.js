@@ -869,11 +869,19 @@ const getTatCaNhanVienQuanLy = async (req, res) => {
       const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`; // Chuyển định dạng thành yyyy-mm-dd
       filter.thoiGianTao = { $gte: new Date(formattedDate) };
     }
-    if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
-      const trangThaiValue = parseInt(req.query.trangThai);
-      if (trangThaiValue === 1 || trangThaiValue === 0) {
-        filter.trangThai = trangThaiValue === 1;
-      }
+    if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
+      const parts = req.query.thoiGianTao.split('/');
+      const day = parseInt(parts[0]);
+      const month = parseInt(parts[1]);
+      const year = parseInt(parts[2]);
+
+      const startDate = new Date(year, month - 1, day); // Lưu ý: Tháng trong JavaScript bắt đầu từ 0
+      const endDate = new Date(year, month - 1, day + 1); // Ngày kế tiếp
+
+      filter.thoiGianTao = {
+        $gte: startDate,
+        $lt: endDate
+      };
     }
 
 
@@ -938,11 +946,19 @@ const getSoLuongNhanVienQuanLy = async (req, res) => {
       const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`; // Chuyển định dạng thành yyyy-mm-dd
       filter.thoiGianTao = { $gte: new Date(formattedDate) };
     }
-    if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
-      const trangThaiValue = parseInt(req.query.trangThai);
-      if (trangThaiValue === 1 || trangThaiValue === 0) {
-        filter.trangThai = trangThaiValue === 1;
-      }
+    if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
+      const parts = req.query.thoiGianTao.split('/');
+      const day = parseInt(parts[0]);
+      const month = parseInt(parts[1]);
+      const year = parseInt(parts[2]);
+
+      const startDate = new Date(year, month - 1, day); // Lưu ý: Tháng trong JavaScript bắt đầu từ 0
+      const endDate = new Date(year, month - 1, day + 1); // Ngày kế tiếp
+
+      filter.thoiGianTao = {
+        $gte: startDate,
+        $lt: endDate
+      };
     }
 
 
