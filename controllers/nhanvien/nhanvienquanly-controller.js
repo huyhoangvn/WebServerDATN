@@ -73,13 +73,13 @@ const suaNhanVienBan = async (req, res, next) => {
     const { tenNV, diaChi, sdt } = req.body;
 
     let hinhAnh = null; // Khởi tạo hình ảnh mặc định là null
-  
+
     // Kiểm tra xem có tệp hình ảnh được tải lên hay không
     if (req.files && req.files.length > 0) {
       // Lưu tên của tệp hình ảnh vào biến hinhAnh
       hinhAnh = req.files[0].filename;
     }
-    
+
     // Kiểm tra trống dữ liệu cho các trường
     if (!tenNV || !diaChi || !sdt) {
       return res.json({
@@ -147,7 +147,7 @@ const huyKichHoatNhanVien = async (req, res, next) => {
       const projection = { trangThai: 1 }; // Di chuyển việc khai báo lên trước khi sử dụng
       const editUser = await NhanVien.findById(idEdit, projection); // Sử dụng projection chỉ hiển thị trường trangThai
       console.log("🚀 ~ huyKichHoatNhanVien ~ editUser:", editUser);
-      
+
       const newTrangThai = !editUser.trangThai;
       const updateNV = await NhanVien.findByIdAndUpdate(
         { _id: idEdit },
@@ -162,7 +162,7 @@ const huyKichHoatNhanVien = async (req, res, next) => {
       // Cập nhật thành công
       res.json({
         success: true,
-        index:  updateNV,// Chỉ trả về trường trangThai
+        index: updateNV,// Chỉ trả về trường trangThai
         msg: "Đã cập nhật trạng thái thành công",
       });
     } else {
@@ -535,7 +535,7 @@ const getListNhanVienQuanly = async (req, res, next) => {
     }
 
     // Chỉ định trường cần hiển thị
-    const projection = { email: 1, sdt: 1, tenNV: 1, trangThai: 1, _id: 1, phanQuyen: 1,hinhAnh: 1,gioiTinh: 1,taiKhoan: 1, diaChi: 1};
+    const projection = { email: 1, sdt: 1, tenNV: 1, trangThai: 1, _id: 1, phanQuyen: 1, hinhAnh: 1, gioiTinh: 1, taiKhoan: 1, diaChi: 1 };
 
     // Thực hiện truy vấn để lấy danh sách nhân viên quản lý
     let listNhanVienQuanLy = NhanVien.find(query, projection);
@@ -576,8 +576,9 @@ const chiTietNhanVienQuanLy = async (req, res, next) => {
     if (!nhanVien) {
       return json({ error: "Không tìm thấy nhân viên" });
     }
-    res.json({ success: true, index: nhanVien, msg: "Lấy dữ liệu thành công",
-  });
+    res.json({
+      success: true, index: nhanVien, msg: "Lấy dữ liệu thành công",
+    });
   } catch (error) {
     console.error(error);
     res.json({
@@ -852,6 +853,140 @@ const chiTietNhanVienQuanLyApi = async (req, res, next) => {
   }
 };
 
+const getTatCaNhanVienQuanLy = async (req, res) => {
+  try {
+
+    const trang = parseInt(req.query.trang) || 1;
+    if (trang === '') {
+      currentPage = 1;
+    }
+    const filter = {};
+    if (typeof (req.query.tenNV) !== 'undefined' && req.query.tenNV !== "") {
+      filter.tenNV = { $regex: req.query.tenNV, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+    }
+    if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
+      const parts = req.query.thoiGianTao.split('/');
+      const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`; // Chuyển định dạng thành yyyy-mm-dd
+      filter.thoiGianTao = { $gte: new Date(formattedDate) };
+    }
+    if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+      const trangThaiValue = parseInt(req.query.trangThai);
+      if (trangThaiValue === 1 || trangThaiValue === 0) {
+        filter.trangThai = trangThaiValue === 1;
+      }
+    }
+
+
+    const result = await NhanVien.aggregate([
+      {
+        $match: filter,
+      },
+      {
+        $lookup: {
+          from: "CuaHang",
+          localField: "idCH",
+          foreignField: "_id",
+          as: "cuahang"
+        }
+      },
+      { $unwind: "$cuahang" },
+      {
+        $project: {
+          _id: 1,
+          idCH: 1,
+          tenCH: "$cuahang.tenCH",
+          thoiGianTao: 1,
+          email: 1, sdt: 1, tenNV: 1, trangThai: 1, phanQuyen: 1, hinhAnh: 1, gioiTinh: 1, taiKhoan: 1, diaChi: 1
+        }
+      },
+      {
+        $skip: (trang - 1) * 10,
+      },
+      {
+        $limit: 10,
+      },
+
+    ]);
+    return {
+      count: result.length,
+      list: result,
+      message: 'Get tat ca khuyen mai thanh cong',
+      success: true,
+    };
+
+  } catch (error) {
+    console.error(error);
+    return {
+      error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+      success: false
+    };
+  }
+};
+const getSoLuongNhanVienQuanLy = async (req, res) => {
+  try {
+
+    const trang = parseInt(req.query.trang) || 1;
+    if (trang === '') {
+      currentPage = 1;
+    }
+    const filter = {};
+    if (typeof (req.query.tenNV) !== 'undefined' && req.query.tenNV !== "") {
+      filter.tenNV = { $regex: req.query.tenNV, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+    }
+    if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
+      const parts = req.query.thoiGianTao.split('/');
+      const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`; // Chuyển định dạng thành yyyy-mm-dd
+      filter.thoiGianTao = { $gte: new Date(formattedDate) };
+    }
+    if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+      const trangThaiValue = parseInt(req.query.trangThai);
+      if (trangThaiValue === 1 || trangThaiValue === 0) {
+        filter.trangThai = trangThaiValue === 1;
+      }
+    }
+
+
+    const result = await NhanVien.aggregate([
+      {
+        $match: filter,
+      },
+      {
+        $lookup: {
+          from: "CuaHang",
+          localField: "idCH",
+          foreignField: "_id",
+          as: "cuahang"
+        }
+      },
+      { $unwind: "$cuahang" },
+      {
+        $project: {
+          _id: 1,
+          idCH: 1,
+          tenCH: "$cuahang.tenCH",
+          thoiGianTao: 1,
+          email: 1, sdt: 1, tenNV: 1, trangThai: 1, phanQuyen: 1, hinhAnh: 1, gioiTinh: 1, taiKhoan: 1, diaChi: 1
+        }
+      },
+      {
+        $count: "count",
+      }
+
+    ]);
+    return {
+      count: result[0].count,
+      success: true,
+      msg: "Thành công"
+    };
+
+  } catch (error) {
+    console.error(error);
+    return {
+      error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+      success: false
+    };
+  }
+};
 module.exports = {
   addNhanVienBanApi,
   suaNhanVienBanApi,
@@ -866,4 +1001,6 @@ module.exports = {
   updateMatKhauApi,
   getListNhanVienQuanlyApi,
   chiTietNhanVienQuanLyApi,
+  getSoLuongNhanVienQuanLy,
+  getTatCaNhanVienQuanLy,
 };
