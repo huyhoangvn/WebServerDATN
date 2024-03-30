@@ -41,7 +41,9 @@ const updateHoaDon = async (req, res) => {
             console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi kết quả.");
         } else {
             // Trả về kết quả thay vì gửi phản hồi trực tiếp
-            return { msg: 'Cập nhật thành công', dataSave: updatedHD };
+            return {
+                msg: 'Cập nhật thành công', dataSave: updatedHD, success: true
+            };
         };
     } catch (error) {
         // Xử lý lỗi và cung cấp một thông báo lỗi thân thiện với người dùng
@@ -227,7 +229,7 @@ const updatetrangThaiMuaDangChuanBi = async (req, res, next) => {
 
         const updatetrangThaiMua = await HoaDon.findOneAndUpdate(
             { _id: id },
-            { $set: { trangtrangThaiMua: 1 } },
+            { $set: { trangThaiMua: 1 } },
             { new: true },
         );
         if (!updatetrangThaiMua) {
@@ -249,7 +251,7 @@ const updatetrangThaiMuaDangGiaoHang = async (req, res, next) => {
 
         const updatetrangThaiMua = await HoaDon.findOneAndUpdate(
             { _id: id },
-            { $set: { trangtrangThaiMua: 2 } },
+            { $set: { trangThaiMua: 2 } },
             { new: true },
         );
         if (!updatetrangThaiMua) {
@@ -271,7 +273,7 @@ const updatetrangThaiMuaGiaoHangThatBai = async (req, res, next) => {
 
         const updatetrangThaiMua = await HoaDon.findOneAndUpdate(
             { _id: id },
-            { $set: { trangtrangThaiMua: 4 } },
+            { $set: { trangThaiMua: 4 } },
             { new: true },
         );
         if (!updatetrangThaiMua) {
@@ -293,7 +295,7 @@ const updatetrangThaiMuaGiaoHangThanhCong = async (req, res, next) => {
 
         const updatetrangThaiMua = await HoaDon.findOneAndUpdate(
             { _id: id },
-            { $set: { trangtrangThaiMua: 3 } },
+            { $set: { trangThaiMua: 3 } },
             { new: true },
         );
         if (!updatetrangThaiMua) {
