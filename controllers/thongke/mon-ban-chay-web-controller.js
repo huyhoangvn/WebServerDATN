@@ -5,22 +5,22 @@ const mongo = require('mongoose');
 
 const getView =  async (req, res, next)=>{
     var currentMonth = new Date().getMonth() + 1;
-    console.log(currentMonth);
+    var currentYear = new Date().getFullYear();
     const idLM = new mongo.Types.ObjectId(req.query.idLM);
     const tenLM = req.query.tenLM;
     const AllLoaiMon = await LoaiMon.find({});
     let list = {}
     if(tenLM=="" || tenLM==undefined){
-        const monBanChay = await ThongKeCtrl.thongKeMonBanChay10Ngay(req, res);
+        const monBanChay = await ThongKeCtrl.thongKeMonBanChayTheoNam(req, res);
         list = {monBanChay} 
     }else{
         const tenLM = req.query.tenLM;
-        const monBanChay = await ThongKeCtrl.thongKeMonBanChay10NgayTheoTenLoaiMon(req, res);
+        const monBanChay = await ThongKeCtrl.thongKeMonBanChayTheoTenLoaiMon(req, res);
         list = {monBanChay}
-        console.log("day la list",list.monBanChay.data);
     }
     res.render("thongke/mon-ban-chay", {
         currentMonth,
+        currentYear,
         AllLoaiMon,
         monBanChay: list.monBanChay.data,
         admin: req.session.ten,
