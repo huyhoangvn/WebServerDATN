@@ -241,13 +241,13 @@ const getTatCaMon = async (req, res) => {
         return {
             count:list.length,
             list:list,
-            msg: 'Get số lượng đánh giá theo tên khách hàng thành công',
+            msg: 'Get tất cả món thành công',
             success: true,
             
         };
     } catch (error) {
         return {
-            msg: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+            msg: 'Lỗi khi lấy tất cả món',
             success: false
         };
     }
@@ -435,14 +435,14 @@ const getMonCuaCuaHang = async (req, res) => {
       res.status(200).json({
           count:list.length,
           list:list,
-          msg: 'Get số lượng đánh giá theo tên khách hàng thành công',
+          msg: 'Get món của cửa hàng thành công',
           success: true,
           
       });
   } catch (error) {
       
       res.status(500).json({
-          msg: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+          msg: 'Lỗi khi lấy món của cửa hàng',
           success: false
       });
   }
@@ -539,14 +539,14 @@ const getMonCuaLoaiMon = async (req, res) => {
       res.status(200).json({
           count:list.length,
           list:list,
-          msg: 'Get số lượng đánh giá theo tên khách hàng thành công',
+          msg: 'Get món của loại món thành công',
           success: true,
           
       });
   } catch (error) {
       
       res.status(500).json({
-          msg: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+          msg: 'Lỗi khi lấy món của loại món',
           success: false
       });
   }
@@ -661,30 +661,26 @@ const getMonTheoid = async (req, res) => {
       idCH:mon.idCH,
       idLM:mon.idLM,
       tenMon:mon.tenMon,
+      giaTien:mon.giaTien,
+      trangThai:mon.trangThai,
       hinhAnh: req.protocol + "://" + req.get("host") + "/public/images/"+ mon.hinhAnh,
       tenCH:cuaHang.tenCH,
       tenLM:loaiMon.tenLM
     }
     res.status(200).json({
       index,
-      msg: "Get đánh giá theo id thành công",
+      msg: "Get món theo id thành công",
       success: true,
     });
   } catch (error) {
     
     res.status(500).json({
-      msg: "Lỗi khi lấy đánh giá theo id",
+      msg: "Lỗi khi lấy món theo id",
       success: false,
     });
   }
 };
 
-//Cải thiện hiển thị danh sách để tìm kiếm món theo tên cửa hàng
-const getDanhSachTenCuaHang = async (req, res, next) => {
- 
-};
-//
-const getDanhSachTenLoaiMon = async (req, res, next) => {};
 
 // khich hoat mon
 const kichhoatMon = async (req, res, next) => {
@@ -720,7 +716,6 @@ module.exports = {
   updatemonapi,
   updatemon,
   getMonTheoid,
-  getDanhSachTenCuaHang,
   kichhoatMon,
   getMonCuaCuaHang,
   getMonCuaLoaiMon,
