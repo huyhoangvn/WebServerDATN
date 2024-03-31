@@ -39,4 +39,6 @@ router.get("/get-so-luong-theo-khach-hang/:idKH",GetSoLuongDanhGiaTheoKhachHang)
 
 router.get("/get-danh-sach-theo-mon-filter/:idMon",GetDanhSachDanhGiaTheoMonVoiFilterApi);
 
+router.get("/get-trung-binh/:idMon",GetTrungBinhDanhGiaTheoMon);
+
 module.exports = router;
