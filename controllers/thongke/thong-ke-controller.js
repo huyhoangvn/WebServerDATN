@@ -218,7 +218,7 @@ const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
         // Lặp qua từng tháng trong năm
         for (let month = 0; month < 12; month++) {
             // Tính ngày đầu tiên và cuối cùng của tháng
-            const startDate = moment(`${nam}-${month + 1}-01`).startOf('month').toDate();
+            const startDate = moment(`${nam}-${month + 1}-01`, 'YYYY-MM-DD').startOf('month').toDate();
             const endDate = moment(startDate).endOf('month').toDate();
 
             // Thực hiện truy vấn để lấy tổng doanh thu của tháng đó
@@ -253,19 +253,19 @@ const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
         }
 
         // Gửi kết quả dưới dạng mảng
-        return {
-            index: monthlyRevenue,
+        return res.status(200).json({
+            data: monthlyRevenue,
             success: true,
-            msg: "thành công"
-        }
+            message: "Thành công"
+        });
     } catch (error) {
         console.error("Error:", error);
-        return {
+        return res.status(500).json({
             success: false,
             message: 'Đã xảy ra lỗi khi thực hiện thống kê.'
-        };
+        });
     }
-};
+}
 // Thông kê món bán chạy tất cả
 
 // thống kê món bán chạy theo query tên loại món
@@ -345,7 +345,8 @@ const thongKeMonBanChayTheoTenLoaiMon = async (req, res) => {
                     tenMon: currentValue.mon.tenMon,
                     tenLM: currentValue.loaiMon.tenLM, // Sửa đổi tên loại món
                     soLuong: currentValue.soLuong,
-                    doanhThu: currentValue.giaTienDat * currentValue.soLuong
+                    doanhThu: currentValue.giaTienDat * currentValue.soLuong,
+                    hinhAnh: `${req.protocol}://${req.get("host")}/public/images/${currentValue.mon.hinhAnh}`
                 });
             } else {
                 accumulator[index].soLuong += currentValue.soLuong;
@@ -449,7 +450,7 @@ const thongKeMonBanChayTheoNam = async (req, res) => {
                     tenLM: currentValue.loaiMon.tenLM, // Sửa đổi tên loại món
                     soLuong: currentValue.soLuong,
                     doanhThu: currentValue.giaTienDat * currentValue.soLuong,
-                    hinhAnhMon: currentValue.mon.hinhAnh,
+                    hinhAnh: `${req.protocol}://${req.get("host")}/public/images/${currentValue.mon.hinhAnh}`
                 });
             } else {
                 accumulator[index].soLuong += currentValue.soLuong;

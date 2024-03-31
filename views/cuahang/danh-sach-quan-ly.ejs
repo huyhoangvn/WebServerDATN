@@ -13,6 +13,8 @@
     crossorigin="anonymous"></script>
   <script src="https://kit.fontawesome.com/b5123099c5.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <!-- <style>
       .sidebar-dark-primary {
         background-color: #030025 !important; /* Change to green color */
@@ -222,7 +224,128 @@
     <section class="content">
       <div class="container-fluid bg-white m-2">
 
-        <!-- Main content nằm ở dây -->
+        <form action="/quan-ly/danh-sach">
+          <!-- Main content nằm ở dây -->
+          <div class="d-flex row justify-content-between mb-1">
+            <div class="col-6">
+              <input type="text" id="tenNV" class="form-control" name="tenNV"
+                placeholder="Nhập tên quản lý để tìm kiếm">
+            </div>
+            <div class="col-2">
+              <input type="date" class="form-control" name="thoiGianTao" id="thoiGianTao" placeholder="Ngày tạo">
+            </div>
+
+            <div class="col-2">
+              <select class="form-control" id="trangThai" name="trangThai">
+                <option value="-1">trạng thái </option>
+                <option value="1">Đã được duyệt</option>
+                <option value="0">Chưa được duyệt</option>
+              </select>
+            </div>
+
+            <div class="col-2">
+              <button class="btn btn-dark w-100" type="submit">Tìm kiếm</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Bảng hiển thị -->
+        <table class="table table-bordered border-secondary">
+          <thead>
+            <tr class="table-secondary">
+              <td scope="col-1">STT</td>
+              <td scope="col-2">Tên quản lý </td>
+              <td scope="col-2">Thời gian tạo</td>
+              <td scope="col-2">Cửa hàng</td>
+              <td scope="col-2">Trạng Thái</td>
+              <td scope="col-1">Chức năng</td>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (var i=0; i<data.length; i++) {%>
+              <tr>
+                <td scope="col-1">
+                  <%=i+1%>
+                </td>
+                <td scope="col-2">
+                  <%=data[i].tenNV%>
+                </td>
+                <td scope="col-2">
+                  <% var startDate=new Date(data[i].thoiGianTao); %>
+                    <%= ("0" + startDate.getDate()).slice(-2) %>/<%= ("0" + (startDate.getMonth() + 1)).slice(-2) %>/<%=
+                          startDate.getFullYear() %>
+                </td>
+
+                <td scope="col-2">
+                  <%=data[i].tenCH%>
+                </td>
+
+                <td class="text-primary scope-col-2">
+                  <a data-toggle="modal" data-target="#suaTrangThaiModal"
+                    class=" <%= data[i].trangThai ? 'text-success' : 'text-danger' %>" data-idnv="<%=data[i]._id%>"
+                    data-trangthai="<%=data[i].trangThai%>">
+                    <%= data[i].trangThai ? 'Đã được duyệt' : 'Chưa được duyệt' %>
+                  </a>
+                </td>
+
+                <td class="text-primary" scope="col-1">
+                  <a href="#" class="employee-detail-link" data-toggle="modal" data-target="#employeeModal"
+                    data-tenNV="<%=data[i].tenNV%>" data-tenCH="<%=data[i].tenCH%>"
+                    data-thoiGianTao="<%=data[i].thoiGianTao%>" data-email="<%=data[i].email%>"
+                    data-sdt="<%=data[i].sdt%>" data-phanQuyen="<%=data[i].phanQuyen%>"
+                    data-trangThai="<%=data[i].trangThai%>" data-taiKhoan="<%=data[i].taiKhoan%>"
+                    data-diaChi="<%=data[i].diaChi%>" data-gioiTinh="<%=data[i].gioiTinh%>">Chi tiết</a>
+                </td>
+              </tr>
+              <%}%>
+          </tbody>
+        </table>
+
+
+        <div class="modal fade" id="employeeModal" tabindex="-1" role="dialog" aria-labelledby="employeeModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="employeeModalLabel">Chi tiết nhân viên quản lý</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <p><strong>Tên nhân viên:</strong> <span id="tenNV"></span></p>
+                    <p><strong>tên cửa hàng:</strong> <span id="tenCH"></span></p>
+                    <p><strong>Tài khoản:</strong> <span id="taiKhoan"></span></p>
+                    <p><strong>Thời gian tạo:</strong> <span id="thoiGianTao"></span></p>
+                    <!-- <p><strong>Email:</strong> <span id="email"></span></p> -->
+                    <p><strong>Số điện thoại:</strong> <span id="sdt"></span></p>
+                    <p><strong>Phân quyền:</strong> <span id="phanQuyen"></span></p>
+                    <p><strong>Trạng thái:</strong> <span id="trangThai"></span></p>
+                    <p><strong>Địa chỉ:</strong> <span id="diaChi"></span></p>
+                    <p><strong>Giới tính:</strong> <span id="gioiTinh"></span></p>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <nav aria-label=" Page navigation">
+          <ul class="pagination justify-content-center">
+            <% for (var i=1; i <=totalPages; i++) { %>
+              <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                <a class="page-link" href="?trang=<%= i %>">
+                  <%= i %>
+                </a>
+              </li>
+              <% } %>
+          </ul>
+        </nav>
 
       </div>
     </section>
@@ -239,6 +362,65 @@
       )
     }
     )
+    function convertTrangThai(trangThai) {
+      if (trangThai === true) {
+        return "Hoạt động";
+      } else {
+        return "Ngưng hoạt động";
+      }
+    }
+    function convertPhanQuyen(phanQuyen) {
+      if (phanQuyen === 0) {
+        return "Nhân viên quản lý";
+      } else if (phanQuyen === 1) {
+        return "Nhân viên thường";
+      } else {
+        return "Không xác định";
+      }
+    }
+
+    // Hàm chuyển đổi giới tính
+    function convertGioiTinh(gioiTinh) {
+      if (gioiTinh === 1) {
+        return "Nam";
+      } else if (gioiTinh === 2) {
+        return "Nữ";
+      } else {
+        return "Không xác định";
+      }
+    }
+    $(document).ready(function () {
+      $('a[data-target="#employeeModal"]').on('click', function () {
+        var tenNV = $(this).data('tennv');
+        var tenCH = $(this).data('tench');
+        var thoiGianTao = moment($(this).data('thoigiantao')).format('DD/MM/YYYY'); // Format thời gian tạo
+        var email = $(this).data('Email');
+        var sdt = $(this).data('sdt');
+        var phanQuyen = $(this).data('phanquyen');
+        var trangThai = $(this).data('trangthai');
+        var taiKhoan = $(this).data('taikhoan');
+        var diaChi = $(this).data('diachi');
+        var gioiTinh = $(this).data('gioitinh');
+
+        var trangThaiText = convertTrangThai(trangThai);
+        var gioiTinhText = convertGioiTinh(gioiTinh);
+        var phanQuyenText = convertPhanQuyen(phanQuyen);
+
+        $('#employeeModal').find('#tenNV').text(tenNV);
+        $('#employeeModal').find('#tenCH').text(tenCH);
+        $('#employeeModal').find('#thoiGianTao').text(thoiGianTao);
+        $('#employeeModal').find('#email').text(email);
+        $('#employeeModal').find('#sdt').text(sdt);
+        $('#employeeModal').find('#phanQuyen').text(phanQuyenText);
+        $('#employeeModal').find('#trangThai').text(trangThaiText);
+        $('#employeeModal').find('#taiKhoan').text(taiKhoan);
+        $('#employeeModal').find('#diaChi').text(diaChi);
+        $('#employeeModal').find('#gioiTinh').text(gioiTinhText);
+      });
+    });
+
+    // Hàm chuyển đổi trạng thái
+
   </script>
 </body>
 

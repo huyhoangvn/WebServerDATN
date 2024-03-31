@@ -81,8 +81,17 @@ const getHoaDon = async (req, res, next) => {
         // Xử lý tìm kiếm theo thời gian tạo
         if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
             const parts = req.query.thoiGianTao.split('/');
-            const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`; // Chuyển định dạng thành yyyy-mm-dd
-            filter.thoiGianTao = { $gte: new Date(formattedDate) };
+            const day = parseInt(parts[0]);
+            const month = parseInt(parts[1]);
+            const year = parseInt(parts[2]);
+
+            const startDate = new Date(year, month - 1, day); // Lưu ý: Tháng trong JavaScript bắt đầu từ 0
+            const endDate = new Date(year, month - 1, day + 1); // Ngày kế tiếp
+
+            filter.thoiGianTao = {
+                $gte: startDate,
+                $lt: endDate
+            };
         }
 
         const totalHoaDon = await HoaDon.countDocuments(filter);
@@ -149,8 +158,17 @@ const getSoLuongHoaDon = async (req, res, next) => {
         // Xử lý tìm kiếm theo thời gian tạo
         if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
             const parts = req.query.thoiGianTao.split('/');
-            const formattedDate = `${parts[1]}/${parts[0]}/${parts[2]}`; // Chuyển định dạng thành mm/dd/yyyy
-            filter.thoiGianTao = { $gte: new Date(formattedDate) };
+            const day = parseInt(parts[0]);
+            const month = parseInt(parts[1]);
+            const year = parseInt(parts[2]);
+
+            const startDate = new Date(year, month - 1, day); // Lưu ý: Tháng trong JavaScript bắt đầu từ 0
+            const endDate = new Date(year, month - 1, day + 1); // Ngày kế tiếp
+
+            filter.thoiGianTao = {
+                $gte: startDate,
+                $lt: endDate
+            };
         }
 
         const result = await HoaDon.aggregate([
