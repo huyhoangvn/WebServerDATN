@@ -13,6 +13,10 @@
     crossorigin="anonymous"></script>
   <script src="https://kit.fontawesome.com/b5123099c5.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
   <!-- <style>
       .sidebar-dark-primary {
         background-color: #030025 !important; /* Change to green color */
@@ -167,6 +171,25 @@
               </li>
             </ul>
           </li>
+
+          <!-- hóa đơn -->
+          <li class="nav-item menu-open">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Quản lý Hóa Đơn
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/hoa-don/danh-sach" class="nav-link ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+            </ul>
+          </li>
           <!-- Đăng xuất -->
           <li class="nav-item border-top border-1 ">
             <a href="/auth/sign-out" class="nav-link">
@@ -209,22 +232,17 @@
         <form action="/khuyen-mai/danh-sach">
           <!-- Main content nằm ở dây -->
           <div class="d-flex row justify-content-between mb-1">
-            <div class="col-6">
+            <div class="col-4">
               <input type="text" id="searchTieuDe" class="form-control" name="tieuDe"
                 placeholder="Nhập tiêu đề để tìm kiếm">
             </div>
-            <!-- <div class="col-6">
-              <input type="text" id="searchPhanTramKhuyenMai" class="form-control" name="phanTramKhuyenMai"
-                placeholder="Nhập phần trăm khuyến mãi để tìm kiếm">
-            </div> -->
-            <div class="col-6">
-              <input type="text" id="searchNgaybatDau" class="form-control" name="ngayBatDau"
-                placeholder="Nhập ngày bắt đầu để tìm kiếm">
+
+            <div class="mb-3">
+              <input type="date" class="form-control" name="ngayBatDau" id="ngayBatDau" placeholder="Ngày bắt đầu">
             </div>
 
-            <div class="col-6">
-              <input type="text" id="searchNgayHetHan" class="form-control" name="ngayHetHan"
-                placeholder="Nhập ngày bắt đầu để tìm kiếm">
+            <div class="mb-3">
+              <input type="date" class="form-control" name="ngayHetHan" id="ngayHetHan" placeholder="Ngày hết hạn">
             </div>
             <div class="col-2">
               <select class="form-control" name="trangThai">
@@ -238,6 +256,7 @@
               <button class="btn btn-dark w-100" type="submit">Tìm kiếm</button>
             </div>
           </div>
+
         </form>
 
         <!-- Bảng hiển thị -->
@@ -248,6 +267,7 @@
               <td scope="col-2">Tiêu Đề </td>
               <td scope="col-2">Ngày Bắt Đầu</td>
               <td scope="col-2">Ngày Kết Thúc</td>
+              <td scope="col-2">Sửa</td>
               <td scope="col-2">Trạng Thái</td>
               <td scope="col-1">Chức năng</td>
             </tr>
@@ -271,20 +291,143 @@
                     <%= ("0" + endDate.getDate()).slice(-2) %>/<%= ("0" + (endDate.getMonth() + 1)).slice(-2) %>/<%=
                           endDate.getFullYear() %>
                 </td>
+                <td class="text-primary" scope="col-1">
+                  <a data-toggle="modal" data-target="#suaKhuyenMaiModal" data-idkm="<%=data[i]._id%>"
+                    data-tieude="<%=data[i].tieuDe%>" data-makhuyenmai="<%=data[i].maKhuyenMai%>"
+                    data-ngaybatdau="<%=data[i].ngayBatDau%>" data-ngayhethan="<%=data[i].ngayHetHan%>"
+                    data-phantramkhuyenmai="<%=data[i].phanTramKhuyenMai%>" data-dontoithieu="<%=data[i].donToiThieu%>"
+                    data-trangthai="<%=data[i].trangThai%>">
+                    Sửa </a>
+                </td>
 
-                <% if(data[i].trangThai==true){%>
-                  <td class="text-success" scope="col-2">Hoạt động</td>
-                  <%}else if(data[i].trangThai==false){%>
-                    <td class="text-danger" scope="col-2">Khóa</td>
-                    <%}%>
+                <td class="text-primary scope-col-2">
+                  <a data-toggle="modal" data-target="#suaTrangThaiModal"
+                    class=" <%= data[i].trangThai ? 'text-success' : 'text-danger' %>" data-idkm="<%=data[i]._id%>"
+                    data-trangthai="<%=data[i].trangThai%>">
+                    <%= data[i].trangThai ? 'Hoạt động' : 'Khóa' %>
+                  </a>
+                </td>
 
-                      <td class="text-primary" scope="col-1">Chi tiết</td>
+                <td class="text-primary" scope="col-1">
+                  <a data-toggle="modal" data-target="#exampleModal" data-tieude="<%=data[i].tieuDe%>"
+                    data-makhuyenmai="<%=data[i].maKhuyenMai%>" data-ngaybatdau="<%=data[i].ngayBatDau%>"
+                    data-ngayhethan="<%=data[i].ngayHetHan%>" data-phantramkhuyenmai="<%=data[i].phanTramKhuyenMai%>"
+                    data-dontoithieu="<%=data[i].donToiThieu%>" data-trangthai="<%=data[i].trangThai%>">
+                    Chi tiết</a>
+                </td>
               </tr>
               <%}%>
           </tbody>
         </table>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chi tiết khuyến mãi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <h4 id="tieude"></h4>
+                    <p><strong>Mã Khuyến Mãi:</strong> <span id="makhuyenmai"></span></p>
+                    <p><strong>Ngày bắt đầu:</strong> <span id="ngaybatdau"></span></p>
+                    <p><strong>Ngày kết thúc:</strong> <span id="ngayhethan"></span></p>
+                    <p><strong>Phần trăm khuyến mãi:</strong> <span id="phantramkhuyenmai"></span></p>
+                    <p><strong>Đơn tối thiểu:</strong> <span id="dontoithieu"></span></p>
+                    <p><strong>Trạng thái:</strong> <span id="trangthai"></span></p>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        <nav aria-label="Page navigation">
+
+        <!-- Modal Sửa Khuyến Mãi -->
+        <div class="modal fade" id="suaKhuyenMaiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sửa Khuyến Mãi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form id="formSuaKhuyenMai" method="post" action="/khuyen-mai/sua/">
+                  <div class="form-group">
+                    <label for="tieuDe">Tiêu đề</label>
+                    <input type="text" class="form-control" name="tieuDe" id="tieuDe" placeholder="Tiêu đề">
+                  </div>
+                  <div class="form-group">
+                    <label for="maKhuyenMai">Mã Khuyến Mãi</label>
+                    <input type="text" class="form-control " name="maKhuyenMai" id="maKhuyenMai"
+                      placeholder="Mã Khuyến Mãi">
+                  </div>
+                  <div class="form-group">
+                    <label for="ngayBatDau">Ngày bắt đầu</label>
+                    <input type="text" class="form-control" name="ngayBatDau" id="ngayBatDau"
+                      placeholder="Ngày bắt đầu">
+                  </div>
+                  <div class="form-group">
+                    <label for="ngayHetHan">Ngày kết thúc</label>
+                    <input type="text" class="form-control" name="ngayHetHan" id="ngayHetHan"
+                      placeholder="Ngày kết thúc">
+                  </div>
+                  <div class="form-group">
+                    <label for="phanTramKhuyenMai">Phần trăm khuyến mãi</label>
+                    <input type="text" class="form-control" name="phanTramKhuyenMai" id="phanTramKhuyenMai"
+                      placeholder="Phần trăm khuyến mãi">
+                  </div>
+                  <div class="form-group">
+                    <label for="donToiThieu">Đơn tối thiểu</label>
+                    <input type="text" class="form-control" name="donToiThieu" id="donToiThieu"
+                      placeholder="Đơn tối thiểu">
+                  </div>
+                  <input type="hidden" class="form-control" name="idKM" id="idKM">
+                  <br>
+                  <button type="submit" class="btn btn-primary">Lưu</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Modal Sửa Trạng Thái -->
+        <div class="modal fade" id="suaTrangThaiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sửa Trạng Thái</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form id="formSuaTrangThai" action="/khuyen-mai/xoa" method="post">
+                  <div class="form-group">
+                    <label for="trangThai">bạn có muốn sửa trạng thái không</label>
+                  </div>
+                  <input type="hidden" class="form-control" name="idKM" id="idKM">
+                  <br>
+                  <button type="submit" class="btn btn-primary">Sửa</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <nav aria-label=" Page navigation">
           <ul class="pagination justify-content-center">
             <% for (var i=1; i <=totalPages; i++) { %>
               <li class="page-item <%= i === currentPage ? 'active' : '' %>">
@@ -296,9 +439,12 @@
           </ul>
         </nav>
 
+
       </div>
     </section>
   </div>
+
+  <!-- Button trigger modal -->
 
   <!-- Scripts -->
   <script type="text/javascript">
@@ -311,7 +457,79 @@
       )
     }
     )
+    function convertTrangThai(trangThai) {
+      if (trangThai === true) {
+        return "Hoạt động";
+      } else {
+        return "Khóa";
+      }
+    }
+
+
+    // chi tiết
+    $(document).ready(function () {
+      $('a[data-target="#exampleModal"]').on('click', function () {
+        var tieude = $(this).data('tieude');
+        var makhuyenmai = $(this).data('makhuyenmai');
+        var ngaybatdau = moment($(this).data('ngaybatdau')).format('DD/MM/YYYY'); // Format ngày bắt đầu
+        var ngayhethan = moment($(this).data('ngayhethan')).format('DD/MM/YYYY');
+        var phantramkhuyenmai = $(this).data('phantramkhuyenmai');
+        var dontoithieu = $(this).data('dontoithieu');
+        var trangthai = $(this).data('trangthai');
+
+        var trangThaiText = convertTrangThai(trangthai);
+
+        $('#exampleModal').find('#tieude').text(tieude);
+        $('#exampleModal').find('#makhuyenmai').text(makhuyenmai);
+        $('#exampleModal').find('#ngaybatdau').text(ngaybatdau);
+        $('#exampleModal').find('#ngayhethan').text(ngayhethan);
+        $('#exampleModal').find('#phantramkhuyenmai').text(phantramkhuyenmai);
+        $('#exampleModal').find('#dontoithieu').text(dontoithieu);
+        $('#exampleModal').find('#trangthai').text(trangThaiText);
+      });
+    });
+
+    $(document).ready(function () {
+      // Khi nút "Sửa" được nhấp
+      $('a[data-target="#suaKhuyenMaiModal"]').on('click', function () {
+
+        var idKM = $(this).data('idkm');
+        var tieuDe = $(this).data('tieude');
+        var maKhuyenMai = $(this).data('makhuyenmai');
+        var ngayBatDau = $(this).data('ngaybatdau');
+        var ngayHetHan = $(this).data('ngayhethan');
+        var phanTramKhuyenMai = $(this).data('phantramkhuyenmai');
+        var donToiThieu = $(this).data('dontoithieu');
+
+        // Thiết lập value cho từng trường input
+        $('#tieuDe').val(tieuDe);
+        $('#maKhuyenMai').val(maKhuyenMai);
+        $('#ngayBatDau').val(ngayBatDau);
+        $('#ngayHetHan').val(ngayHetHan);
+        $('#phanTramKhuyenMai').val(phanTramKhuyenMai);
+        $('#donToiThieu').val(donToiThieu);
+        $('#idKM').val(idKM);
+
+
+
+        $('#formSuaKhuyenMai').attr('action', '/khuyen-mai/sua/' + idKM);
+      });
+    });
+
+    // sửa trạng thái
+    $(document).ready(function () {
+      $('a[data-target="#suaTrangThaiModal"]').on('click', function () {
+
+        var idKM = $(this).data('idkm');
+
+        $('#idKM').val(idKM);
+
+        $('#formSuaTrangThai').attr('action', '/khuyen-mai/xoa/' + idKM);
+      });
+    });
+
   </script>
+
 </body>
 
 </html>

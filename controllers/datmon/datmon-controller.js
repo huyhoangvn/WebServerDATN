@@ -1,90 +1,326 @@
 const { model: MonDat } = require("../../model/MonDat");
+const { model: HoaDon } = require("../../model/HoaDon");
+const { model: Mon } = require("../../model/Mon");
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
+
 
 // Thêm mới món đặt
 const addMonDat = async (req, res, next) => {
     try {
-        if (!req.body || !req.body.idHD || !req.body.idMon || !req.body.giaTienDat || !req.body.soLuong) {
+        const idHD = req.params.idHD; // Lấy id hóa đơn từ params
+
+        if (!req.body || !req.body.idMon) {
             throw new Error("Thông tin món đặt không đầy đủ hoặc không hợp lệ.");
         }
-        const newMonDat = new MonDat(req.body);
 
-        const savedMonDat = await newMonDat.save();
-
-        if (!savedMonDat) {
-            throw new Error("lưu món đặt không thành công");
+        const idMon = req.body.idMon;
+        if (!idMon) {
+            throw new Error("ID món không hợp lệ.");
+        }
+        const mon = await Mon.findOne({ _id: idMon });
+        // Kiểm tra hóa đơn
+        const hoaDon = await HoaDon.findById(idHD);
+        if (!hoaDon) {
+            throw new Error("Không tìm thấy hóa đơn.");
         }
 
-        res.status(200).json({
-            dataSave: savedMonDat,
-            msg: "món đặt đã được thêm thành công",
-        });
+        // Kiểm tra trạng thái của hóa đơn
+        if (!hoaDon.trangThai) {
+            throw new Error("Hóa đơn không ở trạng thái hoạt động.");
+        }
+        // kiểm tra trạng thái mua của hóa đơn
+        if (hoaDon.trangThaiThanhToan !== 0) {
+            throw new Error("Hóa đơn đã được thanh toán.");
+        }
+        if (hoaDon.trangThaiMua !== 0) {
+            throw new Error("Hóa đơn không ở trạng thái Đợi duyệt.");
+        }
+
+        const cuaHangMonDat = mon.idCH.toString();
+        const cuaHangHoaDon = hoaDon.idCH.toString();
+        if (cuaHangMonDat !== cuaHangHoaDon) {
+            throw new Error("Món đặt không thuộc cùng một cửa hàng với các món trong hóa đơn.");
+        }
+
+
+        const tongTienMoi = hoaDon.tongTien + (mon.giaTien * req.body.soLuong);
+
+
+        await HoaDon.findByIdAndUpdate(idHD, { tongTien: tongTienMoi }, { new: true });
+
+        // await updateTongTienHoaDon(idHD);
+        // Tạo món đặt mới với id hóa đơn đã được cung cấp
+        await MonDat.create({
+            idHD: idHD,
+            idMon: req.body.idMon,
+            giaTienDat: mon.giaTien,
+            soLuong: req.body.soLuong
+        })
+
+        // Trả về kết quả thành công
+        return {
+            msg: "Món đặt đã được thêm thành công",
+            success: true
+        };
     } catch (e) {
         console.error(e);
-        res
-            .status(500)
-            .json({ error: e.message || "Đã xảy ra lỗi khi thêm món đặt" });
+        res.status(500).json({ error: e.message || "Đã xảy ra lỗi khi thêm món đặt" });
     }
 }
 
-// Lấy tất cả món đặt
-const getAllMonDat = async (req, res, next) => {
+const updateMonDat = async (req, res, next) => {
     try {
-        const monDats = await MonDat.find();
-        res.status(200).json(monDats);
-    } catch (error) {
-        res.status(500).json({ message: "Lỗi khi lấy danh sách món đặt", error });
-    }
-};
+        const id = req.params.id; // Lấy id của món đặt từ params
 
-// Xóa món đặt
-const deleteMonDatApi = async (req, res) => {
-    try {
-        await MonDat.findByIdAndDelete(req.params.id);
-        res.status(200).json({ message: "Xóa món đặt thành công" });
-    } catch (error) {
-        res.status(500).json({ message: "Lỗi khi xóa món đặt", error });
-    }
-};
-
-// Cập nhật món đặt
-const updateMonDatApi = async (req, res) => {
-    try {
-        const updatedMonDat = await MonDat.findByIdAndUpdate(req.params.id, req.body, { new: true });
-        if (!updatedMonDat) {
-            return res.status(404).json({ message: "Món đặt không tồn tại" });
+        if (!req.body.soLuong) {
+            throw new Error("Thông tin món đặt không đầy đủ hoặc không hợp lệ.");
         }
-        res.status(200).json({ message: "Cập nhật món đặt thành công" });
-    } catch (error) {
-        res.status(500).json({ message: "Lỗi khi cập nhật món đặt", error });
-    }
-};
-const MonDatApi = async (req, res, next) => {
-    res.end(JSON.stringify(await addMonDat(req, res, next)));
-};
-const getDanhSachMonDatByIdHoaDonApi = async (req, res, next) => {
-    try {
-        const idHoaDon = req.params.id; // Lấy ID của khách hàng từ tham số trong đường dẫn
 
-        // Kiểm tra tính hợp lệ của ID khách hàng
-        if (!idHoaDon) {
+        // Lấy thông tin món đặt từ cơ sở dữ liệu
+        const monDat = await MonDat.findById(id);
+        if (!monDat) {
+            throw new Error("Không tìm thấy món đặt.");
+        }
+
+        // Kiểm tra hóa đơn liên kết với món đặt
+        const hoaDon = await HoaDon.findById(monDat.idHD);
+        if (!hoaDon) {
+            throw new Error("Không tìm thấy hóa đơn liên kết với món đặt.");
+        }
+
+        // Kiểm tra trạng thái mua của hóa đơn
+        if (hoaDon.trangThaiMua !== 0) {
+            throw new Error("Hóa đơn không ở trạng thái mua.");
+        }
+
+
+        // Tính tổng tiền mới
+        let tongTienMoi = hoaDon.tongTien;
+        if (req.body.soLuong < monDat.soLuong) {
+            // Nếu số lượng mới nhỏ hơn số lượng ban đầu, giảm tổng tiền đi
+            tongTienMoi -= (monDat.giaTienDat * (monDat.soLuong - req.body.soLuong));
+        } else if (req.body.soLuong > monDat.soLuong) {
+            // Nếu số lượng mới lớn hơn số lượng ban đầu, tăng tổng tiền lên
+            tongTienMoi += (monDat.giaTienDat * (req.body.soLuong - monDat.soLuong));
+        }
+
+        // Cập nhật thông tin món đặt
+        await MonDat.findByIdAndUpdate(id, {
+            soLuong: req.body.soLuong
+        });
+
+        // Cập nhật tổng tiền của hóa đơn
+        await HoaDon.findByIdAndUpdate(hoaDon._id, { tongTien: tongTienMoi }, { new: true });
+
+        // Trả về kết quả thành công
+        return {
+            msg: "Món đặt đã được cập nhật thành công",
+            success: true,
+        };
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: e.message || "Đã xảy ra lỗi khi cập nhật món đặt" });
+    }
+}
+
+const deleteMonDat = async (req, res, next) => {
+    try {
+        const id = req.params.id; // Lấy id của món đặt từ params
+
+        // Lấy thông tin món đặt từ cơ sở dữ liệu
+        const monDat = await MonDat.findById(id);
+        if (!monDat) {
+            throw new Error("Không tìm thấy món đặt.");
+        }
+
+        // Kiểm tra hóa đơn liên kết với món đặt
+        const hoaDon = await HoaDon.findById(monDat.idHD);
+        if (!hoaDon) {
+            throw new Error("Không tìm thấy hóa đơn liên kết với món đặt.");
+        }
+
+        // Kiểm tra trạng thái mua của hóa đơn
+        if (hoaDon.trangThaiMua !== 0) {
+            throw new Error("Hóa đơn không ở trạng thái mua.");
+        }
+
+        // Tính toán tổng tiền mới
+        const tongTienMoi = hoaDon.tongTien - (monDat.giaTienDat * monDat.soLuong);
+
+        // Xóa món đặt từ cơ sở dữ liệu
+        await MonDat.findByIdAndDelete(id);
+
+        // Cập nhật tổng tiền của hóa đơn
+        await HoaDon.findByIdAndUpdate(hoaDon._id, { tongTien: tongTienMoi }, { new: true });
+
+        // Trả về kết quả thành công
+        return {
+            msg: "Món đặt đã được xóa thành công",
+            success: true,
+        };
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: e.message || "Đã xảy ra lỗi khi xóa món đặt" });
+    }
+}
+
+const deleteMonDatMem = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        const trangThai = await MonDat.findOneAndUpdate(
+            { _id: id },
+            { $set: { trangThai: false } },
+            { new: true },
+        );
+        if (!trangThai) {
+            return res.status(404).json({ error: "Không tìm thấy hoa đơn" });
+        }
+        return {
+            msg: "update thành công",
+            data: trangThai,
+        };
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({ error: "Đã xảy ra lỗi khi update " });
+    }
+}
+
+const getDanhSachMonDatByIdHoaDon = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+
+        if (!id) {
             return res.status(400).json({ msg: 'Vui lòng cung cấp ID hóa đơn' });
         }
 
         // Lấy danh sách hóa đơn của khách hàng dựa trên ID
-        const danhSachMonDat = await MonDat.find({ idHD: idHoaDon });
+        const danhSachMonDat = await MonDat.find({ idHD: id });
 
         // Trả về danh sách hóa đơn
-        res.json({ data: danhSachMonDat });
+        return {
+            data: danhSachMonDat,
+            success: true
+        };
     } catch (error) {
         console.error(error);
         res.status(500).json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của món đặt', error: error.message });
     }
 };
+
+// // Cập nhật món đặt
+// const checkTrangThaiMua = async (hoaDonId) => {
+//     try {
+//         // Tìm hóa đơn dựa trên id
+//         const hoaDon = await HoaDon.findById(hoaDonId);
+
+//         // Kiểm tra xem hóa đơn có tồn tại không
+//         if (!hoaDon) {
+//             return { canUpdate: false, message: "Không tìm thấy hóa đơn" };
+//         }
+
+//         // Kiểm tra xem trạng thái mua của hóa đơn có phải là 1 không
+//         if (hoaDon.trangThaiMua === 1) {
+//             return { canUpdate: true, message: "Trạng thái mua của hóa đơn là 1" };
+//         } else {
+//             return { canUpdate: false, message: "Hóa đơn không ở trạng thái mua" };
+//         }
+//     } catch (error) {
+//         return { canUpdate: false, message: "Lỗi khi kiểm tra trạng thái mua của hóa đơn", error };
+//     }
+// };
+
+
+const addMonDatApi = async (req, res, next) => {
+    try {
+        const result = await addMonDat(req, res, next);
+        if (!res.headersSent) {
+            // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi
+            res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
+        } else {
+            console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi kết quả.");
+        };
+    } catch (error) {
+        // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
+        if (!res.headersSent) {
+            res.status(500).json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
+        } else {
+            console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        }
+    }
+}
+
+const updateMonDatApi = async (req, res, next) => {
+    try {
+        const result = await updateMonDat(req, res, next);
+        if (!res.headersSent) {
+            // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi
+            res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
+        } else {
+            console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi kết quả.");
+        };
+    } catch (error) {
+        // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
+        if (!res.headersSent) {
+            res.status(500).json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
+        } else {
+            console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        }
+    }
+}
+const getDanhSachMonDatByIdHoaDonApi = async (req, res, next) => {
+    try {
+        const result = await getDanhSachMonDatByIdHoaDon(req, res, next);
+        if (!res.headersSent) {
+            // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi
+            res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
+        } else {
+            console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi kết quả.");
+        };
+    } catch (error) {
+        // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
+        if (!res.headersSent) {
+            res.status(500).json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
+        } else {
+            console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        }
+    }
+}
+
+
+const deleteMonDatApi = async (req, res, next) => {
+    try {
+        const result = await deleteMonDat(req, res, next);
+        res.json(result);  // Send the result directly without using JSON.stringify
+    } catch (error) {
+        // Check if headers have already been sent
+        if (res.headersSent) {
+            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        } else {
+            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
+        }
+    }
+}
+
+const deleteMonDatMemApi = async (req, res, next) => {
+    try {
+        const result = await deleteMonDatMem(req, res, next);
+        res.json(result);  // Send the result directly without using JSON.stringify
+    } catch (error) {
+        // Check if headers have already been sent
+        if (res.headersSent) {
+            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        } else {
+            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
+        }
+    }
+}
 // Export các hàm API
 module.exports = {
-    MonDatApi,
-    getAllMonDat,
+    addMonDatApi,
     deleteMonDatApi,
     updateMonDatApi,
     getDanhSachMonDatByIdHoaDonApi,
+    deleteMonDatMemApi,
 };

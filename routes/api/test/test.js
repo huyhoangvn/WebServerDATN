@@ -12,4 +12,6 @@ router.post('/verification', testController.verification);
 
 router.post('/sms', testController.sendSms);
 
+router.post('/paymentMomo', testController.paymentMomo);
+
 module.exports = router;

@@ -99,8 +99,6 @@ const dangNhap = async (req, res) => {
   }
 }
 
-
-
 //lấy danh sách theo tên khách hàng
 //chỉ hiển thị tên KH và giới tính, không hiển thị những thông tin nhạy cảm như email, sđt, địa chỉ, tài khoản, mật khẩu
 const getKhachHangTheoTen = async (req, res) => {

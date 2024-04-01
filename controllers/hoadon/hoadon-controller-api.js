@@ -1,4 +1,6 @@
 const { model: HoaDon } = require("../../model/HoaDon");
+const { model: CuaHang } = require("../../model/CuaHang");
+const { model: KhachHang } = require("../../model/KhachHang");
 const HoaDonController = require("../../controllers/hoadon/hoadon-controller");
 
 
@@ -6,13 +8,20 @@ const addHoaDonApi = async (req, res, next) => {
 
     try {
         const { idKH, idCH, diaChiGiaoHang } = req.body;
-        if (!idKH || !diaChiGiaoHang || !idCH) {
+        if (!idKH || !idCH || !diaChiGiaoHang) {
             return res.status(400).json({ msg: 'Vui lòng điền đầy đủ thông tin' });
         }
-        let foundHoaDon = await HoaDon.findOne({ idKH, idCH, diaChiGiaoHang });
-        if (foundHoaDon) {
-            return res.status(400).json({ msg: "Hóa đơn đã tồn tại" });
+
+        const khachHang = await KhachHang.findById(idKH);
+        if (!khachHang || !khachHang.trangThai) {
+            return res.status(400).json({ msg: "Khách hàng không tồn tại hoặc không có trạng thái đúng" });
         }
+        // Kiểm tra xem cửa hàng có tồn tại không
+        const cuaHang = await CuaHang.findById(idCH);
+        if (!cuaHang || !cuaHang.trangThai) {
+            return res.status(400).json({ msg: "Khách hàng không tồn tại hoặc không có trạng thái đúng" });
+        }
+
         await HoaDon.create({
             idKH,
             idCH,
@@ -62,7 +71,21 @@ const getHoaDonApi = async (req, res, next) => {
 
 const chiTietHoaDonApi = async (req, res, next) => {
     try {
-        const result = await HoaDonController.chiTietHoaDon(req, res, next);
+        const data = await HoaDonController.chiTietHoaDon(req, res, next);
+        res.json(data);  // Send the result directly without using JSON.stringify
+    } catch (error) {
+        // Check if headers have already been sent
+        if (res.headersSent) {
+            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        } else {
+            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
+        }
+    }
+}
+
+const updatetrangThaiThanhToanTrueApi = async (req, res, next) => {
+    try {
+        const result = await HoaDonController.updatetrangThaiThanhToanTrue(req, res, next);
         res.json(result);  // Send the result directly without using JSON.stringify
     } catch (error) {
         // Check if headers have already been sent
@@ -74,9 +97,9 @@ const chiTietHoaDonApi = async (req, res, next) => {
     }
 }
 
-const updatetrangThaiThanhToanApi = async (req, res, next) => {
+const updatetrangThaiThanhToanFalseApi = async (req, res, next) => {
     try {
-        const result = await HoaDonController.updatetrangThaiThanhToan(req, res, next);
+        const result = await HoaDonController.updatetrangThaiThanhToanFalse(req, res, next);
         res.json(result);  // Send the result directly without using JSON.stringify
     } catch (error) {
         // Check if headers have already been sent
@@ -167,7 +190,12 @@ const getDanhSachHoaDonByIdKhachHangApi = async (req, res, next) => {
         const danhSachHoaDon = await HoaDon.find({ idKH: idKhachHang });
 
         // Trả về danh sách hóa đơn
-        res.json({ data: danhSachHoaDon });
+        res.json({
+            data: danhSachHoaDon,
+            count: danhSachHoaDon.length,
+            msg: "thành công",
+            success: true,
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của khách hàng', error: error.message });
@@ -186,7 +214,12 @@ const getDanhSachHoaDonByIdCuaHangApi = async (req, res, next) => {
         const danhSachHoaDon = await HoaDon.find({ idCH: idCuaHang });
 
         // Trả về danh sách hóa đơn
-        res.json({ data: danhSachHoaDon });
+        res.json({
+            data: danhSachHoaDon,
+            count: danhSachHoaDon.length,
+            msg: "thành công",
+            success: true,
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của cửa hàng', error: error.message });
@@ -202,7 +235,8 @@ module.exports = {
     getDanhSachHoaDonByIdCuaHangApi,
     chiTietHoaDonApi,
     updateHoaDonApi,
-    updatetrangThaiThanhToanApi,
+    updatetrangThaiThanhToanTrueApi,
+    updatetrangThaiThanhToanFalseApi,
     updatetrangThaiMuaDangChuanBiApi,
     updatetrangThaiMuaDangGiaoHangApi,
     updatetrangThaiMuaGiaoHangThatBaiApi,
