@@ -118,12 +118,22 @@ const XoaDanhGia = async function(req, res){
 } 
 
 const GetDanhSachTheoTenMon = async function(req, res){
-    const idMon = new mongo.Types.ObjectId(req.params.idMon);
-    const trang = parseInt(req.query.trang) || 1;
     try {
+        const idMon = new mongo.Types.ObjectId(req.params.idMon);
+        const trang = parseInt(req.query.trang) || 1;
+        const timkiem = {};
+        if (typeof(req.query.danhGia) !== 'undefined' && req.query.danhGia !== "" && req.query.danhGia !== "-1") {
+            timkiem.danhGia = parseInt(req.query.danhGia); 
+        }
+        if (typeof(req.query.trangThai) !== 'undefined' && !isNaN(typeof(req.query.trangThai))) {
+            const trangThaiValue = typeof(req.query.trangThai);
+            if(trangThaiValue === true || trangThaiValue === false){
+              timkiem.trangThai = trangThaiValue === true;
+            }
+        }
         const list = await DanhGia.aggregate([
             {$match: {
-                idMon: idMon
+                idMon: idMon,
             }},
             {$lookup: {
                 from: "Mon",
@@ -135,12 +145,26 @@ const GetDanhSachTheoTenMon = async function(req, res){
                 path: "$KetQuaMon",
                 preserveNullAndEmptyArrays: false
             }},
+            {$lookup: {
+                from: "KhachHang",
+                localField: "idKH",
+                foreignField: "_id",
+                as: "KhachHangInfo"
+            }},
+            {$unwind: {
+                path: "$KhachHangInfo",
+                preserveNullAndEmptyArrays: true
+            }},
             {$project : {
                 "danhGia" : "$danhGia",
+                "trangThai" : "$trangThai",
+                "thoiGianTao" : { $dateToString: { format: "%d/%m/%Y %H:%M:%S", date: { $add: ["$thoiGianTao", 7 * 60 * 60 * 1000] } } },
                 "tenMon" : "$KetQuaMon.tenMon",
+                "tenKH": "$KhachHangInfo.tenKH",
+                "hinhAnh": { $concat: [req.protocol , "://" , req.get("host") , "/public/images/", "$KhachHangInfo.hinhAnh"] }
             }},
-            {
-                $skip: (trang-1)*10,
+            {$match: 
+                timkiem,
             },
             {
                 $limit: 10,
@@ -150,7 +174,7 @@ const GetDanhSachTheoTenMon = async function(req, res){
             }
         ]);
 
-        res.json({
+        return({
             count:list[0].count,
             msg: 'Get đánh giá theo tên món thành công',
             success: true
@@ -240,23 +264,17 @@ const GetTrungBinhDanhGiaTheoMon = async function(req, res){
                 path: "$KetQuaMon",
                 preserveNullAndEmptyArrays: false
             }},
-            {$project : {
-                "danhGia" : "$danhGia",
-                "tenMon" : "$KetQuaMon.tenMon",
-            }},
+            {
+                $group: {
+                    _id: "$tenMon",
+                    avgDanhGia: { $avg: "$danhGia" } // Tính trung bình đánh giá
+                }
+            }
         ]);
 
-        let danhGiaTong = 0;
 
-        query.forEach(item => {
-            danhGiaTong += item.danhGia;
-        });
-
-        const danhGiaTrungBinh = (query.length > 0 ? (danhGiaTong / query.length) : 0);
-
-        return({
-            danhGiaTrungBinh: parseFloat(danhGiaTrungBinh.toFixed(1)),
-            count:query.length,
+        res.json({
+            index: parseFloat(query[0].avgDanhGia.toFixed(1)),
             msg: 'Get số lượng đánh giá theo tên món thành công',
             success: true
         });
@@ -275,6 +293,7 @@ const getTatCaDanhGiaTheoMonApi = async (req, res) => {
 const GetDanhSachDanhGiaTheoMonVoiFilter = async function(req, res){
     try {
         const idMon = new mongo.Types.ObjectId(req.params.idMon);
+        const trang = parseInt(req.query.trang) || 1;
         const timkiem = {};
         if (typeof(req.query.danhGia) !== 'undefined' && req.query.danhGia !== "" && req.query.danhGia !== "-1") {
             timkiem.danhGia = parseInt(req.query.danhGia); 
@@ -299,18 +318,37 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function(req, res){
                 path: "$KetQuaMon",
                 preserveNullAndEmptyArrays: false
             }},
+            {$lookup: {
+                from: "KhachHang",
+                localField: "idKH",
+                foreignField: "_id",
+                as: "KhachHangInfo"
+            }},
+            {$unwind: {
+                path: "$KhachHangInfo",
+                preserveNullAndEmptyArrays: true
+            }},
             {$project : {
+                "idDG" : "$_id",
                 "danhGia" : "$danhGia",
                 "trangThai" : "$trangThai",
                 "thoiGianTao" : { $dateToString: { format: "%d/%m/%Y %H:%M:%S", date: { $add: ["$thoiGianTao", 7 * 60 * 60 * 1000] } } },
                 "tenMon" : "$KetQuaMon.tenMon",
+                "tenKH": "$KhachHangInfo.tenKH",
+                "hinhAnh": { $concat: [req.protocol , "://" , req.get("host") , "/public/images/", "$KhachHangInfo.hinhAnh"] }
             }},
             {$match: 
                 timkiem,
             },
         ]);
+        const count = await GetDanhSachTheoTenMon(req,res);
+        const soDanhGiaTrenTrang = 10;
+        const totalPages = Math.ceil(count.count / soDanhGiaTrenTrang);
         return({
             list:query,
+            count:count.count,
+            totalPages,
+            currentPage: trang,
             msg: 'Get số lượng đánh giá theo tên món thành công',
             success: true
         });

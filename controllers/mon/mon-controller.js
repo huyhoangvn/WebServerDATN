@@ -1,6 +1,7 @@
 const Mon = require("../../model/Mon");
 const NhanVien = require("../../model/NhanVien");
 const LoaiMon = require("../../model/LoaiMon");
+const CuaHang = require("../../model/CuaHang");
 const mongo = require("mongoose");
 
 const themMon = async (req, res, next) => {
@@ -62,7 +63,7 @@ const themMon = async (req, res, next) => {
   } catch (e) {
     //Các lỗi về định dạng object Id
     return {
-      msg: e.message,
+      msg: e.msg,
       success: false,
     };
   }
@@ -85,7 +86,7 @@ const kiemTraPhanQuyen = async (req, res, next) => {
   } catch (e) {
     //Các lỗi về định dạng object Id
     return {
-      msg: e.message,
+      msg: e.msg,
       success: false,
     };
   }
@@ -137,10 +138,9 @@ const deletemonapi = async (req, res) => {
       data: updatedNhanVien,
     });
   } catch (e) {
-    console.error(e);
     res.status(500).json({
       success: false,
-      error: e.message || "Đã xảy ra lỗi khi cập nhật trạng thái nhân viên",
+      msg: e.msg || "Đã xảy ra lỗi khi cập nhật trạng thái nhân viên",
     });
   }
 };
@@ -241,14 +241,13 @@ const getTatCaMon = async (req, res) => {
         return {
             count:list.length,
             list:list,
-            message: 'Get số lượng đánh giá theo tên khách hàng thành công',
+            msg: 'Get tất cả món thành công',
             success: true,
             
         };
     } catch (error) {
-        console.error(error);
         return {
-            error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+            msg: 'Lỗi khi lấy tất cả món',
             success: false
         };
     }
@@ -330,9 +329,9 @@ const getSoLuongTatCaMon = async (req, res) => {
           msg: "Thành công"
       };
   } catch (error) {
-      console.error(error);
+      
       return {
-          error: 'Lỗi khi lấy số lượng',
+          msg: 'Lỗi khi lấy số lượng',
           success: false
       };
   }
@@ -436,14 +435,14 @@ const getMonCuaCuaHang = async (req, res) => {
       res.status(200).json({
           count:list.length,
           list:list,
-          message: 'Get số lượng đánh giá theo tên khách hàng thành công',
+          msg: 'Get món của cửa hàng thành công',
           success: true,
           
       });
   } catch (error) {
-      console.error(error);
+      
       res.status(500).json({
-          error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+          msg: 'Lỗi khi lấy món của cửa hàng',
           success: false
       });
   }
@@ -540,14 +539,14 @@ const getMonCuaLoaiMon = async (req, res) => {
       res.status(200).json({
           count:list.length,
           list:list,
-          message: 'Get số lượng đánh giá theo tên khách hàng thành công',
+          msg: 'Get món của loại món thành công',
           success: true,
           
       });
   } catch (error) {
-      console.error(error);
+      
       res.status(500).json({
-          error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+          msg: 'Lỗi khi lấy món của loại món',
           success: false
       });
   }
@@ -557,6 +556,46 @@ const getMonCuaLoaiMon = async (req, res) => {
 const updatemon = async (req, res) => {
   try {
     const idMon = new mongo.Types.ObjectId(req.params.idMon);
+    const idNV = new mongo.Types.ObjectId(req.body.idNV);
+    const monCu = await Mon.model.findOne({_id: idMon});
+    const nhanVienSua = await NhanVien.model.findOne({_id: idNV});  
+
+    if (!monCu) {
+      console.log("log2");
+      return res.status(404).json({
+        error: "Không tìm thấy món để sửa",
+        success: false,
+      });
+    }
+    // validate nhân viên 
+    if(nhanVienSua.trangThai != true ){
+      return res.status(404).json({
+        msg:"Nhân viên không hoạt động",
+        success:false
+      })
+    }
+    if( nhanVienSua.idCH != monCu.idCH ){
+      return res.status(404).json({
+        msg:"món khác cửa hàng với nhân viên đang sửa",
+        success:false
+      })
+    }
+    if( nhanVienSua.phanQuyen != 0 ){
+      return res.status(404).json({
+        msg:"nhân viên sửa không phải nhâ viên quản lý",
+        success:false
+      })
+    }
+    // if(idNV == "" || idNV == undefined ){
+    //   return res.status(404).json({
+    //     msg:"thiếu idNV",
+    //     success:false
+    //   })
+    // }
+    
+
+
+
     let updateFields = {};
 
     // Kiểm tra từng trường và thêm vào object updateFields nếu tồn tại giá trị
@@ -576,13 +615,7 @@ const updatemon = async (req, res) => {
       updateFields.hinhAnh = req.files.hinhAnh.map((file) => file.filename)[0];
     }
 
-    const index = await Mon.model.findOne({_id: idMon});
-    if (!index) {
-      return res.status(404).json({
-        error: "Không tìm thấy món để sửa",
-        success: false,
-      });
-    }
+    
 
     // Nếu không có trường nào cần cập nhật, trả về lỗi
     if (Object.keys(updateFields).length === 0) {
@@ -597,14 +630,14 @@ const updatemon = async (req, res) => {
     const monUpdate = await Mon.model.findOneAndUpdate(filter, updateFields, { new: true });
     res.status(200).json({
       monUpdate,
-      message: "Sửa món thành công",
+      msg: "Sửa món thành công",
       success: true,
     });
     
   } catch (error) {
-    console.error(error);
     res.status(500).json({
-      error: "Lỗi khi sửa món",
+      msg: "Lỗi khi sửa món",
+      error,
       success: false,
     });
   }
@@ -617,53 +650,41 @@ const updatemonapi = async (req, res) => {
 // Hiển thị chi tiết món với id cụ thể
 
 const getMonTheoid = async (req, res) => {
-  const idMon = new mongo.Types.ObjectId(req.params.idMon);
   try {
-    const index = await Mon.model.findOne({ _id: idMon });
+    const idMon = new mongo.Types.ObjectId(req.params.idMon);
+    const mon = await Mon.model.findOne({ _id: idMon });
+    const cuaHang = await CuaHang.model.findOne({ _id: mon.idCH });
+    const loaiMon = await LoaiMon.model.findOne({ _id: mon.idLM  });
+
+    let index ={
+      idMon:mon._id,
+      idCH:mon.idCH,
+      idLM:mon.idLM,
+      tenMon:mon.tenMon,
+      giaTien:mon.giaTien,
+      trangThai:mon.trangThai,
+      hinhAnh: req.protocol + "://" + req.get("host") + "/public/images/"+ mon.hinhAnh,
+      tenCH:cuaHang.tenCH,
+      tenLM:loaiMon.tenLM
+    }
     res.status(200).json({
       index,
-      message: "Get đánh giá theo id thành công",
+      msg: "Get món theo id thành công",
       success: true,
     });
   } catch (error) {
-    console.error(error);
+    
     res.status(500).json({
-      error: "Lỗi khi lấy đánh giá theo id",
+      msg: "Lỗi khi lấy món theo id",
       success: false,
     });
   }
 };
 
-//Cải thiện hiển thị danh sách để tìm kiếm món theo tên cửa hàng
-const getDanhSachTenCuaHang = async (req, res, next) => {
- 
-};
-//
-const getDanhSachTenLoaiMon = async (req, res, next) => {};
 
 // khich hoat mon
 const kichhoatMon = async (req, res, next) => {
   try {
-    // const idNguoiSua = req.user.id; 
-    // const idCH = req.user.idCH; 
-
-    // const item = await Mon.model.findById(id);
-
-    // // Check if the food item exists
-    // if (!item) {
-    //     return res.status(404).json({ error: "Không tìm thấy món" });
-    // }
-
-    // // Check if the user belongs to the same store as the food item
-    // if (item.idCH !== idNguoiSua) {
-    //     return res.status(403).json({ error: "Bạn không có quyền kích hoạt món này" });
-    // }
-
-    // // Check if the user has management permissions (e.g., phanQuyen === 1)
-    // // Adjust the condition according to your permission structure
-    // if (req.user.phanQuyen !== 0) {
-    //     return res.status(403).json({ error: "Bạn không có quyền quản lý để kích hoạt món này" });
-    // }
 
     const id = req.params.id;
     const kichhoat = await Mon.model.findOneAndUpdate(
@@ -680,7 +701,7 @@ const kichhoatMon = async (req, res, next) => {
       success: true,
     });
   } catch (error) {
-    res.status(500).json({ success: false,message: "Lỗi kích hoạt món", error: error });
+    res.status(500).json({ success: false,msg: "Lỗi kích hoạt món", error: error });
   }
 };
 module.exports = {
@@ -695,7 +716,6 @@ module.exports = {
   updatemonapi,
   updatemon,
   getMonTheoid,
-  getDanhSachTenCuaHang,
   kichhoatMon,
   getMonCuaCuaHang,
   getMonCuaLoaiMon,
