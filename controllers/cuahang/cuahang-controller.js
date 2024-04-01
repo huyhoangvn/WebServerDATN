@@ -246,7 +246,7 @@ const huyKichHoatCuaHang = async (req, res, next) => {
 };
 
 
-const chiTietCuaHang = async (req, res, next) => {
+const chiTietCuaHangWeb = async (req, res, next) => {
     try {
         const id = req.params.id;
 
@@ -311,6 +311,34 @@ const chiTietCuaHang = async (req, res, next) => {
     } catch (e) {
         console.log(e);
         res.json({ success: false, msg: "Đã xảy ra lỗi khi lấy chi tiết cửa hàng" });
+    }
+};
+
+const chiTietCuaHangApp = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const item = await CuaHang.findById(id)
+        if (!item) {
+            res.json({ success: false, msg: "không tìm thấy cửa hàng" });
+        }
+        return {
+            success: true,
+            msg: "Lấy chi tiết thành công",
+            data: {
+                _id: item._id,
+                tenCH: item.tenCH,
+                email: item.email,
+                sdt: item.sdt,
+                diaChi: item.diaChi,
+                thoiGianMo: item.thoiGianMo,
+                thoiGianDong: item.thoiGianDong,
+                hinhAnh: `${req.protocol}://${req.get("host")}/public/images/${item.hinhAnh}`,
+                trangThai: item.trangThai
+            }
+        };
+    } catch (e) {
+        console.log(e);
+        res.json({ success: false, msg: "Đã xảy ra lỗi khi tlấy chi tiết cửa hàng" });
     }
 };
 
@@ -395,9 +423,23 @@ const getCuaHangCuaHangApi = async (req, res, next) => {
 }
 
 
-const chiTietCuaHangApi = async (req, res, next) => {
+const chiTietCuaHangAppApi = async (req, res, next) => {
     try {
-        const result = await chiTietCuaHang(req, res, next);
+        const result = await chiTietCuaHangApp(req, res, next);
+        res.json(result);  // Send the result directly without using JSON.stringify
+    } catch (error) {
+        // Check if headers have already been sent
+        if (res.headersSent) {
+            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        } else {
+            res.json({ success: false, msg: 'Đã xảy ra lỗi khi kích hoạt cửa hàng', error: error.message });
+        }
+    }
+}
+
+const chiTietCuaHangWebApi = async (req, res, next) => {
+    try {
+        const result = await chiTietCuaHangWeb(req, res, next);
         res.json(result);  // Send the result directly without using JSON.stringify
     } catch (error) {
         // Check if headers have already been sent
@@ -418,5 +460,6 @@ module.exports = {
     kichHoatCuaHangApi,
     huyKichHoatCuaHangApi,
     getCuaHangCuaHangApi,
-    chiTietCuaHangApi
+    chiTietCuaHangWebApi,
+    chiTietCuaHangAppApi
 };
