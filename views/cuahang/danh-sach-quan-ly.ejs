@@ -1,220 +1,427 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Food Center</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/b5123099c5.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <!-- <style>
+
+<head>
+  <title>Food Center</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/b5123099c5.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <!-- <style>
       .sidebar-dark-primary {
         background-color: #030025 !important; /* Change to green color */
       }
     </style> -->
-  </head>
-  <body>
-    <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
-      <!-- Brand Logo -->
-      <a href="#" class="brand-link logo-switch this">
-        Food Center
-      </a>
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <!-- Sidebar user panel (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-          <div class="info">
-            <a href="#" class="d-block"><%= (!!locals.admin)?admin:'Admin' %></a>
+</head>
+
+<body>
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="#" class="brand-link logo-switch this">
+      Food Center
+    </a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="info">
+          <a href="#" class="d-block">
+            <%= (!!locals.admin)?admin:'Admin' %>
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+          <!-- Thống Kê -->
+          <li class="nav-item">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>
+                Thống kê
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/thong-ke/doanh-thu" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Doanh thu</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/thong-ke/mon-ban-chay" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Món bán chạy</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/thong-ke/giao-dich" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Giao dịch</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Quản lý khách hàng -->
+          <li class="nav-item">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Quản lý khách hàng
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/khach-hang/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Quản lý khuyến mãi -->
+          <li class="nav-item">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-tags"></i>
+              <p>
+                Quản lý khuyến mãi
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/khuyen-mai/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/khuyen-mai/them-moi" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Thêm mới</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Quản lý món -->
+          <li class="nav-item">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-utensils"></i>
+              <p>
+                Quản lý món
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/mon/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/loai-mon/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Loại món</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Quản lý cửa hàng -->
+          <li class="nav-item menu-open">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-store"></i>
+              <p>
+                Quản lý cửa hàng
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/cua-hang/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/cua-hang/them-moi" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Thêm mới</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/quan-ly/danh-sach" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Tài khoản quản lý</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- hóa đơn -->
+          <li class="nav-item menu-open">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Quản lý Hóa Đơn
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/hoa-don/danh-sach" class="nav-link ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Đăng xuất -->
+          <li class="nav-item border-top border-1 ">
+            <a href="/auth/sign-out" class="nav-link">
+              <i class="fa-solid fa-arrow-right-from-bracket nav-icon"></i>
+              <p>
+                Sign-Out
+              </p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+  <!-- <h1><%= (!!locals.title)?title:'' %></h1> -->
+
+  <div class="content-wrapper">
+    <div class="content-header border border-bottom-1">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Cửa hàng</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Cửa hàng</a></li>
+              <li class="breadcrumb-item active">Danh sách tài khoản quản lý</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+
+    <section class="content">
+      <div class="container-fluid bg-white m-2">
+
+        <form action="/quan-ly/danh-sach">
+          <!-- Main content nằm ở dây -->
+          <div class="d-flex row justify-content-between mb-1">
+            <div class="col-6">
+              <input type="text" id="tenNV" class="form-control" name="tenNV"
+                placeholder="Nhập tên quản lý để tìm kiếm">
+            </div>
+            <div class="col-2">
+              <input type="date" class="form-control" name="thoiGianTao" id="thoiGianTao" placeholder="Ngày tạo">
+            </div>
+
+            <div class="col-2">
+              <select class="form-control" id="trangThai" name="trangThai">
+                <option value="-1">trạng thái </option>
+                <option value="1">Đã được duyệt</option>
+                <option value="0">Chưa được duyệt</option>
+              </select>
+            </div>
+
+            <div class="col-2">
+              <button class="btn btn-dark w-100" type="submit">Tìm kiếm</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Bảng hiển thị -->
+        <table class="table table-bordered border-secondary">
+          <thead>
+            <tr class="table-secondary">
+              <td scope="col-1">STT</td>
+              <td scope="col-2">Tên quản lý </td>
+              <td scope="col-2">Thời gian tạo</td>
+              <td scope="col-2">Cửa hàng</td>
+              <td scope="col-2">Trạng Thái</td>
+              <td scope="col-1">Chức năng</td>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (var i=0; i<data.length; i++) {%>
+              <tr>
+                <td scope="col-1">
+                  <%=i+1%>
+                </td>
+                <td scope="col-2">
+                  <%=data[i].tenNV%>
+                </td>
+                <td scope="col-2">
+                  <% var startDate=new Date(data[i].thoiGianTao); %>
+                    <%= ("0" + startDate.getDate()).slice(-2) %>/<%= ("0" + (startDate.getMonth() + 1)).slice(-2) %>/<%=
+                          startDate.getFullYear() %>
+                </td>
+
+                <td scope="col-2">
+                  <%=data[i].tenCH%>
+                </td>
+
+                <td class="text-primary scope-col-2">
+                  <a data-toggle="modal" data-target="#suaTrangThaiModal"
+                    class=" <%= data[i].trangThai ? 'text-success' : 'text-danger' %>" data-idnv="<%=data[i]._id%>"
+                    data-trangthai="<%=data[i].trangThai%>">
+                    <%= data[i].trangThai ? 'Đã được duyệt' : 'Chưa được duyệt' %>
+                  </a>
+                </td>
+
+                <td class="text-primary" scope="col-1">
+                  <a href="#" class="employee-detail-link" data-toggle="modal" data-target="#employeeModal"
+                    data-tenNV="<%=data[i].tenNV%>" data-tenCH="<%=data[i].tenCH%>"
+                    data-thoiGianTao="<%=data[i].thoiGianTao%>" data-email="<%=data[i].email%>"
+                    data-sdt="<%=data[i].sdt%>" data-phanQuyen="<%=data[i].phanQuyen%>"
+                    data-trangThai="<%=data[i].trangThai%>" data-taiKhoan="<%=data[i].taiKhoan%>"
+                    data-diaChi="<%=data[i].diaChi%>" data-gioiTinh="<%=data[i].gioiTinh%>">Chi tiết</a>
+                </td>
+              </tr>
+              <%}%>
+          </tbody>
+        </table>
+
+
+        <div class="modal fade" id="employeeModal" tabindex="-1" role="dialog" aria-labelledby="employeeModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="employeeModalLabel">Chi tiết nhân viên quản lý</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <p><strong>Tên nhân viên:</strong> <span id="tenNV"></span></p>
+                    <p><strong>tên cửa hàng:</strong> <span id="tenCH"></span></p>
+                    <p><strong>Tài khoản:</strong> <span id="taiKhoan"></span></p>
+                    <p><strong>Thời gian tạo:</strong> <span id="thoiGianTao"></span></p>
+                    <!-- <p><strong>Email:</strong> <span id="email"></span></p> -->
+                    <p><strong>Số điện thoại:</strong> <span id="sdt"></span></p>
+                    <p><strong>Phân quyền:</strong> <span id="phanQuyen"></span></p>
+                    <p><strong>Trạng thái:</strong> <span id="trangThai"></span></p>
+                    <p><strong>Địa chỉ:</strong> <span id="diaChi"></span></p>
+                    <p><strong>Giới tính:</strong> <span id="gioiTinh"></span></p>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Sidebar Menu -->
-        <nav class="mt-2">
-          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
-            <!-- Thống Kê -->
-            <li class="nav-item">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-chart-bar"></i>
-                <p>
-                  Thống kê
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/thong-ke/doanh-thu" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Doanh thu</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/thong-ke/mon-ban-chay" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Món bán chạy</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/thong-ke/giao-dich" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Giao dịch</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Quản lý khách hàng -->
-            <li class="nav-item">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-users"></i>
-                <p>
-                  Quản lý khách hàng
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/khach-hang/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Danh sách</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Quản lý khuyến mãi -->
-            <li class="nav-item">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-tags"></i>
-                <p>
-                  Quản lý khuyến mãi
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/khuyen-mai/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Danh sách</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/khuyen-mai/them-moi" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Thêm mới</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Quản lý món -->
-            <li class="nav-item">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-utensils"></i>
-                <p>
-                  Quản lý món
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/mon/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Danh sách</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/loai-mon/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Loại món</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Quản lý cửa hàng -->
-            <li class="nav-item menu-open">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-store"></i>
-                <p>
-                  Quản lý cửa hàng
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/cua-hang/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Danh sách</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/cua-hang/them-moi" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Thêm mới</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/quan-ly/danh-sach" class="nav-link active">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Tài khoản quản lý</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Đăng xuất -->
-            <li class="nav-item border-top border-1 ">
-              <a href="/auth/sign-out" class="nav-link">
-                <i class="fa-solid fa-arrow-right-from-bracket nav-icon"></i>
-                <p>
-                  Sign-Out
-                </p>
-              </a>
-            </li>
+        <nav aria-label=" Page navigation">
+          <ul class="pagination justify-content-center">
+            <% for (var i=1; i <=totalPages; i++) { %>
+              <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                <a class="page-link" href="?trang=<%= i %>">
+                  <%= i %>
+                </a>
+              </li>
+              <% } %>
           </ul>
         </nav>
-        <!-- /.sidebar-menu -->
+
       </div>
-      <!-- /.sidebar -->
-    </aside>
-    <!-- <h1><%= (!!locals.title)?title:'' %></h1> -->
+    </section>
+  </div>
 
-    <div class="content-wrapper">
-      <div class="content-header border border-bottom-1">
-        <div class="container-fluid">
-          <div class="row mb-2">
-            <div class="col-sm-6">
-              <h1 class="m-0">Cửa hàng</h1>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Cửa hàng</a></li>
-                <li class="breadcrumb-item active">Danh sách tài khoản quản lý</li>
-              </ol>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-      </div>
-
-      <section class="content">
-        <div class="container-fluid bg-white m-2">
-
-          <!-- Main content nằm ở dây -->
-
-        </div>
-      </section>
-    </div>
-
-    <!-- Scripts -->
-    <script type="text/javascript">
-      $(document).ready(function(){
-          $(".open").click(function(e)
-            { 
-              e.stopPropagation()
-              e.preventDefault()
-              $(this).parent().toggleClass('menu-open');
-            }
-          )
-        }
+  <!-- Scripts -->
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $(".open").click(function (e) {
+        e.stopPropagation()
+        e.preventDefault()
+        $(this).parent().toggleClass('menu-open');
+      }
       )
-    </script>
-  </body>
+    }
+    )
+    function convertTrangThai(trangThai) {
+      if (trangThai === true) {
+        return "Hoạt động";
+      } else {
+        return "Ngưng hoạt động";
+      }
+    }
+    function convertPhanQuyen(phanQuyen) {
+      if (phanQuyen === 0) {
+        return "Nhân viên quản lý";
+      } else if (phanQuyen === 1) {
+        return "Nhân viên thường";
+      } else {
+        return "Không xác định";
+      }
+    }
+
+    // Hàm chuyển đổi giới tính
+    function convertGioiTinh(gioiTinh) {
+      if (gioiTinh === 1) {
+        return "Nam";
+      } else if (gioiTinh === 2) {
+        return "Nữ";
+      } else {
+        return "Không xác định";
+      }
+    }
+    $(document).ready(function () {
+      $('a[data-target="#employeeModal"]').on('click', function () {
+        var tenNV = $(this).data('tennv');
+        var tenCH = $(this).data('tench');
+        var thoiGianTao = moment($(this).data('thoigiantao')).format('DD/MM/YYYY'); // Format thời gian tạo
+        var email = $(this).data('Email');
+        var sdt = $(this).data('sdt');
+        var phanQuyen = $(this).data('phanquyen');
+        var trangThai = $(this).data('trangthai');
+        var taiKhoan = $(this).data('taikhoan');
+        var diaChi = $(this).data('diachi');
+        var gioiTinh = $(this).data('gioitinh');
+
+        var trangThaiText = convertTrangThai(trangThai);
+        var gioiTinhText = convertGioiTinh(gioiTinh);
+        var phanQuyenText = convertPhanQuyen(phanQuyen);
+
+        $('#employeeModal').find('#tenNV').text(tenNV);
+        $('#employeeModal').find('#tenCH').text(tenCH);
+        $('#employeeModal').find('#thoiGianTao').text(thoiGianTao);
+        $('#employeeModal').find('#email').text(email);
+        $('#employeeModal').find('#sdt').text(sdt);
+        $('#employeeModal').find('#phanQuyen').text(phanQuyenText);
+        $('#employeeModal').find('#trangThai').text(trangThaiText);
+        $('#employeeModal').find('#taiKhoan').text(taiKhoan);
+        $('#employeeModal').find('#diaChi').text(diaChi);
+        $('#employeeModal').find('#gioiTinh').text(gioiTinhText);
+      });
+    });
+
+    // Hàm chuyển đổi trạng thái
+
+  </script>
+</body>
+
 </html>

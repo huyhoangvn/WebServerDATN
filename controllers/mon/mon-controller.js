@@ -1,46 +1,46 @@
 const Mon = require("../../model/Mon");
 const NhanVien = require("../../model/NhanVien");
+const LoaiMon = require("../../model/LoaiMon");
+const CuaHang = require("../../model/CuaHang");
 const mongo = require("mongoose");
-const addmonapi = async (req, res, next) => {
+
+const themMon = async (req, res, next) => {
   try {
-    const idNhanVien = req.params.id;
-    // Kiểm tra xem nhân viên có quyền quản lý không
-    const item = await NhanVien.model.findById(idNhanVien);
-
-    if (!item) {
-      return res.status(404).json({ msg: "Nhân viên không tồn tại." });
-    }
-    if (item && item.phanQuyen === 0) {
-      // Kiểm tra xem tài khoản đã tồn tại hay chưa
-      const existingNhanVien = await NhanVien.model.findOne({
-        idNV: req.body.idNV,
-      });
-
-      if (existingNhanVien) {
-        // Nếu tài khoản đã tồn tại, trả về thông báo lỗi
-        return res.status(400).json({ msg: "Tên tài khoản đã tồn tại" });
+    const idLM = new mongo.Types.ObjectId(req.body.idLM);
+    const idNV = new mongo.Types.ObjectId(req.body.idNV);
+    let tenMon = req.body.tenMon;
+    let giaTien = req.body.giaTien;
+    let trangThai = req.body.trangThai;
+    let hinhAnh = "default_image.png";//Ảnh mặc định trong trường hợp ảnh bị lỗi
+    if(typeof(req.files.hinhAnh) != 'undefined' || typeof(req.files) != 'undefined'){
+      try {
+        hinhAnh = req.files.hinhAnh.map((file) => file.filename)[0]
+      } catch (e) {
+        //Lỗi định dạng ảnh bỏ qua luôn cũng được vì có ảnh default hoặc return báo lỗi như dưới
+        return {
+          msg: "Sai định dạng ảnh",
+          success: false,
+        };
       }
     }
+    //lấy cửa hàng từ nhân viên
+    const nhanVien = await NhanVien.model.findById(idNV)
+    const idCH = new mongo.Types.ObjectId(nhanVien.idCH);
 
-    // Lấy dữ liệu từ request body
-    const idLM = req.body.idLM;
-    const idNV = req.body.idNV;
-    const idCH = req.body.idCH;
-    const tenMon = req.body.tenMon;
-    const giaTien = req.body.giaTien;
-    const hinhAnh = "default_image.png";
-    const trangThai = 1; // Đặt trạng thái là 0
-    // Kiểm tra tính hợp lệ của dữ liệu
-    if (!idLM || !idNV || !idCH || !tenMon || !giaTien || !hinhAnh) {
-      return res.status(400).json({ msg: "Vui lòng điền đầy đủ thông tin" });
+    //Validate đầy đủ
+    if(typeof tenMon === "string" && tenMon.trim().length === 0){
+      return {
+        success: false, 
+        msg: "Chưa nhập tên món"
+      };
     }
-
-    // Kiểm tra xem Món đã tồn tại hay chưa
-    const index = await Mon.model.findOne({ tenMon: tenMon });
-    if (index) {
-      return res
-        .status(400)
-        .json({ msg: "Món đã tồn tại", dataSave: undefined });
+    if(typeof giaTien === "string" && giaTien.trim().length === 0){
+      let msg = "Chưa nhập giá tiền"
+      //Kiểm tra giá tiền nhập lỗi định dạng sẽ bị catch ở error
+      return {
+        success: false, 
+        msg
+      }
     }
 
     // Tạo mới Món
@@ -50,28 +50,74 @@ const addmonapi = async (req, res, next) => {
       idCH: idCH,
       tenMon: tenMon,
       giaTien: giaTien,
-      hinhAnh:
-        req.protocol + "://" + req.get("host") + "/public/images/" + hinhAnh,
+      hinhAnh: hinhAnh,
       trangThai: trangThai,
     });
 
     // Trả về kết quả
-    return res.json({
+    return {
       msg: "Thêm thành công",
-      dataSave: saveMon,
+      index: saveMon,
       success: true,
-    });
+    };
   } catch (e) {
-    // Xử lý lỗi
-    return res.status(500).json({
-      msg: "Đã xảy ra lỗi khi thêm cửa hàng",
-      error: e.message,
+    //Các lỗi về định dạng object Id
+    return {
+      msg: e.msg,
       success: false,
-    });
+    };
   }
 };
 
+const kiemTraPhanQuyen = async (req, res, next) => {
+  try {
+    const idNV = new mongo.Types.ObjectId(req.body.idNV);
+    let nhanVien = await NhanVien.model.findById(idNV)
+    //Nhân viên bán hàng không thể thêm món
+    if (!nhanVien || nhanVien.phanQuyen === 1 || !nhanVien.trangThai || !nhanVien.idCH){
+      return {
+        msg: "Người dùng không thể thêm món",
+        success: false,
+      }
+    }
+    return {
+      success: true,
+    }
+  } catch (e) {
+    //Các lỗi về định dạng object Id
+    return {
+      msg: e.msg,
+      success: false,
+    };
+  }
+}
 
+const themMonApi = async (req, res, next) => {
+    //Kiểm tra xem có phân quyền nhân viên quản lý
+    let kiemTraResult = await kiemTraPhanQuyen(req, res, next)
+    if(!kiemTraResult.success){
+      return res.json({
+        msg: kiemTraResult.msg,
+        success: false
+      })
+    }
+
+    //Thêm món
+    let themResult = await themMon(req, res, next)
+    if(!themResult.success){
+      return res.json({
+        msg: themResult.msg,
+        success: false
+      })
+    }
+
+    //Thành công
+    return res.json({
+      index: themResult.index,
+      msg: themResult.msg,
+      success: true
+    })
+}
 
 const deletemonapi = async (req, res) => {
   try {
@@ -92,10 +138,9 @@ const deletemonapi = async (req, res) => {
       data: updatedNhanVien,
     });
   } catch (e) {
-    console.error(e);
     res.status(500).json({
       success: false,
-      error: e.message || "Đã xảy ra lỗi khi cập nhật trạng thái nhân viên",
+      msg: e.msg || "Đã xảy ra lỗi khi cập nhật trạng thái nhân viên",
     });
   }
 };
@@ -166,7 +211,16 @@ const getTatCaMon = async (req, res) => {
                 "trangThai" : "$trangThai",
                 "tenCH": "$KetQuaCuaHang.tenCH", // Thay vì "$tenCH"
                 "tenLM": "$KetQuaLoaiMon.tenLM", 
-                "idMon": "$idMON",
+                "idMon": "$_id",
+                "hinhAnh":{
+                  $concat: [
+                    req.protocol + "://",
+                    req.get("host"),
+                    "/public/images/",
+                    "$hinhAnh"
+                  ]
+                },
+                
             }},
             {
               $match: {
@@ -187,14 +241,13 @@ const getTatCaMon = async (req, res) => {
         return {
             count:list.length,
             list:list,
-            message: 'Get số lượng đánh giá theo tên khách hàng thành công',
+            msg: 'Get tất cả món thành công',
             success: true,
             
         };
     } catch (error) {
-        console.error(error);
         return {
-            error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+            msg: 'Lỗi khi lấy tất cả món',
             success: false
         };
     }
@@ -276,9 +329,9 @@ const getSoLuongTatCaMon = async (req, res) => {
           msg: "Thành công"
       };
   } catch (error) {
-      console.error(error);
+      
       return {
-          error: 'Lỗi khi lấy số lượng',
+          msg: 'Lỗi khi lấy số lượng',
           success: false
       };
   }
@@ -361,6 +414,7 @@ const getMonCuaCuaHang = async (req, res) => {
             "tenCH": "$KetQuaCuaHang.tenCH", // Thay vì "$tenCH"
             "tenLM": "$KetQuaLoaiMon.tenLM", 
             "idMon": "$idMON",
+            "hinhAnh":"$hinhAnh"
           }},
           {
             $match: {
@@ -381,14 +435,14 @@ const getMonCuaCuaHang = async (req, res) => {
       res.status(200).json({
           count:list.length,
           list:list,
-          message: 'Get số lượng đánh giá theo tên khách hàng thành công',
+          msg: 'Get món của cửa hàng thành công',
           success: true,
           
       });
   } catch (error) {
-      console.error(error);
+      
       res.status(500).json({
-          error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+          msg: 'Lỗi khi lấy món của cửa hàng',
           success: false
       });
   }
@@ -485,131 +539,152 @@ const getMonCuaLoaiMon = async (req, res) => {
       res.status(200).json({
           count:list.length,
           list:list,
-          message: 'Get số lượng đánh giá theo tên khách hàng thành công',
+          msg: 'Get món của loại món thành công',
           success: true,
           
       });
   } catch (error) {
-      console.error(error);
+      
       res.status(500).json({
-          error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+          msg: 'Lỗi khi lấy món của loại món',
           success: false
       });
   }
 };
 
 
-const updatemonapi = async (req, res) => {
-  const idNV = new mongo.Types.ObjectId(req.params.idNV);
-  const idCH = new mongo.Types.ObjectId(req.params.idCH);
-  const tenMon = req.body.tenMon;
-  const giaTien = req.body.giaTien;
-
+const updatemon = async (req, res) => {
   try {
-    const filter = { idNV: idNV, idCH: idCH };
-    const update = { tenMon: tenMon, giaTien: giaTien };
-    const index = await Mon.model.findOneAndUpdate(filter, update, {
-      new: true,
-    });
-    // if (!index) {
-    //   return res.status(404).json({
-    //     error: "Không tìm thấy món để sửa",
-    //     success: false,
-    //   });
-    // }
+    const idMon = new mongo.Types.ObjectId(req.params.idMon);
+    const idNV = new mongo.Types.ObjectId(req.body.idNV);
+    const monCu = await Mon.model.findOne({_id: idMon});
+    const nhanVienSua = await NhanVien.model.findOne({_id: idNV});  
 
-    // // Check if the user belongs to the same store as the item being updated
-    // if (index.idCH !== idNV) {
-    //   return res.status(403).json({
-    //     error: "Bạn không có quyền sửa món này.",
-    //     success: false,
-    //   });
-    // }
-
-    // // Check if the user has management permission
-    // if (index.phanQuyen !== 1) {
-    //   // Assuming 1 is the management permission level
-    //   return res.status(403).json({
-    //     error: "Bạn không có quyền quản lý để thực hiện thao tác này.",
-    //     success: false,
-    //   });
-    // }
-    if (!index) {
+    if (!monCu) {
+      console.log("log2");
       return res.status(404).json({
         error: "Không tìm thấy món để sửa",
         success: false,
       });
-    } else if (tenMon == "" || giaTien == "") {
+    }
+    // validate nhân viên 
+    if(nhanVienSua.trangThai != true ){
       return res.status(404).json({
-        error: "Sửa món lỗi do thiếu thông tin",
+        msg:"Nhân viên không hoạt động",
+        success:false
+      })
+    }
+    if( nhanVienSua.idCH != monCu.idCH ){
+      return res.status(404).json({
+        msg:"món khác cửa hàng với nhân viên đang sửa",
+        success:false
+      })
+    }
+    if( nhanVienSua.phanQuyen != 0 ){
+      return res.status(404).json({
+        msg:"nhân viên sửa không phải nhâ viên quản lý",
+        success:false
+      })
+    }
+    // if(idNV == "" || idNV == undefined ){
+    //   return res.status(404).json({
+    //     msg:"thiếu idNV",
+    //     success:false
+    //   })
+    // }
+    
+
+
+
+    let updateFields = {};
+
+    // Kiểm tra từng trường và thêm vào object updateFields nếu tồn tại giá trị
+    if (req.body.tenMon !== undefined) {
+      updateFields.tenMon = req.body.tenMon;
+    }
+    if (req.body.giaTien !== undefined) {
+      updateFields.giaTien = req.body.giaTien;
+    }
+    if (req.body.idLM !== undefined) {
+      updateFields.idLM = new mongo.Types.ObjectId(req.body.idLM);
+    }
+    if (req.body.trangThai !== undefined) {
+      updateFields.trangThai = req.body.trangThai;
+    }
+    if (req.files.hinhAnh && req.files.hinhAnh.length > 0) {
+      updateFields.hinhAnh = req.files.hinhAnh.map((file) => file.filename)[0];
+    }
+
+    
+
+    // Nếu không có trường nào cần cập nhật, trả về lỗi
+    if (Object.keys(updateFields).length === 0) {
+      return res.status(400).json({
+        error: "Không có trường nào cần cập nhật",
         success: false,
       });
-    } else {
-      res.status(200).json({
-        index,
-        message: "Sửa món thành công",
-        success: true,
-      });
     }
+
+    // Thực hiện cập nhật chỉ với các trường cần thiết
+    const filter = { _id: idMon };
+    const monUpdate = await Mon.model.findOneAndUpdate(filter, updateFields, { new: true });
+    res.status(200).json({
+      monUpdate,
+      msg: "Sửa món thành công",
+      success: true,
+    });
+    
   } catch (error) {
-    console.error(error);
     res.status(500).json({
-      error: "Lỗi khi sửa món",
+      msg: "Lỗi khi sửa món",
+      error,
       success: false,
     });
   }
 };
+const updatemonapi = async (req, res) => {
+  const result = await updatemon(req, res);
+  res.json(result)
+}
 
 // Hiển thị chi tiết món với id cụ thể
 
 const getMonTheoid = async (req, res) => {
-  const idMon = new mongo.Types.ObjectId(req.params.idMon);
   try {
-    const index = await Mon.model.findOne({ _id: idMon });
+    const idMon = new mongo.Types.ObjectId(req.params.idMon);
+    const mon = await Mon.model.findOne({ _id: idMon });
+    const cuaHang = await CuaHang.model.findOne({ _id: mon.idCH });
+    const loaiMon = await LoaiMon.model.findOne({ _id: mon.idLM  });
+
+    let index ={
+      idMon:mon._id,
+      idCH:mon.idCH,
+      idLM:mon.idLM,
+      tenMon:mon.tenMon,
+      giaTien:mon.giaTien,
+      trangThai:mon.trangThai,
+      hinhAnh: req.protocol + "://" + req.get("host") + "/public/images/"+ mon.hinhAnh,
+      tenCH:cuaHang.tenCH,
+      tenLM:loaiMon.tenLM
+    }
     res.status(200).json({
       index,
-      message: "Get đánh giá theo id thành công",
+      msg: "Get món theo id thành công",
       success: true,
     });
   } catch (error) {
-    console.error(error);
+    
     res.status(500).json({
-      error: "Lỗi khi lấy đánh giá theo id",
+      msg: "Lỗi khi lấy món theo id",
       success: false,
     });
   }
 };
 
-//Cải thiện hiển thị danh sách để tìm kiếm món theo tên cửa hàng
-const getDanhSachTenCuaHang = async (req, res, next) => {
- 
-};
-//
-const getDanhSachTenLoaiMon = async (req, res, next) => {};
 
 // khich hoat mon
 const kichhoatMon = async (req, res, next) => {
   try {
-    // const idNguoiSua = req.user.id; 
-    // const idCH = req.user.idCH; 
-
-    // const item = await Mon.model.findById(id);
-
-    // // Check if the food item exists
-    // if (!item) {
-    //     return res.status(404).json({ error: "Không tìm thấy món" });
-    // }
-
-    // // Check if the user belongs to the same store as the food item
-    // if (item.idCH !== idNguoiSua) {
-    //     return res.status(403).json({ error: "Bạn không có quyền kích hoạt món này" });
-    // }
-
-    // // Check if the user has management permissions (e.g., phanQuyen === 1)
-    // // Adjust the condition according to your permission structure
-    // if (req.user.phanQuyen !== 0) {
-    //     return res.status(403).json({ error: "Bạn không có quyền quản lý để kích hoạt món này" });
-    // }
 
     const id = req.params.id;
     const kichhoat = await Mon.model.findOneAndUpdate(
@@ -626,17 +701,21 @@ const kichhoatMon = async (req, res, next) => {
       success: true,
     });
   } catch (error) {
-    res.status(500).json({ success: false,message: "Lỗi kích hoạt món", error: error });
+    res.status(500).json({ success: false,msg: "Lỗi kích hoạt món", error: error });
   }
 };
 module.exports = {
+  //Module
+  kiemTraPhanQuyen,
+  themMon,
   //Api
-  addmonapi,
+  themMonApi,
+
   getTatCaMonApi,
   deletemonapi,
   updatemonapi,
+  updatemon,
   getMonTheoid,
-  getDanhSachTenCuaHang,
   kichhoatMon,
   getMonCuaCuaHang,
   getMonCuaLoaiMon,

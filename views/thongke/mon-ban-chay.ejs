@@ -1,220 +1,385 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Food Center</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/b5123099c5.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <!-- <style>
+
+<head>
+  <title>Food Center</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/b5123099c5.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+
+  <!-- Bootstrap Datepicker CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet">
+  <!-- <style>
       .sidebar-dark-primary {
         background-color: #030025 !important; /* Change to green color */
       }
     </style> -->
-  </head>
-  <body>
-    <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
-      <!-- Brand Logo -->
-      <a href="#" class="brand-link logo-switch this">
-        Food Center
-      </a>
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <!-- Sidebar user panel (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-          <div class="info">
-            <a href="#" class="d-block"><%= (!!locals.admin)?admin:'Admin' %></a>
-          </div>
+</head>
+
+<body>
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="#" class="brand-link logo-switch this">
+      Food Center
+    </a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="info">
+          <a href="#" class="d-block">
+            <%= (!!locals.admin)?admin:'Admin' %>
+          </a>
         </div>
-
-        <!-- Sidebar Menu -->
-        <nav class="mt-2">
-          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
-            <!-- Thống Kê -->
-            <li class="nav-item menu-open">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-chart-bar"></i>
-                <p>
-                  Thống kê
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/thong-ke/doanh-thu" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Doanh thu</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/thong-ke/mon-ban-chay" class="nav-link active">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Món bán chạy</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/thong-ke/giao-dich" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Giao dịch</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Quản lý khách hàng -->
-            <li class="nav-item">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-users"></i>
-                <p>
-                  Quản lý khách hàng
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/khach-hang/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Danh sách</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Quản lý khuyến mãi -->
-            <li class="nav-item">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-tags"></i>
-                <p>
-                  Quản lý khuyến mãi
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/khuyen-mai/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Danh sách</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/khuyen-mai/them-moi" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Thêm mới</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Quản lý món -->
-            <li class="nav-item">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-utensils"></i>
-                <p>
-                  Quản lý món
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/mon/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Danh sách</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/loai-mon/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Loại món</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Quản lý cửa hàng -->
-            <li class="nav-item">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-store"></i>
-                <p>
-                  Quản lý cửa hàng
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/cua-hang/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Danh sách</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/cua-hang/them-moi" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Thêm mới</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/quan-ly/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Tài khoản quản lý</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Đăng xuất -->
-            <li class="nav-item border-top border-1 ">
-              <a href="/auth/sign-out" class="nav-link">
-                <i class="fa-solid fa-arrow-right-from-bracket nav-icon"></i>
-                <p>
-                  Sign-Out
-                </p>
-              </a>
-            </li>
-          </ul>
-        </nav>
-        <!-- /.sidebar-menu -->
-      </div>
-      <!-- /.sidebar -->
-    </aside>
-    <!-- <h1><%= (!!locals.title)?title:'' %></h1> -->
-
-    <div class="content-wrapper">
-      <div class="content-header border border-bottom-1">
-        <div class="container-fluid">
-          <div class="row mb-2">
-            <div class="col-sm-6">
-              <h1 class="m-0">Thống kê</h1>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Thống kê</a></li>
-                <li class="breadcrumb-item active">Món bán chạy</li>
-              </ol>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
       </div>
 
-      <section class="content">
-        <div class="container-fluid bg-white m-2">
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+          <!-- Thống Kê -->
+          <li class="nav-item menu-open">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>
+                Thống kê
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/thong-ke/doanh-thu" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Doanh thu</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/thong-ke/mon-ban-chay" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Món bán chạy</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/thong-ke/giao-dich" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Giao dịch</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Quản lý khách hàng -->
+          <li class="nav-item">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Quản lý khách hàng
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/khach-hang/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Quản lý khuyến mãi -->
+          <li class="nav-item">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-tags"></i>
+              <p>
+                Quản lý khuyến mãi
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/khuyen-mai/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/khuyen-mai/them-moi" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Thêm mới</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Quản lý món -->
+          <li class="nav-item">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-utensils"></i>
+              <p>
+                Quản lý món
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/mon/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/loai-mon/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Loại món</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Quản lý cửa hàng -->
+          <li class="nav-item">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-store"></i>
+              <p>
+                Quản lý cửa hàng
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/cua-hang/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/cua-hang/them-moi" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Thêm mới</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/quan-ly/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Tài khoản quản lý</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- hóa đơn -->
+          <li class="nav-item menu-open">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Quản lý Hóa Đơn
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/hoa-don/danh-sach" class="nav-link ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Đăng xuất -->
+          <li class="nav-item border-top border-1 ">
+            <a href="/auth/sign-out" class="nav-link">
+              <i class="fa-solid fa-arrow-right-from-bracket nav-icon"></i>
+              <p>
+                Sign-Out
+              </p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+  <!-- <h1><%= (!!locals.title)?title:'' %></h1> -->
 
-          <!-- Main content nằm ở dây -->
-
-        </div>
-      </section>
+  <div class="content-wrapper">
+    <div class="content-header border border-bottom-1">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Thống kê</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Thống kê</a></li>
+              <li class="breadcrumb-item active">Món bán chạy</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
     </div>
 
-    <!-- Scripts -->
-    <script type="text/javascript">
-      $(document).ready(function(){
-          $(".open").click(function(e)
-            { 
-              e.stopPropagation()
-              e.preventDefault()
-              $(this).parent().toggleClass('menu-open');
-            }
-          )
-        }
-      )
-    </script>
-  </body>
+    <section class="content">
+      <div class="container-fluid bg-white m-2">
+
+        <!-- Main content nằm ở dây -->
+<!-- Bắt đầu filter -->
+        <form action="/thong-ke/mon-ban-chay" method="GET">
+
+          <!-- tìm theo tên loại món, theo ngày-->
+          <div class="d-flex row justify-content-between mb-1">
+
+            <div class="col-3">
+              <select class="form-control" name="tenLM">
+                <option value="">Tất cả lọai món</option>
+                <% for (var i = 0; i<AllLoaiMon.length; i++) {%>
+                  <option value="<%=AllLoaiMon[i].tenLM%>"><%=AllLoaiMon[i].tenLM%></option>
+                <%}%>
+              </select>
+            </div>
+
+            <div class="col-3">
+              <select class="form-control" name="thang" id="thangSelect">
+                  <option value="">Tháng</option>
+                  <% for (var i = 1; i <= 12; i++) { %>
+                      <% if (currentMonth && currentMonth == i) { %>
+                          <option value="<%= i %>" selected>Tháng <%= i %></option>
+                      <% } else { %>
+                          <option value="<%= i %>">Tháng <%= i %></option>
+                      <% } %>
+                  <% } %>
+              </select>
+          </div>
+
+
+            <div class="input-group col-3">
+              <input type="text" class="form-control" value="<%=currentYear%>" name="nam" id="yearPicker" placeholder="Chọn năm" autocomplete="off">
+            </div>
+
+            <div class="col-2">
+              <button class="btn btn-dark w-100" type="submit">Tìm kiếm</button>
+            </div>
+          </div>
+        </form>
+<!-- Kết thúc filter -->
+
+<!-- Bắt đầu bảng -->
+        <table class="table table-bordered border-secondary">
+          <thead>
+            <tr class="table-secondary">
+              <td scope="col-1">STT</td>
+              <td scope="col-2">Tên món</td>
+              <td scope="col-9">Loại món</td>
+              <td scope="col-9">Doanh thu</td>
+            </tr>
+          </thead>
+          <tbody>
+            <%if(!!locals.monBanChay){%>
+              <% for (var i = 0; i<monBanChay.length; i++) {%>
+                <tr>
+                  <td scope="col-1"><%=i+1%></td>
+                  <td scope="col-2" ><%=monBanChay[i].tenMon%></td>
+                  <td scope="col-9" ><%=monBanChay[i].tenLM%></td>
+                  <td scope="col-9" ><%=monBanChay[i].doanhThu%></td>
+                </tr>
+                <%}%>
+            <%}else{%>
+              <tr>
+                <td scope="col-1">0</td>
+                <td scope="col-2">0</td>
+                <td scope="col-9">0</td>
+              </tr>
+            <%}%>
+            
+        </tbody> 
+        </table>
+<!--kết thúc bảng -->
+      </div>
+    </section>
+  </div>
+  <!-- Bootstrap Datepicker JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+
+  <!-- Scripts -->
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $(".open").click(function (e) {
+        e.stopPropagation()
+        e.preventDefault()
+        $(this).parent().toggleClass('menu-open');
+      })
+    });
+
+
+     // Khởi tạo datepicker chỉ hiển thị năm
+     $(document).ready(function(){
+      $('#yearPicker').datepicker({
+        format: "yyyy",
+        viewMode: "years",
+        minViewMode: "years",
+        autoclose: true,
+        clearBtn: true
+      });
+
+      // Xử lý sự kiện khi nút "Xóa" được nhấn
+      $('#clearBtn').click(function(){
+        $('#yearPicker').val('');
+      });
+      });
+
+
+      // Lưu các giá trị của các trường khi form được submit
+      document.querySelector('form').addEventListener('submit', function() {
+          var selectedLM = document.querySelector('select[name="tenLM"]').value;
+          var selectedMonth = document.querySelector('select[name="thang"]').value;
+          var selectedYear = document.querySelector('input[name="nam"]').value;
+
+          localStorage.setItem('selectedLM', selectedLM);
+          localStorage.setItem('selectedMonth', selectedMonth);
+          localStorage.setItem('selectedYear', selectedYear);
+      });
+
+      // Thiết lập lại các giá trị của các trường sau khi trang được tải lại
+      window.onload = function() {
+          var selectedLM = localStorage.getItem('selectedLM');
+          var selectedMonth = localStorage.getItem('selectedMonth');
+          var selectedYear = localStorage.getItem('selectedYear');
+
+          // Kiểm tra xem trang đã được tải lại từ tìm kiếm hay không
+          var isReloaded = localStorage.getItem('isReloaded');
+
+          if (isReloaded) {
+              // Trang đã được tải lại từ tìm kiếm, sử dụng các giá trị đã lưu
+              if (selectedLM) {
+                  document.querySelector('select[name="tenLM"]').value = selectedLM;
+              }
+              if (selectedMonth) {
+                  document.querySelector('select[name="thang"]').value = selectedMonth;
+              }
+              if (selectedYear) {
+                  document.querySelector('input[name="nam"]').value = selectedYear;
+              }
+          } else {
+              // Trang mới được tải, chọn tháng hiện tại
+              var currentMonth = new Date().getMonth() + 1;
+              document.querySelector('select[name="thang"]').value = currentMonth;
+          }
+
+          // Đánh dấu trang đã được tải lại từ tìm kiếm
+          localStorage.removeItem('isReloaded');
+      };
+
+      // Thêm sự kiện cho nút tìm kiếm để đánh dấu trang đã được tải lại từ tìm kiếm
+      document.querySelector('button[type="submit"]').addEventListener('click', function() {
+          localStorage.setItem('isReloaded', true);
+      });
+
+
+
+  </script>
+</body>
+
 </html>
