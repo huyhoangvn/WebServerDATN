@@ -560,38 +560,39 @@ const updatemon = async (req, res) => {
     const monCu = await Mon.model.findOne({_id: idMon});
     const nhanVienSua = await NhanVien.model.findOne({_id: idNV});  
 
-    if (!monCu) {
-      console.log("log2");
-      return res.status(404).json({
+    if (monCu==null) {
+      return({
         error: "Không tìm thấy món để sửa",
         success: false,
       });
     }
     // validate nhân viên 
     if(nhanVienSua.trangThai != true ){
-      return res.status(404).json({
+      return({
         msg:"Nhân viên không hoạt động",
         success:false
       })
     }
-    if( nhanVienSua.idCH != monCu.idCH ){
-      return res.status(404).json({
+    if( nhanVienSua.idCH === monCu.idCH ){
+      console.log("day la idCH cua nhanVienSua: ", nhanVienSua.idCH);
+      console.log("day la idCH cua monCu: ", monCu.idCH);
+      return({
         msg:"món khác cửa hàng với nhân viên đang sửa",
         success:false
       })
     }
     if( nhanVienSua.phanQuyen != 0 ){
-      return res.status(404).json({
+      return({
         msg:"nhân viên sửa không phải nhâ viên quản lý",
         success:false
       })
     }
-    // if(idNV == "" || idNV == undefined ){
-    //   return res.status(404).json({
-    //     msg:"thiếu idNV",
-    //     success:false
-    //   })
-    // }
+    if(idNV === "" || idNV === undefined ){
+      return ({
+        msg:"thiếu idNV",
+        success:false
+      })
+    }
     
 
 
@@ -619,7 +620,7 @@ const updatemon = async (req, res) => {
 
     // Nếu không có trường nào cần cập nhật, trả về lỗi
     if (Object.keys(updateFields).length === 0) {
-      return res.status(400).json({
+      return({
         error: "Không có trường nào cần cập nhật",
         success: false,
       });
@@ -627,9 +628,9 @@ const updatemon = async (req, res) => {
 
     // Thực hiện cập nhật chỉ với các trường cần thiết
     const filter = { _id: idMon };
-    const monUpdate = await Mon.model.findOneAndUpdate(filter, updateFields, { new: true });
-    res.status(200).json({
-      monUpdate,
+    const index = await Mon.model.findOneAndUpdate(filter, updateFields, { new: true });
+    return({
+      index,
       msg: "Sửa món thành công",
       success: true,
     });
