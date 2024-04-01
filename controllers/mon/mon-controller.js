@@ -3,6 +3,7 @@ const NhanVien = require("../../model/NhanVien");
 const LoaiMon = require("../../model/LoaiMon");
 const CuaHang = require("../../model/CuaHang");
 const mongo = require("mongoose");
+var DanhGiaCtrl = require("../../controllers/danhgia/danhgia-controller");
 
 const themMon = async (req, res, next) => {
   try {
@@ -656,8 +657,10 @@ const getMonTheoid = async (req, res) => {
     const mon = await Mon.model.findOne({ _id: idMon });
     const cuaHang = await CuaHang.model.findOne({ _id: mon.idCH });
     const loaiMon = await LoaiMon.model.findOne({ _id: mon.idLM  });
+    const trungBinhDanhGia = await DanhGiaCtrl.GetTrungBinhDanhGiaTheoMon(req,res);
 
     let index ={
+      trungBinhDanhGia:trungBinhDanhGia.index,
       idMon:mon._id,
       idCH:mon.idCH,
       idLM:mon.idLM,
