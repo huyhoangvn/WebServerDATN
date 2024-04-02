@@ -369,18 +369,13 @@
                     <input type="text" class="form-control" name="tieuDe" id="tieuDe" placeholder="Tiêu đề">
                   </div>
                   <div class="form-group">
-                    <label for="maKhuyenMai">Mã Khuyến Mãi</label>
-                    <input type="text" class="form-control " name="maKhuyenMai" id="maKhuyenMai"
-                      placeholder="Mã Khuyến Mãi">
-                  </div>
-                  <div class="form-group">
                     <label for="ngayBatDau">Ngày bắt đầu</label>
-                    <input type="text" class="form-control" name="ngayBatDau" id="ngayBatDau"
+                    <input type="date" class="form-control" name="ngayBatDau" id="ngayBatDau"
                       placeholder="Ngày bắt đầu">
                   </div>
                   <div class="form-group">
                     <label for="ngayHetHan">Ngày kết thúc</label>
-                    <input type="text" class="form-control" name="ngayHetHan" id="ngayHetHan"
+                    <input type="date" class="form-control" name="ngayHetHan" id="ngayHetHan"
                       placeholder="Ngày kết thúc">
                   </div>
                   <div class="form-group">
@@ -495,17 +490,15 @@
 
         var idKM = $(this).data('idkm');
         var tieuDe = $(this).data('tieude');
-        var maKhuyenMai = $(this).data('makhuyenmai');
-        var ngayBatDau = $(this).data('ngaybatdau');
-        var ngayHetHan = $(this).data('ngayhethan');
+        // var ngayBatDau = $(this).data('ngaybatdau');
+        // var ngayHetHan = $(this).data('ngayhethan');
         var phanTramKhuyenMai = $(this).data('phantramkhuyenmai');
         var donToiThieu = $(this).data('dontoithieu');
 
         // Thiết lập value cho từng trường input
         $('#tieuDe').val(tieuDe);
-        $('#maKhuyenMai').val(maKhuyenMai);
-        $('#ngayBatDau').val(ngayBatDau);
-        $('#ngayHetHan').val(ngayHetHan);
+        // $('#ngayBatDau').val(ngayBatDau);
+        // $('#ngayHetHan').val(ngayHetHan);
         $('#phanTramKhuyenMai').val(phanTramKhuyenMai);
         $('#donToiThieu').val(donToiThieu);
         $('#idKM').val(idKM);
