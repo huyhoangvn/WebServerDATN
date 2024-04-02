@@ -1,7 +1,7 @@
 //Website
 var ThongKeCtrl = require("../../controllers/thongke/thong-ke-controller");
 
-const getView =  async (req, res, next)=>{
+const getView = async (req, res, next) => {
     // var currentYear = new Date().getFullYear();
     // const nam = req.query.nam 
     const motNgay = await ThongKeCtrl.thongKeDoanhThuTheoNgay(req, res, next);
@@ -16,15 +16,15 @@ const getView =  async (req, res, next)=>{
         // nam,
         // currentYear,
         // tongTienNam:tongTienMotNam,
-        tongTienMotNgay:tongTienMotNgay,
-        tongTienMuoiNgay:tongTienMuoiNgay,
-        tongTienBaMuoiNgay:tongTienBaMuoiNgay,
+        tongTienMotNgay: tongTienMotNgay,
+        tongTienMuoiNgay: tongTienMuoiNgay,
+        tongTienBaMuoiNgay: tongTienBaMuoiNgay,
         admin: req.session.ten,
         msg: ""
     })
 }
 
-const getChiTietDoanhThuTheoNam =  async (req, res, next)=>{
+const getChiTietDoanhThuTheoNam = async (req, res, next) => {
     const motNgay = await ThongKeCtrl.thongKeDoanhThuTheoNgay(req, res, next);
     const tongTienMotNgay = motNgay ? motNgay.tongTien : 0;
     const muoiNgay = await ThongKeCtrl.thongKeDoanhThuTheo10Ngay(req, res, next);
@@ -35,10 +35,10 @@ const getChiTietDoanhThuTheoNam =  async (req, res, next)=>{
     const theoNam = await ThongKeCtrl.thongKeDoanhThuTheoThangTrongNam(req, res, next);
 
     res.render("thongke/doanh-thu", {
-        cacThang:theoNam.index,
-        tongTienMotNgay:tongTienMotNgay,
-        tongTienMuoiNgay:tongTienMuoiNgay,
-        tongTienBaMuoiNgay:tongTienBaMuoiNgay,
+        cacThang: theoNam.data,
+        tongTienMotNgay: tongTienMotNgay,
+        tongTienMuoiNgay: tongTienMuoiNgay,
+        tongTienBaMuoiNgay: tongTienBaMuoiNgay,
         admin: req.session.ten,
         msg: ""
     })
