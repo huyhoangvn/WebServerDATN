@@ -101,12 +101,16 @@ const getHoaDon = async (req, res, next) => {
                 $match: filter,
             },
             {
+                $sort: { thoiGianTao: -1 } // Sắp xếp tăng dần theo thời gian tạo, để sắp xếp giảm dần, sử dụng -1
+            },
+            {
                 $project: {
                     "maHD": "$maHD",
                     "thoiGianTao": "$thoiGianTao",
                     "trangThaiThanhToan": "$trangThaiThanhToan",
                     "trangThaiMua": "$trangThaiMua",
                     "tongTien": "$tongTien",
+                    "thoiGianTao": "$thoiGianTao",
                 }
             },
             {
