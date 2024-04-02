@@ -203,11 +203,16 @@ const thongKeDoanhThuTheoNam = async (req, res, next) => {
 const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
     try {
         // Nhận năm từ request params
-        const nam = req.query.nam;
+        // Nhận năm từ request params
+        let nam = req.query.nam;
 
+        // Kiểm tra xem năm đã được cung cấp trong query hay chưa
         if (!nam) {
-            return res.status(400).json({ message: 'Yêu cầu cung cấp năm.' });
+            // Nếu không, sử dụng năm hiện tại
+            nam = new Date().getFullYear();
         }
+
+
 
         // Tạo mảng chứa tên của các tháng
         const monthNames = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -253,11 +258,11 @@ const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
         }
 
         // Gửi kết quả dưới dạng mảng
-        return res.status(200).json({
+        return {
             data: monthlyRevenue,
             success: true,
             message: "Thành công"
-        });
+        };
     } catch (error) {
         console.error("Error:", error);
         return res.status(500).json({
