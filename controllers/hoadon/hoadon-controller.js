@@ -8,8 +8,8 @@ const moment = require('moment');
 
 const updateHoaDon = async (req, res) => {
     try {
-        const HoaDonId = req.params.id;
-        const item = await HoaDon.findById(HoaDonId);
+        const id = req.params.id;
+        const item = await HoaDon.findById(id);
 
         if (!item) {
             return res.json({ msg: 'Không tìm thấy hóa đơn để cập nhật', dataSave: null });

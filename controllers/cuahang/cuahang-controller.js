@@ -182,151 +182,153 @@ const kichHoatCuaHang = async (req, res, next) => {
         res.json(e);
     };
 }
-    // get all: http://localhost:3000/api/nhanvien/cuahang
-    //tìm tên: http://localhost:3000/api/nhanvien/cuahang?ten=1234
-    //tim địa chỉ: http://localhost:3000/api/nhanvien/cuahang?diaChi=123
-    //time : http://localhost:3000/api/nhanvien/cuahang?thoiGianMo= 09:00 AM&thoiGianDong= 10:00 PM
-    // tìm all từ khoá: http://localhost:3000/api/nhanvien/cuahang?ten=123&diaChi=123&thoiGianMo= 09:00 AM&thoiGianDong= 10:00 PM
-    const getCuaHang = async (req, res, next) => {
-        try {
-            let filter = {};
-    
-            if (req.query.ten) {
-                filter.tenCH = new RegExp(req.query.ten, 'i');
-            }
-    
-            if (req.query.diaChi) {
-                filter.diaChi = new RegExp(req.query.diaChi, 'i');
-            }
-    
-            if (req.query.thoiGianMo) {
-                filter.thoiGianMo = { $gte: moment(req.query.thoiGianMo, 'hh:mm A').format('HH:mm A') };
-            }
-    
-            if (req.query.thoiGianDong) {
-                filter.thoiGianDong = { $lte: moment(req.query.thoiGianDong, 'hh:mm A').format('HH:mm A') };
-            }
-    
-            const danhSachCuaHang = await CuaHang.find(filter);
-    
-            res.json({
-                data: danhSachCuaHang,
-                soluong: danhSachCuaHang.length,
-            });
-        } catch (error) {
-            console.error(error);
-            res.json({success:false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
+// get all: http://localhost:3000/api/nhanvien/cuahang
+//tìm tên: http://localhost:3000/api/nhanvien/cuahang?ten=1234
+//tim địa chỉ: http://localhost:3000/api/nhanvien/cuahang?diaChi=123
+//time : http://localhost:3000/api/nhanvien/cuahang?thoiGianMo= 09:00 AM&thoiGianDong= 10:00 PM
+// tìm all từ khoá: http://localhost:3000/api/nhanvien/cuahang?ten=123&diaChi=123&thoiGianMo= 09:00 AM&thoiGianDong= 10:00 PM
+const getCuaHang = async (req, res, next) => {
+    try {
+        let filter = {};
+
+        if (req.query.ten) {
+            filter.tenCH = new RegExp(req.query.ten, 'i');
         }
+
+        if (req.query.diaChi) {
+            filter.diaChi = new RegExp(req.query.diaChi, 'i');
+        }
+
+        if (req.query.thoiGianMo) {
+            filter.thoiGianMo = { $gte: moment(req.query.thoiGianMo, 'hh:mm A').format('HH:mm A') };
+        }
+
+        if (req.query.thoiGianDong) {
+            filter.thoiGianDong = { $lte: moment(req.query.thoiGianDong, 'hh:mm A').format('HH:mm A') };
+        }
+
+        const danhSachCuaHang = await CuaHang.find(filter);
+
+        res.json({
+            data: danhSachCuaHang,
+            soluong: danhSachCuaHang.length,
+        });
+    } catch (error) {
+        console.error(error);
+        res.json({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
     }
+}
 
-    const GetCuaHang = async (req, res, next) => {
-        try {
-            let timkiem = {
+const GetCuaHang = async (req, res, next) => {
+    try {
+        let timkiem = {
 
-            };
-            const trang = parseInt( req.query.trang ) || 1;
-            if (typeof(req.query.tenCH) !== 'undefined' && req.query.tenCH !== "" ) {
-                timkiem.tenCH = { $regex: req.query.tenCH, $options: 'i' }; 
+        };
+        const trang = parseInt(req.query.trang) || 1;
+        if (typeof (req.query.tenCH) !== 'undefined' && req.query.tenCH !== "") {
+            timkiem.tenCH = { $regex: req.query.tenCH, $options: 'i' };
+        }
+        if (typeof (req.query.diaChi) !== 'undefined' && req.query.diaChi !== "") {
+            timkiem.diaChi = { $regex: req.query.diaChi, $options: 'i' };
+        }
+        if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+            const trangThaiValue = parseInt(req.query.trangThai);
+            if (trangThaiValue === 1 || trangThaiValue === 0) {
+                timkiem.trangThai = trangThaiValue === 1;
             }
-            if (typeof(req.query.diaChi) !== 'undefined' && req.query.diaChi !== "" ) {
-                timkiem.diaChi = { $regex: req.query.diaChi, $options: 'i' }; 
-            }
-            if (typeof(req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
-                const trangThaiValue = parseInt(req.query.trangThai);
-                if(trangThaiValue === 1 || trangThaiValue === 0){
-                  timkiem.trangThai = trangThaiValue === 1;
+        }
+        const listCH = await CuaHang.aggregate([
+            {
+                $lookup: {
+                    from: "NhanVien",
+                    localField: "_id",
+                    foreignField: "idCH",
+                    as: "NhanViens"
                 }
-            }
-            const listCH = await CuaHang.aggregate([
-                {
-                    $lookup: {
-                        from: "NhanVien",
-                        localField: "_id",
-                        foreignField: "idCH",
-                        as: "NhanViens" 
-                    }
-                },
-                {$match: 
+            },
+            {
+                $match:
                     timkiem,
-                },
-                {
-                    $project: {
-                        "tenCH": "$tenCH",
-                        "diaChi": "$diaChi",
-                        "trangThai": "$trangThai",
-                        "soLuongNhanVien": { $size: "$NhanViens" }
-                    }
-                },
-                {
-                    $skip: (trang-1)*10,
-                },
-                {
-                    $limit: 10,
-                },
-            ]);
-            const count = await GetSoLuongCuaHang(req,res);
-            return({
-                count:count.index,
-                index: listCH,
-                msg: "get cửa hàng thành công",
-                success: true,
-            });
-        } catch (error) {
-            console.error(error);
-            res.json({success:false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
-        }
-    }
-    const GetSoLuongCuaHang = async (req, res, next) => {
-        try {
-            let timkiem = {
-
-            };
-            const trang = parseInt( req.query.trang ) || 1;
-            if (typeof(req.query.tenCH) !== 'undefined' && req.query.tenCH !== "" ) {
-                timkiem.tenCH = { $regex: req.query.tenCH, $options: 'i' }; 
-            }
-            if (typeof(req.query.diaChi) !== 'undefined' && req.query.diaChi !== "" ) {
-                timkiem.diaChi = { $regex: req.query.diaChi, $options: 'i' }; 
-            }
-            if (typeof(req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
-                const trangThaiValue = parseInt(req.query.trangThai);
-                if(trangThaiValue === 1 || trangThaiValue === 0){
-                  timkiem.trangThai = trangThaiValue === 1;
+            },
+            {
+                $project: {
+                    "tenCH": "$tenCH",
+                    "diaChi": "$diaChi",
+                    "trangThai": "$trangThai",
+                    "soLuongNhanVien": { $size: "$NhanViens" }
                 }
+            },
+            {
+                $skip: (trang - 1) * 10,
+            },
+            {
+                $limit: 10,
+            },
+        ]);
+        const count = await GetSoLuongCuaHang(req, res);
+        return ({
+            count: count.index,
+            index: listCH,
+            msg: "get cửa hàng thành công",
+            success: true,
+        });
+    } catch (error) {
+        console.error(error);
+        res.json({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
+    }
+}
+const GetSoLuongCuaHang = async (req, res, next) => {
+    try {
+        let timkiem = {
+
+        };
+        const trang = parseInt(req.query.trang) || 1;
+        if (typeof (req.query.tenCH) !== 'undefined' && req.query.tenCH !== "") {
+            timkiem.tenCH = { $regex: req.query.tenCH, $options: 'i' };
+        }
+        if (typeof (req.query.diaChi) !== 'undefined' && req.query.diaChi !== "") {
+            timkiem.diaChi = { $regex: req.query.diaChi, $options: 'i' };
+        }
+        if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+            const trangThaiValue = parseInt(req.query.trangThai);
+            if (trangThaiValue === 1 || trangThaiValue === 0) {
+                timkiem.trangThai = trangThaiValue === 1;
             }
-            const listCH = await CuaHang.aggregate([
-                {
-                    $lookup: {
-                        from: "NhanVien",
-                        localField: "_id",
-                        foreignField: "idCH",
-                        as: "NhanViens" 
-                    }
-                },
-                {$match: 
+        }
+        const listCH = await CuaHang.aggregate([
+            {
+                $lookup: {
+                    from: "NhanVien",
+                    localField: "_id",
+                    foreignField: "idCH",
+                    as: "NhanViens"
+                }
+            },
+            {
+                $match:
                     timkiem,
-                },
-                {
-                    $count:"count"
-                }
+            },
+            {
+                $count: "count"
+            }
 
-            ]);
-            return({
-                index: listCH[0].count,
-                msg: "get cửa hàng thành công",
-                success: true,
-            });
-        } catch (error) {
-            console.error(error);
-            res.json({success:false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
-        }
+        ]);
+        return ({
+            index: listCH[0].count,
+            msg: "get cửa hàng thành công",
+            success: true,
+        });
+    } catch (error) {
+        console.error(error);
+        res.json({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
     }
-    
-    const getCuaHangApi = async (req, res) => {
-        const result = await GetCuaHang(req, res);
-        res.json(result)
-      }
-    
+}
+
+const getCuaHangApi = async (req, res) => {
+    const result = await GetCuaHang(req, res);
+    res.json(result)
+}
+
 
 const huyKichHoatCuaHang = async (req, res, next) => {
     try {
@@ -567,9 +569,10 @@ module.exports = {
     kichHoatCuaHangApi,
     huyKichHoatCuaHangApi,
     getCuaHangCuaHangApi,
-    chiTietCuaHangApi,
     getCuaHang,
     GetCuaHang,
     GetSoLuongCuaHang,
-    getCuaHangApi
+    getCuaHangApi,
+    chiTietCuaHangAppApi,
+    chiTietCuaHangWebApi
 };
