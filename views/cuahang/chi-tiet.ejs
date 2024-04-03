@@ -225,8 +225,10 @@
 
         <!-- Main content nằm ở dây -->
 
-<!-- Bắt đầu chi tiết -->
-        <h3><%=chiTietCH.tenCH%></h3>
+        <!-- Bắt đầu chi tiết -->
+        <h3>
+          <%=chiTietCH.tenCH%>
+        </h3>
         <label class="font-weight-normal">Email: <%=chiTietCH.email%></label>
         <br>
         <label class="font-weight-normal">Số điện thoại: <%=chiTietCH.sdt%></label>
@@ -242,109 +244,125 @@
         <label class="font-weight-normal">Trạng thái: </label>
         <% if(chiTietCH.trangThai==true){%>
           <label class="text-success" scope="col-2">Hoạt động</label>
-        <%}else{%>
-          <label class="text-danger" scope="col-2">Khóa</label>
-        <%}%>
-        <br>
-
-<!-- Kết thúc chi tiết -->
-
-<!-- Bắt đầu bảng tài khoản quản lý -->
-        <label >Danh sách tài khoản quản lý</label>
-        <br>
-        <label class="font-weight-normal">Đã tìm thấy <%=NVQL.length%> kết quả </label>
-
-        <table class="table table-bordered border-secondary">
-          <thead>
-            <tr class="table-secondary">
-              <td scope="col-1" class="col-1">STT</td>
-              <td scope="col-2" class="col-5">Tên quản lý</td>
-              <td scope="col-2" class="col-2">Số điện thoại</td>
-              <td scope="col-2" class="col-2">Trạng thái</td>
-              <td scope="col-1" class="col-2">Chức năng</td>
-            </tr>
-          </thead>
-          <tbody>
-            <%if(NVQL == null || NVQL == undefined){%>
-              <tr>
-                <td scope="col-1" class="col-1"></td>
-                <td scope="col-2" class="col-5"></td>
-                <td scope="col-2" class="col-2"></td>
-                <td scope="col-2" class="col-2"></td>
-                <td scope="col-1" class="col-2"></td>
-              </tr>
-            <%}else{%>
-              <% for (var i=0; i<NVQL.length; i++) {%>
-                <tr>
-                  <td scope="col-2" class="col-1"><%=i+1%></td>
-                  <td scope="col-1" class="col-5"><%=NVQL[i].tenNV%></td>
-                  <td scope="col-2" class="col-2"><%=NVQL[i].sdt%></td>
-                  <% if(NVQL[i].trangThai==true){%>
-                    <td class="text-success" scope="col-2" class="col-2">Hoạt động</td>
-                  <%}else{%>
-                    <td class="text-danger" scope="col-2" class="col-2">Khóa</td>
-                  <%}%>
-                  <td scope="col-1" class="text-primary col-2">chi tiết</td>
-                </tr>
-              <%}%>
+          <%}else{%>
+            <label class="text-danger" scope="col-2">Khóa</label>
             <%}%>
-          </tbody>
-        </table>
-        <div class="row justify-content-center">
-          <button type="button" class="btn btn-dark col-2">Thêm mới</button>
-        </div>
+              <br>
 
-<!-- Kết thúc bảng tài khoản quản lý-->
+              <!-- Kết thúc chi tiết -->
 
-<!-- Bắt đầu bảng món của cửa hàng -->
-        <label >Danh sách món của cửa hàng</label>
-        <br>
-        <label class="font-weight-normal">Đã tìm thấy kết quả</label>
+              <!-- Bắt đầu bảng tài khoản quản lý -->
+              <label>Danh sách tài khoản quản lý</label>
+              <br>
+              <label class="font-weight-normal">Đã tìm thấy <%=NVQL.length%> kết quả </label>
 
-        <table class="table table-bordered border-secondary">
-          <thead>
-            <tr class="table-secondary">
-              <td scope="col-1" class="col-1">STT</td>
-              <td scope="col-2" class="col-2">Tên món</td>
-              <td scope="col-2" class="col-2">Loại món</td>
-              <td scope="col-2" class="col-2">Loại món</td>
-              <td scope="col-2" class="col-1">Giá tiền</td>
-              <td scope="col-2" class="col-2">Trạng thái</td>
-              <td scope="col-1" class="col-2">Chức năng</td>
-            </tr>
-          </thead>
-          <tbody>
-            <%if(monCH == null || monCH == undefined){%>
-              <tr>
-                <td scope="col-1" class="col-1"></td>
-                <td scope="col-2" class="col-2"></td>
-                <td scope="col-2" class="col-2"></td>
-                <td scope="col-2" class="col-2"></td>
-                <td scope="col-2" class="col-1"></td>
-                <td scope="col-2" class="col-2"></td>
-                <td scope="col-1" class="col-2"></td>
-              </tr>
-            <%}else{%>
-              <% for (var i=0; i<monCH.length; i++) {%>
-                <tr>
-                  <td scope="col-2" class="col-1"><%=i+1%></td>
-                  <td scope="col-1" class="col-2"><%=monCH[i].tenMon%></td>
-                  <td scope="col-2" class="col-2"><%=monCH[i].idLM%></td>
-                  <td scope="col-2" class="col-2"><%=monCH[i].idCH%></td>
-                  <td scope="col-2" class="col-1"><%=monCH[i].giaTien%></td>
-                  <% if(monCH[i].trangThai==true){%>
-                    <td class="text-success" scope="col-2" class="col-2">Hoạt động</td>
-                  <%}else{%>
-                    <td class="text-danger" scope="col-2" class="col-2">Khóa</td>
-                  <%}%>
-                  <td scope="col-1" class="text-primary col-2">chi tiết</td>
-                </tr>
-              <%}%>
-            <%}%>
-          </tbody>
-        </table>
+              <table class="table table-bordered border-secondary">
+                <thead>
+                  <tr class="table-secondary">
+                    <td scope="col-1" class="col-1">STT</td>
+                    <td scope="col-2" class="col-5">Tên quản lý</td>
+                    <td scope="col-2" class="col-2">Số điện thoại</td>
+                    <td scope="col-2" class="col-2">Trạng thái</td>
+                    <td scope="col-1" class="col-2">Chức năng</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%if(NVQL==null || NVQL==undefined){%>
+                    <tr>
+                      <td scope="col-1" class="col-1"></td>
+                      <td scope="col-2" class="col-5"></td>
+                      <td scope="col-2" class="col-2"></td>
+                      <td scope="col-2" class="col-2"></td>
+                      <td scope="col-1" class="col-2"></td>
+                    </tr>
+                    <%}else{%>
+                      <% for (var i=0; i<NVQL.length; i++) {%>
+                        <tr>
+                          <td scope="col-2" class="col-1">
+                            <%=i+1%>
+                          </td>
+                          <td scope="col-1" class="col-5">
+                            <%=NVQL[i].tenNV%>
+                          </td>
+                          <td scope="col-2" class="col-2">
+                            <%=NVQL[i].sdt%>
+                          </td>
+                          <% if(NVQL[i].trangThai==true){%>
+                            <td class="text-success" scope="col-2" class="col-2">Hoạt động</td>
+                            <%}else{%>
+                              <td class="text-danger" scope="col-2" class="col-2">Khóa</td>
+                              <%}%>
+                                <td scope="col-1" class="text-primary col-2">chi tiết</td>
+                        </tr>
+                        <%}%>
+                          <%}%>
+                </tbody>
+              </table>
+              <div class="row justify-content-center">
+                <button type="button" class="btn btn-dark col-2">Thêm mới</button>
+              </div>
 
-<!-- Kết thúc bảng tài khoản quản lý-->
+              <!-- Kết thúc bảng tài khoản quản lý-->
+
+              <!-- Bắt đầu bảng món của cửa hàng -->
+              <label>Danh sách món của cửa hàng</label>
+              <br>
+              <label class="font-weight-normal">Đã tìm thấy kết quả</label>
+
+              <table class="table table-bordered border-secondary">
+                <thead>
+                  <tr class="table-secondary">
+                    <td scope="col-1" class="col-1">STT</td>
+                    <td scope="col-2" class="col-2">Tên món</td>
+                    <td scope="col-2" class="col-2">loại món</td>
+                    <td scope="col-2" class="col-2">Cửa hàng</td>
+                    <td scope="col-2" class="col-1">Giá tiền</td>
+                    <td scope="col-2" class="col-2">Trạng thái</td>
+                    <td scope="col-1" class="col-2">Chức năng</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%if(monCH==null || monCH==undefined){%>
+                    <tr>
+                      <td scope="col-1" class="col-1"></td>
+                      <td scope="col-2" class="col-2"></td>
+                      <td scope="col-2" class="col-2"></td>
+                      <td scope="col-2" class="col-2"></td>
+                      <td scope="col-2" class="col-1"></td>
+                      <td scope="col-2" class="col-2"></td>
+                      <td scope="col-1" class="col-2"></td>
+                    </tr>
+                    <%}else{%>
+                      <% for (var i=0; i<monCH.length; i++) {%>
+                        <tr>
+                          <td scope="col-2" class="col-1">
+                            <%=i+1%>
+                          </td>
+                          <td scope="col-1" class="col-2">
+                            <%=monCH[i].tenMon%>
+                          </td>
+                          <td scope="col-2" class="col-2">
+                            <%=monCH[i].tenLM%>
+                          </td>
+                          <td scope="col-2" class="col-2">
+                            <%=monCH[i].tenCH%>
+                          </td>
+                          <td scope="col-2" class="col-1">
+                            <%=monCH[i].giaTien%>
+                          </td>
+                          <% if(monCH[i].trangThai==true){%>
+                            <td class="text-success" scope="col-2" class="col-2">Hoạt động</td>
+                            <%}else{%>
+                              <td class="text-danger" scope="col-2" class="col-2">Khóa</td>
+                              <%}%>
+                                <td scope="col-1" class="text-primary col-2">chi tiết</td>
+                        </tr>
+                        <%}%>
+                          <%}%>
+                </tbody>
+              </table>
+
+              <!-- Kết thúc bảng tài khoản quản lý-->
       </div>
     </section>
   </div>
