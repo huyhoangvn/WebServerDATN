@@ -51,7 +51,7 @@ const addMonDat = async (req, res, next) => {
 
         // await updateTongTienHoaDon(idHD);
         // Tạo món đặt mới với id hóa đơn đã được cung cấp
-        await MonDat.create({
+        const mondat = await MonDat.create({
             idHD: idHD,
             idMon: req.body.idMon,
             giaTienDat: mon.giaTien,
@@ -60,6 +60,7 @@ const addMonDat = async (req, res, next) => {
 
         // Trả về kết quả thành công
         return {
+            index: mondat,
             msg: "Món đặt đã được thêm thành công",
             success: true
         };
@@ -106,7 +107,7 @@ const updateMonDat = async (req, res, next) => {
         }
 
         // Cập nhật thông tin món đặt
-        await MonDat.findByIdAndUpdate(id, {
+        const mondat = await MonDat.findByIdAndUpdate(id, {
             soLuong: req.body.soLuong
         });
 
@@ -115,6 +116,7 @@ const updateMonDat = async (req, res, next) => {
 
         // Trả về kết quả thành công
         return {
+            index: mondat,
             msg: "Món đặt đã được cập nhật thành công",
             success: true,
         };
@@ -190,18 +192,35 @@ const deleteMonDatMem = async (req, res, next) => {
 const getDanhSachMonDatByIdHoaDon = async (req, res, next) => {
     try {
         const id = req.params.id;
+        const page = parseInt(req.query.page) || 1; // Trang mặc định là 1 nếu không được cung cấp
+        const pageSize = parseInt(req.query.pageSize) || 10; // Số lượng bản ghi hiển thị trên mỗi trang, mặc định là 10
 
-        if (!id) {
-            return res.status(400).json({ msg: 'Vui lòng cung cấp ID hóa đơn' });
+        let foundHoaDon = await HoaDon.findOne({ _id: id });
+
+        if (!foundHoaDon) {
+            return res.json({
+                msg: "hóa đơn không tồn tại"
+            });
         }
 
-        // Lấy danh sách hóa đơn của khách hàng dựa trên ID
-        const danhSachMonDat = await MonDat.find({ idHD: id });
+        // Tính chỉ số bắt đầu và giới hạn cho phân trang
+        const startIndex = (page - 1) * pageSize;
 
-        // Trả về danh sách hóa đơn
+        // Lấy danh sách món đặt theo ID hóa đơn với phân trang
+        const danhSachMonDat = await MonDat.find({ idHD: id }).skip(startIndex).limit(pageSize);
+
+        // Tính toán thông tin về trang
+        const total = await MonDat.countDocuments({ idHD: id });
+        const totalPages = Math.ceil(total / pageSize);
+
+        // Trả về danh sách món đặt cùng với thông tin phân trang
         return {
             data: danhSachMonDat,
-            success: true
+            page,
+            totalPages,
+            total,
+            success: true,
+            msg: "danh sách món đặt"
         };
     } catch (error) {
         console.error(error);
@@ -209,27 +228,6 @@ const getDanhSachMonDatByIdHoaDon = async (req, res, next) => {
     }
 };
 
-// // Cập nhật món đặt
-// const checkTrangThaiMua = async (hoaDonId) => {
-//     try {
-//         // Tìm hóa đơn dựa trên id
-//         const hoaDon = await HoaDon.findById(hoaDonId);
-
-//         // Kiểm tra xem hóa đơn có tồn tại không
-//         if (!hoaDon) {
-//             return { canUpdate: false, message: "Không tìm thấy hóa đơn" };
-//         }
-
-//         // Kiểm tra xem trạng thái mua của hóa đơn có phải là 1 không
-//         if (hoaDon.trangThaiMua === 1) {
-//             return { canUpdate: true, message: "Trạng thái mua của hóa đơn là 1" };
-//         } else {
-//             return { canUpdate: false, message: "Hóa đơn không ở trạng thái mua" };
-//         }
-//     } catch (error) {
-//         return { canUpdate: false, message: "Lỗi khi kiểm tra trạng thái mua của hóa đơn", error };
-//     }
-// };
 
 
 const addMonDatApi = async (req, res, next) => {

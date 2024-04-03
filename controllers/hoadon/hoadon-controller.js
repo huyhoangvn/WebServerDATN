@@ -8,8 +8,8 @@ const moment = require('moment');
 
 const updateHoaDon = async (req, res) => {
     try {
-        const HoaDonId = req.params.id;
-        const item = await HoaDon.findById(HoaDonId);
+        const id = req.params.id;
+        const item = await HoaDon.findById(id);
 
         if (!item) {
             return res.json({ msg: 'Không tìm thấy hóa đơn để cập nhật', dataSave: null });
@@ -101,12 +101,16 @@ const getHoaDon = async (req, res, next) => {
                 $match: filter,
             },
             {
+                $sort: { thoiGianTao: -1 } // Sắp xếp tăng dần theo thời gian tạo, để sắp xếp giảm dần, sử dụng -1
+            },
+            {
                 $project: {
                     "maHD": "$maHD",
                     "thoiGianTao": "$thoiGianTao",
                     "trangThaiThanhToan": "$trangThaiThanhToan",
                     "trangThaiMua": "$trangThaiMua",
                     "tongTien": "$tongTien",
+                    "thoiGianTao": "$thoiGianTao",
                 }
             },
             {
