@@ -13,6 +13,8 @@
     crossorigin="anonymous"></script>
   <script src="https://kit.fontawesome.com/b5123099c5.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
   <!-- <style>
       .sidebar-dark-primary {
         background-color: #030025 !important; /* Change to green color */
@@ -222,12 +224,61 @@
       <div class="container-fluid bg-white m-2">
 
         <!-- Main content nằm ở dây -->
+        <form action="/cua-hang/add" method="post">
+          <h5 class="py-2">Nhập thông tin cửa hàng</h5>
+          <div class="form-group">
+            <label class="form-label">Tiêu Cửa hàng</label>
+            <input type="text" class="form-control" id="tenCH" name="tenCH" placeholder="Nhập tên cửa hàng ">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="text" class="form-control" id="email" name="email" placeholder="Nhập email">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Số điện thoại</label>
+            <input type="text" class="form-control" name="sdt" id="sdt" placeholder="Nhập Số điện thoại">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Địa chỉ</label>
+            <input type="text" class="form-control" name="diaChi" id="diaChi" placeholder="Nhập Địa chỉ">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Thời gian Mở</label>
+            <input type="text" class="form-control" name="thoiGianMo" id="thoiGianMo"
+              placeholder="Nhập thời gian mở cửa (ví dụ 09:00:00)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Thời gian Đóng</label>
+            <input type="text" class="form-control" name="thoiGianDong" id="thoiGianDong"
+              placeholder="Nhập thời gian đóng cửa (ví dụ 23:00:00)">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="hinhAnh">Hình ảnh</label>
+            <div>
+              <input type="file" accept="image/*" class="form-control-file" name="hinhAnh" id="hinhAnh"
+                onchange="previewImage(event)">
+              <span id="fileName" style="display:none;"></span>
+            </div>
+          </div>
+
+          <% if(typeof error==="string" && !(error.trim().length===0)){%>
+            <span class="text-danger">
+              <%= error %>
+            </span>
+            <%}%>
+              <div class="col text-center">
+                <button type="submit" class="btn btn-default btn-dark">Thêm Cửa hàng</button>
+              </div>
+
+        </form>
 
       </div>
     </section>
   </div>
 
   <!-- Scripts -->
+
+
   <script type="text/javascript">
     $(document).ready(function () {
       $(".open").click(function (e) {
@@ -238,6 +289,11 @@
       )
     }
     )
+    function previewImage(event) {
+      var selectedImage = document.getElementById('selectedImage');
+      selectedImage.style.display = 'block';
+      selectedImage.src = URL.createObjectURL(event.target.files[0]);
+    }
   </script>
 </body>
 

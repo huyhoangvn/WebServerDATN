@@ -22,7 +22,7 @@ const addHoaDonApi = async (req, res, next) => {
             return res.status(400).json({ msg: "Khách hàng không tồn tại hoặc không có trạng thái đúng" });
         }
 
-        await HoaDon.create({
+        const saveHD = await HoaDon.create({
             idKH,
             idCH,
             diaChiGiaoHang,
@@ -30,7 +30,11 @@ const addHoaDonApi = async (req, res, next) => {
             trangThai: true,
             trangThaiThanhToan: 0,
         });
-        res.status(201).json({ message: "Thêm mới hóa đơn thành công" });
+        res.status(201).json({
+            index: saveHD,
+            message: "Thêm mới hóa đơn thành công",
+            success: true,
+        });
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Lỗi khi thêm mới hóa đơn", error });
