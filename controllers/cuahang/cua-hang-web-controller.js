@@ -1,7 +1,20 @@
 //Website
 const { model: CuaHang } = require("../../model/CuaHang");
+const { model: NhanVien } = require("../../model/NhanVien");
+const mongo = require('mongoose');
+var CuaHangCtrl = require("../../controllers/cuahang/cuahang-controller");
+
 const getList = async (req, res, next) => {
+    const trang = parseInt( req.query.trang ) || 1;
+    const listCH = await CuaHangCtrl.GetCuaHang(req, res);
+    const soCuaHangTrenTrang = 10; 
+    const soLuongCuaHang = await CuaHangCtrl.GetSoLuongCuaHang(req, res);
+    const totalPages = Math.ceil(soLuongCuaHang.index / soCuaHangTrenTrang);
     res.render("cuahang/danh-sach", {
+        count:soLuongCuaHang.index,
+        totalPages,
+        currentPage:trang,
+        listCH:listCH.index,  
         admin: req.session.ten,
         msg: ""
     })
@@ -65,8 +78,31 @@ const getAdd = async (req, res, next) => {
     }
 }
 
+const chiTietCuaHang = async (req, res, next) => {
+    try {
+        const idCH = new mongo.Types.ObjectId(req.params.idCH);
+        const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
+
+        const NVQL = await NhanVien.find({idCH:idCH, phanQuyen:0});
+        console.log(chiTiet.data.danhSachMonAn.items);
+
+        res.render("cuahang/chi-tiet", {
+            NVQL,
+            chiTietCH:chiTiet.data.cuaHang,
+            monCH:chiTiet.data.danhSachMonAn.items,
+            admin: req.session.ten,
+            msg: ""
+        })
+        // Render view và truyền dữ liệu cần hiển thị vào view
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Đã xảy ra lỗi khi hiển thị chi tiết cửa hàng');
+    }
+}
+
 module.exports = {
     getList,
     getAdd,
-    getAddView
+    getAddView,
+    chiTietCuaHang
 }
