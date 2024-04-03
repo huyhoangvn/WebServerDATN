@@ -860,15 +860,19 @@ const getTatCaNhanVienQuanLy = async (req, res) => {
     if (trang === '') {
       currentPage = 1;
     }
-    const filter = {};
+    const filter = { phanQuyen: 0 };
     if (typeof (req.query.tenNV) !== 'undefined' && req.query.tenNV !== "") {
       filter.tenNV = { $regex: req.query.tenNV, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
     }
-    if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
-      const parts = req.query.thoiGianTao.split('/');
-      const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`; // Chuyển định dạng thành yyyy-mm-dd
-      filter.thoiGianTao = { $gte: new Date(formattedDate) };
+
+
+    if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+      const trangThaiValue = parseInt(req.query.trangThai);
+      if (trangThaiValue === 1 || trangThaiValue === 0) {
+        filter.trangThai = trangThaiValue === 1;
+      }
     }
+
     if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
       const parts = req.query.thoiGianTao.split('/');
       const day = parseInt(parts[0]);
@@ -941,10 +945,15 @@ const getSoLuongNhanVienQuanLy = async (req, res) => {
     if (typeof (req.query.tenNV) !== 'undefined' && req.query.tenNV !== "") {
       filter.tenNV = { $regex: req.query.tenNV, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
     }
-    if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
-      const parts = req.query.thoiGianTao.split('/');
-      const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`; // Chuyển định dạng thành yyyy-mm-dd
-      filter.thoiGianTao = { $gte: new Date(formattedDate) };
+    if (typeof req.query.phanQuyen !== 'undefined' && req.query.phanQuyen !== "") {
+      filter.phanQuyen = 0; // Chỉ lấy nhân viên có phân quyền bằng 0
+    }
+
+    if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+      const trangThaiValue = parseInt(req.query.trangThai);
+      if (trangThaiValue === 1 || trangThaiValue === 0) {
+        filter.trangThai = trangThaiValue === 1;
+      }
     }
     if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
       const parts = req.query.thoiGianTao.split('/');
