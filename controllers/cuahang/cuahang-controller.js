@@ -251,36 +251,36 @@ const GetCuaHang = async (req, res, next) => {
             {
                 $match:
                     timkiem,
-=                },
-                {
-                    $project: {
-                        "tenCH": "$tenCH",
-                        "diaChi": "$diaChi",
-                        "trangThai": "$trangThai",
-                        "idCH": "$_id",
-                        "soLuongNhanVien": { $size: "$NhanViens" }
-                    }
-                },
-                {
-                    $skip: (trang-1)*10,
-                },
-                {
-                    $limit: 10,
-                },
-            ]);
-            const count = await GetSoLuongCuaHang(req,res);
-            return({
-                count:count.index,
-                index: listCH,
-                msg: "get cửa hàng thành công",
-                success: true,
-            });
-        } catch (error) {
-            console.error(error);
-            res.json({success:false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
-        }
+            },
+            {
+                $project: {
+                    "tenCH": "$tenCH",
+                    "diaChi": "$diaChi",
+                    "trangThai": "$trangThai",
+                    "idCH": "$_id",
+                    "soLuongNhanVien": { $size: "$NhanViens" }
+                }
+            },
+            {
+                $skip: (trang - 1) * 10,
+            },
+            {
+                $limit: 10,
+            },
+        ]);
+        const count = await GetSoLuongCuaHang(req, res);
+        return ({
+            count: count.index,
+            index: listCH,
+            msg: "get cửa hàng thành công",
+            success: true,
+        });
+    } catch (error) {
+        console.error(error);
+        res.json({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
     }
 }
+
 const GetSoLuongCuaHang = async (req, res, next) => {
     try {
         let timkiem = {
@@ -367,7 +367,7 @@ const chiTietCuaHangWeb = async (req, res, next) => {
         const item = await CuaHang.findById(idCH);
 
         if (!item) {
-            return({ success: false, msg: "Không tìm thấy cửa hàng" });
+            return ({ success: false, msg: "Không tìm thấy cửa hàng" });
         }
 
         // Step 2: Lấy danh sách nhân viên thuộc cửa hàng và số lượng nhân viên
@@ -382,7 +382,10 @@ const chiTietCuaHangWeb = async (req, res, next) => {
         const pageMonAn = parseInt(req.query.pageMonAn) || 1; // Trang hiện tại
         const limitMonAn = parseInt(req.query.limitMonAn) || 10; // Số lượng món ăn trên mỗi trang
         const skipMonAn = (pageMonAn - 1) * limitMonAn; // Số bản ghi bỏ qua
-        const monAnQuery = Mon.find({ idCH: idCH }).skip(skipMonAn).limit(limitMonAn);
+        const monAnQuery = Mon.find({ idCH: idCH })
+            .populate('idLM') // Populate thông tin từ collection danh mục món
+            .skip(skipMonAn)
+            .limit(limitMonAn);
         const monAn = await monAnQuery.exec();
         const totalMonAn = await Mon.countDocuments({ idCH: idCH });
 
@@ -416,7 +419,16 @@ const chiTietCuaHangWeb = async (req, res, next) => {
                     currentPage: pageMonAn,
                     totalItems: totalMonAn,
                     totalPages: Math.ceil(totalMonAn / limitMonAn),
-                    items: monAn
+                    items: monAn.map(mon => ({
+                        _id: mon._id,
+                        tenMon: mon.tenMon,
+                        giaTien: mon.giaTien,
+                        moTa: mon.moTa,
+                        tenCH: item.tenCH, // Thêm thông tin tên cửa hàng vào đây
+                        tenLM: mon.idLM.tenLM, // Thêm thông tin tên danh mục món vào đây
+                        hinhAnh: `${req.protocol}://${req.get("host")}/public/images/${mon.hinhAnh}`,
+                        trangThai: mon.trangThai
+                    }))
                 }
             }
         }
