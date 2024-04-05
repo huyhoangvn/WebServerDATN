@@ -183,15 +183,15 @@ const deleteHoaDonApi = async (req, res, next) => {
 }
 const getDanhSachHoaDonByIdKhachHangApi = async (req, res, next) => {
     try {
-        const idKhachHang = req.params.id; // Lấy ID của khách hàng từ tham số trong đường dẫn
+        const id = req.params.id; // Lấy ID của khách hàng từ tham số trong đường dẫn
 
         // Kiểm tra tính hợp lệ của ID khách hàng
-        if (!idKhachHang) {
+        if (!id) {
             return res.status(400).json({ msg: 'Vui lòng cung cấp ID khách hàng' });
         }
 
         // Lấy danh sách hóa đơn của khách hàng dựa trên ID
-        const danhSachHoaDon = await HoaDon.find({ idKH: idKhachHang });
+        const danhSachHoaDon = await HoaDon.find({ idKH: id });
 
         // Trả về danh sách hóa đơn
         res.json({
@@ -207,15 +207,15 @@ const getDanhSachHoaDonByIdKhachHangApi = async (req, res, next) => {
 };
 const getDanhSachHoaDonByIdCuaHangApi = async (req, res, next) => {
     try {
-        const idCuaHang = req.params.id; // Lấy ID của khách hàng từ tham số trong đường dẫn
+        const id = req.params.id; // Lấy ID của khách hàng từ tham số trong đường dẫn
 
         // Kiểm tra tính hợp lệ của ID khách hàng
-        if (!idCuaHang) {
+        if (!id) {
             return res.status(400).json({ msg: 'Vui lòng cung cấp ID cửa hàng' });
         }
 
         // Lấy danh sách hóa đơn của khách hàng dựa trên ID
-        const danhSachHoaDon = await HoaDon.find({ idCH: idCuaHang });
+        const danhSachHoaDon = await HoaDon.find({ idCH: id });
 
         // Trả về danh sách hóa đơn
         res.json({

@@ -1,7 +1,17 @@
 //Website
 const { model: CuaHang } = require("../../model/CuaHang");
+var CuaHangCtrl = require("../../controllers/cuahang/cuahang-controller");
 const getList = async (req, res, next) => {
+    const trang = parseInt( req.query.trang ) || 1;
+    const listCH = await CuaHangCtrl.GetCuaHang(req, res);
+    const soCuaHangTrenTrang = 10; 
+    const soLuongCuaHang = await CuaHangCtrl.GetSoLuongCuaHang(req, res);
+    const totalPages = Math.ceil(soLuongCuaHang.index / soCuaHangTrenTrang);
     res.render("cuahang/danh-sach", {
+        count:soLuongCuaHang.index,
+        totalPages,
+        currentPage:trang,
+        listCH:listCH.index,  
         admin: req.session.ten,
         msg: ""
     })

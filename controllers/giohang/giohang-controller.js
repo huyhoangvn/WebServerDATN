@@ -109,7 +109,17 @@ const getGioHangByUserIdApi = async (req, res) => {
 //xóa cứng giỏ hàng
 const deleteGioHang = async (req, res) => {
   try {
-    await GioHang.findByIdAndDelete(req.params.id);
+    const id = req.params.id;
+    let foundGioHang = await GioHang.findOne({ id });
+
+    if (!foundGioHang) {
+      return {
+        msg: "giỏ hàng không tồn tại",
+        success: true,
+      };
+    }
+
+    await GioHang.findByIdAndDelete(id);
     return {
       success: true,
       message: "Xóa giỏ hàng thành công"

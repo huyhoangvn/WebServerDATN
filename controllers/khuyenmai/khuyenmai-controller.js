@@ -75,7 +75,6 @@ const SuaKhuyenMai = async function (req, res) {
     try {
         const idKM = new mongo.Types.ObjectId(req.params.idKM);
         const tieuDe = req.body.tieuDe;
-        const maKhuyenMai = new Date(req.body.maKhuyenMai);
         const ngayBatDau = new Date(req.body.ngayBatDau);
         const ngayHetHan = req.body.ngayHetHan;
         const phanTramKhuyenMai = req.body.phanTramKhuyenMai;
@@ -84,7 +83,6 @@ const SuaKhuyenMai = async function (req, res) {
         const filter = { _id: idKM }
         const update = {
             tieuDe: tieuDe,
-            maKhuyenMai: maKhuyenMai,
             ngayBatDau: ngayBatDau,
             ngayHetHan: ngayHetHan,
             phanTramKhuyenMai: phanTramKhuyenMai,
@@ -97,7 +95,7 @@ const SuaKhuyenMai = async function (req, res) {
                 error: 'Không tìm thấy khuyến mãi để sửa',
                 success: false
             });
-        } else if (tieuDe == "" || maKhuyenMai == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu == "") {
+        } else if (tieuDe == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu == "") {
             return res.status(404).json({
                 error: 'Sửa khuyến mãi lỗi do thiếu thông tin',
                 success: false
