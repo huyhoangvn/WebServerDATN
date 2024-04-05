@@ -9,5 +9,5 @@ const {
 /* GET users listing. */
 router.get("/get-khuyen-mai-theo-id/:idKM", GetKhuyenMaiTheoId);
 
-router.get("/danh-sach-km", getTatCaKhuyenMaiAppApi);
+router.get("/danh-sach", getTatCaKhuyenMaiAppApi);
 module.exports = router;
