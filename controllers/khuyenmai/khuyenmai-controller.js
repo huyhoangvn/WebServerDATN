@@ -606,7 +606,7 @@ const getTatCaKhuyenMaiApp = async (req, res) => {
 
 
         return {
-            data: list,
+            list: list,
             currentPage: currentPage,
             totalItems: totalCount,
             totalPages: totalPages,
@@ -617,7 +617,7 @@ const getTatCaKhuyenMaiApp = async (req, res) => {
     } catch (error) {
         console.error(error);
         return {
-            error: 'Lỗi khi lấy danh sách',
+            msg: 'Lỗi khi lấy danh sách',
             success: false
         };
     }

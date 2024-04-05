@@ -101,7 +101,7 @@ const getAllKhuyenMaiCT = async (req, res, next) => {
         ]);
 
         return {
-            data: result,
+            list: result,
             currentPage: currentPage,
             totalItems: totalCount,
             totalPages: totalPages,
