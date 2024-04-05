@@ -12,7 +12,8 @@ const {
   GetKhuyenMaiTheoNgay,
   GetKhuyenMaiTheoMaKhuyenMai,
   getTatCaKhuyenMai,
-  SuaKhuyenMaiApi
+  SuaKhuyenMaiApi,
+  getTatCaKhuyenMaiApp,
 } = require('../../../controllers/khuyenmai/khuyenmai-controller');
 
 /* GET users listing. */
@@ -72,6 +73,8 @@ router.get("/get-khuyen-mai-theo-id/:idKM", GetKhuyenMaiTheoId);
 router.get("/get-khuyen-mai-theo-ngay", GetKhuyenMaiTheoNgay);
 
 router.get("/get-tat-ca-khuyen-mai", getTatCaKhuyenMai);
+
+router.get("/khuyen-mai", getTatCaKhuyenMaiApp);
 
 
 

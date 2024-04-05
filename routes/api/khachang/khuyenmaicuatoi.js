@@ -5,7 +5,7 @@ var khuyenmaictCtl = require('../../../controllers/khuyenmaicuatoi/khuyen-mai-cu
 
 router.post('/:idKM', khuyenmaictCtl.addKMCuaToiApi);
 router.delete('/:id', khuyenmaictCtl.deleteKhuyenMaiCTApi);
-router.get('/', khuyenmaictCtl.getAllKhuyenMaiCTApi);
+router.get('/danh-sach', khuyenmaictCtl.getAllKhuyenMaiCTApi);
 
 
 module.exports = router;

@@ -62,7 +62,7 @@ const addHoaDonVaMonDat = async (req, res, next) => {
 
             const monObj = await Mon.findOne({ _id: idMon });
             if (!monObj || !monObj.trangThai || monObj.idCH.toString() !== idCH) {
-                // Nếu món không hợp lệ, thực hiện rollback
+                // Nếu món không hợp lệ, xóa luôn món đặt trước đó
                 await HoaDon.findByIdAndDelete(hoaDonId);
                 await MonDat.deleteMany({ idHD: hoaDonId });
                 return res.status(400).json({ msg: 'Các món không cùng cửa hàng, hóa đơn không được tạo thành công' });
