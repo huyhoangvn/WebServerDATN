@@ -3,71 +3,46 @@ const KhachHang = require('../../model/KhachHang')
 
 //Module
 const dangKy = async (req, res, next) => {
-  let msg = ""
-  const taiKhoan = req.body.taiKhoan.toString().trim()
-  const tenKH = req.body.tenKH.toString().trim()
-  const matKhau = req.body.matKhau.toString().trim()
-  const sdt = req.body.sdt.toString().trim()
+  let msg = "";
+  const taiKhoan = req.body.taiKhoan.toString().trim();
+  const tenKH = req.body.tenKH.toString().trim();
+  const matKhau = req.body.matKhau.toString().trim();
 
-
-
-  //Validate khách hàng
-  if (taiKhoan == "") {
-    return {
+  // Validate khách hàng
+  if (taiKhoan === "") {
+    return  res.json({
       success: false,
       msg: "Tài khoản không được để trống"
-    }
+    });
   }
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-  // Kiểm tra xem chuỗi có khớp với định dạng email không
-  if (!emailRegex.test(taiKhoan)) {
-    // Nếu không khớp, có thể thông báo lỗi hoặc xử lý tùy ý
-    console.log("Định dạng tài khoản không hợp lệ.");
-  } else {
-    // Nếu khớp, tiếp tục xử lý
-    console.log("Tài khoản hợp lệ.");
-  }
-  if (matKhau == "") {
-    return {
+  if (matKhau === "") {
+    return res.json({
       success: false,
       msg: "Mật khẩu không được để trống"
+    });
+  }
+
+  try {
+    let foundKhachHang = await KhachHang.model.findOne({ taiKhoan: taiKhoan });
+    if (foundKhachHang) {
+      return  res.json({ success: false, msg: "Khách hàng đã tồn tại" });
     }
-  }
-  if (sdt == "") {
-    return {
-      success: false,
-      msg: "số điện thoại không được để trống"
-    }
-  }
 
-  let foundKhachHang = await KhachHang.model.findOne({
-    taiKhoan: taiKhoan
-  })
-  if (foundKhachHang) {
-    return { msg: "Khách hàng đã tồn tại" }
+    await KhachHang.model.create({
+      taiKhoan: taiKhoan,
+      tenKH: tenKH,
+      matKhau: matKhau,
+      trangThai: true
+    });
+    
+    msg = "Thêm mới tài khoản người dùng thành công";
+    return  res.json({ success: true, msg: msg });
+  } catch (error) {
+    msg = "Thêm mới tài khoản người dùng thất bại";
+    return  res.json({ success: false, msg: msg });
   }
+};
 
-  await KhachHang.model.create({
-    taiKhoan: taiKhoan,
-    tenKH: tenKH,
-    matKhau: matKhau,
-    trangThai: true
-  })
-    .then((response) => {
-      success: true,
-        msg = "Thêm mới tài khoản người dùng thành công"
-
-    })
-    .catch((err) => {
-      success: false,
-        msg = "Thêm mới tài khoản người dùng thất bại"
-    })
-
-  return {
-    msg: msg
-  }
-}
 
 //đăng nhập
 
@@ -286,10 +261,44 @@ const deleteKhachHang = async (req, res) => {
 
 
 
+
+// supprot nếu lỗi 
+// TypeError: Converting circular structure to JSON
+// --> starting at object with constructor 'Socket'
+// |     property 'parser' -> object with constructor 'HTTPParser'
+// --- property 'socket' closes the circle
+// at JSON.stringify (<anonymous>)
+// at dangKyApi (/Users/lovanquyet/Desktop/DATN_FPOLY/Project/food-center-sever/controllers/khachhang/khachhang-controller.js:266:16)
+// at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+function removeCircular(obj) {
+  const seen = new WeakSet();
+  return JSON.stringify(obj, function(key, value) {
+      if (typeof value === "object" && value !== null) {
+          if (seen.has(value)) {
+              return;
+          }
+          seen.add(value);
+      }
+      return value;
+  });
+}
+
+
 //Api
 const dangKyApi = async (req, res, next) => {
-  res.end(JSON.stringify(await dangKy(req, res, next)))
-}
+  try {
+      const result = await dangKy(req, res, next);
+
+      const jsonResult = removeCircular(result);
+
+      res.end(JSON.stringify(jsonResult));
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ success: false, msg: "Có lỗi xảy ra trong quá trình xử lý" });
+  }
+};
+
 
 const getKhachHangTheoTenApi = async (req, res) => {
   const result = await getKhachHangTheoTen(req, res);
