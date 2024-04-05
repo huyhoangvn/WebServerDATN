@@ -40,14 +40,8 @@ const addHoaDonVaMonDat = async (req, res, next) => {
             return res.json({ msg: 'Khách hàng không tồn tại hoặc không hoạt động', success: false });
         }
 
-        const khachHang1 = await KhachHang.findById(idKH);
-        if (!khachHang1 || !khachHang1.sdt) {
+        if (!khachHang || !khachHang.sdt) {
             return res.json({ msg: 'khánh hàng vui lòng nhập số điện thoại', success: false });
-        }
-
-        const khachHang2 = await KhachHang.findById(idKH);
-        if (!khachHang2 || !khachHang2.diaChiGiaoHang) {
-            return res.json({ msg: 'Khách hàng vui lòng nhập địa chỉ', success: false });
         }
 
         // Kiểm tra cửa hàng
