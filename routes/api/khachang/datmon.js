@@ -12,4 +12,5 @@ router.delete('/:id', datmonCtrl.deleteMonDatApi);
 //sua 
 router.put('/:id', datmonCtrl.updateMonDatApi);
 
+router.post('/', datmonCtrl.addHoaDonVaMonDat);
 module.exports = router;
