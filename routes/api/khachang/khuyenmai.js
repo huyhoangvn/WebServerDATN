@@ -1,9 +1,13 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+const {
+  GetKhuyenMaiTheoId,
+  getTatCaKhuyenMaiAppApi,
+} = require('../../../controllers/khuyenmai/khuyenmai-controller');
 
+/* GET users listing. */
+router.get("/get-khuyen-mai-theo-id/:idKM", GetKhuyenMaiTheoId);
+
+router.get("/danh-sach", getTatCaKhuyenMaiAppApi);
 module.exports = router;

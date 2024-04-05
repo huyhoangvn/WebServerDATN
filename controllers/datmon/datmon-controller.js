@@ -1,8 +1,131 @@
 const { model: MonDat } = require("../../model/MonDat");
 const { model: HoaDon } = require("../../model/HoaDon");
 const { model: Mon } = require("../../model/Mon");
+const { model: KhuyenMai } = require("../../model/KhuyenMai");
+const { model: KhachHang } = require("../../model/KhachHang");
+const { model: CuaHang } = require("../../model/CuaHang");
 const mongoose = require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;
+const mongo = mongoose.Types.ObjectId;
+
+const addHoaDonVaMonDat = async (req, res, next) => {
+    let hoaDonId = null; // Biến để lưu ID của hóa đơn, để sử dụng trong trường hợp cần xóa
+
+    try {
+        let idKM = "";
+        let phanTramKhuyenMaiDat = 0;
+        try {
+            idKH = new mongo.Types.ObjectId(req.body.idKM)
+            // Kiểm tra khuyến mãi
+            const khuyenMai = await KhuyenMai.findById(idKM);
+            if (!khuyenMai || !khuyenMai.trangThai) {
+                return res.json({ msg: 'Khuyến mãi không tồn tại hoặc không hoạt động', success: false });
+            }
+
+            if (!khuyenMai) {
+                return res.json({ msg: 'Không tìm thấy thông tin khuyến mãi', success: false });
+            }
+
+            phanTramKhuyenMaiDat = khuyenMai.phanTramKhuyenMai;
+        } catch (e) {
+
+        }
+        const { idCH, diaChiGiaoHang, list, idKH } = req.body;
+
+        if (!idKH || !idCH || !diaChiGiaoHang || !list) {
+            return res.json({ msg: 'Vui lòng điền đầy đủ thông tin', success: false });
+        }
+        // Kiểm tra khách hàng
+        const khachHang = await KhachHang.findById(idKH);
+        if (!khachHang || !khachHang.trangThai) {
+            return res.json({ msg: 'Khách hàng không tồn tại hoặc không hoạt động', success: false });
+        }
+
+        const khachHang1 = await KhachHang.findById(idKH);
+        if (!khachHang1 || !khachHang1.sdt) {
+            return res.json({ msg: 'khánh hàng vui lòng nhập số điện thoại', success: false });
+        }
+
+        const khachHang2 = await KhachHang.findById(idKH);
+        if (!khachHang2 || !khachHang2.diaChiGiaoHang) {
+            return res.json({ msg: 'Khách hàng vui lòng nhập địa chỉ', success: false });
+        }
+
+        // Kiểm tra cửa hàng
+        const cuaHang = await CuaHang.findById(idCH);
+        if (!cuaHang || !cuaHang.trangThai) {
+            return res.json({ msg: 'Cửa hàng không tồn tại hoặc không hoạt động', success: false });
+        }
+
+        // Tạo hóa đơn
+        const hoaDon = await HoaDon.create({
+            idKH,
+            idCH,
+            diaChiGiaoHang,
+            trangThaiMua: 0,
+            trangThai: true,
+            trangThaiThanhToan: 0,
+            phanTramKhuyenMaiDat,
+            tongTien: 0 // Khởi tạo tổng tiền ban đầu là 0
+        });
+
+        hoaDonId = hoaDon._id; // Lưu ID của hóa đơn
+
+        let tongTien = 0;
+
+        const monDatList = [];
+        for (const mon of list) {
+            const { idMon, soLuong } = mon;
+
+            const monObj = await Mon.findOne({ _id: idMon });
+            if (!monObj || !monObj.trangThai || monObj.idCH.toString() !== idCH) {
+                // Nếu món không hợp lệ, xóa luôn món đặt trước đó
+                await HoaDon.findByIdAndDelete(hoaDonId);
+                await MonDat.deleteMany({ idHD: hoaDonId });
+                return res.json({ msg: 'Các món không cùng cửa hàng, hóa đơn không được tạo thành công', success: false });
+            }
+
+            const giaTienDat = monObj.giaTien;
+            tongTien += giaTienDat * soLuong;
+
+            const monDat = await MonDat.create({
+                idHD: hoaDonId, // Sử dụng ID của hóa đơn
+                idMon,
+                giaTienDat,
+                soLuong
+            });
+
+            monDatList.push({
+                idMon: mon.idMon,
+                giaTien: monObj.giaTien,
+                soLuong: mon.soLuong,
+                tenMon: monObj.tenMon
+            });
+        }
+
+        // Nếu không có lỗi, cập nhật tổng tiền vào hóa đơn
+        await HoaDon.findByIdAndUpdate(hoaDonId, { tongTien }, { new: true });
+
+        res.status(201).json({
+            hoaDon: {
+                idHD: hoaDonId,
+                idKH,
+                idCH,
+                diaChiGiaoHang,
+                idKM,
+                phanTramKhuyenMaiDat,
+                tongTien
+            },
+            monDat: monDatList,
+            message: "Thêm mới hóa đơn và món đặt thành công",
+            success: true,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Lỗi khi thêm mới hóa đơn và món đặt", error });
+    }
+}
+
+
 
 
 // Thêm mới món đặt
@@ -321,4 +444,5 @@ module.exports = {
     updateMonDatApi,
     getDanhSachMonDatByIdHoaDonApi,
     deleteMonDatMemApi,
+    addHoaDonVaMonDat
 };
