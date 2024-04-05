@@ -7,6 +7,7 @@ const dangKy = async (req, res, next) => {
   const taiKhoan = req.body.taiKhoan.toString().trim()
   const tenKH = req.body.tenKH.toString().trim()
   const matKhau = req.body.matKhau.toString().trim()
+  const sdt = req.body.sdt.toString().trim()
 
 
 
@@ -17,10 +18,26 @@ const dangKy = async (req, res, next) => {
       msg: "Tài khoản không được để trống"
     }
   }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Kiểm tra xem chuỗi có khớp với định dạng email không
+  if (!emailRegex.test(taiKhoan)) {
+    // Nếu không khớp, có thể thông báo lỗi hoặc xử lý tùy ý
+    console.log("Định dạng tài khoản không hợp lệ.");
+  } else {
+    // Nếu khớp, tiếp tục xử lý
+    console.log("Tài khoản hợp lệ.");
+  }
   if (matKhau == "") {
     return {
       success: false,
       msg: "Mật khẩu không được để trống"
+    }
+  }
+  if (sdt == "") {
+    return {
+      success: false,
+      msg: "số điện thoại không được để trống"
     }
   }
 

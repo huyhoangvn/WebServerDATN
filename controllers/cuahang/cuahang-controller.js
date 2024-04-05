@@ -1,5 +1,7 @@
 const { model: CuaHang } = require("../../model/CuaHang");
 const { model: NhanVien } = require("../../model/NhanVien");
+const { model: Mon } = require("../../model/Mon");
+const mongo = require('mongoose');
 
 const moment = require('moment');
 
@@ -255,6 +257,7 @@ const GetCuaHang = async (req, res, next) => {
                     "tenCH": "$tenCH",
                     "diaChi": "$diaChi",
                     "trangThai": "$trangThai",
+                    "idCH": "$_id",
                     "soLuongNhanVien": { $size: "$NhanViens" }
                 }
             },
@@ -277,6 +280,7 @@ const GetCuaHang = async (req, res, next) => {
         res.json({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
     }
 }
+
 const GetSoLuongCuaHang = async (req, res, next) => {
     try {
         let timkiem = {
@@ -357,30 +361,33 @@ const huyKichHoatCuaHang = async (req, res, next) => {
 
 const chiTietCuaHangWeb = async (req, res, next) => {
     try {
-        const id = req.params.id;
+        const idCH = new mongo.Types.ObjectId(req.params.idCH);
 
         // Step 1: Lấy thông tin cửa hàng từ cơ sở dữ liệu
-        const item = await CuaHang.findById(id);
+        const item = await CuaHang.findById(idCH);
 
         if (!item) {
-            return res.json({ success: false, msg: "Không tìm thấy cửa hàng" });
+            return ({ success: false, msg: "Không tìm thấy cửa hàng" });
         }
 
         // Step 2: Lấy danh sách nhân viên thuộc cửa hàng và số lượng nhân viên
         const pageNhanVien = parseInt(req.query.pageNhanVien) || 1; // Trang hiện tại
         const limitNhanVien = parseInt(req.query.limitNhanVien) || 10; // Số lượng nhân viên trên mỗi trang
         const skipNhanVien = (pageNhanVien - 1) * limitNhanVien; // Số bản ghi bỏ qua
-        const nhanVienQuery = NhanVien.find({ idCH: id }).skip(skipNhanVien).limit(limitNhanVien);
+        const nhanVienQuery = NhanVien.find({ idCH: idCH }).skip(skipNhanVien).limit(limitNhanVien);
         const nhanVien = await nhanVienQuery.exec();
-        const totalNhanVien = await NhanVien.countDocuments({ idCH: id });
+        const totalNhanVien = await NhanVien.countDocuments({ idCH: idCH });
 
         // Step 3: Lấy danh sách món ăn thuộc cửa hàng
         const pageMonAn = parseInt(req.query.pageMonAn) || 1; // Trang hiện tại
         const limitMonAn = parseInt(req.query.limitMonAn) || 10; // Số lượng món ăn trên mỗi trang
         const skipMonAn = (pageMonAn - 1) * limitMonAn; // Số bản ghi bỏ qua
-        const monAnQuery = Mon.find({ idCH: id }).skip(skipMonAn).limit(limitMonAn);
+        const monAnQuery = Mon.find({ idCH: idCH })
+            .populate('idLM') // Populate thông tin từ collection danh mục món
+            .skip(skipMonAn)
+            .limit(limitMonAn);
         const monAn = await monAnQuery.exec();
-        const totalMonAn = await Mon.countDocuments({ idCH: id });
+        const totalMonAn = await Mon.countDocuments({ idCH: idCH });
 
 
 
@@ -412,7 +419,16 @@ const chiTietCuaHangWeb = async (req, res, next) => {
                     currentPage: pageMonAn,
                     totalItems: totalMonAn,
                     totalPages: Math.ceil(totalMonAn / limitMonAn),
-                    items: monAn
+                    items: monAn.map(mon => ({
+                        _id: mon._id,
+                        tenMon: mon.tenMon,
+                        giaTien: mon.giaTien,
+                        moTa: mon.moTa,
+                        tenCH: item.tenCH, // Thêm thông tin tên cửa hàng vào đây
+                        tenLM: mon.idLM.tenLM, // Thêm thông tin tên danh mục món vào đây
+                        hinhAnh: `${req.protocol}://${req.get("host")}/public/images/${mon.hinhAnh}`,
+                        trangThai: mon.trangThai
+                    }))
                 }
             }
         }
@@ -569,6 +585,10 @@ module.exports = {
     kichHoatCuaHangApi,
     huyKichHoatCuaHangApi,
     getCuaHangCuaHangApi,
+    chiTietCuaHangAppApi,
+    chiTietCuaHangWebApi,
+    chiTietCuaHangWeb,
+    // chiTietCuaHangApi,
     getCuaHang,
     GetCuaHang,
     GetSoLuongCuaHang,

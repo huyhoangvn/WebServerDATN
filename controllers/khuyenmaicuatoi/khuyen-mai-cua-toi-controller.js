@@ -33,9 +33,42 @@ const addKMCuaToi = async (req, res, next) => {
     }
 }
 
-const getAllKhuyenMaiCT = async (req, res) => {
+const getAllKhuyenMaiCT = async (req, res, next) => {
     try {
+        const page = parseInt(req.query.trang) || 1;
+        const limit = 10; // Số lượng phần tử trên mỗi trang
+        const timkiem = {};
+
+        if (typeof (req.query.tieuDe) !== 'undefined' && req.query.tieuDe !== "") {
+            timkiem.tieuDe = { $regex: req.query.tieuDe, $options: 'i' };
+        }
+        if (typeof (req.query.ngayBatDau) !== 'undefined' && req.query.ngayBatDau !== "") {
+            const parts = req.query.ngayBatDau.split('/');
+            const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            timkiem.ngayBatDau = { $gte: new Date(formattedDate) };
+        }
+
+        if (typeof (req.query.ngayHetHan) !== 'undefined' && req.query.ngayHetHan !== "") {
+            const parts = req.query.ngayHetHan.split('/');
+            const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            timkiem.ngayHetHan = { $lte: new Date(formattedDate) };
+        }
+
+        if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+            const trangThaiValue = parseInt(req.query.trangThai);
+            if (trangThaiValue === 1 || trangThaiValue === 0) {
+                timkiem.trangThai = trangThaiValue === 1;
+            }
+        }
+
+        const totalCount = await KhuyenMaiCuaToi.countDocuments(timkiem);
+        const totalPages = Math.ceil(totalCount / limit);
+        const currentPage = Math.min(page, totalPages);
+
         const result = await KhuyenMaiCuaToi.aggregate([
+            {
+                $match: timkiem,
+            },
             {
                 $lookup: {
                     from: "KhuyenMai",
@@ -45,30 +78,42 @@ const getAllKhuyenMaiCT = async (req, res) => {
                 }
             },
             {
-                $unwind: "$km"
+                $addFields: {
+                    trangThaiKM: { $cond: { if: { $isArray: "$km" }, then: true, else: false } }
+                }
             },
             {
                 $project: {
-                    _id: 1,
-                    idKM: 1,
-                    tieuDe: "$km.tieuDe",
-                    ngayBatDau: "$km.ngayBatDau",
-                    ngayHetHan: "$km.ngayHetHan",
-                    phanTramKhuyenMai: "$km.phanTramKhuyenMai",
-                    donToiThieu: "$km.donToiThieu",
+                    tieuDe: { $arrayElemAt: ["$km.tieuDe", 0] },
+                    ngayBatDau: { $arrayElemAt: ["$km.ngayBatDau", 0] },
+                    ngayHetHan: { $arrayElemAt: ["$km.ngayHetHan", 0] },
+                    phanTramKhuyenMai: { $arrayElemAt: ["$km.phanTramKhuyenMai", 0] },
+                    donToiThieu: { $arrayElemAt: ["$km.donToiThieu", 0] },
+                    trangThaiKM: 1
                 }
-            }
+            },
+            {
+                $skip: (currentPage - 1) * limit, // Bỏ qua các bản ghi trước khi trang hiện tại
+            },
+            {
+                $limit: limit, // Giới hạn số lượng bản ghi trên mỗi trang
+            },
         ]);
 
         return {
             data: result,
+            currentPage: currentPage,
+            totalItems: totalCount,
+            totalPages: totalPages,
             success: true,
-            msg: "thành công"
-        }
+            msg: "lấy danh sách thành công"
+        };
     } catch (error) {
         res.status(500).json({ message: "Lỗi khi lấy danh sách Khuyến mãi", error });
     }
 };
+
+
 
 const deleteKhuyenMaiCT = async (req, res) => {
     try {
@@ -105,6 +150,7 @@ const addKMCuaToiApi = async (req, res, next) => {
 const getAllKhuyenMaiCTApi = async (req, res, next) => {
     try {
         const result = await getAllKhuyenMaiCT(req, res, next);
+        console.log(result);
         if (!res.headersSent) {
             // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi
             res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
