@@ -41,21 +41,31 @@ const dangNhap = async(req, res, next)=>{
 
     //Nếu người dùng tồn tại
     if(foundKhachHang){
-        let loginResult = await Admin.model.findOne({
-            taiKhoan: taiKhoan,
-            matKhau: matKhau,
-            trangThai: 1
-        }).then((loginResult)=>{
+        let loginResult = await Admin.model.aggregate([
+            {
+                $match: {
+                    taiKhoan: taiKhoan,
+                    matKhau: matKhau,
+                    trangThai: 1
+                }
+            }
+        ]);        
+        console.log(loginResult.length)
+        if(loginResult.length > 0){
             success = true,
-            msg = "Đăng nhập thành công"
             index = {
                 id: loginResult.id,
                 ten: loginResult.ten
             }
-        })
-        .catch((e)=>{
+            msg = "Đăng nhập thành công"
+            return {
+                index : index,
+                success: success,
+                msg: msg
+            }
+        } else {
             msg = "Đăng nhập thất bại"
-        })
+        }
     } else {
         msg = "Tài khoản không tồn tại"
     }

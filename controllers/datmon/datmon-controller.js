@@ -5,40 +5,50 @@ const { model: KhuyenMai } = require("../../model/KhuyenMai");
 const { model: KhachHang } = require("../../model/KhachHang");
 const { model: CuaHang } = require("../../model/CuaHang");
 const mongoose = require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;
+const mongo = mongoose.Types.ObjectId;
 
 const addHoaDonVaMonDat = async (req, res, next) => {
     let hoaDonId = null; // Biến để lưu ID của hóa đơn, để sử dụng trong trường hợp cần xóa
 
     try {
-        const { idKH, idCH, diaChiGiaoHang, list, idKM } = req.body;
+        let idKM = "";
+        let phanTramKhuyenMaiDat = 0;
+        try {
+            idKH = new mongo.Types.ObjectId(req.body.idKM)
+            // Kiểm tra khuyến mãi
+            const khuyenMai = await KhuyenMai.findById(idKM);
+            if (!khuyenMai || !khuyenMai.trangThai) {
+                return res.json({ msg: 'Khuyến mãi không tồn tại hoặc không hoạt động', success: false });
+            }
 
-        if (!idKH || !idCH || !diaChiGiaoHang || !list || !idKM) {
-            return res.status(400).json({ msg: 'Vui lòng điền đầy đủ thông tin' });
+            if (!khuyenMai) {
+                return res.json({ msg: 'Không tìm thấy thông tin khuyến mãi', success: false });
+            }
+
+            phanTramKhuyenMaiDat = khuyenMai.phanTramKhuyenMai;
+        } catch (e) {
+
+        }
+        const { idCH, diaChiGiaoHang, list, idKH } = req.body;
+
+        if (!idKH || !idCH || !diaChiGiaoHang || !list) {
+            return res.json({ msg: 'Vui lòng điền đầy đủ thông tin', success: false });
         }
         // Kiểm tra khách hàng
         const khachHang = await KhachHang.findById(idKH);
         if (!khachHang || !khachHang.trangThai) {
-            return res.status(400).json({ msg: 'Khách hàng không tồn tại hoặc không hoạt động' });
+            return res.json({ msg: 'Khách hàng không tồn tại hoặc không hoạt động', success: false });
+        }
+
+        if (!khachHang || !khachHang.sdt) {
+            return res.json({ msg: 'khánh hàng vui lòng nhập số điện thoại', success: false });
         }
 
         // Kiểm tra cửa hàng
         const cuaHang = await CuaHang.findById(idCH);
         if (!cuaHang || !cuaHang.trangThai) {
-            return res.status(400).json({ msg: 'Cửa hàng không tồn tại hoặc không hoạt động' });
+            return res.json({ msg: 'Cửa hàng không tồn tại hoặc không hoạt động', success: false });
         }
-
-        // Kiểm tra khuyến mãi
-        const khuyenMai = await KhuyenMai.findById(idKM);
-        if (!khuyenMai || !khuyenMai.trangThai) {
-            return res.status(400).json({ msg: 'Khuyến mãi không tồn tại hoặc không hoạt động' });
-        }
-
-        if (!khuyenMai) {
-            return res.status(400).json({ msg: 'Không tìm thấy thông tin khuyến mãi' });
-        }
-
-        const phanTramKhuyenMaiDat = khuyenMai.phanTramKhuyenMai || 0;
 
         // Tạo hóa đơn
         const hoaDon = await HoaDon.create({
@@ -65,7 +75,7 @@ const addHoaDonVaMonDat = async (req, res, next) => {
                 // Nếu món không hợp lệ, xóa luôn món đặt trước đó
                 await HoaDon.findByIdAndDelete(hoaDonId);
                 await MonDat.deleteMany({ idHD: hoaDonId });
-                return res.status(400).json({ msg: 'Các món không cùng cửa hàng, hóa đơn không được tạo thành công' });
+                return res.json({ msg: 'Các món không cùng cửa hàng, hóa đơn không được tạo thành công', success: false });
             }
 
             const giaTienDat = monObj.giaTien;

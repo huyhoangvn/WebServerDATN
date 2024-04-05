@@ -1,4 +1,5 @@
 const { model: GioHang } = require("../../model/GioHang");
+const { model: KhachHang } = require("../../model/KhachHang");
 const mongo = require('mongoose');
 
 
@@ -99,8 +100,17 @@ const getAllGioHang = async (req, res) => {
 const getGioHangByUserIdApi = async (req, res) => {
   try {
     const { idKH } = req.params;
+    const khachHang = await KhachHang.findById(idKH);
+    if (!khachHang || !khachHang.trangThai) {
+      return res.json({ msg: 'Khách hàng không tồn tại hoặc không hoạt động', success: false });
+    }
+
     const gioHangList = await GioHang.find({ idKH });
-    res.status(200).json(gioHangList);
+    return res.status(200).json({
+      list: gioHangList,
+      success: true,
+      msg: "lấy danh sách thành công"
+    });
   } catch (error) {
     res.status(500).json({ message: "Lỗi khi lấy giỏ hàng của khách hàng", error });
   }
