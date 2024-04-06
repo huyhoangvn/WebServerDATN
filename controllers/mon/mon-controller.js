@@ -132,14 +132,14 @@ const deletemonapi = async (req, res) => {
     );
     // Kiểm tra nếu không tìm thấy nhân viên
     if (!updatedNhanVien) {
-      return res.status(404).json({ error: "Không tìm thấy nhân viên" });
+      return res.json({ error: "Không tìm thấy nhân viên" });
     }
-    res.status(200).json({
+    res.json({
       msg: "Đã cập nhật trạng thái thành công",
       data: updatedNhanVien,
     });
   } catch (e) {
-    res.status(500).json({
+    res.json({
       success: false,
       msg: e.msg || "Đã xảy ra lỗi khi cập nhật trạng thái nhân viên",
     });
@@ -469,7 +469,7 @@ const getMonCuaCuaHang = async (req, res) => {
       },
     ])
 
-    res.status(200).json({
+    res.json({
       count: list.length,
       list: list,
       msg: 'Get món của cửa hàng thành công',
@@ -478,7 +478,7 @@ const getMonCuaCuaHang = async (req, res) => {
     });
   } catch (error) {
 
-    res.status(500).json({
+    res.json({
       msg: 'Lỗi khi lấy món của cửa hàng',
       success: false
     });
@@ -586,7 +586,7 @@ const getMonCuaLoaiMon = async (req, res) => {
       },
     ])
 
-    res.status(200).json({
+    res.json({
       count: list.length,
       list: list,
       msg: 'Get món của loại món thành công',
@@ -595,7 +595,7 @@ const getMonCuaLoaiMon = async (req, res) => {
     });
   } catch (error) {
 
-    res.status(500).json({
+    res.json({
       msg: 'Lỗi khi lấy món của loại món',
       success: false
     });
@@ -686,7 +686,7 @@ const updatemon = async (req, res) => {
     });
 
   } catch (error) {
-    res.status(500).json({
+    res.json({
       msg: "Lỗi khi sửa món",
       error,
       success: false,
@@ -720,14 +720,14 @@ const getMonTheoid = async (req, res) => {
       tenCH: cuaHang.tenCH,
       tenLM: loaiMon.tenLM
     }
-    res.status(200).json({
+    res.json({
       index,
       msg: "Get món theo id thành công",
       success: true,
     });
   } catch (error) {
 
-    res.status(500).json({
+    res.json({
       msg: "Lỗi khi lấy món theo id",
       success: false,
     });
@@ -746,15 +746,15 @@ const kichhoatMon = async (req, res, next) => {
       { new: true }
     );
     if (!kichhoat) {
-      return res.status(404).json({ error: "Không tìm thấy loại món" });
+      return res.json({ error: "Không tìm thấy loại món" });
     }
-    res.status(200).json({
+    res.json({
       msg: "đã kích hoạt cửa hàng",
       data: kichhoat,
       success: true,
     });
   } catch (error) {
-    res.status(500).json({ success: false, msg: "Lỗi kích hoạt món", error: error });
+    res.json({ success: false, msg: "Lỗi kích hoạt món", error: error });
   }
 };
 module.exports = {

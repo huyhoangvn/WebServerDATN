@@ -10,7 +10,7 @@ const dangKy = async (req, res, next) => {
 
   // Validate khách hàng
   if (taiKhoan === "") {
-    return  res.json({
+    return res.json({
       success: false,
       msg: "Tài khoản không được để trống"
     });
@@ -25,7 +25,7 @@ const dangKy = async (req, res, next) => {
   try {
     let foundKhachHang = await KhachHang.model.findOne({ taiKhoan: taiKhoan });
     if (foundKhachHang) {
-      return  res.json({ success: false, msg: "Khách hàng đã tồn tại" });
+      return res.json({ success: false, msg: "Khách hàng đã tồn tại" });
     }
 
     await KhachHang.model.create({
@@ -34,12 +34,12 @@ const dangKy = async (req, res, next) => {
       matKhau: matKhau,
       trangThai: true
     });
-    
+
     msg = "Thêm mới tài khoản người dùng thành công";
-    return  res.json({ success: true, msg: msg });
+    return res.json({ success: true, msg: msg });
   } catch (error) {
     msg = "Thêm mới tài khoản người dùng thất bại";
-    return  res.json({ success: false, msg: msg });
+    return res.json({ success: false, msg: msg });
   }
 };
 
@@ -68,26 +68,26 @@ const dangNhap = async (req, res) => {
     const khachHang = await KhachHang.model.findOne({ taiKhoan });
 
     if (!khachHang) {
-      return res.status(401).json({
+      return res.json({
         success: false,
         successMessage: 'Tài khoản không tồn tại.'
       });
     }
 
     if (matKhau !== khachHang.matKhau) {
-      return res.status(401).json({
+      return res.json({
         success: false,
         message: 'Mật khẩu không đúng.'
       });
     }
 
-    return res.status(200).json({
+    return res.json({
       success: true,
       successMessage: 'Đăng nhập thành công.', khachHang
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ successMessage: 'Lỗi server.' });
+    res.json({ successMessage: 'Lỗi server.' });
   }
 }
 
@@ -273,14 +273,14 @@ const deleteKhachHang = async (req, res) => {
 
 function removeCircular(obj) {
   const seen = new WeakSet();
-  return JSON.stringify(obj, function(key, value) {
-      if (typeof value === "object" && value !== null) {
-          if (seen.has(value)) {
-              return;
-          }
-          seen.add(value);
+  return JSON.stringify(obj, function (key, value) {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return;
       }
-      return value;
+      seen.add(value);
+    }
+    return value;
   });
 }
 
@@ -288,14 +288,14 @@ function removeCircular(obj) {
 //Api
 const dangKyApi = async (req, res, next) => {
   try {
-      const result = await dangKy(req, res, next);
+    const result = await dangKy(req, res, next);
 
-      const jsonResult = removeCircular(result);
+    const jsonResult = removeCircular(result);
 
-      res.end(JSON.stringify(jsonResult));
+    res.end(JSON.stringify(jsonResult));
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, msg: "Có lỗi xảy ra trong quá trình xử lý" });
+    console.error(error);
+    res.status(500).json({ success: false, msg: "Có lỗi xảy ra trong quá trình xử lý" });
   }
 };
 

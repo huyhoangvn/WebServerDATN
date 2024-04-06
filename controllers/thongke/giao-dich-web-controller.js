@@ -1,5 +1,5 @@
 //Website
-const getView =  async (req, res, next)=>{
+const getView = async (req, res, next) => {
     res.render("thongke/giao-dich", {
         admin: req.session.ten,
         msg: ""

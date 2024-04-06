@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const LoaiMonSchema = new db.mongodb.Schema(
     {
-        tenLM: { type: String, default: "N/A" },
+        tenLM: { type: String, default: "" },
         trangThai: { type: Boolean, default: true }
     }, { collection: 'LoaiMon' }
 );

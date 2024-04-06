@@ -9,9 +9,9 @@ router.get('/', hoadonctrl.getHoaDonApi);
 
 router.get('/:id', hoadonctrl.chiTietHoaDonApi);
 
-router.get('/khach-hang/:idKH', hoadonctrl.getDanhSachHoaDonByIdKhachHangApi);
+router.get('/khachhang/:idKH', hoadonctrl.getDanhSachHoaDonByIdKhachHangApi);
 
-router.get('/cua-hang/:idCH', hoadonctrl.getDanhSachHoaDonByIdCuaHangApi);
+router.get('/cuahang/:idCH', hoadonctrl.getDanhSachHoaDonByIdCuaHangApi);
 // delete 
 router.post('/delete/:id', hoadonctrl.deleteHoaDonApi);
 //update
