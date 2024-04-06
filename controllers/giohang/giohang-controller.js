@@ -12,7 +12,7 @@ const addGioHang = async (req, res, next) => {
   let foundGioHang = await GioHang.findOne({ idMon });
 
   if (foundGioHang) {
-    return res.status(400).json({
+    return res.json({
       msg: "Món đã tồn tại trong giỏ hàng"
     });
   }
@@ -38,6 +38,9 @@ const addGioHang = async (req, res, next) => {
 
 //lấy danh sách giỏ hàng
 const getAllGioHang = async (req, res) => {
+  const trang = parseInt(req.query.trang) || 1; // Trang hiện tại, mặc định là trang 1 nếu không có truy vấn currentPage
+  const itemsPerPage = 10; // Số lượng mục trên mỗi trang
+
   try {
     const gioHangList = await GioHang.aggregate([
       {
@@ -83,16 +86,32 @@ const getAllGioHang = async (req, res) => {
           tenCH: "$cuaHang.tenCH",
           tenLM: "$loaiMon.tenLM"
         }
-      }
+      },
+      {
+        $skip: (trang - 1) * trang
+      },
+      {
+        $limit: itemsPerPage
+      },
+
     ]);
 
-    return {
-      data: gioHangList,
+    // Tính toán tổng số trang
+    const totalCount = gioHangList.length;
+    const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+    // Lấy danh sách giỏ hàng cho trang hiện tại
+
+    return res.json({
+      list: gioHangList,
+      trang,
+      totalPages,
+      totalCount,
       success: true,
-      msg: "thành công"
-    }
+      msg: "Thành công"
+    });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi khi lấy danh sách giỏ hàng", error });
+    res.json({ message: "Lỗi khi lấy danh sách giỏ hàng", error });
   }
 };
 
@@ -106,13 +125,13 @@ const getGioHangByUserIdApi = async (req, res) => {
     }
 
     const gioHangList = await GioHang.find({ idKH });
-    return res.status(200).json({
+    return res.json({
       list: gioHangList,
       success: true,
       msg: "lấy danh sách thành công"
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi khi lấy giỏ hàng của khách hàng", error });
+    res.json({ message: "Lỗi khi lấy giỏ hàng của khách hàng", error });
   }
 };
 
@@ -135,7 +154,7 @@ const deleteGioHang = async (req, res) => {
       message: "Xóa giỏ hàng thành công"
     };
   } catch (error) {
-    res.status(500).json({
+    res.json({
       message: "Lỗi khi xóa giỏ hàng", error
     });
   }
@@ -172,7 +191,7 @@ const deleteGioHangApi = async (req, res, next) => {
   } catch (error) {
     // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
     if (!res.headersSent) {
-      res.status(500).json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
+      res.json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
     } else {
       console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
     }
@@ -190,7 +209,7 @@ const getAllGioHangApi = async (req, res, next) => {
   } catch (error) {
     // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
     if (!res.headersSent) {
-      res.status(500).json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
+      res.json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
     } else {
       console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
     }
