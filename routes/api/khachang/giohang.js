@@ -6,5 +6,5 @@ var GioHangCtrl = require("../../../controllers/giohang/giohang-controller");
 router.post('/', GioHangCtrl.addGioHangApi);
 router.delete('/detele/:id', GioHangCtrl.deleteGioHangApi);
 router.get('/', GioHangCtrl.getAllGioHangApi);
-router.get('/get-gio-hang-by-id/:idKH', GioHangCtrl.getGioHangByUserIdApi);
+router.get('/:idKH', GioHangCtrl.getGioHangByUserIdApi);
 module.exports = router;

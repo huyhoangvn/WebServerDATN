@@ -41,18 +41,28 @@ const dangNhap = async(req, res, next)=>{
 
     //Nếu người dùng tồn tại
     if(foundKhachHang){
-        let loginResult = await Admin.model.findOne({
-            taiKhoan: taiKhoan,
-            matKhau: matKhau,
-            trangThai: 1
-        })
-        if(loginResult){
+        let loginResult = await Admin.model.aggregate([
+            {
+                $match: {
+                    taiKhoan: taiKhoan,
+                    matKhau: matKhau,
+                    trangThai: 1
+                }
+            }
+        ]);        
+        console.log(loginResult.length)
+        if(loginResult.length > 0){
             success = true,
             index = {
                 id: loginResult.id,
                 ten: loginResult.ten
             }
             msg = "Đăng nhập thành công"
+            return {
+                index : index,
+                success: success,
+                msg: msg
+            }
         } else {
             msg = "Đăng nhập thất bại"
         }
