@@ -45,17 +45,17 @@ const dangNhap = async(req, res, next)=>{
             taiKhoan: taiKhoan,
             matKhau: matKhau,
             trangThai: 1
-        }).then((loginResult)=>{
+        })
+        if(loginResult){
             success = true,
-            msg = "Đăng nhập thành công"
             index = {
                 id: loginResult.id,
                 ten: loginResult.ten
             }
-        })
-        .catch((e)=>{
+            msg = "Đăng nhập thành công"
+        } else {
             msg = "Đăng nhập thất bại"
-        })
+        }
     } else {
         msg = "Tài khoản không tồn tại"
     }
