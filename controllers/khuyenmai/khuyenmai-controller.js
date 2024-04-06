@@ -524,8 +524,111 @@ const getSoLuongKhuyenMai = async (req, res) => {
     }
 };
 
+const getTatCaKhuyenMaiApp = async (req, res) => {
+    try {
+        const page = parseInt(req.query.trang) || 1;
+        const limit = 10; // Số lượng phần tử trên mỗi trang
+        const timkiem = {};
+        if (typeof (req.query.tieuDe) !== 'undefined' && req.query.tieuDe !== "") {
+            timkiem.tieuDe = { $regex: req.query.tieuDe, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+        }
+        if (typeof (req.query.ngayBatDau) !== 'undefined' && req.query.ngayBatDau !== "") {
+            const parts = req.query.ngayBatDau.split('/');
+            const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            timkiem.ngayBatDau = { $gte: new Date(formattedDate) };
+        }
+
+        if (typeof (req.query.ngayHetHan) !== 'undefined' && req.query.ngayHetHan !== "") {
+            const parts = req.query.ngayHetHan.split('/');
+            const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            timkiem.ngayHetHan = { $lte: new Date(formattedDate) };
+        }
+
+        if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+            const trangThaiValue = parseInt(req.query.trangThai);
+            if (trangThaiValue === 1 || trangThaiValue === 0) {
+                timkiem.trangThai = trangThaiValue === 1;
+            }
+        }
+        const totalCount = await KhuyenMai.countDocuments(timkiem);
+        const totalPages = Math.ceil(totalCount / limit);
+        const currentPage = Math.min(page, totalPages);
+
+        const list = await KhuyenMai.aggregate([
+            {
+                $match:
+                    timkiem,
+            },
+
+            {
+                $lookup: {
+                    from: "KhuyenMaiCuaToi",
+                    localField: "_id",
+                    foreignField: "idKM",
+                    as: "km"
+                }
+            },
+            {
+                $addFields:
+                {
+                    trangThaiKM:
+                    {
+                        $cond: {
+                            if: { "$eq": [{ $size: "$km" }, 0] },
+                            then: false,
+                            else: true
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    "tieuDe": "$tieuDe",
+                    "maKhuyenMai": "$maKhuyenMai",
+                    "ngayBatDau": "$ngayBatDau",
+                    "ngayHetHan": "$ngayHetHan",
+                    "phanTramKhuyenMai": "$phanTramKhuyenMai",
+                    "donToiThieu": "$donToiThieu",
+                    "trangThai": "$trangThai",
+                    "trangThaiKM": "$trangThaiKM",
+                }
+            },
+            {
+                $skip: (currentPage - 1) * limit, // Bỏ qua các bản ghi trước khi trang hiện tại
+            },
+            {
+                $limit: limit, // Giới hạn số lượng bản ghi trên mỗi trang
+            },
+
+        ]);
+
+
+
+
+        return {
+            list: list,
+            currentPage: currentPage,
+            totalItems: totalCount,
+            totalPages: totalPages,
+            success: true,
+            msg: "lấy danh sách thành công"
+        };
+
+    } catch (error) {
+        console.error(error);
+        return {
+            msg: 'Lỗi khi lấy danh sách',
+            success: false
+        };
+    }
+};
+
 const getTatCaKhuyenMaiApi = async (req, res) => {
     const result = await getTatCaKhuyenMai(req, res);
+    res.json(result)
+}
+const getTatCaKhuyenMaiAppApi = async (req, res) => {
+    const result = await getTatCaKhuyenMaiApp(req, res);
     res.json(result)
 }
 
@@ -544,6 +647,8 @@ module.exports = {
     getTatCaKhuyenMai,
     getSoLuongKhuyenMai,
     getTatCaKhuyenMaiApi,
-    SuaKhuyenMaiApi
+    SuaKhuyenMaiApi,
+    getTatCaKhuyenMaiApp,
+    getTatCaKhuyenMaiAppApi,
 
 }
