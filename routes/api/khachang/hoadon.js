@@ -3,7 +3,7 @@ var router = express.Router();
 
 const hoadonctrl = require('../../../controllers/hoadon/hoadon-controller-api')
 
-router.get('/khach-hang/:idKH', hoadonctrl.getDanhSachHoaDonByIdKhachHangApi);
+router.get('/:idKH', hoadonctrl.getDanhSachHoaDonByIdKhachHangApi);
 
 router.post('/add', hoadonctrl.addHoaDonApi);
 
