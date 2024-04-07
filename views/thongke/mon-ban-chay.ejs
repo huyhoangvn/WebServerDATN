@@ -66,12 +66,6 @@
                   <p>Món bán chạy</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="/thong-ke/giao-dich" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Giao dịch</p>
-                </a>
-              </li>
             </ul>
           </li>
           <!-- Quản lý khách hàng -->
@@ -376,7 +370,25 @@
       document.querySelector('button[type="submit"]').addEventListener('click', function() {
           localStorage.setItem('isReloaded', true);
       });
+      
 
+      document.addEventListener("DOMContentLoaded", function() {
+  // Kiểm tra xem URL có chứa tham số tìm kiếm không
+  const searchParams = new URLSearchParams(window.location.search);
+  if (searchParams.has('tenLM') || searchParams.has('thang') || searchParams.has('nam')) {
+    // Trang đã được tải lại từ tìm kiếm, không cần nhấn nút "Tìm kiếm" lại
+    return;
+  }
+
+  // Tìm nút "Tìm kiếm"
+  const nutTimKiem = document.querySelector('button[type="submit"]');
+  
+  // Kiểm tra xem nút "Tìm kiếm" có tồn tại không
+  if (nutTimKiem) {
+    // Nhấn nút "Tìm kiếm"
+    nutTimKiem.click();
+  }
+});
 
 
   </script>

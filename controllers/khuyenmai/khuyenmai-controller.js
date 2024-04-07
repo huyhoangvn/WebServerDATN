@@ -501,6 +501,7 @@ const getSoLuongKhuyenMai = async (req, res) => {
                 $count: "count",
             }
         ])
+        console.log(result[0].count);
 
         return {
             count: result[0].count,

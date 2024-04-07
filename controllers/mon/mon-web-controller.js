@@ -5,7 +5,7 @@ const { model: LoaiMon } = require("../../model/LoaiMon");
 const { model: DanhGia } = require("../../model/DanhGia");
 const mongo = require('mongoose');
 const { getTatCaMon, getSoLuongTatCaMon } = require("./mon-controller");
-const { GetSoLuongDanhGiaTheoMon,GetSoLuongDanhGiaTheoMonVoiFilter } = require("../danhgia/danhgia-controller");
+const { GetDanhSachDanhGiaTheoMonVoiFilter } = require("../danhgia/danhgia-controller");
 
 
 const getList =  async (req, res)=>{
@@ -68,7 +68,7 @@ const getChiTietMon = async (req, res) => {
         });
         const danhGiaTrungBinh = (query.length > 0 ? (danhGiaTong / query.length) : 0);//kết thúc tính tổng số lượng và trung bình
 
-        const layDanhSach = await GetSoLuongDanhGiaTheoMonVoiFilter(req, res);//đây là để lấy ra tất cả đánh giá của món
+        const layDanhSach = await GetDanhSachDanhGiaTheoMonVoiFilter(req, res);//đây là để lấy ra tất cả đánh giá của món
         res.render("mon/chi-tiet", {
             list:layDanhSach.list,
             danhGiaTrungBinh: parseFloat(danhGiaTrungBinh.toFixed(1)),

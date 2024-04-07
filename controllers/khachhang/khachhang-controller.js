@@ -1,5 +1,6 @@
 const { request } = require('express')
 const KhachHang = require('../../model/KhachHang')
+const mongo = require('mongoose');
 
 //Module
 const dangKy = async (req, res, next) => {
@@ -259,6 +260,39 @@ const deleteKhachHang = async (req, res) => {
   }
 }
 
+const deleteKhachHangWeb = async (req, res) => {
+  try {
+    const idKH = new mongo.Types.ObjectId(req.params.idKH)
+    const filter = {_id: idKH}
+    const khachHangTim = await KhachHang.model.findOne({_id:idKH})
+    let khachHangSua = {}
+    if(khachHangTim.trangThai == true){
+      const update = {trangThai : false}
+      const data = await KhachHang.model.findOneAndUpdate(filter, update, { new: true })
+      khachHangSua = data
+    }else{
+      const update = {trangThai : true}
+      const data = await KhachHang.model.findOneAndUpdate(filter, update, { new: true })
+      khachHangSua = data
+    }
+    
+    if (!khachHangSua) {
+      return ({
+        error: "Xóa khách hàng thất bại !",
+        success: false
+      })
+    } else {
+      return {
+        message: "Xóa khách hàng thành công !",
+        success: true
+      }
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message })
+
+  }
+}
+
 
 
 
@@ -319,6 +353,7 @@ module.exports = {
   getKhachHangTheoTenApi,
   updateKhachHang,
   deleteKhachHang,
+  deleteKhachHangWeb,
   getSoLuongKhachHang,
   getSoLuongKhachHangApi
 }
