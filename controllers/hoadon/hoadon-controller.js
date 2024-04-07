@@ -136,6 +136,90 @@ const getHoaDon = async (req, res, next) => {
             .json({ error: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn' });
     }
 }
+const getHoaDonWeb = async (req, res, next) => {
+    try {
+
+        const trang = parseInt(req.query.trang) || 1;
+        const currentPage = trang;
+        const filter = {};
+        if (typeof (req.query.maHD) !== 'undefined' && req.query.maHD !== "") {
+            filter.maHD = { $regex: req.query.maHD, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+        }
+
+        // Xử lý tìm kiếm theo trạng thái thanh toán
+        if (typeof req.query.trangThaiThanhToan !== 'undefined' && !isNaN(parseInt(req.query.trangThaiThanhToan))) {
+            const trangThaiValue = parseInt(req.query.trangThaiThanhToan);
+            if ([0, 1].includes(trangThaiValue)) {
+                filter.trangThaiThanhToan = trangThaiValue;
+            }
+        }
+
+        // Xử lý tìm kiếm theo trạng thái mua
+        if (typeof req.query.trangThaiMua !== 'undefined' && !isNaN(parseInt(req.query.trangThaiMua))) {
+            const trangThaiValue = parseInt(req.query.trangThaiMua);
+            if ([0, 1, 2, 3, 4].includes(trangThaiValue)) {
+                filter.trangThaiMua = trangThaiValue;
+            }
+        }
+
+        // Xử lý tìm kiếm theo thời gian tạo
+        if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
+            const parts = req.query.thoiGianTao.split('-');
+            const day = parseInt(parts[2]);
+            const month = parseInt(parts[1]);
+            const year = parseInt(parts[0]);
+
+            const startDate = new Date(year, month - 1, day); // Lưu ý: Tháng trong JavaScript bắt đầu từ 0
+            const endDate = new Date(year, month - 1, day + 1); // Ngày kế tiếp
+
+            filter.thoiGianTao = {
+                $gte: startDate,
+                $lt: endDate
+            };
+        }
+
+        const totalHoaDon = await HoaDon.countDocuments(filter);
+
+        const list = await HoaDon.aggregate([
+            {
+                $match: filter,
+            },
+            {
+                $sort: { thoiGianTao: -1 } // Sắp xếp tăng dần theo thời gian tạo, để sắp xếp giảm dần, sử dụng -1
+            },
+            {
+                $project: {
+                    "maHD": "$maHD",
+                    "trangThaiThanhToan": "$trangThaiThanhToan",
+                    "trangThaiMua": "$trangThaiMua",
+                    "tongTien": "$tongTien",
+                    "thoiGianTao": "$thoiGianTao",
+                    "thanhTien": "$thanhTien",
+                }
+            },
+            {
+                $skip: (trang - 1) * 10,
+            },
+            {
+                $limit: 10,
+            },
+        ]);
+
+        const totalPages = Math.ceil(totalHoaDon / 10);
+        return {
+            list: list,
+            count: list.length,
+            totalPages: totalPages,
+            currentPage: currentPage,
+            success: true,
+            msg: 'thành công'
+        };
+    } catch (error) {
+        console.error(error);
+        res
+            .json({ error: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn' });
+    }
+}
 
 const getSoLuongHoaDon = async (req, res, next) => {
     try {
@@ -162,10 +246,10 @@ const getSoLuongHoaDon = async (req, res, next) => {
 
         // Xử lý tìm kiếm theo thời gian tạo
         if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
-            const parts = req.query.thoiGianTao.split('/');
-            const day = parseInt(parts[0]);
+            const parts = req.query.thoiGianTao.split('-');
+            const day = parseInt(parts[2]);
             const month = parseInt(parts[1]);
-            const year = parseInt(parts[2]);
+            const year = parseInt(parts[0]);
 
             const startDate = new Date(year, month - 1, day); // Lưu ý: Tháng trong JavaScript bắt đầu từ 0
             const endDate = new Date(year, month - 1, day + 1); // Ngày kế tiếp
@@ -179,14 +263,6 @@ const getSoLuongHoaDon = async (req, res, next) => {
         const result = await HoaDon.aggregate([
             {
                 $match: filter,
-            },
-            {
-                $project: {
-                    "maHD": "$maHD",
-                    "thoiGianTao": "$thoiGianTao",
-                    "trangThaiThanhToan": "$trangThaiThanhToan",
-                    "trangThaiMua": "$trangThaiMua",
-                }
             },
             {
                 $count: "count",
@@ -458,7 +534,10 @@ const chiTietHoaDon = async (req, res, next) => {
                 idCH: item.idCH,
                 phanTramKhuyenMaiDat: item.phanTramKhuyenMaiDat,
                 diaChiGiaoHang: item.diaChiGiaoHang,
+                phiGiaoHang: item.phiGiaoHang,
                 ghiChu: item.ghiChu,
+                tongTien: item.tongTien,
+                thanhTien: item.thanhTien,
                 thoiGianTao: formatDate(item.thoiGianTao),
                 thoiGianGiaoHangDuKien: formatDate(item.thoiGianGiaoHangDuKien),
                 thoiGianDuyet: formatDate(item.thoiGianDuyet),
@@ -493,5 +572,6 @@ module.exports = {
     updatetrangThaiMuaGiaoHangThatBai,
     updatetrangThaiThanhToanTrue,
     updatetrangThaiThanhToanFalse,
+    getHoaDonWeb,
 
 }
