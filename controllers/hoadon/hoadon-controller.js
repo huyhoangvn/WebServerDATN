@@ -77,6 +77,15 @@ const getHoaDon = async (req, res, next) => {
                 filter.trangThaiMua = trangThaiValue;
             }
         }
+        if (typeof req.query.trangThai !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+            const trangThaiValue = parseInt(req.query.trangThai);
+            if (trangThaiValue === 1 || trangThaiValue === 0) {
+                filter.trangThai = trangThaiValue === 1 ? true : false;
+            }
+        } else {
+            // Nếu không có truy vấn trạng thái, mặc định là true
+            filter.trangThai = true;
+        }
 
         // Xử lý tìm kiếm theo thời gian tạo
         if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
@@ -111,6 +120,7 @@ const getHoaDon = async (req, res, next) => {
                     "tongTien": "$tongTien",
                     "thoiGianTao": "$thoiGianTao",
                     "thanhTien": "$thanhTien",
+                    "trangThai": "$trangThai",
                 }
             },
             {
@@ -161,6 +171,7 @@ const getHoaDonWeb = async (req, res, next) => {
                 filter.trangThaiMua = trangThaiValue;
             }
         }
+
 
         // Xử lý tìm kiếm theo thời gian tạo
         if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
