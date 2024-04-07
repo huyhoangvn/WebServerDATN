@@ -7,7 +7,7 @@ router.get('/:idKH', hoadonctrl.getDanhSachHoaDonByIdKhachHangApi);
 
 router.post('/add', hoadonctrl.addHoaDonApi);
 
-router.get('/:id', hoadonctrl.chiTietHoaDonApi);
+router.get('/detail/:id', hoadonctrl.chiTietHoaDonApi);
 
 router.post('/delete/:id', hoadonctrl.deleteHoaDonApi); // hủy 
 
