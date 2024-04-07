@@ -7,8 +7,11 @@ const {
   GetDanhSachTheoTenMon,
   GetDanhSachTheoTenKhachHang,
   GetDanhGiaTheoId, 
-  GetSoLuongDanhGiaTheoMon,
-  GetSoLuongDanhGiaTheoKhachHang} = require('../../../controllers/danhgia/danhgia-controller');
+  GetTrungBinhDanhGiaTheoMon,
+  GetSoLuongDanhGiaTheoKhachHang,
+  getTatCaDanhGiaTheoMonApi,
+  GetDanhSachDanhGiaTheoMonVoiFilter,
+  GetDanhSachDanhGiaTheoMonVoiFilterApi} = require('../../../controllers/danhgia/danhgia-controller');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -17,21 +20,25 @@ router.get('/', function(req, res, next) {
   }));
 });
 
-// http://localhost:3000/api/khachhang/danhgia/them-danh-gia/65cc2e9d557054378b5490b2/65cc2e72557054378b5490ad
-router.post("/them-danh-gia/:idKH/:idMon",ThemDanhGia);
-// http://localhost:3000/api/khachhang/danhgia/sua-danh-gia/65cc2e9d557054378b5490b2/65cc2e72557054378b5490ad
-router.put("/sua-danh-gia/:idDG",SuaDanhGia);
-// http://localhost:3000/api/khachhang/danhgia/xoa-danh-gia/65cc2e9d557054378b5490b2/65cc2e72557054378b5490ad
-router.put("/xoa-danh-gia/:idKH/:idMon",XoaDanhGia);
-// http://localhost:3000/api/khachhang/danhgia/get-danh-gia-theo-ten-mon/65cc2e72557054378b5490ad
-router.get("/get-danh-gia-theo-ten-mon/:idMon",GetDanhSachTheoTenMon);
-// http://localhost:3000/api/khachhang/danhgia/get-danh-gia-theo-ten-khach-hang/65cc2e9d557054378b5490b2
-router.get("/get-danh-gia-theo-ten-khach-hang/:idKH",GetDanhSachTheoTenKhachHang);
-//http://localhost:3000/api/khachhang/danhgia/get-danh-gia-theo-id/65ceb821bf407aaa4e0a3fb9
-router.get("/get-danh-gia-theo-id/:idDanhGia",GetDanhGiaTheoId);
-//http://localhost:3000/api/khachhang/danhgia/get-so-luong-danh-gia-theo-mon/65cc2e72557054378b5490ad
-router.get("/get-so-luong-danh-gia-theo-mon/:idMon",GetSoLuongDanhGiaTheoMon);
-// http://localhost:3000/api/khachhang/danhgia/get-so-luong-danh-gia-theo-khach-hang/65cc2e72557054378b5490ad
-router.get("/get-so-luong-danh-gia-theo-khach-hang/:idKH",GetSoLuongDanhGiaTheoKhachHang);
+// http://localhost:3000/api/khachhang/danhgia/them/65cc2e9d557054378b5490b2/65cc2e72557054378b5490ad
+router.post("/them/:idKH/:idMon",ThemDanhGia);
+// http://localhost:3000/api/khachhang/danhgia/sua/65cc2e9d557054378b5490b2/65cc2e72557054378b5490ad
+router.put("/sua/:idDG",SuaDanhGia);
+// http://localhost:3000/api/khachhang/danhgia/xoa/65cc2e9d557054378b5490b2/65cc2e72557054378b5490ad
+router.put("/xoa/:idDG",XoaDanhGia);
+// http://localhost:3000/api/khachhang/danhgia/get-theo-ten-mon/65cc2e72557054378b5490ad
+router.get("/get-theo-ten-mon/:idMon",GetDanhSachTheoTenMon);
+// http://localhost:3000/api/khachhang/danhgia/get-theo-ten-khach-hang/65cc2e9d557054378b5490b2
+router.get("/get-theo-ten-khach-hang/:idKH",GetDanhSachTheoTenKhachHang);
+//http://localhost:3000/api/khachhang/danhgia/get-theo-id/65ceb821bf407aaa4e0a3fb9
+router.get("/get-theo-id/:idDanhGia",GetDanhGiaTheoId);
+//http://localhost:3000/api/khachhang/danhgia/get-so-luong-theo-mon/65cc2e72557054378b5490ad
+router.get("/get-so-luong-theo-mon/:idMon",getTatCaDanhGiaTheoMonApi);
+// http://localhost:3000/api/khachhang/danhgia/get-so-luong-theo-khach-hang/65cc2e72557054378b5490ad
+router.get("/get-so-luong-theo-khach-hang/:idKH",GetSoLuongDanhGiaTheoKhachHang);
+
+router.get("/get-danh-sach-theo-mon-filter/:idMon",GetDanhSachDanhGiaTheoMonVoiFilterApi);
+
+router.get("/get-trung-binh/:idMon",GetTrungBinhDanhGiaTheoMon);
 
 module.exports = router;

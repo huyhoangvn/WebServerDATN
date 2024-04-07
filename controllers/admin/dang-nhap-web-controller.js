@@ -1,5 +1,6 @@
 const Admin = require('../../model/Admin')
 const auth = require('../../config/auth/jwt-encode')
+const ThongKeCtrl = require("../../controllers/thongke/thong-ke-controller");
 
 const dangNhap = async(req, res, next)=>{
     let msg = ""
@@ -40,21 +41,31 @@ const dangNhap = async(req, res, next)=>{
 
     //Nếu người dùng tồn tại
     if(foundKhachHang){
-        let loginResult = await Admin.model.findOne({
-            taiKhoan: taiKhoan,
-            matKhau: matKhau,
-            trangThai: 1
-        }).then((loginResult)=>{
+        let loginResult = await Admin.model.aggregate([
+            {
+                $match: {
+                    taiKhoan: taiKhoan,
+                    matKhau: matKhau,
+                    trangThai: 1
+                }
+            }
+        ]);        
+        console.log(loginResult.length)
+        if(loginResult.length > 0){
             success = true,
-            msg = "Đăng nhập thành công"
             index = {
                 id: loginResult.id,
                 ten: loginResult.ten
             }
-        })
-        .catch((e)=>{
+            msg = "Đăng nhập thành công"
+            return {
+                index : index,
+                success: success,
+                msg: msg
+            }
+        } else {
             msg = "Đăng nhập thất bại"
-        })
+        }
     } else {
         msg = "Tài khoản không tồn tại"
     }
@@ -69,16 +80,12 @@ const dangNhap = async(req, res, next)=>{
 //Website
 const dangNhapWeb = async(req, res, next)=>{
     result = await dangNhap(req, res, next)
-    .then((result)=>{
-        console.log(result.success)
+    .then(async(result)=>{
         if(result.success){
             let token = auth.encodedToken(result.index.id)
             req.session.token = token
             req.session.ten = result.index.ten
-            res.render("thongke/doanh-thu", {
-                admin: result.index.ten,
-                msg: result.msg
-            })
+            res.redirect("thong-ke/doanh-thu")
         } else {
             res.render("index", {
                 msg: result.msg

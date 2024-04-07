@@ -1,8 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-//router.use('/auth', require('./auth'))
-router.use('/khachhang', require('./khachhang'))
+router.use('/auth', require('./auth'))
+router.use('/', require('./khachhang'))
 router.use('/cuahang', require('./cuahang'))
 router.use('/hoadon', require('./hoadon'))
 router.use('/datmon', require('./datmon'))
@@ -12,5 +12,8 @@ router.use('/khuyenmai', require('./khuyenmai'))
 router.use('/loaimon', require('./loaimon'))
 router.use('/mon', require('./mon'))
 router.use('/hinhanh', require('./hinhanhmon'))
+router.use('/khuyenmaicuatoi', require('./khuyenmaicuatoi'))
+router.use('/thongke', require('./thongke'))
+router.use('/verification', require('./verification'))
 
 module.exports = router;

@@ -1,220 +1,528 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Food Center</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css"/>
-    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script src="https://kit.fontawesome.com/b5123099c5.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <!-- <style>
+
+<head>
+  <title>Food Center</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script>
+  <script src="https://kit.fontawesome.com/b5123099c5.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+  <!-- <style>
       .sidebar-dark-primary {
         background-color: #030025 !important; /* Change to green color */
       }
     </style> -->
-  </head>
-  <body>
-    <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
-      <!-- Brand Logo -->
-      <a href="#" class="brand-link logo-switch this">
-        Food Center
-      </a>
-      <!-- Sidebar -->
-      <div class="sidebar">
-        <!-- Sidebar user panel (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-          <div class="info">
-            <a href="#" class="d-block"><%= (!!locals.admin)?admin:'Admin' %></a>
+</head>
+
+<body>
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="#" class="brand-link logo-switch this">
+      Food Center
+    </a>
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="info">
+          <a href="#" class="d-block">
+            <%= (!!locals.admin)?admin:'Admin' %>
+          </a>
+        </div>
+      </div>
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+          <!-- Thống Kê -->
+          <li class="nav-item">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>
+                Thống kê
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/thong-ke/doanh-thu" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Doanh thu</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/thong-ke/mon-ban-chay" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Món bán chạy</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/thong-ke/giao-dich" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Giao dịch</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Quản lý khách hàng -->
+          <li class="nav-item">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Quản lý khách hàng
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/khach-hang/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Quản lý khuyến mãi -->
+          <li class="nav-item menu-open">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-tags"></i>
+              <p>
+                Quản lý khuyến mãi
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/khuyen-mai/danh-sach" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/khuyen-mai/them-moi" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Thêm mới</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Quản lý món -->
+          <li class="nav-item">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-utensils"></i>
+              <p>
+                Quản lý món
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/mon/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/loai-mon/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Loại món</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Quản lý cửa hàng -->
+          <li class="nav-item">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-store"></i>
+              <p>
+                Quản lý cửa hàng
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/cua-hang/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/cua-hang/them-moi" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Thêm mới</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/quan-ly/danh-sach" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Tài khoản quản lý</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- hóa đơn -->
+          <li class="nav-item menu-open">
+            <a href="" class="nav-link open">
+              <i class="nav-icon fas fa-users"></i>
+              <p>
+                Quản lý Hóa Đơn
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/hoa-don/danh-sach" class="nav-link ">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Danh sách</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <!-- Đăng xuất -->
+          <li class="nav-item border-top border-1 ">
+            <a href="/auth/sign-out" class="nav-link">
+              <i class="fa-solid fa-arrow-right-from-bracket nav-icon"></i>
+              <p>
+                Sign-Out
+              </p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+  <!-- <h1><%= (!!locals.title)?title:'' %></h1> -->
+
+  <div class="content-wrapper">
+    <div class="content-header border border-bottom-1">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0">Khuyến mãi</h1>
+          </div><!-- /.col -->
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Khuyến mãi</a></li>
+              <li class="breadcrumb-item active">Danh sách</li>
+            </ol>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
+      </div><!-- /.container-fluid -->
+    </div>
+
+    <section class="content">
+      <div class="container-fluid bg-white m-2">
+
+        <!-- Main content nằm ở dây -->
+
+        <form action="/khuyen-mai/danh-sach">
+          <!-- Main content nằm ở dây -->
+          <div class="d-flex row justify-content-between mb-1">
+            <div class="col-4">
+              <input type="text" id="searchTieuDe" class="form-control" name="tieuDe"
+                placeholder="Nhập tiêu đề để tìm kiếm">
+            </div>
+
+            <div class="mb-3">
+              <input type="date" class="form-control" name="ngayBatDau" id="ngayBatDau" placeholder="Ngày bắt đầu">
+            </div>
+
+            <div class="mb-3">
+              <input type="date" class="form-control" name="ngayHetHan" id="ngayHetHan" placeholder="Ngày hết hạn">
+            </div>
+            <div class="col-2">
+              <select class="form-control" name="trangThai">
+                <option value="-1">Tất cả trạng thái</option>
+                <option value="1">Hoạt động</option>
+                <option value="0">Khóa</option>
+              </select>
+            </div>
+
+            <div class="col-2">
+              <button class="btn btn-dark w-100" type="submit">Tìm kiếm</button>
+            </div>
+          </div>
+
+        </form>
+
+        <!-- Bảng hiển thị -->
+        <table class="table table-bordered border-secondary">
+          <thead>
+            <tr class="table-secondary">
+              <td scope="col-1">STT</td>
+              <td scope="col-2">Tiêu Đề </td>
+              <td scope="col-2">Ngày Bắt Đầu</td>
+              <td scope="col-2">Ngày Kết Thúc</td>
+              <td scope="col-2">Sửa</td>
+              <td scope="col-2">Trạng Thái</td>
+              <td scope="col-1">Chức năng</td>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (var i=0; i<data.length; i++) {%>
+              <tr>
+                <td scope="col-1">
+                  <%=i+1%>
+                </td>
+                <td scope="col-2">
+                  <%=data[i].tieuDe%>
+                </td>
+                <td scope="col-2">
+                  <% var startDate=new Date(data[i].ngayBatDau); %>
+                    <%= ("0" + startDate.getDate()).slice(-2) %>/<%= ("0" + (startDate.getMonth() + 1)).slice(-2) %>/<%=
+                          startDate.getFullYear() %>
+                </td>
+                <td scope="col-2">
+                  <% var endDate=new Date(data[i].ngayHetHan); %>
+                    <%= ("0" + endDate.getDate()).slice(-2) %>/<%= ("0" + (endDate.getMonth() + 1)).slice(-2) %>/<%=
+                          endDate.getFullYear() %>
+                </td>
+                <td class="text-primary" scope="col-1">
+                  <a data-toggle="modal" data-target="#suaKhuyenMaiModal" data-idkm="<%=data[i]._id%>"
+                    data-tieude="<%=data[i].tieuDe%>" data-makhuyenmai="<%=data[i].maKhuyenMai%>"
+                    data-ngaybatdau="<%=data[i].ngayBatDau%>" data-ngayhethan="<%=data[i].ngayHetHan%>"
+                    data-phantramkhuyenmai="<%=data[i].phanTramKhuyenMai%>" data-dontoithieu="<%=data[i].donToiThieu%>"
+                    data-trangthai="<%=data[i].trangThai%>">
+                    Sửa </a>
+                </td>
+
+                <td class="text-primary scope-col-2">
+                  <a data-toggle="modal" data-target="#suaTrangThaiModal"
+                    class=" <%= data[i].trangThai ? 'text-success' : 'text-danger' %>" data-idkm="<%=data[i]._id%>"
+                    data-trangthai="<%=data[i].trangThai%>">
+                    <%= data[i].trangThai ? 'Hoạt động' : 'Khóa' %>
+                  </a>
+                </td>
+
+                <td class="text-primary" scope="col-1">
+                  <a data-toggle="modal" data-target="#exampleModal" data-tieude="<%=data[i].tieuDe%>"
+                    data-makhuyenmai="<%=data[i].maKhuyenMai%>" data-ngaybatdau="<%=data[i].ngayBatDau%>"
+                    data-ngayhethan="<%=data[i].ngayHetHan%>" data-phantramkhuyenmai="<%=data[i].phanTramKhuyenMai%>"
+                    data-dontoithieu="<%=data[i].donToiThieu%>" data-trangthai="<%=data[i].trangThai%>">
+                    Chi tiết</a>
+                </td>
+              </tr>
+              <%}%>
+          </tbody>
+        </table>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chi tiết khuyến mãi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <h4 id="tieude"></h4>
+                    <p><strong>Mã Khuyến Mãi:</strong> <span id="makhuyenmai"></span></p>
+                    <p><strong>Ngày bắt đầu:</strong> <span id="ngaybatdau"></span></p>
+                    <p><strong>Ngày kết thúc:</strong> <span id="ngayhethan"></span></p>
+                    <p><strong>Phần trăm khuyến mãi:</strong> <span id="phantramkhuyenmai"></span></p>
+                    <p><strong>Đơn tối thiểu:</strong> <span id="dontoithieu"></span></p>
+                    <p><strong>Trạng thái:</strong> <span id="trangthai"></span></p>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Sidebar Menu -->
-        <nav class="mt-2">
-          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
-            <!-- Thống Kê -->
-            <li class="nav-item">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-chart-bar"></i>
-                <p>
-                  Thống kê
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/thong-ke/doanh-thu" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Doanh thu</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/thong-ke/mon-ban-chay" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Món bán chạy</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/thong-ke/giao-dich" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Giao dịch</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Quản lý khách hàng -->
-            <li class="nav-item">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-users"></i>
-                <p>
-                  Quản lý khách hàng
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/khach-hang/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Danh sách</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Quản lý khuyến mãi -->
-            <li class="nav-item menu-open">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-tags"></i>
-                <p>
-                  Quản lý khuyến mãi
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/khuyen-mai/danh-sach" class="nav-link active">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Danh sách</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/khuyen-mai/them-moi" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Thêm mới</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Quản lý món -->
-            <li class="nav-item">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-utensils"></i>
-                <p>
-                  Quản lý món
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/mon/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Danh sách</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/loai-mon/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Loại món</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Quản lý cửa hàng -->
-            <li class="nav-item">
-              <a href="" class="nav-link open">
-                <i class="nav-icon fas fa-store"></i>
-                <p>
-                  Quản lý cửa hàng
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="/cua-hang/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Danh sách</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/cua-hang/them-moi" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Thêm mới</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="/quan-ly/danh-sach" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Tài khoản quản lý</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
-            <!-- Đăng xuất -->
-            <li class="nav-item border-top border-1 ">
-              <a href="/auth/sign-out" class="nav-link">
-                <i class="fa-solid fa-arrow-right-from-bracket nav-icon"></i>
-                <p>
-                  Sign-Out
-                </p>
-              </a>
-            </li>
+
+        <!-- Modal Sửa Khuyến Mãi -->
+        <div class="modal fade" id="suaKhuyenMaiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sửa Khuyến Mãi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form id="formSuaKhuyenMai" method="post" action="/khuyen-mai/sua/">
+                  <div class="form-group">
+                    <label for="tieuDe">Tiêu đề</label>
+                    <input type="text" class="form-control" name="tieuDe" id="tieuDe" placeholder="Tiêu đề">
+                  </div>
+                  <div class="form-group">
+                    <label for="ngayBatDau">Ngày bắt đầu</label>
+                    <input type="date" class="form-control" name="ngayBatDau" id="ngayBatDau"
+                      placeholder="Ngày bắt đầu">
+                  </div>
+                  <div class="form-group">
+                    <label for="ngayHetHan">Ngày kết thúc</label>
+                    <input type="date" class="form-control" name="ngayHetHan" id="ngayHetHan"
+                      placeholder="Ngày kết thúc">
+                  </div>
+                  <div class="form-group">
+                    <label for="phanTramKhuyenMai">Phần trăm khuyến mãi</label>
+                    <input type="text" class="form-control" name="phanTramKhuyenMai" id="phanTramKhuyenMai"
+                      placeholder="Phần trăm khuyến mãi">
+                  </div>
+                  <div class="form-group">
+                    <label for="donToiThieu">Đơn tối thiểu</label>
+                    <input type="text" class="form-control" name="donToiThieu" id="donToiThieu"
+                      placeholder="Đơn tối thiểu">
+                  </div>
+                  <input type="hidden" class="form-control" name="idKM" id="idKM">
+                  <br>
+                  <button type="submit" class="btn btn-primary">Lưu</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Modal Sửa Trạng Thái -->
+        <div class="modal fade" id="suaTrangThaiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sửa Trạng Thái</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form id="formSuaTrangThai" action="/khuyen-mai/xoa" method="post">
+                  <div class="form-group">
+                    <label for="trangThai">bạn có muốn sửa trạng thái không</label>
+                  </div>
+                  <input type="hidden" class="form-control" name="idKM" id="idKM">
+                  <br>
+                  <button type="submit" class="btn btn-primary">Sửa</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <nav aria-label=" Page navigation">
+          <ul class="pagination justify-content-center">
+            <% for (var i=1; i <=totalPages; i++) { %>
+              <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                <a class="page-link" href="?trang=<%= i %>">
+                  <%= i %>
+                </a>
+              </li>
+              <% } %>
           </ul>
         </nav>
-        <!-- /.sidebar-menu -->
+
+
       </div>
-      <!-- /.sidebar -->
-    </aside>
-    <!-- <h1><%= (!!locals.title)?title:'' %></h1> -->
+    </section>
+  </div>
 
-    <div class="content-wrapper">
-      <div class="content-header border border-bottom-1">
-        <div class="container-fluid">
-          <div class="row mb-2">
-            <div class="col-sm-6">
-              <h1 class="m-0">Khuyến mãi</h1>
-            </div><!-- /.col -->
-            <div class="col-sm-6">
-              <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="#">Khuyến mãi</a></li>
-                <li class="breadcrumb-item active">Danh sách</li>
-              </ol>
-            </div><!-- /.col -->
-          </div><!-- /.row -->
-        </div><!-- /.container-fluid -->
-      </div>
+  <!-- Button trigger modal -->
 
-      <section class="content">
-        <div class="container-fluid bg-white m-2">
-
-          <!-- Main content nằm ở dây -->
-
-        </div>
-      </section>
-    </div>
-
-    <!-- Scripts -->
-    <script type="text/javascript">
-      $(document).ready(function(){
-          $(".open").click(function(e)
-            { 
-              e.stopPropagation()
-              e.preventDefault()
-              $(this).parent().toggleClass('menu-open');
-            }
-          )
-        }
+  <!-- Scripts -->
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $(".open").click(function (e) {
+        e.stopPropagation()
+        e.preventDefault()
+        $(this).parent().toggleClass('menu-open');
+      }
       )
-    </script>
-  </body>
+    }
+    )
+    function convertTrangThai(trangThai) {
+      if (trangThai === true) {
+        return "Hoạt động";
+      } else {
+        return "Khóa";
+      }
+    }
+
+
+    // chi tiết
+    $(document).ready(function () {
+      $('a[data-target="#exampleModal"]').on('click', function () {
+        var tieude = $(this).data('tieude');
+        var makhuyenmai = $(this).data('makhuyenmai');
+        var ngaybatdau = moment($(this).data('ngaybatdau')).format('DD/MM/YYYY'); // Format ngày bắt đầu
+        var ngayhethan = moment($(this).data('ngayhethan')).format('DD/MM/YYYY');
+        var phantramkhuyenmai = $(this).data('phantramkhuyenmai');
+        var dontoithieu = $(this).data('dontoithieu');
+        var trangthai = $(this).data('trangthai');
+
+        var trangThaiText = convertTrangThai(trangthai);
+
+        $('#exampleModal').find('#tieude').text(tieude);
+        $('#exampleModal').find('#makhuyenmai').text(makhuyenmai);
+        $('#exampleModal').find('#ngaybatdau').text(ngaybatdau);
+        $('#exampleModal').find('#ngayhethan').text(ngayhethan);
+        $('#exampleModal').find('#phantramkhuyenmai').text(phantramkhuyenmai);
+        $('#exampleModal').find('#dontoithieu').text(dontoithieu);
+        $('#exampleModal').find('#trangthai').text(trangThaiText);
+      });
+    });
+
+    $(document).ready(function () {
+      // Khi nút "Sửa" được nhấp
+      $('a[data-target="#suaKhuyenMaiModal"]').on('click', function () {
+
+        var idKM = $(this).data('idkm');
+        var tieuDe = $(this).data('tieude');
+        // var ngayBatDau = $(this).data('ngaybatdau');
+        // var ngayHetHan = $(this).data('ngayhethan');
+        var phanTramKhuyenMai = $(this).data('phantramkhuyenmai');
+        var donToiThieu = $(this).data('dontoithieu');
+
+        // Thiết lập value cho từng trường input
+        $('#tieuDe').val(tieuDe);
+        // $('#ngayBatDau').val(ngayBatDau);
+        // $('#ngayHetHan').val(ngayHetHan);
+        $('#phanTramKhuyenMai').val(phanTramKhuyenMai);
+        $('#donToiThieu').val(donToiThieu);
+        $('#idKM').val(idKM);
+
+
+
+        $('#formSuaKhuyenMai').attr('action', '/khuyen-mai/sua/' + idKM);
+      });
+    });
+
+    // sửa trạng thái
+    $(document).ready(function () {
+      $('a[data-target="#suaTrangThaiModal"]').on('click', function () {
+
+        var idKM = $(this).data('idkm');
+
+        $('#idKM').val(idKM);
+
+        $('#formSuaTrangThai').attr('action', '/khuyen-mai/xoa/' + idKM);
+      });
+    });
+
+  </script>
+
+</body>
+
 </html>

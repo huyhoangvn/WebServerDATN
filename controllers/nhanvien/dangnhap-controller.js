@@ -1,7 +1,7 @@
 const NhanVien = require('../../model/NhanVien')
 const auth = require('../../config/auth/jwt-encode')
 
-const dangNhap = async(req, res, next)=>{
+const dangNhap = async (req, res, next) => {
     let msg = ""
     let index = {}
     let success = false
@@ -15,19 +15,19 @@ const dangNhap = async(req, res, next)=>{
     const taiKhoan = req.body.taiKhoan.toString().trim()
     const matKhau = req.body.matKhau.toString().trim()
 
-    if(taiKhoan == ""){
+    if (taiKhoan == "") {
         return {
             success: false,
             msg: "Tài khoản không được để trống"
         }
     }
-    if(matKhau == ""){
+    if (matKhau == "") {
         return {
             success: false,
             msg: "Mật khẩu không được để trống"
         }
     }
-    if(matKhau.length < 6 || matKhau.length > 50){
+    if (matKhau.length < 6 || matKhau.length > 50) {
         return {
             success: false,
             msg: "Mật khẩu có chiều dài từ 6-50 ký tự"
@@ -39,29 +39,44 @@ const dangNhap = async(req, res, next)=>{
     })
 
     //Nếu người dùng tồn tại
-    if(foundKhachHang){
+    if (foundKhachHang) {
         await NhanVien.model.findOne({
             taiKhoan: taiKhoan,
             matKhau: matKhau,
-            trangThai: 1
-        }).then((loginResult)=>{
-            success = true,
-            msg = "Đăng nhập thành công"
-            index = {
-                id: loginResult.id,
-                tenNV: loginResult.tenNV,
-                phanQuyen: loginResult.phanQuyen
+        }).then((loginResult) => {
+            if (loginResult) {
+                if (loginResult.trangThai === 0 && loginResult.phanQuyen === 0) {
+                    success = false
+                    msg = "Tài khoản quản lý đang chờ xét duyệt để hoạt động"
+                }
+                else if (loginResult.trangThai === 0 && loginResult.phanQuyen === 1) {
+                    success = false
+                    msg = "Tài khoản nhân viên bán hàng đang bị khóa"
+                }
+                else {
+                    success = true,
+                        msg = "Đăng nhập thành công với tư cách " + (loginResult.phanQuyen) ? "quản lý" : "nhân viên bán"
+                    index = {
+                        id: loginResult.id,
+                        tenNV: loginResult.tenNV,
+                        idCH: loginResult.idCH,
+                        phanQuyen: loginResult.phanQuyen
+                    }
+                }
+            } else {
+                success = false
+                msg = "Sai mật khẩu"
             }
         })
-        .catch((e)=>{
-            msg = "Đăng nhập thất bại"
-        })
+            .catch((e) => {
+                msg = "Đăng nhập thất bại"
+            })
     } else {
         msg = "Tài khoản không tồn tại"
     }
 
     return {
-        index : index,
+        index: index,
         success: success,
         msg: msg
     }
@@ -78,21 +93,25 @@ const dangNhapApi = async (req, res, next) => {
             res.setHeader('Authorization', token);
 
             // Send the response with user data and message
-            res.status(200).json({
+            res.json({
+                success: result.success,
                 index: result.index,
                 msg: result.msg
             });
         } else {
             // If login fails, send JSON response with error message
-            res.json({ msg: result.msg });
+            res.json({
+                success: result.success,
+                msg: result.msg
+            });
         }
     } catch (error) {
         // Handle errors appropriately
-        res.status(500).json({ msg: "Internal Server Error" });
+        res.json({ msg: "Internal Server Error" });
     }
 };
 
-const dangXuatApi = async (req, res, next)=>{
+const dangXuatApi = async (req, res, next) => {
 
 }
 

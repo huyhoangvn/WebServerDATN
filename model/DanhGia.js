@@ -5,7 +5,8 @@ const DanhGiaSchema = new db.mongodb.Schema(
     {
         idKH: { type: mongoose.Schema.Types.ObjectId, ref: 'KhachHang', required: true },
         idMon: { type: mongoose.Schema.Types.ObjectId, ref: 'Mon', required: true },
-        danhGia: { type: String, default: "N/A" },
+        thoiGianTao: { type: Date, default: Date.now() },
+        danhGia: { type: Number, default: 0 },
         trangThai: { type: Boolean, default: true }
     }, { collection: 'DanhGia' }
 );

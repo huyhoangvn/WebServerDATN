@@ -1,9 +1,14 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+const hoadonctrl = require('../../../controllers/hoadon/hoadon-controller-api')
+
+router.get('/:idKH', hoadonctrl.getDanhSachHoaDonByIdKhachHangApi);
+
+router.post('/add', hoadonctrl.addHoaDonApi);
+
+router.get('/detail/:id', hoadonctrl.chiTietHoaDonApi);
+
+router.post('/delete/:id', hoadonctrl.deleteHoaDonApi); // hủy 
 
 module.exports = router;

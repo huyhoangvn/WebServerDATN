@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Food Center</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.0.0/css/flag-icons.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/b5123099c5.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <!-- <style>
+      .sidebar-dark-primary {
+        background-color: #030025 !important; /* Change to green color */
+      }
+    </style> -->
+</head>
+
+<body>
+    <!-- Main Sidebar Container -->
+    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <!-- Brand Logo -->
+        <a href="#" class="brand-link logo-switch this">
+            Food Center
+        </a>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Sidebar user panel (optional) -->
+            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                <div class="info">
+                    <a href="#" class="d-block">
+                        <%= (!!locals.admin)?admin:'Admin' %>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Sidebar Menu -->
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu">
+                    <!-- Thống Kê -->
+                    <li class="nav-item">
+                        <a href="" class="nav-link open">
+                            <i class="nav-icon fas fa-chart-bar"></i>
+                            <p>
+                                Thống kê
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="/thong-ke/doanh-thu" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Doanh thu</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/thong-ke/mon-ban-chay" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Món bán chạy</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/thong-ke/giao-dich" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Giao dịch</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- Quản lý khách hàng -->
+                    <li class="nav-item menu-open">
+                        <a href="" class="nav-link open">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>
+                                Quản lý khách hàng
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="/khach-hang/danh-sach" class="nav-link ">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Danh sách</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- Quản lý khuyến mãi -->
+                    <li class="nav-item">
+                        <a href="" class="nav-link open">
+                            <i class="nav-icon fas fa-tags"></i>
+                            <p>
+                                Quản lý khuyến mãi
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="/khuyen-mai/danh-sach" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Danh sách</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/khuyen-mai/them-moi" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Thêm mới</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- Quản lý món -->
+                    <li class="nav-item">
+                        <a href="" class="nav-link open">
+                            <i class="nav-icon fas fa-utensils"></i>
+                            <p>
+                                Quản lý món
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="/mon/danh-sach" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Danh sách</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/loai-mon/danh-sach" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Loại món</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- Quản lý cửa hàng -->
+                    <li class="nav-item">
+                        <a href="" class="nav-link open">
+                            <i class="nav-icon fas fa-store"></i>
+                            <p>
+                                Quản lý cửa hàng
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="/cua-hang/danh-sach" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Danh sách</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/cua-hang/them-moi" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Thêm mới</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/quan-ly/danh-sach" class="nav-link">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Tài khoản quản lý</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- hóa đơn -->
+                    <li class="nav-item menu-open">
+                        <a href="" class="nav-link open">
+                            <i class="nav-icon fas fa-users"></i>
+                            <p>
+                                Quản lý Hóa Đơn
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="/hoa-don/danh-sach" class="nav-link active">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Danh sách</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- Đăng xuất -->
+                    <li class="nav-item border-top border-1 ">
+                        <a href="/auth/sign-out" class="nav-link">
+                            <i class="fa-solid fa-arrow-right-from-bracket nav-icon"></i>
+                            <p>
+                                Sign-Out
+                            </p>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- /.sidebar-menu -->
+        </div>
+        <!-- /.sidebar -->
+    </aside>
+    <!-- <h1><%= (!!locals.title)?title:'' %></h1> -->
+
+    <div class="content-wrapper">
+        <div class="content-header border border-bottom-1">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <a href="/hoa-don/danh-sach" class="btn btn-dark btn-md">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                        <span class="h2" style="margin: 15px;">Chi Tiết Hóa Đơn</span>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Hóa Đơn</a></li>
+                            <li class="breadcrumb-item active">Danh sách</li>
+                            <li class="breadcrumb-item active">Chi tiết</li>
+                        </ol>
+                    </div><!-- /.col -->
+                </div><!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+
+        <section class="content">
+            <div class="container-fluid bg-white m-2">
+
+                <!-- Main content nằm ở dây -->
+
+                <div class="col-9">
+
+                    <h2>
+                        Mã Hóa đơn : <%= index.maHD%>
+                    </h2>
+                    <label for="" class="p-0 m-0 font-weight-normal">Cửa hàng: <%=index.tenCH%></label>
+                    <br>
+                    <label for="" class="p-0 m-0 font-weight-normal">Khách Hàng: <%=index.tenKH%></label>
+                    <br>
+                    <label for="" class="p-0 m-0 font-weight-normal">Tổng Tiền: <%=index.tongTien%>đ</label>
+                    <br>
+                    <label for="" class="p-0 m-0 font-weight-normal">Thành Tiền: <%=index.thanhTien%>đ</label>
+                    <br>
+                    <label for="" class="p-0 m-0 font-weight-normal">Phí giao hàng: <%=index.phiGiaoHang%>đ</label>
+                    <br>
+                    <label for="" class="p-0 m-0 font-weight-normal">Địa chỉ giao hàng: <%=index.diaChiGiaoHang%>
+                    </label>
+                    <br>
+                    <label for="" class="p-0 m-0 font-weight-normal">Ghi chú: <%=index.ghiChu%>
+                    </label>
+                    <br>
+                    <label for="" class="p-0 m-0 font-weight-normal">Khuyến mãi: <%=index.phanTramKhuyenMaiDat%> %
+                    </label>
+                    <br>
+                    <% if(index.trangThaiThanhToan==1){%>
+                        <label class="font-weight-normal">Trạng thái thanh toán: </label>
+                        <label class="text-success font-weight-normal" class="p-0 m-0">Đã thanh toán</label>
+                        <%}else{%>
+                            <label class="font-weight-normal">Trạng thái thanh toán: </label>
+                            <label class="text-danger font-weight-normal" class="p-0 m-0">Chưa thanh toán</label>
+                            <%}%>
+                                <br>
+                                <% if(index.trangThaiMua==0){%>
+                                    <label class="font-weight-normal">Trạng thái mua: </label>
+                                    <label class="text-secondary" scope="col-2">Đang đợi duyệt</label>
+                                    <%}else if(index.trangThaiMua==1){%>
+                                        <label class="font-weight-normal">Trạng thái mua: </label>
+                                        <label class="text-warning" scope="col-2">Đang chuẩn bị</label>
+                                        <%}else if(index.trangThaiMua==2){%>
+                                            <label class="font-weight-normal">Trạng thái mua: </label>
+                                            <label class="text-info" scope="col-2">Đang giao hàng</label>
+                                            <%}else if(index.trangThaiMua==3){%>
+                                                <label class="font-weight-normal">Trạng thái mua: </label>
+                                                <label class="text-success" scope="col-2">giao hàng thành công
+                                                </label>
+                                                <%}else if(index.trangThaiMua==4){%>
+                                                    <label class="font-weight-normal">Trạng thái mua: </label>
+                                                    <label class="text-danger" scope="col-2">Giao hàng thất bại
+                                                    </label>
+                                                    <%}%>
+                                                        <br>
+                                                        <% if(index.trangThai==true){%>
+                                                            <label class="font-weight-normal">Trạng thái hóa đơn:
+                                                            </label>
+                                                            <label class="text-success font-weight-normal"
+                                                                class="p-0 m-0">hoạt động</label>
+                                                            <%}else{%>
+                                                                <label class="font-weight-normal">Trạng thái hóa đơn:
+                                                                </label>
+                                                                <label class="text-danger font-weight-normal"
+                                                                    class="p-0 m-0">khóa</label>
+                                                                <%}%>
+                                                                    <br>
+                                                                    <h4>Danh Sách Đặt Món</h4>
+                </div>
+
+                <!-- Bảng hiển thị -->
+                <table class="table table-bordered border-secondary">
+                    <thead>
+                        <tr class="table-secondary">
+                            <td scope="col-1">STT</td>
+                            <td scope="col-2">Tên Món </td>
+                            <td scope="col-2">Loại Món</td>
+                            <td scope="col-2">Cửa hàng</td>
+                            <td scope="col-2">Giá tiền đặt</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% for (var i=0; i<data.length; i++) {%>
+                            <tr>
+                                <td scope="col-1">
+                                    <%=i+1%>
+                                </td>
+                                <td scope="col-2">
+                                    <%=data[i].tenMon%>
+                                </td>
+                                <td scope="col-2">
+                                    <%=data[i].tenLM%>
+                                </td>
+                                <td scope="col-2">
+                                    <%=data[i].tenCH%>
+                                </td>
+                                <td scope="col-2">
+                                    <%=data[i].giaTienDat%> đ
+                                </td>
+                            </tr>
+                            <%}%>
+                    </tbody>
+                </table>
+
+            </div>
+        </section>
+    </div>
+
+
+    <!-- Scripts -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".open").click(function (e) {
+                e.stopPropagation()
+                e.preventDefault()
+                $(this).parent().toggleClass('menu-open');
+            }
+            )
+        }
+        )
+    </script>
+</body>
+
+</html>

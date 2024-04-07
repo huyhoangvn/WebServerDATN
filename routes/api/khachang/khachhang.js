@@ -3,9 +3,9 @@ var router = express.Router();
 var KhachHangCtrl = require("../../../controllers/khachhang/khachhang-controller");
 
 /* GET users listing. */
-router.post('/dangKy', KhachHangCtrl.dangKyApi);
-router.post('/dangNhap',KhachHangCtrl.dangNhap);
-router.get('/getKhachHang',KhachHangCtrl.getKhachHang);
-router.put('/updateKhachHang/:id',KhachHangCtrl.updateKhachHang);
-router.delete('/deleteKhachHang/:id',KhachHangCtrl.deleteKhachHang);
+router.post('/dang-ky', KhachHangCtrl.dangKyApi); //http://localhost:3000/api/khachhang/khachhang/dangKy
+router.post('/dang-nhap', KhachHangCtrl.dangNhap); //http://localhost:3000/api/khachhang/khachhang/dangNhap
+
+router.put('/update/:idKH', KhachHangCtrl.updateKhachHang); //http://localhost:3000/api/khachhang/khachhang/updateKhachHang
+
 module.exports = router;
