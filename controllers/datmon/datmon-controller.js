@@ -14,7 +14,7 @@ const addHoaDonVaMonDat = async (req, res, next) => {
         let idKM = "";
         let phanTramKhuyenMaiDat = 0;
         try {
-            idKH = new mongo.Types.ObjectId(req.body.idKM)
+            idKM = req.body.idKM;
             // Kiểm tra khuyến mãi
             const khuyenMai = await KhuyenMai.findById(idKM);
             if (!khuyenMai || !khuyenMai.trangThai) {
@@ -49,22 +49,28 @@ const addHoaDonVaMonDat = async (req, res, next) => {
         if (!cuaHang || !cuaHang.trangThai) {
             return res.json({ msg: 'Cửa hàng không tồn tại hoặc không hoạt động', success: false });
         }
+        let tongTien = 0;
+        let thanhTien = 0;
+        let phiGiaoHang = 24000;
 
         // Tạo hóa đơn
         const hoaDon = await HoaDon.create({
             idKH,
             idCH,
+            idKM,
             diaChiGiaoHang,
+            phanTramKhuyenMaiDat,
             trangThaiMua: 0,
             trangThai: true,
             trangThaiThanhToan: 0,
-            phanTramKhuyenMaiDat,
-            tongTien: 0 // Khởi tạo tổng tiền ban đầu là 0
+            phiGiaoHang,
+            tongTien: 0, // Khởi tạo tổng tiền ban đầu là 0
+            thanhTien: 0
         });
 
         hoaDonId = hoaDon._id; // Lưu ID của hóa đơn
 
-        let tongTien = 0;
+
 
         const monDatList = [];
         for (const mon of list) {
@@ -80,6 +86,7 @@ const addHoaDonVaMonDat = async (req, res, next) => {
 
             const giaTienDat = monObj.giaTien;
             tongTien += giaTienDat * soLuong;
+            thanhTien = (tongTien - Math.ceil(tongTien * phanTramKhuyenMaiDat / 100)) + phiGiaoHang
 
             const monDat = await MonDat.create({
                 idHD: hoaDonId, // Sử dụng ID của hóa đơn
@@ -97,25 +104,15 @@ const addHoaDonVaMonDat = async (req, res, next) => {
         }
 
         // Nếu không có lỗi, cập nhật tổng tiền vào hóa đơn
-        await HoaDon.findByIdAndUpdate(hoaDonId, { tongTien }, { new: true });
-
-        res.status(201).json({
-            hoaDon: {
-                idHD: hoaDonId,
-                idKH,
-                idCH,
-                diaChiGiaoHang,
-                idKM,
-                phanTramKhuyenMaiDat,
-                tongTien
-            },
-            monDat: monDatList,
+        await HoaDon.findByIdAndUpdate(hoaDonId, { tongTien, thanhTien }, { new: true });
+        res.json({
+            index: hoaDonId,
             message: "Thêm mới hóa đơn và món đặt thành công",
             success: true,
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Lỗi khi thêm mới hóa đơn và món đặt", error });
+        res.json({ message: "Lỗi khi thêm mới hóa đơn và món đặt", error });
     }
 }
 
@@ -183,7 +180,7 @@ const addMonDat = async (req, res, next) => {
         };
     } catch (e) {
         console.error(e);
-        res.status(500).json({ error: e.message || "Đã xảy ra lỗi khi thêm món đặt" });
+        res.json({ error: e.message || "Đã xảy ra lỗi khi thêm món đặt" });
     }
 }
 
@@ -239,7 +236,7 @@ const updateMonDat = async (req, res, next) => {
         };
     } catch (e) {
         console.error(e);
-        res.status(500).json({ error: e.message || "Đã xảy ra lỗi khi cập nhật món đặt" });
+        res.json({ error: e.message || "Đã xảy ra lỗi khi cập nhật món đặt" });
     }
 }
 
@@ -280,7 +277,7 @@ const deleteMonDat = async (req, res, next) => {
         };
     } catch (e) {
         console.error(e);
-        res.status(500).json({ error: e.message || "Đã xảy ra lỗi khi xóa món đặt" });
+        res.json({ error: e.message || "Đã xảy ra lỗi khi xóa món đặt" });
     }
 }
 
@@ -294,7 +291,7 @@ const deleteMonDatMem = async (req, res, next) => {
             { new: true },
         );
         if (!trangThai) {
-            return res.status(404).json({ error: "Không tìm thấy hoa đơn" });
+            return res.json({ error: "Không tìm thấy hoa đơn" });
         }
         return {
             msg: "update thành công",
@@ -302,7 +299,7 @@ const deleteMonDatMem = async (req, res, next) => {
         };
     } catch (e) {
         console.log(e);
-        res.status(500).json({ error: "Đã xảy ra lỗi khi update " });
+        res.json({ error: "Đã xảy ra lỗi khi update " });
     }
 }
 
@@ -341,7 +338,7 @@ const getDanhSachMonDatByIdHoaDon = async (req, res, next) => {
         };
     } catch (error) {
         console.error(error);
-        res.status(500).json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của món đặt', error: error.message });
+        res.json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của món đặt', error: error.message });
     }
 };
 
@@ -359,7 +356,7 @@ const addMonDatApi = async (req, res, next) => {
     } catch (error) {
         // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
         if (!res.headersSent) {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
         } else {
             console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         }
@@ -378,7 +375,7 @@ const updateMonDatApi = async (req, res, next) => {
     } catch (error) {
         // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
         if (!res.headersSent) {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
         } else {
             console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         }
@@ -396,7 +393,7 @@ const getDanhSachMonDatByIdHoaDonApi = async (req, res, next) => {
     } catch (error) {
         // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
         if (!res.headersSent) {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
         } else {
             console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         }
@@ -413,7 +410,7 @@ const deleteMonDatApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
         }
     }
 }
@@ -427,7 +424,7 @@ const deleteMonDatMemApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
         }
     }
 }

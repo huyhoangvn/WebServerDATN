@@ -28,19 +28,19 @@ const ThemKhuyenMai = async function (req, res) {
             if (khuyenMaiDaCo.trangThai === false) {
                 await KhuyenMai.updateOne({ maKhuyenMai }, { trangThai: true });
                 const index = await KhuyenMai.findOne({ maKhuyenMai: maKhuyenMai });
-                res.status(200).json({
+                res.json({
                     index,
                     message: 'Thêm khuyến mãi lại thành công',
                     success: true
                 });
             } else if (khuyenMaiDaCo.trangThai != false) {
-                res.status(200).json({
+                res.json({
                     error: 'Khuyễn mãi đã tồn tại',
                     success: false
                 });
             }
         } else if (tieuDe == "" || maKhuyenMai == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu == "") {
-            res.status(200).json({
+            res.json({
                 error: 'Thêm khuyễn mãi lỗi do thiếu thông tin',
                 success: false
             });
@@ -54,7 +54,7 @@ const ThemKhuyenMai = async function (req, res) {
                 donToiThieu: donToiThieu,
                 trangThai: true
             })
-            res.status(200).json({
+            res.json({
                 index,
                 message: 'Thêm khuyến mãi thành công',
                 success: true
@@ -62,7 +62,7 @@ const ThemKhuyenMai = async function (req, res) {
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.json({
             error: 'Lỗi khi thêm khuyến mãi',
             success: false
         });
@@ -91,12 +91,12 @@ const SuaKhuyenMai = async function (req, res) {
         }
         const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
         if (!index) {
-            return res.status(404).json({
+            return res.json({
                 error: 'Không tìm thấy khuyến mãi để sửa',
                 success: false
             });
         } else if (tieuDe == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu == "") {
-            return res.status(404).json({
+            return res.json({
                 error: 'Sửa khuyến mãi lỗi do thiếu thông tin',
                 success: false
             });
@@ -109,7 +109,7 @@ const SuaKhuyenMai = async function (req, res) {
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.json({
             error: 'Lỗi khi sửa khuyến mãi',
             success: false
         });
@@ -162,7 +162,7 @@ const XoaKhuyenMai = async function (req, res) {
         }
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.json({
             error: 'Lỗi khi xóa khuyến mãi',
             success: false
         });
@@ -188,12 +188,12 @@ const GetKhuyenMaiTheoTieuDe = async function (req, res) {
             .limit(10);
 
         if (list.length == 0) {
-            res.status(200).json({
+            res.json({
                 message: 'không có khuyến mãi này',
                 success: true
             });
         } else {
-            res.status(200).json({
+            res.json({
                 list,
                 count: list.length,
                 message: 'Get khuyến mãi theo tiêu đề thành công',
@@ -203,7 +203,7 @@ const GetKhuyenMaiTheoTieuDe = async function (req, res) {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.json({
             error: 'Lỗi khi lấy khuyến mãi theo tiêu đề',
             success: false
         });
@@ -223,12 +223,12 @@ const GetKhuyenMaiTheoMaKhuyenMai = async function (req, res) {
             .limit(10);
 
         if (list.length == 0) {
-            res.status(200).json({
+            res.json({
                 message: 'không có khuyến mãi này',
                 success: false
             });
         } else {
-            res.status(200).json({
+            res.json({
                 list,
                 count: list.length,
                 message: 'Get khuyến mãi theo tiêu đề thành công',
@@ -238,7 +238,7 @@ const GetKhuyenMaiTheoMaKhuyenMai = async function (req, res) {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.json({
             error: 'Lỗi khi lấy khuyến mãi theo tiêu đề',
             success: false
         });
@@ -258,12 +258,12 @@ const GetKhuyenMaiTheoPhanTram = async function (req, res) {
             .limit(10);
 
         if (list.length == 0) {
-            res.status(200).json({
+            res.json({
                 message: 'không có khuyến mãi này',
                 success: true
             });
         } else {
-            res.status(200).json({
+            res.json({
                 list,
                 count: list.length,
                 message: 'Get khuyến mãi theo phần trăm thành công',
@@ -273,7 +273,7 @@ const GetKhuyenMaiTheoPhanTram = async function (req, res) {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.json({
             error: 'Lỗi khi lấy khuyến mãi theo phần trăm',
             success: false
         });
@@ -294,12 +294,12 @@ const GetKhuyenMaiTheoDonToiThieu = async function (req, res) {
             .limit(10);
 
         if (list.length == 0) {
-            res.status(200).json({
+            res.json({
                 message: 'không có khuyến mãi này',
                 success: true
             });
         } else {
-            res.status(200).json({
+            res.json({
                 list,
                 count: list.length,
                 message: 'Get khuyến mãi theo đơn tối thiểu thành công',
@@ -309,7 +309,7 @@ const GetKhuyenMaiTheoDonToiThieu = async function (req, res) {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.json({
             error: 'Lỗi khi lấy khuyến mãi theo đơn tối thiểu',
             success: false
         });
@@ -321,14 +321,14 @@ const GetKhuyenMaiTheoId = async function (req, res) {
     const idKM = new mongo.Types.ObjectId(req.params.idKM);
     try {
         const index = await KhuyenMai.findOne({ _id: idKM });
-        res.status(200).json({
+        res.json({
             index,
             message: 'Get khuyến mãi theo id thành công',
             success: true
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.json({
             error: 'Lỗi khi lấy khuyến mãi theo id',
             success: false
         });
@@ -354,12 +354,12 @@ const GetKhuyenMaiTheoNgay = async function (req, res) {
             .limit(10);
 
         if (list.length === 0) {
-            res.status(200).json({
+            res.json({
                 message: 'Không có khuyến mãi nào trong ngày này',
                 success: false
             });
         } else {
-            res.status(200).json({
+            res.json({
                 list,
                 count: list.length,
                 message: 'Get khuyến mãi theo ngày thành công',
@@ -369,7 +369,7 @@ const GetKhuyenMaiTheoNgay = async function (req, res) {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({
+        res.json({
             error: 'Lỗi khi lấy khuyến mãi theo ngày',
             success: false
         });

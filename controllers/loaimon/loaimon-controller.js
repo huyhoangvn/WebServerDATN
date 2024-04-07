@@ -38,11 +38,11 @@ const getchitietloaiMonApi = async (req, res, next) => {
     const idLM = req.params.idLM;
     const loaimon = await Loaimon.model.findOne({ _id: idLM });
     if (!loaimon) {
-      res.status(500).json({ error: "không tìm thấy loại món" });
+      res.json({ error: "không tìm thấy loại món" });
     }
-    res.status(200).json(loaimon);
+    res.json(loaimon);
   } catch (error) {
-    res.status(500).send(error);
+    res.send(error);
   }
 };
 // get loai mon
@@ -50,40 +50,41 @@ const getchitietloaiMonApi = async (req, res, next) => {
 const getloaimonApi = async (req, res) => {
   try {
     const tenLM = req.query.tenLM;
-    const trang = parseInt( req.query.trang ) || 1;
+    const trang = parseInt(req.query.trang) || 1;
     const timkiem1 = {
     };
-  
-    
-     if (typeof(req.query.tenLM) !== 'undefined' && req.query.tenLM !== "") {
+
+
+    if (typeof (req.query.tenLM) !== 'undefined' && req.query.tenLM !== "") {
       timkiem1.tenLM = { $regex: req.query.tenLM, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
-     }
-     const list = await Loaimon.model.aggregate([
-       { $match:
-        timkiem1,
-        
-       },
+    }
+    const list = await Loaimon.model.aggregate([
+      {
+        $match:
+          timkiem1,
 
-       {
-            $skip: (trang-1)*10,
-       },
+      },
 
-       {
-            $limit: 10,
-       },
+      {
+        $skip: (trang - 1) * 10,
+      },
+
+      {
+        $limit: 10,
+      },
     ]);
-     
-      res.status(200).json({
-        list,
-        count:list.length,
-        message: 'Get đánh giá theo tên món thành công',
-        success: true
+
+    res.json({
+      list,
+      count: list.length,
+      message: 'Get đánh giá theo tên món thành công',
+      success: true
     });
   } catch (error) {
-       console.error(error);
-       res.status(500).json({
-        error: 'Lỗi khi lấy đánh giá theo tên món',
-        success: false
+    console.error(error);
+    res.json({
+      error: 'Lỗi khi lấy đánh giá theo tên món',
+      success: false
     });
   }
 };
@@ -97,14 +98,14 @@ const kichhoatLoaiMonapi = async (req, res) => {
       { new: true }
     );
     if (!kichhoat) {
-      return res.status(404).json({ error: "Không tìm thấy loại món" });
+      return res.json({ error: "Không tìm thấy loại món" });
     }
-    res.status(200).json({
+    res.json({
       msg: "đã kích hoạt cửa hàng",
       data: kichhoat,
     });
   } catch (error) {
-    res.status(500).json({ message: "Lỗi kích hoạt loại món", error: error });
+    res.json({ message: "Lỗi kích hoạt loại món", error: error });
   }
 };
 // Delete
@@ -112,61 +113,61 @@ const deleteLoaiMon = async (req, res) => {
   const idLM = new mongo.Types.ObjectId(req.params.idLM);
 
   try {
-      const filter = {_id: idLM}
-      const update = {trangThai : false}
-      const index = await Loaimon.model.findOneAndUpdate(filter, update, { new: true })
+    const filter = { _id: idLM }
+    const update = { trangThai: false }
+    const index = await Loaimon.model.findOneAndUpdate(filter, update, { new: true })
 
-      if (!index) {
-          return res.json({
-              error: 'Không tìm thấy loại món để xóa',
-              success: false
-          });
-      }else{
-          res.json({
-              index,
-              message: 'Xóa loại món thành công',
-              success: true
-          });
-      }
-  } catch (error) {
-      res.json({
-          error: 'Lỗi khi xóa loại món',
-          success: false
+    if (!index) {
+      return res.json({
+        error: 'Không tìm thấy loại món để xóa',
+        success: false
       });
+    } else {
+      res.json({
+        index,
+        message: 'Xóa loại món thành công',
+        success: true
+      });
+    }
+  } catch (error) {
+    res.json({
+      error: 'Lỗi khi xóa loại món',
+      success: false
+    });
   }
 };
 // Sua
 const updateLoaiMon = async (req, res) => {
-  const idLM = req.params.idLM; 
+  const idLM = req.params.idLM;
   const tenLM = req.body.tenLM;
   const trangThai = req.body.trangThai;
   try {
-      const filter = { _id: idLM };
-      const update = { tenLM: tenLM , trangThai: trangThai};
-      const updatedLoaiMon = await Loaimon.model.findOneAndUpdate(filter, update, { new: true });
+    const filter = { _id: idLM };
+    const update = { tenLM: tenLM, trangThai: trangThai };
+    const updatedLoaiMon = await Loaimon.model.findOneAndUpdate(filter, update, { new: true });
 
-      if (!updatedLoaiMon) {
-          return res.json({
-              error: 'Không tìm thấy loại món để sửa',
-              success: false
-          });
-      } else if (tenLM === '') {
-          return res.json({
-              error: 'Sửa loại món không thành công do thiếu thông tin',
-              success: false
-          });
-      } else {
-          res.json({
-              data: updatedLoaiMon,
-              message: 'Sửa loại món thành công',
-              success: true
-          });
-      }
-  } catch (error) {
-      res.json({
-          error: 'Lỗi khi sửa loại món: ' + error.message,
-          success: false
+    if (!updatedLoaiMon) {
+      return res.json({
+        error: 'Không tìm thấy loại món để sửa',
+        success: false
       });
+    } else if (tenLM === '') {
+      return res.json({
+        error: 'Sửa loại món không thành công do thiếu thông tin',
+        success: false
+      });
+    } else {
+      res.json({
+        data: updatedLoaiMon,
+        message: 'Sửa loại món thành công',
+        success: true
+      });
+    }
+  } catch (error) {
+    res.json({
+      error: 'Lỗi khi sửa loại món: ' + error.message,
+      success: false
+    });
   }
 };
 //Api
@@ -178,7 +179,7 @@ const addloaimonApi = async (req, res, next) => {
     }
   } catch (error) {
     if (!res.headersSent) {
-      res.status(500).json({
+      res.json({
         success: false,
         msg: "Đã xảy ra lỗi khi thêm loại món",
         error: error.message,
@@ -198,7 +199,7 @@ const deleteLoaiMonApi = async (req, res, next) => {
     }
   } catch (error) {
     if (!res.headersSent) {
-      res.status(500).json({
+      res.json({
         success: false,
         msg: "Đã xảy ra lỗi khi xóa loại món",
         error: error.message,
@@ -218,7 +219,7 @@ const updateLoaiMonApi = async (req, res, next) => {
     }
   } catch (error) {
     if (!res.headersSent) {
-      res.status(500).json({
+      res.json({
         success: false,
         msg: "Đã xảy ra lỗi khi thêm loại món",
         error: error.message,
@@ -231,56 +232,56 @@ const updateLoaiMonApi = async (req, res, next) => {
   }
 };
 
-const GetSoLuongMonTheoLoaiMon = async (req, res) =>{
+const GetSoLuongMonTheoLoaiMon = async (req, res) => {
   try {
     const timkiem = {};
 
-    if (typeof(req.query.tenLM) !== 'undefined' && typeof(req.query.tenLM) !== "") {
-        timkiem.tenLM = { $regex: req.query.tenLM, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+    if (typeof (req.query.tenLM) !== 'undefined' && typeof (req.query.tenLM) !== "") {
+      timkiem.tenLM = { $regex: req.query.tenLM, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
     }
-    if (typeof(req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
-        const trangThaiValue = parseInt(req.query.trangThai);
-        if(trangThaiValue === 1 || trangThaiValue === 0){
-          timkiem.trangThai = trangThaiValue === 1;
-        }
-       }
+    if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+      const trangThaiValue = parseInt(req.query.trangThai);
+      if (trangThaiValue === 1 || trangThaiValue === 0) {
+        timkiem.trangThai = trangThaiValue === 1;
+      }
+    }
 
-    const result = await Loaimon.model.aggregate([ 
-        { $match: timkiem },
-        {
-            $lookup: {
-                from: "Mon",
-                localField: "_id",
-                foreignField: "idLM",
-                as: "monData"
-            }
-        },
-        {
-            $project: {
-                "idLM": "$_id",
-                "tenLM": "$tenLM",
-                "trangThai":"$trangThai",
-                "soLuongMon": { $size: "$monData" } // Đếm số lượng phần tử trong mảng "monData"
-            }
-        },
-        // {
-        //     $skip: (trang-1)*10,
-        // },
-    
-        // {
-        //         $limit: 10,
-        // },
+    const result = await Loaimon.model.aggregate([
+      { $match: timkiem },
+      {
+        $lookup: {
+          from: "Mon",
+          localField: "_id",
+          foreignField: "idLM",
+          as: "monData"
+        }
+      },
+      {
+        $project: {
+          "idLM": "$_id",
+          "tenLM": "$tenLM",
+          "trangThai": "$trangThai",
+          "soLuongMon": { $size: "$monData" } // Đếm số lượng phần tử trong mảng "monData"
+        }
+      },
+      // {
+      //     $skip: (trang-1)*10,
+      // },
+
+      // {
+      //         $limit: 10,
+      // },
     ]);
 
-    return( {
-        list: result,
-        message: 'lấy số lượng món thành công',
+    return ({
+      list: result,
+      message: 'lấy số lượng món thành công',
     });
   } catch (error) {
-      return({
-          msg: 'Lỗi khi lấy số lượng món theo loại món',
-          success: false
-      });
+    return ({
+      msg: 'Lỗi khi lấy số lượng món theo loại món',
+      success: false
+    });
   }
 }
 module.exports = {

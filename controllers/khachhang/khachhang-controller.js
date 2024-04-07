@@ -11,7 +11,7 @@ const dangKy = async (req, res, next) => {
 
   // Validate khách hàng
   if (taiKhoan === "") {
-    return  res.json({
+    return res.json({
       success: false,
       msg: "Tài khoản không được để trống"
     });
@@ -26,7 +26,7 @@ const dangKy = async (req, res, next) => {
   try {
     let foundKhachHang = await KhachHang.model.findOne({ taiKhoan: taiKhoan });
     if (foundKhachHang) {
-      return  res.json({ success: false, msg: "Khách hàng đã tồn tại" });
+      return res.json({ success: false, msg: "Khách hàng đã tồn tại" });
     }
 
     await KhachHang.model.create({
@@ -35,12 +35,12 @@ const dangKy = async (req, res, next) => {
       matKhau: matKhau,
       trangThai: true
     });
-    
+
     msg = "Thêm mới tài khoản người dùng thành công";
-    return  res.json({ success: true, msg: msg });
+    return res.json({ success: true, msg: msg });
   } catch (error) {
     msg = "Thêm mới tài khoản người dùng thất bại";
-    return  res.json({ success: false, msg: msg });
+    return res.json({ success: false, msg: msg });
   }
 };
 
@@ -69,26 +69,26 @@ const dangNhap = async (req, res) => {
     const khachHang = await KhachHang.model.findOne({ taiKhoan });
 
     if (!khachHang) {
-      return res.status(401).json({
+      return res.json({
         success: false,
         successMessage: 'Tài khoản không tồn tại.'
       });
     }
 
     if (matKhau !== khachHang.matKhau) {
-      return res.status(401).json({
+      return res.json({
         success: false,
         message: 'Mật khẩu không đúng.'
       });
     }
 
-    return res.status(200).json({
+    return res.json({
       success: true,
       successMessage: 'Đăng nhập thành công.', khachHang
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ successMessage: 'Lỗi server.' });
+    res.json({ successMessage: 'Lỗi server.' });
   }
 }
 
@@ -202,22 +202,45 @@ const getSoLuongKhachHang = async (req, res) => {
 //sửa thông tin khách hàng
 const updateKhachHang = async (req, res) => {
   try {
-    const data = await KhachHang.model.findByIdAndUpdate(req.params.id, req.body, { new: true })
-    if (!data) {
-      return res.status(404).json({
-        msg: "Cập nhật thông tin khách hàng thất bại!",
-        success: true
-      })
+    const idKH = new mongo.Types.ObjectId(req.params.idKH);
+    const tenKH = req.body.tenKH;
+    const diaChi = req.body.diaChi;
+    const sdt = req.body.sdt;
+    const gioiTinh = req.body.gioiTinh;
+    const hinhAnh = req.body.hinhAnh;
 
-    } else {
-      return res.status(200).json({
-        error: "Cập nhật thông tin khách hàng thành công!",
-        success: false
-      })
-
+    const filter = { _id: idKH }
+    const update = {
+      tenKH: tenKH,
+      diaChi: diaChi,
+      sdt: sdt,
+      gioiTinh: gioiTinh,
+      hinhAnh: hinhAnh,
     }
-  } catch (err) {
-    return res.status(500).json({ message: err.message })
+    const index = await KhachHang.model.findOneAndUpdate(filter, update, { new: true })
+    if (!index) {
+      return res.json({
+        msg: 'Không tìm thấy khách hàng để sửa',
+        success: false
+      });
+    } else if (tenKH == "" || diaChi == "" || sdt == "" || gioiTinh == "" || hinhAnh == "") {
+      return res.json({
+        msg: 'cập nhật thông tin khách hàng lỗi do thiếu thông tin',
+        success: false
+      });
+    } else {
+      return res.json({
+        index,
+        msg: 'cập nhật thông tin khách hàng thành công',
+        success: true
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.json({
+      msg: 'Lỗi khi cập nhật thông tin khách hàng',
+      success: false
+    });
   }
 }
 
@@ -226,12 +249,12 @@ const updateKhachHang = async (req, res) => {
 const softDeleteKhachHang = async (req, res) => {
   try {
     await KhachHang.model.findByIdAndUpdate(req.params.id, { trangThai: false }); //sửa trạng thái 0
-    res.status(200).json({
+    res.json({
       message: "Xóa mềm khách hàng thành công",
       success: true
     });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       error: "Lỗi khi xóa mềm khách hàng",
       success: false
     });
@@ -244,7 +267,7 @@ const deleteKhachHang = async (req, res) => {
   try {
     const data = await KhachHang.model.findByIdAndDelete(req.params.id)
     if (!data) {
-      return res.status(404).json({
+      return res.json({
         error: "Xóa khách hàng thất bại !",
         success: false
       })
@@ -294,27 +317,16 @@ const deleteKhachHangWeb = async (req, res) => {
 }
 
 
-
-
-// supprot nếu lỗi 
-// TypeError: Converting circular structure to JSON
-// --> starting at object with constructor 'Socket'
-// |     property 'parser' -> object with constructor 'HTTPParser'
-// --- property 'socket' closes the circle
-// at JSON.stringify (<anonymous>)
-// at dangKyApi (/Users/lovanquyet/Desktop/DATN_FPOLY/Project/food-center-sever/controllers/khachhang/khachhang-controller.js:266:16)
-// at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
-
 function removeCircular(obj) {
   const seen = new WeakSet();
-  return JSON.stringify(obj, function(key, value) {
-      if (typeof value === "object" && value !== null) {
-          if (seen.has(value)) {
-              return;
-          }
-          seen.add(value);
+  return JSON.stringify(obj, function (key, value) {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return;
       }
-      return value;
+      seen.add(value);
+    }
+    return value;
   });
 }
 
@@ -322,14 +334,14 @@ function removeCircular(obj) {
 //Api
 const dangKyApi = async (req, res, next) => {
   try {
-      const result = await dangKy(req, res, next);
+    const result = await dangKy(req, res, next);
 
-      const jsonResult = removeCircular(result);
+    const jsonResult = removeCircular(result);
 
-      res.end(JSON.stringify(jsonResult));
+    res.end(JSON.stringify(jsonResult));
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ success: false, msg: "Có lỗi xảy ra trong quá trình xử lý" });
+    console.error(error);
+    res.json({ success: false, msg: "Có lỗi xảy ra trong quá trình xử lý" });
   }
 };
 
@@ -355,5 +367,5 @@ module.exports = {
   deleteKhachHang,
   deleteKhachHangWeb,
   getSoLuongKhachHang,
-  getSoLuongKhachHangApi
+  getSoLuongKhachHangApi,
 }
