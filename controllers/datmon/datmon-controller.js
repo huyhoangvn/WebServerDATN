@@ -49,6 +49,9 @@ const addHoaDonVaMonDat = async (req, res, next) => {
         if (!cuaHang || !cuaHang.trangThai) {
             return res.json({ msg: 'Cửa hàng không tồn tại hoặc không hoạt động', success: false });
         }
+        let tongTien = 0;
+        let thanhTien = 0;
+        let phiGiaoHang = 24000;
 
         // Tạo hóa đơn
         const hoaDon = await HoaDon.create({
@@ -60,16 +63,14 @@ const addHoaDonVaMonDat = async (req, res, next) => {
             trangThaiMua: 0,
             trangThai: true,
             trangThaiThanhToan: 0,
-            phiGiaoHang: 0,
+            phiGiaoHang,
             tongTien: 0, // Khởi tạo tổng tiền ban đầu là 0
             thanhTien: 0
         });
 
         hoaDonId = hoaDon._id; // Lưu ID của hóa đơn
 
-        let tongTien = 0;
-        let thanhTien = 0;
-        let phiGiaoHang = 24000;
+
 
         const monDatList = [];
         for (const mon of list) {

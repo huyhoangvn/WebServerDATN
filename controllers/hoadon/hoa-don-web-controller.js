@@ -11,7 +11,7 @@ const getList = async (req, res, next) => {
         const soLuongHoaDonTrenTrang = 10;
         const soLuongHoaDon = await hoadon.getSoLuongHoaDon(req, res);
         const totalPages = Math.ceil(soLuongHoaDon.count / soLuongHoaDonTrenTrang);
-        const result = await hoadon.getHoaDon(req, res);
+        const result = await hoadon.getHoaDonWeb(req, res);
         res.render("hoadon/danh-sach", {
             data: result.list,
             admin: req.session.ten,
@@ -29,7 +29,7 @@ const getChiTiet = async (req, res, next) => {
     try {
         const data = await hoadon.chiTietHoaDon(req, res);
         if (!data) {
-            return res.status(500).json({ error: "Đã xảy ra lỗi khi lấy chi tiết hóa đơn" });
+            return { error: "Đã xảy ra lỗi khi lấy chi tiết hóa đơn" };
         }
         res.render("hoadon/chi-tiet", {
             index: data.hoaDon,
@@ -39,7 +39,7 @@ const getChiTiet = async (req, res, next) => {
         });
     } catch (err) {
         console.error(err);
-        res.status(500).json({ error: "Đã xảy ra lỗi khi lấy chi tiết hóa đơn" });
+        return { error: "Đã xảy ra lỗi khi lấy chi tiết hóa đơn" };
     }
 };
 
