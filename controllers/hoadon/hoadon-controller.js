@@ -491,13 +491,17 @@ const deleteHoaDonCung = async (req, res, next) => {
 
 const chiTietHoaDon = async (req, res, next) => {
     try {
+        // Lấy chi tiết hóa đơn
         const id = req.params.id;
 
-        // Lấy chi tiết hóa đơn
+        if (!id) {
+            return res.json({ msg: "ID không được cung cấp", success: false });
+        }
+
         const item = await HoaDon.findById(id);
 
         if (!item) {
-            return res.json({ error: "Không tìm thấy Hóa Đơn" });
+            return res.json({ msg: "Không tìm thấy Hóa Đơn", success: false });
         }
 
         // Lookup để lấy tên khách hàng từ bảng KhachHang
@@ -596,7 +600,7 @@ const chiTietHoaDon = async (req, res, next) => {
 
     } catch (e) {
         console.log(e);
-        res.json({ error: "Đã xảy ra lỗi khi lấy chi tiết hóa đơn" });
+        res.json({ msg: "Đã xảy ra lỗi khi lấy chi tiết hóa đơn" });
     }
 };
 
