@@ -104,9 +104,7 @@ const doiMatKhau = async (req, res) => {
 
     // Kiểm tra mật khẩu cũ
     if (matKhauCu !== item.matKhau) {
-      return res
-        .status(401)
-        .json({ success: false, msg: "Mật khẩu cũ không chính xác." });
+      return res.json({ success: false, msg: "Mật khẩu cũ không chính xác." });
     }
 
     // Cập nhật mật khẩu mới

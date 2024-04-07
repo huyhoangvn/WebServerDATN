@@ -28,7 +28,7 @@ const addKMCuaToi = async (req, res, next) => {
 
     } catch (e) {
         console.error(e);
-        res.status(500).json({ error: e.message || "Đã xảy ra lỗi khi thêm khuyến mãi " })
+        res.json({ error: e.message || "Đã xảy ra lỗi khi thêm khuyến mãi " })
 
     }
 }
@@ -109,7 +109,7 @@ const getAllKhuyenMaiCT = async (req, res, next) => {
             msg: "lấy danh sách thành công"
         };
     } catch (error) {
-        res.status(500).json({ message: "Lỗi khi lấy danh sách Khuyến mãi", error });
+        res.json({ message: "Lỗi khi lấy danh sách Khuyến mãi", error });
     }
 };
 
@@ -123,7 +123,7 @@ const deleteKhuyenMaiCT = async (req, res) => {
             message: "Xóa Khuyến mãi thành công"
         };
     } catch (error) {
-        res.status(500).json({
+        res.json({
             message: "Lỗi khi xóa Khuyến mãi", error
         });
     }
@@ -141,7 +141,7 @@ const addKMCuaToiApi = async (req, res, next) => {
     } catch (error) {
         // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
         if (!res.headersSent) {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
         } else {
             console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         }
@@ -160,7 +160,7 @@ const getAllKhuyenMaiCTApi = async (req, res, next) => {
     } catch (error) {
         // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
         if (!res.headersSent) {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
         } else {
             console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         }
@@ -178,7 +178,7 @@ const deleteKhuyenMaiCTApi = async (req, res, next) => {
     } catch (error) {
         // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
         if (!res.headersSent) {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
         } else {
             console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         }

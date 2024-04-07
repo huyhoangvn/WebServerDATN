@@ -5,12 +5,14 @@ const mongoose = require('mongoose');
 const CuaHangSchema = new db.mongodb.Schema(
     {
         tenCH: { type: String, required: true },
-        email: { type: String, default: "N/A" },
+        email: { type: String, default: "" },
         sdt: { type: String, default: "0000000000" },
-        diaChi: { type: String, default: "N/A" },
+        tenTaiKhoan: { type: String, default: "" },
+        taiKhoanThanhToan: { type: String, default: 0 },
+        diaChi: { type: String, default: "" },
         thoiGianTao: { type: Date, default: Date.now() },
-        thoiGianMo: { type: String, default: "N/A" },
-        thoiGianDong: { type: String, default: "N/A" },
+        thoiGianMo: { type: String, default: "00:00:00" },
+        thoiGianDong: { type: String, default: "00:00:00" },
         hinhAnh: { type: String, default: "N/A" },
         trangThai: { type: Boolean, required: true }
     }, { collection: 'CuaHang' }

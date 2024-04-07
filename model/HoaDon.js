@@ -13,11 +13,15 @@ const HoaDonSchema = new db.mongodb.Schema(
         idCH: { type: mongoose.Schema.Types.ObjectId, ref: 'CuaHang', required: true },
         maHD: { type: String, default: generateRandomNumber },
         phanTramKhuyenMaiDat: { type: Number, default: 0 },
-        diaChiGiaoHang: { type: String, default: 'N/A' },
-        ghiChu: { type: String, default: 'N/A' },
+        phiGiaoHang: { type: Number, default: 24000 },
+        thanhTien: { type: Number, default: 0 },
+        diaChiGiaoHang: { type: String, default: "" },
+        ghiChu: { type: String, default: "" },
         thoiGianTao: { type: Date, default: Date.now() },
+        thoiGianDuyet: { type: Date, default: Date.now() },
         tongTien: { type: Number, default: 0 },
-        thoiGianGiaoHangDuKien: { type: Date, default: '' },
+        thoiGianGiaoHangDuKien: { type: Date, default: Date.now() },
+
         trangThaiThanhToan: {
             type: Number,
             enum: [0, 1],

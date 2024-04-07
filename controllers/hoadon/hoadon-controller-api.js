@@ -9,17 +9,17 @@ const addHoaDonApi = async (req, res, next) => {
     try {
         const { idKH, idCH, diaChiGiaoHang } = req.body;
         if (!idKH || !idCH || !diaChiGiaoHang) {
-            return res.status(400).json({ msg: 'Vui lòng điền đầy đủ thông tin' });
+            return res.json({ msg: 'Vui lòng điền đầy đủ thông tin' });
         }
 
         const khachHang = await KhachHang.findById(idKH);
         if (!khachHang || !khachHang.trangThai) {
-            return res.status(400).json({ msg: "Khách hàng không tồn tại hoặc không có trạng thái đúng" });
+            return res.json({ msg: "Khách hàng không tồn tại hoặc không có trạng thái đúng" });
         }
         // Kiểm tra xem cửa hàng có tồn tại không
         const cuaHang = await CuaHang.findById(idCH);
         if (!cuaHang || !cuaHang.trangThai) {
-            return res.status(400).json({ msg: "Khách hàng không tồn tại hoặc không có trạng thái đúng" });
+            return res.json({ msg: "Khách hàng không tồn tại hoặc không có trạng thái đúng" });
         }
 
         const saveHD = await HoaDon.create({
@@ -30,14 +30,14 @@ const addHoaDonApi = async (req, res, next) => {
             trangThai: true,
             trangThaiThanhToan: 0,
         });
-        res.status(201).json({
+        res.json({
             index: saveHD,
             message: "Thêm mới hóa đơn thành công",
             success: true,
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: "Lỗi khi thêm mới hóa đơn", error });
+        res.json({ message: "Lỗi khi thêm mới hóa đơn", error });
     }
 };
 const updateHoaDonApi = async (req, res, next) => {
@@ -52,7 +52,7 @@ const updateHoaDonApi = async (req, res, next) => {
     } catch (error) {
         // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
         if (!res.headersSent) {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
         } else {
             console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         }
@@ -67,7 +67,7 @@ const getHoaDonApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt hóa đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt hóa đơn', error: error.message });
         }
     }
 }
@@ -82,7 +82,7 @@ const chiTietHoaDonApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
         }
     }
 }
@@ -96,7 +96,7 @@ const updatetrangThaiThanhToanTrueApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
         }
     }
 }
@@ -110,7 +110,7 @@ const updatetrangThaiThanhToanFalseApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
         }
     }
 }
@@ -123,7 +123,7 @@ const updatetrangThaiMuaDangChuanBiApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
         }
     }
 }
@@ -136,7 +136,7 @@ const updatetrangThaiMuaDangGiaoHangApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
         }
     }
 }
@@ -149,7 +149,7 @@ const updatetrangThaiMuaGiaoHangThatBaiApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
         }
     }
 }
@@ -162,7 +162,7 @@ const updatetrangThaiMuaGiaoHangThanhCongApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
         }
     }
 }
@@ -177,56 +177,69 @@ const deleteHoaDonApi = async (req, res, next) => {
         if (res.headersSent) {
             console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
         } else {
-            res.status(500).json({ msg: 'Đã xảy ra lỗi khi xóa Hóa Đơn', error: error.message });
+            res.json({ msg: 'Đã xảy ra lỗi khi xóa Hóa Đơn', error: error.message });
         }
     }
 }
 const getDanhSachHoaDonByIdKhachHangApi = async (req, res, next) => {
     try {
-        const id = req.params.id; // Lấy ID của khách hàng từ tham số trong đường dẫn
+        const idKH = req.params.idKH; // Lấy ID của khách hàng từ tham số trong đường dẫn
+        const trang = parseInt(req.query.trang) || 1; // Trang hiện tại, mặc định là trang 1 nếu không có truy vấn currentPage
+        const itemsPerPage = 10; // Số lượng mục trên mỗi trang
 
         // Kiểm tra tính hợp lệ của ID khách hàng
-        if (!id) {
-            return res.status(400).json({ msg: 'Vui lòng cung cấp ID khách hàng' });
+        if (!idKH) {
+            return res.json({ msg: 'Vui lòng cung cấp ID khách hàng' });
         }
 
         // Lấy danh sách hóa đơn của khách hàng dựa trên ID
-        const danhSachHoaDon = await HoaDon.find({ idKH: id });
+        const danhSachHoaDon = await HoaDon.find({ idKH: idKH });
 
-        // Trả về danh sách hóa đơn
+        // Tính toán tổng số trang
+        const totalCount = danhSachHoaDon.length;
+        const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+        // Trả về danh sách hóa đơn cùng với thông tin phân trang
         res.json({
-            data: danhSachHoaDon,
-            count: danhSachHoaDon.length,
-            msg: "thành công",
+            list: danhSachHoaDon,
+            trang,
+            totalPages,
+            totalCount,
+            msg: "Thành công",
             success: true,
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của khách hàng', error: error.message });
+        res.json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của khách hàng', error: error.message });
     }
 };
 const getDanhSachHoaDonByIdCuaHangApi = async (req, res, next) => {
     try {
-        const id = req.params.id; // Lấy ID của khách hàng từ tham số trong đường dẫn
-
+        const idCH = req.params.idCH; // Lấy ID của khách hàng từ tham số trong đường dẫn
+        const trang = parseInt(req.query.trang) || 1; // Trang hiện tại, mặc định là trang 1 nếu không có truy vấn currentPage
+        const itemsPerPage = 10; // Số lượng mục trên mỗi trang
         // Kiểm tra tính hợp lệ của ID khách hàng
-        if (!id) {
-            return res.status(400).json({ msg: 'Vui lòng cung cấp ID cửa hàng' });
+        if (!idCH) {
+            return res.json({ msg: 'Vui lòng cung cấp ID cửa hàng' });
         }
 
         // Lấy danh sách hóa đơn của khách hàng dựa trên ID
-        const danhSachHoaDon = await HoaDon.find({ idCH: id });
+        const danhSachHoaDon = await HoaDon.find({ idCH: idCH });
+        const totalCount = danhSachHoaDon.length;
+        const totalPages = Math.ceil(totalCount / itemsPerPage);
 
         // Trả về danh sách hóa đơn
         res.json({
-            data: danhSachHoaDon,
-            count: danhSachHoaDon.length,
-            msg: "thành công",
+            list: danhSachHoaDon,
+            trang,
+            totalPages,
+            totalCount,
+            msg: "Thành công",
             success: true,
         });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của cửa hàng', error: error.message });
+        res.json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của cửa hàng', error: error.message });
     }
 };
 

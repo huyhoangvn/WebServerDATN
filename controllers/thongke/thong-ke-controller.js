@@ -27,7 +27,7 @@ const thongKeDoanhThuTheoNgay = async (req, res, next) => {
             {
                 $group: {
                     _id: { $dateToString: { format: "%Y/%m/%d", date: "$thoiGianTao" } }, // Group theo ngày (năm-tháng-ngày)
-                    tongTien: { $sum: "$tongTien" } // Tính tổng tiền
+                    thanhTien: { $sum: "$thanhTien" } // Tính tổng tiền
                 }
             }
         ]);
@@ -36,10 +36,10 @@ const thongKeDoanhThuTheoNgay = async (req, res, next) => {
         const filteredResult = result.find(item => item._id === moment(currentDate).format("YYYY/MM/DD"));
 
         // Tính tổng tiền
-        const tongTien = filteredResult ? filteredResult.tongTien : 0;
+        const thanhTien = filteredResult ? filteredResult.thanhTien : 0;
 
         return {
-            tongTien: tongTien,
+            tongTien: thanhTien,
             success: true,
             msg: "Thành công"
         };
@@ -78,17 +78,17 @@ const thongKeDoanhThuTheo10Ngay = async (req, res, next) => {
             {
                 $group: {
                     _id: null,
-                    tongTien: { $sum: "$tongTien" } // Tính tổng tiền
+                    thanhTien: { $sum: "$thanhTien" } // Tính tổng tiền
                 }
 
             }
         ]);
 
         // Tính tổng tiền
-        const tongTien = result.length > 0 ? result[0].tongTien : 0;
+        const thanhTien = result.length > 0 ? result[0].thanhTien : 0;
 
         return {
-            tongTien: tongTien,
+            tongTien: thanhTien,
             success: true,
             msg: "Thành công"
         };
@@ -128,17 +128,17 @@ const thongKeDoanhThuTheo30Ngay = async (req, res, next) => {
             {
                 $group: {
                     _id: null,
-                    tongTien: { $sum: "$tongTien" } // Tính tổng tiền
+                    thanhTien: { $sum: "$thanhTien" } // Tính tổng tiền
                 }
 
             }
         ]);
 
         // Tính tổng tiền
-        const tongTien = result.length > 0 ? result[0].tongTien : 0;
+        const thanhTien = result.length > 0 ? result[0].thanhTien : 0;
 
         return {
-            tongTien: tongTien,
+            tongTien: thanhTien,
             success: true,
             msg: "Thành công"
         };
@@ -178,16 +178,16 @@ const thongKeDoanhThuTheoNam = async (req, res, next) => {
             {
                 $group: {
                     _id: nam,
-                    tongTien: { $sum: "$tongTien" } // Tính tổng tiền của tất cả các hóa đơn
+                    thanhTien: { $sum: "$thanhTien" } // Tính tổng tiền của tất cả các hóa đơn
                 }
             }
 
         ]);
-        const tongTien = result.length > 0 ? result[0].tongTien : 0;
+        const thanhTien = result.length > 0 ? result[0].thanhTien : 0;
 
         // Trả về tổng tiền của các hóa đơn thỏa mãn điều kiện trong năm
         return {
-            index: tongTien,
+            index: thanhTien,
             success: true,
             msg: "thành công"
         }
@@ -244,7 +244,7 @@ const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
                 {
                     $group: {
                         _id: null,
-                        tongTien: { $sum: "$tongTien" }
+                        thanhTien: { $sum: "$thanhTien" }
                     }
                 }
             ]);
@@ -252,7 +252,7 @@ const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
             // Lưu tổng doanh thu vào mảng monthlyRevenue
             const monthRevenueObj = { month: monthNames[month], tong: 0 };
             if (result.length > 0) {
-                monthRevenueObj.tong = result[0].tongTien;
+                monthRevenueObj.tong = result[0].thanhTien;
             }
             monthlyRevenue.push(monthRevenueObj);
         }
@@ -266,10 +266,12 @@ const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
      
     } catch (error) {
         console.error("Error:", error);
-        return {
+
+        return res.json({
+
             success: false,
             message: 'Đã xảy ra lỗi khi thực hiện thống kê.'
-        };
+        });
     }
 };
 // Thông kê món bán chạy tất cả
@@ -282,7 +284,7 @@ const thongKeMonBanChayTheoTenLoaiMon = async (req, res) => {
         const tenLM = req.query.tenLM;
         const loaiMon = await LoaiMon.findOne({ tenLM: tenLM });
         if (!loaiMon) {
-            return res.status(404).json({
+            return res.json({
                 success: false,
                 message: "Không tìm thấy loại món có tên này."
             });
@@ -372,7 +374,7 @@ const thongKeMonBanChayTheoTenLoaiMon = async (req, res) => {
         };
     } catch (error) {
         console.error("Lỗi:", error);
-        return res.status(500).json({
+        return res.json({
             success: false,
             message: "Đã xảy ra lỗi khi thực hiện thống kê."
         });
@@ -383,14 +385,6 @@ const thongKeMonBanChayTheoTenLoaiMon = async (req, res) => {
 const thongKeMonBanChayTheoNam = async (req, res) => {
     try {
 
-        // const tenLM = req.query.tenLM;
-        // const loaiMon = await LoaiMon.findOne({ tenLM: tenLM });
-        // if (!loaiMon) {
-        //     return res.status(404).json({
-        //         success: false,
-        //         message: "Không tìm thấy loại món có tên này."
-        //     });
-        // }
 
         const nam = req.query.nam || new Date().getFullYear().toString();
         const thang = req.query.thang || (new Date().getMonth() + 1).toString();
@@ -475,7 +469,7 @@ const thongKeMonBanChayTheoNam = async (req, res) => {
         };
     } catch (error) {
         console.error("Lỗi:", error);
-        return res.status(500).json({
+        return res.json({
             success: false,
             message: "Đã xảy ra lỗi khi thực hiện thống kê."
         });
