@@ -341,6 +341,19 @@ const getDanhSachHoaDonByIdCuaHangApi = async (req, res, next) => {
         res.json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của cửa hàng', success: false, error: error.message });
     }
 };
+const deleteHoaDonCungApi = async (req, res, next) => {
+    try {
+        const result = await HoaDonController.deleteHoaDonCung(req, res, next);
+        res.json(result);  // Send the result directly without using JSON.stringify
+    } catch (error) {
+        // Check if headers have already been sent
+        if (res.headersSent) {
+            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        } else {
+            res.json({ msg: 'Đã xảy ra lỗi khi xóa Hóa Đơn', error: error.message });
+        }
+    }
+}
 
 // Export các hàm API
 module.exports = {
@@ -357,4 +370,5 @@ module.exports = {
     updatetrangThaiMuaDangGiaoHangApi,
     updatetrangThaiMuaGiaoHangThatBaiApi,
     updatetrangThaiMuaGiaoHangThanhCongApi,
+    deleteHoaDonCungApi,
 };

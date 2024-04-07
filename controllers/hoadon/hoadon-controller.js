@@ -451,6 +451,33 @@ const deleteHoaDon = async (req, res, next) => {
     }
 };
 
+const deleteHoaDonCung = async (req, res, next) => {
+    try {
+        const idHD = req.params.idHD;
+
+        // Tìm và xóa hóa đơn cùng với các món đặt có idHoaDon tương ứng
+        const deletedHoaDon = await HoaDon.findByIdAndDelete(idHD);
+        if (!deletedHoaDon) {
+            return res.json({ error: "Không tìm thấy hoá đơn" });
+        }
+
+        // Xóa các món đặt có idHoaDon tương ứng
+        const deletedMonDat = await MonDat.deleteMany({ idHD: idHD });
+
+        return {
+            msg: "Đã xóa hoá đơn thành công",
+            data: {
+                deletedHoaDon,
+                deletedMonDat,
+            },
+            success: true,
+        };
+    } catch (e) {
+        console.log(e);
+        res.json({ error: "Đã xảy ra lỗi khi xóa hóa đơn" });
+    }
+};
+
 const chiTietHoaDon = async (req, res, next) => {
     try {
         const id = req.params.id;
@@ -500,18 +527,20 @@ const chiTietHoaDon = async (req, res, next) => {
             { $unwind: "$cuahang" },
             {
                 $addFields: {
-                    "giaTienDat": { $multiply: ["$soLuong", "$mon.giaTien"] }
+                    "giaTienDat": { $multiply: ["$soLuong", "$mon.giaTien"] },
+                    "hinhAnh": { $concat: [`${req.protocol}://${req.get("host")}/public/images/`, "$mon.hinhAnh"] }
                 }
             },
             {
                 $project: {
-                    _id: 1,
+                    idMD: "$_id",
                     idHD: 1,
                     idMon: 1,
                     giaTienDat: 1,
                     tenMon: "$mon.tenMon",
                     tenCH: "$cuahang.tenCH",
-                    tenLM: "$loaiMon.tenLM"
+                    tenLM: "$loaiMon.tenLM",
+                    hinhAnh: 1
                 }
             }
         ]);
@@ -529,7 +558,7 @@ const chiTietHoaDon = async (req, res, next) => {
 
         return {
             hoaDon: {
-                _id: item._id,
+                idHD: item._id,
                 idKH: item.idKH,
                 idCH: item.idCH,
                 phanTramKhuyenMaiDat: item.phanTramKhuyenMaiDat,
@@ -573,5 +602,6 @@ module.exports = {
     updatetrangThaiThanhToanTrue,
     updatetrangThaiThanhToanFalse,
     getHoaDonWeb,
+    deleteHoaDonCung,
 
 }
