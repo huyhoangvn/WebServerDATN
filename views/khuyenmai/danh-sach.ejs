@@ -67,12 +67,6 @@
                   <p>Món bán chạy</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="/thong-ke/giao-dich" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Giao dịch</p>
-                </a>
-              </li>
             </ul>
           </li>
           <!-- Quản lý khách hàng -->
@@ -260,6 +254,11 @@
         </form>
 
         <!-- Bảng hiển thị -->
+        <%if(soLuongKhuyenMai == undefined){%>
+          <label for="">Đã tìm thấy 0 kết quả</label>
+        <%}else{%>
+          <label for="">Đã tìm thấy <%=soLuongKhuyenMai%> kết quả</label>
+        <%}%>
         <table class="table table-bordered border-secondary">
           <thead>
             <tr class="table-secondary">
@@ -520,6 +519,36 @@
         $('#formSuaTrangThai').attr('action', '/khuyen-mai/xoa/' + idKM);
       });
     });
+
+    // Lưu trạng thái của các trường dữ liệu đã chọn vào session khi nhấn nút tìm kiếm
+$(document).ready(function() {
+    $('form[action="/khuyen-mai/danh-sach"]').submit(function(event) {
+        var tieuDe = $('#searchTieuDe').val();
+        var ngayBatDau = $('#ngayBatDau').val();
+        var ngayHetHan = $('#ngayHetHan').val();
+        var trangThai = $('#trangThai').val();
+
+        // Lưu các giá trị vào session
+        sessionStorage.setItem('tieuDe', tieuDe);
+        sessionStorage.setItem('ngayBatDau', ngayBatDau);
+        sessionStorage.setItem('ngayHetHan', ngayHetHan);
+        sessionStorage.setItem('trangThai', trangThai);
+    });
+});
+
+// Kiểm tra và đặt lại giá trị cho các trường dữ liệu khi trang được load lại
+$(document).ready(function() {
+    var tieuDe = sessionStorage.getItem('tieuDe');
+    var ngayBatDau = sessionStorage.getItem('ngayBatDau');
+    var ngayHetHan = sessionStorage.getItem('ngayHetHan');
+    var trangThai = sessionStorage.getItem('trangThai');
+
+    // Đặt giá trị cho các trường dữ liệu nếu đã được lưu trước đó
+    if (tieuDe) $('#searchTieuDe').val(tieuDe);
+    if (ngayBatDau) $('#ngayBatDau').val(ngayBatDau);
+    if (ngayHetHan) $('#ngayHetHan').val(ngayHetHan);
+    if (trangThai) $('#trangThai').val(trangThai);
+});
 
   </script>
 
