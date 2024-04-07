@@ -106,18 +106,7 @@ const addHoaDonVaMonDat = async (req, res, next) => {
         // Nếu không có lỗi, cập nhật tổng tiền vào hóa đơn
         await HoaDon.findByIdAndUpdate(hoaDonId, { tongTien, thanhTien }, { new: true });
         res.json({
-            hoaDon: {
-                idHD: hoaDonId,
-                idKH,
-                idCH,
-                idKM,
-                diaChiGiaoHang,
-                phiGiaoHang,
-                phanTramKhuyenMaiDat,
-                tongTien,
-                thanhTien
-            },
-            monDat: monDatList,
+            index: hoaDonId,
             message: "Thêm mới hóa đơn và món đặt thành công",
             success: true,
         });
