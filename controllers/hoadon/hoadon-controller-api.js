@@ -2,6 +2,7 @@ const { model: HoaDon } = require("../../model/HoaDon");
 const { model: CuaHang } = require("../../model/CuaHang");
 const { model: KhachHang } = require("../../model/KhachHang");
 const HoaDonController = require("../../controllers/hoadon/hoadon-controller");
+const mongo = require("mongoose");
 
 
 const addHoaDonApi = async (req, res, next) => {
@@ -183,28 +184,76 @@ const deleteHoaDonApi = async (req, res, next) => {
 }
 const getDanhSachHoaDonByIdKhachHangApi = async (req, res, next) => {
     try {
-        const idKH = req.params.idKH; // Lấy ID của khách hàng từ tham số trong đường dẫn
-        const trang = parseInt(req.query.trang) || 1; // Trang hiện tại, mặc định là trang 1 nếu không có truy vấn currentPage
-        const itemsPerPage = 10; // Số lượng mục trên mỗi trang
+        const idKH = new mongo.Types.ObjectId(req.params.idKH);
+        const trang = parseInt(req.query.trang) || 1;
 
-        // Kiểm tra tính hợp lệ của ID khách hàng
         if (!idKH) {
             return res.json({ msg: 'Vui lòng cung cấp ID khách hàng' });
         }
 
-        // Lấy danh sách hóa đơn của khách hàng dựa trên ID
-        const danhSachHoaDon = await HoaDon.find({ idKH: idKH });
+        const filter = { idKH: idKH };
 
-        // Tính toán tổng số trang
-        const totalCount = danhSachHoaDon.length;
-        const totalPages = Math.ceil(totalCount / itemsPerPage);
+        if (typeof req.query.maHD !== 'undefined' && req.query.maHD !== "") {
+            filter.maHD = { $regex: req.query.maHD, $options: 'i' };
+        }
 
-        // Trả về danh sách hóa đơn cùng với thông tin phân trang
+        if (typeof req.query.trangThaiThanhToan !== 'undefined' && !isNaN(parseInt(req.query.trangThaiThanhToan))) {
+            const trangThaiValue = parseInt(req.query.trangThaiThanhToan);
+            if ([0, 1].includes(trangThaiValue)) {
+                filter.trangThaiThanhToan = trangThaiValue;
+            }
+        }
+
+        if (typeof req.query.trangThaiMua !== 'undefined' && !isNaN(parseInt(req.query.trangThaiMua))) {
+            const trangThaiValue = parseInt(req.query.trangThaiMua);
+            if ([0, 1, 2, 3, 4].includes(trangThaiValue)) {
+                filter.trangThaiMua = trangThaiValue;
+            }
+        }
+
+        if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
+            const parts = req.query.thoiGianTao.split('/');
+            const day = parseInt(parts[0]);
+            const month = parseInt(parts[1]);
+            const year = parseInt(parts[2]);
+
+            const startDate = new Date(year, month - 1, day);
+            const endDate = new Date(year, month - 1, day + 1);
+
+            filter.thoiGianTao = { $gte: startDate, $lt: endDate };
+        }
+
+        const totalHoaDon = await HoaDon.countDocuments(filter);
+
+        const list = await HoaDon.aggregate([
+            { $match: filter },
+            { $sort: { thoiGianTao: -1 } },
+            { $skip: (trang - 1) * 10 },
+            { $limit: 10 },
+            {
+                $project: {
+                    "idKH": "$idKH",
+                    "idCH": "$idCH",
+                    "maHD": "$maHD",
+                    "thoiGianTao": "$thoiGianTao",
+                    "diaChiGiaoHang": "$diaChiGiaoHang",
+                    "phanTramKhuyenMaiDat": "$phanTramKhuyenMaiDat",
+                    "phiGiaoHang": "$phiGiaoHang",
+                    "trangThaiThanhToan": "$trangThaiThanhToan",
+                    "trangThaiMua": "$trangThaiMua",
+                    "tongTien": "$tongTien",
+                    "thanhTien": "$thanhTien",
+                }
+            }
+        ]);
+
+        const totalPages = Math.ceil(totalHoaDon / 10);
+
         res.json({
-            list: danhSachHoaDon,
-            trang,
+            list: list,
+            count: list.length,
             totalPages,
-            totalCount,
+            trang,
             msg: "Thành công",
             success: true,
         });
@@ -215,31 +264,81 @@ const getDanhSachHoaDonByIdKhachHangApi = async (req, res, next) => {
 };
 const getDanhSachHoaDonByIdCuaHangApi = async (req, res, next) => {
     try {
-        const idCH = req.params.idCH; // Lấy ID của khách hàng từ tham số trong đường dẫn
-        const trang = parseInt(req.query.trang) || 1; // Trang hiện tại, mặc định là trang 1 nếu không có truy vấn currentPage
-        const itemsPerPage = 10; // Số lượng mục trên mỗi trang
-        // Kiểm tra tính hợp lệ của ID khách hàng
+        const idCH = new mongo.Types.ObjectId(req.params.idCH);
+        const trang = parseInt(req.query.trang) || 1;
+
         if (!idCH) {
             return res.json({ msg: 'Vui lòng cung cấp ID cửa hàng' });
         }
 
-        // Lấy danh sách hóa đơn của khách hàng dựa trên ID
-        const danhSachHoaDon = await HoaDon.find({ idCH: idCH });
-        const totalCount = danhSachHoaDon.length;
-        const totalPages = Math.ceil(totalCount / itemsPerPage);
+        const filter = { idCH: idCH };
 
-        // Trả về danh sách hóa đơn
+        if (typeof req.query.maHD !== 'undefined' && req.query.maHD !== "") {
+            filter.maHD = { $regex: req.query.maHD, $options: 'i' };
+        }
+
+        if (typeof req.query.trangThaiThanhToan !== 'undefined' && !isNaN(parseInt(req.query.trangThaiThanhToan))) {
+            const trangThaiValue = parseInt(req.query.trangThaiThanhToan);
+            if ([0, 1].includes(trangThaiValue)) {
+                filter.trangThaiThanhToan = trangThaiValue;
+            }
+        }
+
+        if (typeof req.query.trangThaiMua !== 'undefined' && !isNaN(parseInt(req.query.trangThaiMua))) {
+            const trangThaiValue = parseInt(req.query.trangThaiMua);
+            if ([0, 1, 2, 3, 4].includes(trangThaiValue)) {
+                filter.trangThaiMua = trangThaiValue;
+            }
+        }
+
+        if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
+            const parts = req.query.thoiGianTao.split('/');
+            const day = parseInt(parts[0]);
+            const month = parseInt(parts[1]);
+            const year = parseInt(parts[2]);
+
+            const startDate = new Date(year, month - 1, day);
+            const endDate = new Date(year, month - 1, day + 1);
+
+            filter.thoiGianTao = { $gte: startDate, $lt: endDate };
+        }
+
+        const totalHoaDon = await HoaDon.countDocuments(filter);
+
+        const list = await HoaDon.aggregate([
+            { $match: filter },
+            { $sort: { thoiGianTao: -1 } },
+            { $skip: (trang - 1) * 10 },
+            { $limit: 10 },
+            {
+                $project: {
+                    "idKH": "$idKH",
+                    "idCH": "$idCH",
+                    "maHD": "$maHD",
+                    "thoiGianTao": "$thoiGianTao",
+                    "diaChiGiaoHang": "$diaChiGiaoHang",
+                    "phanTramKhuyenMaiDat": "$phanTramKhuyenMaiDat",
+                    "phiGiaoHang": "$phiGiaoHang",
+                    "trangThaiThanhToan": "$trangThaiThanhToan",
+                    "trangThaiMua": "$trangThaiMua",
+                    "tongTien": "$tongTien",
+                    "thanhTien": "$thanhTien",
+                }
+            }
+        ]);
+
+        const totalPages = Math.ceil(totalHoaDon / 10);
+
         res.json({
-            list: danhSachHoaDon,
-            trang,
+            list: list,
             totalPages,
-            totalCount,
+            trang,
             msg: "Thành công",
             success: true,
         });
     } catch (error) {
         console.error(error);
-        res.json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của cửa hàng', error: error.message });
+        res.json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của cửa hàng', success: false, error: error.message });
     }
 };
 

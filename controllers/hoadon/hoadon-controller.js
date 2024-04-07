@@ -106,11 +106,11 @@ const getHoaDon = async (req, res, next) => {
             {
                 $project: {
                     "maHD": "$maHD",
-                    "thoiGianTao": "$thoiGianTao",
                     "trangThaiThanhToan": "$trangThaiThanhToan",
                     "trangThaiMua": "$trangThaiMua",
                     "tongTien": "$tongTien",
                     "thoiGianTao": "$thoiGianTao",
+                    "thanhTien": "$thanhTien",
                 }
             },
             {
