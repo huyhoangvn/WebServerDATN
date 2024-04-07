@@ -109,8 +109,9 @@ const addHoaDonVaMonDat = async (req, res, next) => {
                 idHD: hoaDonId,
                 idKH,
                 idCH,
-                diaChiGiaoHang,
                 idKM,
+                diaChiGiaoHang,
+                phiGiaoHang,
                 phanTramKhuyenMaiDat,
                 tongTien,
                 thanhTien
