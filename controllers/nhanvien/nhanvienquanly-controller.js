@@ -4,7 +4,6 @@ const { model: NhanVien } = require("../../model/NhanVien");
 const addNhanVienBan = async (req, res, next) => {
   try {
     const idNhanVien = req.params.id;
-    console.log(idNhanVien);
 
     // Kiểm tra xem Nhân viên có phân quyền là 0 không
     const item = await NhanVien.findById(idNhanVien);
@@ -911,12 +910,13 @@ const getTatCaNhanVienQuanLy = async (req, res) => {
           email: 1, sdt: 1, tenNV: 1, trangThai: 1, phanQuyen: 1, hinhAnh: 1, gioiTinh: 1, taiKhoan: 1, diaChi: 1
         }
       },
+      { $sort: { thoiGianTao: -1 } },
       {
         $skip: (trang - 1) * 10,
       },
       {
         $limit: 10,
-      },
+      }
 
     ]);
     return {

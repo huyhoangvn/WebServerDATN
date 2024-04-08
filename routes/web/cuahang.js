@@ -10,4 +10,6 @@ router.get('/them-moi', sessionAdmin.setTokenHeader, passport.authenticate('jwt'
 router.post('/add', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.getAdd);
 router.get('/chi-tiet/:idCH', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.chiTietCuaHang);
 
+router.post('/them-nv/:idCH', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.themNhanVienQuanLy);
+
 module.exports = router;
