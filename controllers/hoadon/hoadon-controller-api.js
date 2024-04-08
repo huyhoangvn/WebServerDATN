@@ -203,6 +203,15 @@ const getDanhSachHoaDonByIdKhachHangApi = async (req, res, next) => {
                 filter.trangThaiThanhToan = trangThaiValue;
             }
         }
+        if (typeof req.query.trangThai !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+            const trangThaiValue = parseInt(req.query.trangThai);
+            if (trangThaiValue === 1 || trangThaiValue === 0) {
+                filter.trangThai = trangThaiValue === 1 ? true : false;
+            }
+        } else {
+            // Nếu không có truy vấn trạng thái, mặc định là true
+            filter.trangThai = true;
+        }
 
         if (typeof req.query.trangThaiMua !== 'undefined' && !isNaN(parseInt(req.query.trangThaiMua))) {
             const trangThaiValue = parseInt(req.query.trangThaiMua);
@@ -243,6 +252,7 @@ const getDanhSachHoaDonByIdKhachHangApi = async (req, res, next) => {
                     "trangThaiMua": "$trangThaiMua",
                     "tongTien": "$tongTien",
                     "thanhTien": "$thanhTien",
+                    "trangThai": "$trangThai",
                 }
             }
         ]);
@@ -283,6 +293,15 @@ const getDanhSachHoaDonByIdCuaHangApi = async (req, res, next) => {
                 filter.trangThaiThanhToan = trangThaiValue;
             }
         }
+        if (typeof req.query.trangThai !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+            const trangThaiValue = parseInt(req.query.trangThai);
+            if (trangThaiValue === 1 || trangThaiValue === 0) {
+                filter.trangThai = trangThaiValue === 1 ? true : false;
+            }
+        } else {
+            // Nếu không có truy vấn trạng thái, mặc định là true
+            filter.trangThai = true;
+        }
 
         if (typeof req.query.trangThaiMua !== 'undefined' && !isNaN(parseInt(req.query.trangThaiMua))) {
             const trangThaiValue = parseInt(req.query.trangThaiMua);
@@ -323,6 +342,7 @@ const getDanhSachHoaDonByIdCuaHangApi = async (req, res, next) => {
                     "trangThaiMua": "$trangThaiMua",
                     "tongTien": "$tongTien",
                     "thanhTien": "$thanhTien",
+                    "trangThai": "$trangThai",
                 }
             }
         ]);
