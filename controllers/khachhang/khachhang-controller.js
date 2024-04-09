@@ -44,7 +44,6 @@ const dangKy = async (req, res, next) => {
   }
 };
 
-
 //đăng nhập
 
 const dangNhap = async (req, res) => {
@@ -198,6 +197,72 @@ const getSoLuongKhachHang = async (req, res) => {
   }
 }
 
+const getKhachHangbyidKhachHang = async (req, res) => {
+  try {
+    const id = new mongo.Types.ObjectId(req.params.id);
+    const khachHang = await KhachHang.model.findById(id);
+
+    if (!khachHang) {
+      return res.json({
+        success: false,
+        msg: 'Không tìm thấy khách hàng',
+      });
+    }
+
+    res.json({
+      khachHang: khachHang,
+      success: true,
+      msg: 'Thành công',
+    });
+  } catch (error) {
+    console.error(error);
+    res.json({
+      success: false,
+      msg: 'Đã xảy ra lỗi',
+    });
+  }
+};
+
+
+const updateMatKhau = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const matKhauCu = req.body.matKhauCu;
+    const matKhauMoi = req.body.matKhauMoi;
+
+    // Kiểm tra trường matKhauMoi có tồn tại hay không
+    if (!matKhauMoi) {
+      return res.json({
+        success: false,
+        msg: "Vui lòng cung cấp mật khẩu mới.",
+      });
+    }
+
+    const item = await KhachHang.model.findById(id);
+    if (!item) {
+      return res.json({ success: false, msg: "Không tìm thấy khách hàng" });
+    }
+
+    // Kiểm tra mật khẩu cũ
+    if (matKhauCu !== item.matKhau) {
+      return res.json({ success: false, msg: "Mật khẩu cũ không chính xác." });
+    }
+
+    // Cập nhật mật khẩu mới
+    item.matKhau = matKhauMoi;
+    const savedKhachHang = await item.save();
+
+    res.json({
+      success: true,
+      msg: "Mật khẩu đã được cập nhật thành công.",
+      dataUpdate: savedKhachHang,
+    });
+  } catch (e) {
+    console.error(e);
+    res.json({ success: false, msg: "Đã xảy ra lỗi khi đổi mật khẩu" });
+  }
+};
+
 
 //sửa thông tin khách hàng
 const updateKhachHang = async (req, res) => {
@@ -207,7 +272,9 @@ const updateKhachHang = async (req, res) => {
     const diaChi = req.body.diaChi;
     const sdt = req.body.sdt;
     const gioiTinh = req.body.gioiTinh;
-    const hinhAnh = req.body.hinhAnh;
+    const hinhAnh = req.body.hinhAnh || "default-avatar.png";
+
+    const hinhAnhLink = `${req.protocol}://${req.get("host")}/public/images/${hinhAnh}`
 
     const filter = { _id: idKH }
     const update = {
@@ -215,7 +282,7 @@ const updateKhachHang = async (req, res) => {
       diaChi: diaChi,
       sdt: sdt,
       gioiTinh: gioiTinh,
-      hinhAnh: hinhAnh,
+      hinhAnh: hinhAnhLink,
     }
     const index = await KhachHang.model.findOneAndUpdate(filter, update, { new: true })
     if (!index) {
@@ -286,19 +353,19 @@ const deleteKhachHang = async (req, res) => {
 const deleteKhachHangWeb = async (req, res) => {
   try {
     const idKH = new mongo.Types.ObjectId(req.params.idKH)
-    const filter = {_id: idKH}
-    const khachHangTim = await KhachHang.model.findOne({_id:idKH})
+    const filter = { _id: idKH }
+    const khachHangTim = await KhachHang.model.findOne({ _id: idKH })
     let khachHangSua = {}
-    if(khachHangTim.trangThai == true){
-      const update = {trangThai : false}
+    if (khachHangTim.trangThai == true) {
+      const update = { trangThai: false }
       const data = await KhachHang.model.findOneAndUpdate(filter, update, { new: true })
       khachHangSua = data
-    }else{
-      const update = {trangThai : true}
+    } else {
+      const update = { trangThai: true }
       const data = await KhachHang.model.findOneAndUpdate(filter, update, { new: true })
       khachHangSua = data
     }
-    
+
     if (!khachHangSua) {
       return ({
         error: "Xóa khách hàng thất bại !",
@@ -368,4 +435,6 @@ module.exports = {
   deleteKhachHangWeb,
   getSoLuongKhachHang,
   getSoLuongKhachHangApi,
+  getKhachHangbyidKhachHang,
+  updateMatKhau
 }
