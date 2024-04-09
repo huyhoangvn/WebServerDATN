@@ -210,7 +210,7 @@ const getKhachHangbyidKhachHang = async (req, res) => {
     }
 
     res.json({
-      khachHang: khachHang,
+      index: khachHang,
       success: true,
       msg: 'Thành công',
     });
@@ -255,7 +255,7 @@ const updateMatKhau = async (req, res, next) => {
     res.json({
       success: true,
       msg: "Mật khẩu đã được cập nhật thành công.",
-      dataUpdate: savedKhachHang,
+      index: savedKhachHang,
     });
   } catch (e) {
     console.error(e);
