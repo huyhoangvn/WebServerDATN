@@ -1,4 +1,5 @@
 const Loaimon = require("../../model/LoaiMon");
+const Mon = require("../../model/Mon");
 const mongo = require("mongoose");
 
 const themLoaiMon = async (req, res, next) => {
@@ -77,7 +78,7 @@ const getloaimonApi = async (req, res) => {
     res.json({
       list,
       count: list.length,
-      message: 'Get đánh giá theo tên món thành công',
+      msg: 'Get đánh giá theo tên món thành công',
       success: true
     });
   } catch (error) {
@@ -105,7 +106,7 @@ const kichhoatLoaiMonapi = async (req, res) => {
       data: kichhoat,
     });
   } catch (error) {
-    res.json({ message: "Lỗi kích hoạt loại món", error: error });
+    res.json({ msg: "Lỗi kích hoạt loại món", error: error });
   }
 };
 // Delete
@@ -125,7 +126,7 @@ const deleteLoaiMon = async (req, res) => {
     } else {
       res.json({
         index,
-        message: 'Xóa loại món thành công',
+        msg: 'Xóa loại món thành công',
         success: true
       });
     }
@@ -136,6 +137,38 @@ const deleteLoaiMon = async (req, res) => {
     });
   }
 };
+
+const deleteLoaiMonWeb = async (req, res) => {
+  try {
+    const idLM = new mongo.Types.ObjectId(req.params.idLM)
+    const filter = { _id: idLM }
+    const filterLM = await Mon.model.findOne({idLM:idLM})
+    let monSua = {}
+    if (filterLM) {
+      return ({ alert: "Đang tồn tại món hoạt động !" });
+    }
+    const loaiMonTim = await Loaimon.model.findOne({ _id: idLM })
+    if (loaiMonTim.trangThai == true) {
+      const update = { trangThai: false }
+      const data = await Loaimon.model.findOneAndUpdate(filter, update, { new: true })
+      monSua = data
+    }
+    if(loaiMonTim.trangThai == false) {
+      const update = { trangThai: true }
+      const data = await Loaimon.model.findOneAndUpdate(filter, update, { new: true })
+      monSua = data
+    }
+
+    if (!monSua) {
+      return({ error: "Xóa món thất bại !", success: false }); // Phản hồi 404 nếu không tìm thấy món
+    } else {
+      return({ msg: "Xóa món thành công !", success: true }); // Phản hồi 200 nếu thành công
+    }
+  
+  } catch (err) {
+    return({ msg: err.message }); // Phản hồi 500 nếu có lỗi xảy ra
+  }
+}
 // Sua
 const updateLoaiMon = async (req, res) => {
   const idLM = req.params.idLM;
@@ -159,13 +192,13 @@ const updateLoaiMon = async (req, res) => {
     } else {
       res.json({
         data: updatedLoaiMon,
-        message: 'Sửa loại món thành công',
+        msg: 'Sửa loại món thành công',
         success: true
       });
     }
   } catch (error) {
     res.json({
-      error: 'Lỗi khi sửa loại món: ' + error.message,
+      error: 'Lỗi khi sửa loại món: ' + error.msg,
       success: false
     });
   }
@@ -182,7 +215,7 @@ const addloaimonApi = async (req, res, next) => {
       res.json({
         success: false,
         msg: "Đã xảy ra lỗi khi thêm loại món",
-        error: error.message,
+        error: error.msg,
       });
     } else {
       console.error(
@@ -202,7 +235,7 @@ const deleteLoaiMonApi = async (req, res, next) => {
       res.json({
         success: false,
         msg: "Đã xảy ra lỗi khi xóa loại món",
-        error: error.message,
+        error: error.msg,
       });
     } else {
       console.error(
@@ -222,7 +255,7 @@ const updateLoaiMonApi = async (req, res, next) => {
       res.json({
         success: false,
         msg: "Đã xảy ra lỗi khi thêm loại món",
-        error: error.message,
+        error: error.msg,
       });
     } else {
       console.error(
@@ -275,7 +308,58 @@ const GetSoLuongMonTheoLoaiMon = async (req, res) => {
 
     return ({
       list: result,
-      message: 'lấy số lượng món thành công',
+      msg: 'lấy số lượng món thành công',
+    });
+  } catch (error) {
+    return ({
+      msg: 'Lỗi khi lấy số lượng món theo loại món',
+      success: false
+    });
+  }
+}
+
+const GetSoLuongLoaiMon = async (req, res) => {
+  try {
+    const timkiem = {};
+
+    if (typeof (req.query.tenLM) !== 'undefined' && typeof (req.query.tenLM) !== "") {
+      timkiem.tenLM = { $regex: req.query.tenLM, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+    }
+    if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+      const trangThaiValue = parseInt(req.query.trangThai);
+      if (trangThaiValue === 1 || trangThaiValue === 0) {
+        timkiem.trangThai = trangThaiValue === 1;
+      }
+    }
+
+    const result = await Loaimon.model.aggregate([
+      { $match: timkiem },
+      {
+        $lookup: {
+          from: "Mon",
+          localField: "_id",
+          foreignField: "idLM",
+          as: "monData"
+        }
+      },
+      {
+        $project: {
+          "idLM": "$_id",
+          "tenLM": "$tenLM",
+          "trangThai": "$trangThai",
+          "soLuongMon": { $size: "$monData" } // Đếm số lượng phần tử trong mảng "monData"
+        }
+      },
+      {
+        $count: "count",
+    }
+
+
+    ]);
+
+    return ({
+      count: result[0].count,
+      msg: 'lấy số lượng món thành công',
     });
   } catch (error) {
     return ({
@@ -293,5 +377,7 @@ module.exports = {
   kichhoatLoaiMonapi,
   getloaimonApi,
   themLoaiMon,
-  GetSoLuongMonTheoLoaiMon
+  GetSoLuongMonTheoLoaiMon,
+  deleteLoaiMonWeb,
+  GetSoLuongLoaiMon
 };

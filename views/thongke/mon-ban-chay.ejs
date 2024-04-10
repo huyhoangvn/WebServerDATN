@@ -325,46 +325,32 @@
       });
 
 
-      // Lưu các giá trị của các trường khi form được submit
-      document.querySelector('form').addEventListener('submit', function() {
-          var selectedLM = document.querySelector('select[name="tenLM"]').value;
-          var selectedMonth = document.querySelector('select[name="thang"]').value;
-          var selectedYear = document.querySelector('input[name="nam"]').value;
-
-          localStorage.setItem('selectedLM', selectedLM);
-          localStorage.setItem('selectedMonth', selectedMonth);
-          localStorage.setItem('selectedYear', selectedYear);
-      });
-
-      // Thiết lập lại các giá trị của các trường sau khi trang được tải lại
       window.onload = function() {
-          var selectedLM = localStorage.getItem('selectedLM');
-          var selectedMonth = localStorage.getItem('selectedMonth');
-          var selectedYear = localStorage.getItem('selectedYear');
+    // Lấy URL hiện tại
+    var currentUrl = window.location.href;
+    
+    // Phân tích các tham số truy vấn từ URL
+    var urlParams = new URLSearchParams(currentUrl.split('?')[1]);
 
-          // Kiểm tra xem trang đã được tải lại từ tìm kiếm hay không
-          var isReloaded = localStorage.getItem('isReloaded');
+    // Lấy giá trị của các tham số từ URL
+    var selectedLM = urlParams.get('tenLM');
+    var selectedMonth = urlParams.get('thang');
+    var selectedYear = urlParams.get('nam');
 
-          if (isReloaded) {
-              // Trang đã được tải lại từ tìm kiếm, sử dụng các giá trị đã lưu
-              if (selectedLM) {
-                  document.querySelector('select[name="tenLM"]').value = selectedLM;
-              }
-              if (selectedMonth) {
-                  document.querySelector('select[name="thang"]').value = selectedMonth;
-              }
-              if (selectedYear) {
-                  document.querySelector('input[name="nam"]').value = selectedYear;
-              }
-          } else {
-              // Trang mới được tải, chọn tháng hiện tại
-              var currentMonth = new Date().getMonth() + 1;
-              document.querySelector('select[name="thang"]').value = currentMonth;
-          }
+    // Gán giá trị của các tham số cho các trường trong biểu mẫu
+    if (selectedLM) {
+        document.querySelector('select[name="tenLM"]').value = selectedLM;
+    }
+    if (selectedMonth) {
+        document.querySelector('select[name="thang"]').value = selectedMonth;
+    }
+    if (selectedYear) {
+        document.querySelector('input[name="nam"]').value = selectedYear;
+    }
 
-          // Đánh dấu trang đã được tải lại từ tìm kiếm
-          localStorage.removeItem('isReloaded');
-      };
+    // Đánh dấu trang đã được tải lại từ tìm kiếm
+    localStorage.setItem('isReloaded', 'true');
+};
 
 
 

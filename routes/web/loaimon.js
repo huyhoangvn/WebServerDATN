@@ -7,5 +7,6 @@ const sessionAdmin = require('../../config/auth/session-admin')
 
 router.get('/danh-sach',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), LoaiMonCtrl.getList);
 router.post('/add',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), LoaiMonCtrl.AddLoaiMon);
+router.get('/xoa/:idLM',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), LoaiMonCtrl.xoaLoaiMon);
 
 module.exports = router;
