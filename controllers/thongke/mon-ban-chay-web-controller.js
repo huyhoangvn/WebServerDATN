@@ -7,8 +7,8 @@ const getView = async (req, res, next) => {
     var currentMonth = new Date().getMonth() + 1;
     var currentYear = new Date().getFullYear();
     const AllLoaiMon = await LoaiMon.find({});
-    req.query.nam == 2024
-    req.query.thang == 4
+    req.query.nam = currentYear
+    req.query.thang = currentMonth
     const monBanChay = await ThongKeCtrl.thongKeMonBanChayTheoNam(req, res);
     res.render("thongke/mon-ban-chay", {
         currentMonth,

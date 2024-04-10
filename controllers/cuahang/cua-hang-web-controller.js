@@ -19,6 +19,22 @@ const getList = async (req, res, next) => {
         msg: ""
     })
 }
+const xoaCuaHang = async (req, res, next) => {
+    await CuaHangCtrl.deleteCuaHangWeb(req,res)
+    const trang = parseInt(req.query.trang) || 1;
+    const listCH = await CuaHangCtrl.GetCuaHang(req, res);
+    const soCuaHangTrenTrang = 10;
+    const soLuongCuaHang = await CuaHangCtrl.GetSoLuongCuaHang(req, res);
+    const totalPages = Math.ceil(soLuongCuaHang.index / soCuaHangTrenTrang);
+    res.render("cuahang/danh-sach", {
+        count: soLuongCuaHang.index,
+        totalPages,
+        currentPage: trang,
+        listCH: listCH.index,
+        admin: req.session.ten,
+        msg: ""
+    })
+}
 
 const getAddView = async (req, res, next) => {
     res.render("cuahang/them-moi", {
@@ -172,4 +188,5 @@ module.exports = {
     getAddView,
     chiTietCuaHang,
     themNhanVienQuanLy,
+    xoaCuaHang
 }
