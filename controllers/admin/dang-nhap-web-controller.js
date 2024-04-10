@@ -85,7 +85,7 @@ const dangNhapWeb = async(req, res, next)=>{
             let token = auth.encodedToken(result.index.id)
             req.session.token = token
             req.session.ten = result.index.ten
-            res.redirect("thong-ke/doanh-thu")
+            res.redirect("/thong-ke/doanh-thu/theo-nam?nam=2024")
         } else {
             res.render("index", {
                 msg: result.msg

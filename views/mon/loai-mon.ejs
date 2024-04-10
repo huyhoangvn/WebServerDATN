@@ -196,7 +196,7 @@
   </aside>
   <!-- <h1><%= (!!locals.title)?title:'' %></h1> -->
 
-  <div class="content-wrapper" style="min-height: 100vh; max-height: 100vh; overflow-y: auto;">
+  <div class="content-wrapper bg-white" style="min-height: 100vh; max-height: 100vh; overflow-y: auto;">
     <div class="content-header border border-bottom-1">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -230,15 +230,6 @@
             </div>
           </div>
         </form>
-        <% if(typeof msg==="string" && !(msg.trim().length===0)){%>
-          <span class="text-danger">
-            <%= msg %>
-          </span>
-          <%}else if(msg=="Thêm mới loại món thất bại" ){%>
-            <span class="text-danger">
-            </span>
-            <%}%>
-              <br>
               <!-- Hết form thêm mới -->
               <!-- Filter loại món -->
               <label>Danh sách loại món</label>

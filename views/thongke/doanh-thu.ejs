@@ -206,7 +206,7 @@
   </aside>
   <!-- <h1><%= (!!locals.title)?title:'' %></h1> -->
 
-  <div class="content-wrapper" style="min-height: 100vh; max-height: 100vh; overflow-y: auto;">
+  <div class="content-wrapper bg-white" style="min-height: 100vh; max-height: 100vh; overflow-y: auto;">
     <div class="content-header border border-bottom-1">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -306,7 +306,7 @@
                     <%=i+1%>
                   </td>
                   <td scope="col-9" data-revenue="<%=cacThang[i].tong%>">
-                    <%=cacThang[i].tong%>
+                    <%=cacThang[i].tong.toLocaleString()%>đ
                   </td>
                 </tr>
                 <%}%>
@@ -314,7 +314,7 @@
                     <tr>
                       <td scope="col-1">0</td>
                       <td scope="col-2">0</td>
-                      <td scope="col-9">0</td>
+                      <td scope="col-9">0đ</td>
                     </tr>
                     <%}%>
 
@@ -383,36 +383,6 @@
     });
 
 
-    // Kiểm tra nếu trang được tải lại từ trang khác
-function isLoadedFromExternalPage() {
-  const referrer = document.referrer;
-  return referrer && referrer !== '' && referrer !== window.location.href;
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-  const namInput = document.querySelector('input[name="nam"]');
-  const thongKeButton = document.getElementById('thongKe');
-
-  // Nếu trang được tải lại từ trang khác, tự động nhập năm hiện tại và nhấn nút "Thống kê"
-  if (isLoadedFromExternalPage()) {
-    namInput.value = new Date().getFullYear().toString();
-    if (thongKeButton) {
-      thongKeButton.click();
-    }
-  }
-
-  // Lưu giá trị nhập vào ô input khi nhấn nút "Thống kê"
-  if (thongKeButton) {
-    thongKeButton.addEventListener('click', function() {
-      const giaTriNam = namInput.value;
-      // Lưu giá trị năm vào URL
-      const urlParams = new URLSearchParams(window.location.search);
-      urlParams.set('nam', giaTriNam);
-      const newUrl = window.location.pathname + '?' + urlParams.toString();
-      history.pushState({}, '', newUrl);
-    });
-  }
-});
   </script>
 </body>
 
