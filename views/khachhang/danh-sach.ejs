@@ -197,7 +197,7 @@
   </aside>
   <!-- <h1><%= (!!locals.title)?title:'' %></h1> -->
 
-  <div class="content-wrapper" style="min-height: 100vh; max-height: 100vh; overflow-y: auto;">
+  <div class="content-wrapper bg-white bg-white" style="min-height: 100vh; max-height: 100vh; overflow-y: auto;">
     <div class="content-header border border-bottom-1">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -293,12 +293,12 @@
               <div class="modal-body">
                 <form id="formSuaTrangThai" action="/khach-hang/xoa/data[i]._id" method="get">
                   <div class="form-group">
-                    <label for="trangThai">bạn có muốn sửa trạng thái không</label>
+                    <label for="trangThai">Bạn có muốn sửa trạng thái không?</label>
                   </div>
-                  <!-- <input type="hidden" class="form-control" name="idKH" id="idKH"> -->
-                  <br>
-                  <button type="submit" class="btn btn-primary">Sửa</button>
-                </form>
+                  <div class="modal-footer justify-content-end">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                      <button type="submit" class="btn btn-primary">Sửa</button>
+                  </div>
               </div>
             </div>
           </div>
