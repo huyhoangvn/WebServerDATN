@@ -68,26 +68,26 @@ const dangNhap = async (req, res) => {
     const khachHang = await KhachHang.model.findOne({ taiKhoan });
 
     if (!khachHang) {
-      return res.json({
+      return({
         success: false,
         successMessage: 'Tài khoản không tồn tại.'
       });
     }
 
     if (matKhau !== khachHang.matKhau) {
-      return res.json({
+      return({
         success: false,
-        message: 'Mật khẩu không đúng.'
+        msg: 'Mật khẩu không đúng.'
       });
     }
 
-    return res.json({
+    return({
       success: true,
       successMessage: 'Đăng nhập thành công.', khachHang
     });
   } catch (error) {
     console.error(error);
-    res.json({ successMessage: 'Lỗi server.' });
+    return({ successMessage: 'Lỗi server.' });
   }
 }
 
@@ -139,12 +139,12 @@ const getKhachHangTheoTen = async (req, res) => {
     return {
       list,
       count: list.length,
-      message: 'Get danh sách  theo tên khách hàng thành công',
+      msg: 'Get danh sách  theo tên khách hàng thành công',
       success: true,
     };
   } catch (error) {
     console.error(error);
-    res.status(500).json({
+    return({
       error: 'Lỗi khi lấy danh sách theo tên khách hàng',
       success: false
     });
@@ -185,7 +185,7 @@ const getSoLuongKhachHang = async (req, res) => {
 
     return {
       count: count,
-      message: ' thành công',
+      msg: ' thành công',
       success: true
     };
   } catch (error) {
@@ -351,7 +351,7 @@ const softDeleteKhachHang = async (req, res) => {
   try {
     await KhachHang.model.findByIdAndUpdate(req.params.id, { trangThai: false }); //sửa trạng thái 0
     res.json({
-      message: "Xóa mềm khách hàng thành công",
+      msg: "Xóa mềm khách hàng thành công",
       success: true
     });
   } catch (error) {
@@ -368,18 +368,18 @@ const deleteKhachHang = async (req, res) => {
   try {
     const data = await KhachHang.model.findByIdAndDelete(req.params.id)
     if (!data) {
-      return res.json({
+      return({
         error: "Xóa khách hàng thất bại !",
         success: false
       })
     } else {
       return {
-        message: "Xóa khách hàng thành công !",
+        msg: "Xóa khách hàng thành công !",
         success: true
       }
     }
   } catch (err) {
-    return res.status(500).json({ message: err.message })
+    return({ msg: err.message })
 
   }
 }
@@ -407,12 +407,12 @@ const deleteKhachHangWeb = async (req, res) => {
       })
     } else {
       return {
-        message: "Xóa khách hàng thành công !",
+        msg: "Xóa khách hàng thành công !",
         success: true
       }
     }
   } catch (err) {
-    return res.status(500).json({ message: err.message })
+    return({ msg: err.message })
 
   }
 }

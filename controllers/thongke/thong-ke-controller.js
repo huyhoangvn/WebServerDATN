@@ -265,7 +265,7 @@ const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
         };
     } catch (error) {
         console.error("Error:", error);
-        return res.json({
+        return({
             success: false,
             message: 'Đã xảy ra lỗi khi thực hiện thống kê.'
         });
@@ -371,7 +371,7 @@ const thongKeMonBanChayTheoTenLoaiMon = async (req, res) => {
         };
     } catch (error) {
         console.error("Lỗi:", error);
-        return res.json({
+        return({
             success: false,
             message: "Đã xảy ra lỗi khi thực hiện thống kê."
         });
@@ -467,7 +467,7 @@ const thongKeMonBanChayTheoNam = async (req, res) => {
         };
     } catch (error) {
         console.error("Lỗi:", error);
-        return res.json({
+        return({
             success: false,
             message: "Đã xảy ra lỗi khi thực hiện thống kê."
         });

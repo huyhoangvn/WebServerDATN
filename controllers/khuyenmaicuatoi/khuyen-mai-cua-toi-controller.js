@@ -28,7 +28,7 @@ const addKMCuaToi = async (req, res, next) => {
 
     } catch (e) {
         console.error(e);
-        res.json({ error: e.message || "Đã xảy ra lỗi khi thêm khuyến mãi " })
+        return({ error: e.message || "Đã xảy ra lỗi khi thêm khuyến mãi " })
 
     }
 }
@@ -109,7 +109,7 @@ const getAllKhuyenMaiCT = async (req, res, next) => {
             msg: "lấy danh sách thành công"
         };
     } catch (error) {
-        res.json({ message: "Lỗi khi lấy danh sách Khuyến mãi", error });
+        return({ message: "Lỗi khi lấy danh sách Khuyến mãi", error });
     }
 };
 
@@ -123,7 +123,7 @@ const deleteKhuyenMaiCT = async (req, res) => {
             message: "Xóa Khuyến mãi thành công"
         };
     } catch (error) {
-        res.json({
+        return({
             message: "Lỗi khi xóa Khuyến mãi", error
         });
     }

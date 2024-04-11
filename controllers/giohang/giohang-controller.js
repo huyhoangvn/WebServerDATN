@@ -155,7 +155,7 @@ const deleteGioHang = async (req, res) => {
       message: "Xóa giỏ hàng thành công"
     };
   } catch (error) {
-    res.json({
+    return({
       message: "Lỗi khi xóa giỏ hàng", error
     });
   }
