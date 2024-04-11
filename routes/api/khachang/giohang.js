@@ -7,4 +7,6 @@ router.post('/', GioHangCtrl.addGioHangApi);
 router.delete('/detele/:id', GioHangCtrl.deleteGioHangApi);
 router.get('/', GioHangCtrl.getAllGioHangApi);
 router.get('/:idKH', GioHangCtrl.getGioHangByUserIdApi);
+
+router.get('/isMonExist/:idKH', GioHangCtrl.kiemTraGioHang);
 module.exports = router;

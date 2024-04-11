@@ -251,6 +251,7 @@
               <td scope="col-2">Tên quản lý </td>
               <td scope="col-2">Thời gian tạo</td>
               <td scope="col-2">Cửa hàng</td>
+              <td scope="col-2">Vai trò</td>
               <td scope="col-2">Trạng Thái</td>
               <td scope="col-1">Chức năng</td>
             </tr>
@@ -273,23 +274,34 @@
                 <td scope="col-2">
                   <%=data[i].tenCH%>
                 </td>
+                <% if(data[i].phanQuyen==0){%>
+                  <td class="text-success" scope="col-2">Quản Lý</td>
+                  <%}else if(data[i].phanQuyen==2){%>
+                    <td class="text-danger" scope="col-2">
+                      <a data-toggle="modal" data-target="#exampleModal1" data-idnv1="<%=data[i]._id%>"
+                        data-phanquyen="<%=data[i].phanQuyen%>">
+                        Đang đợi duyệt
+                      </a>
 
-                <td class="text-primary scope-col-2">
-                  <a data-toggle="modal" data-target="#suaTrangThaiModal"
-                    class=" <%= data[i].trangThai ? 'text-success' : 'text-danger' %>" data-idnv="<%=data[i]._id%>"
-                    data-trangthai="<%=data[i].trangThai%>">
-                    <%= data[i].trangThai ? 'Hoạt Động' : 'Khóa' %>
-                  </a>
-                </td>
+                    </td>
+                    <%}%>
 
-                <td class="text-primary" scope="col-1">
-                  <a href="#" class="employee-detail-link" data-toggle="modal" data-target="#employeeModal"
-                    data-tenNV="<%=data[i].tenNV%>" data-tenCH="<%=data[i].tenCH%>"
-                    data-thoiGianTao="<%=data[i].thoiGianTao%>" data-email="<%=data[i].email%>"
-                    data-sdt="<%=data[i].sdt%>" data-phanQuyen="<%=data[i].phanQuyen%>"
-                    data-trangThai="<%=data[i].trangThai%>" data-taiKhoan="<%=data[i].taiKhoan%>"
-                    data-diaChi="<%=data[i].diaChi%>" data-gioiTinh="<%=data[i].gioiTinh%>">Chi tiết</a>
-                </td>
+                      <td class="text-primary scope-col-2">
+                        <a data-toggle="modal" data-target="#suaTrangThaiModal"
+                          class=" <%= data[i].trangThai ? 'text-success' : 'text-danger' %>"
+                          data-idnv="<%=data[i]._id%>" data-trangthai="<%=data[i].trangThai%>">
+                          <%= data[i].trangThai ? 'Hoạt Động' : 'Khóa' %>
+                        </a>
+                      </td>
+
+                      <td class="text-primary" scope="col-1">
+                        <a href="#" class="employee-detail-link" data-toggle="modal" data-target="#employeeModal"
+                          data-tenNV="<%=data[i].tenNV%>" data-tenCH="<%=data[i].tenCH%>"
+                          data-thoiGianTao="<%=data[i].thoiGianTao%>" data-email="<%=data[i].email%>"
+                          data-sdt="<%=data[i].sdt%>" data-phanQuyen="<%=data[i].phanQuyen%>"
+                          data-trangThai="<%=data[i].trangThai%>" data-taiKhoan="<%=data[i].taiKhoan%>"
+                          data-diaChi="<%=data[i].diaChi%>" data-gioiTinh="<%=data[i].gioiTinh%>">Chi tiết</a>
+                      </td>
               </tr>
               <%}%>
           </tbody>
@@ -323,6 +335,56 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="suaTrangThaiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel1"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel1">Sửa Trạng Thái</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form id="formSuaTrangThai" action="/quan-ly/xoa/data[i]._id" method="get">
+                  <div class="form-group">
+                    <label for="trangThai">Bạn có muốn sửa không?</label>
+                  </div>
+                  <div class="modal-footer justify-content-end">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Sửa</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">sửa vài trò</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form id="formsuaPhanQuyen" action="/quan-ly/duyet/data[i]._id" method="get">
+                  <div class="form-group">
+                    <label for="phanQuyen">Bạn có muốn sửa không?</label>
+                  </div>
+                  <div class="modal-footer justify-content-end">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Sửa</button>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
@@ -368,7 +430,7 @@
       } else if (phanQuyen === 1) {
         return "Nhân viên thường";
       } else {
-        return "Không xác định";
+        return "đợi duyệt";
       }
     }
 
@@ -411,8 +473,24 @@
         $('#employeeModal').find('#gioiTinh').text(gioiTinhText);
       });
     });
+    $(document).ready(function () {
+      $('a[data-target="#suaTrangThaiModal"]').on('click', function () {
+        var idNV = $(this).data('idnv');
 
-    // Hàm chuyển đổi trạng thái
+        $('#idNV').val(idNV);
+
+        $('#formSuaTrangThai').attr('action', '/quan-ly/xoa/' + idNV);
+
+      });
+
+      $('a[data-target="#exampleModal1"]').on('click', function () {
+        var idNV1 = $(this).data('idnv1');
+
+        $('#idNV1').val(idNV1);
+
+        $('#formsuaPhanQuyen').attr('action', '/quan-ly/duyet/' + idNV1);
+      });
+    });
 
   </script>
 </body>

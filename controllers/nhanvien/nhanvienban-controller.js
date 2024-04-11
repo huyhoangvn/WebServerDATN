@@ -7,6 +7,13 @@ const addNhanVien = async (req, res, next) => {
     if (!req.body || !req.body.taiKhoan || !req.body.matKhau) {
       throw new Error("Thông tin nhân viên không đầy đủ hoặc không hợp lệ.");
     }
+    if (req.body.taiKhoan.length > 50 || req.body.matKhau.length > 50) {
+      throw new Error("Tài khoản hoặc mật khẩu không được quá 50 ký tự.");
+    }
+
+    if (req.body.taiKhoan.length < 6 || req.body.matKhau.length < 6) {
+      throw new Error("Tài khoản và mật khẩu phải có ít nhất 6 ký tự.");
+    }
     // Tạo một nhân viên mới từ body
     const newNhanVien = new NhanVien(req.body);
     // save nhân viên mới vào cơ sở dữ liệu
@@ -90,6 +97,12 @@ const doiMatKhau = async (req, res) => {
     const matKhauMoi = req.body.matKhauMoi;
 
     // Kiểm tra trường matKhauMoi có tồn tại hay không
+    if (req.body.matKhauCu.length < 6 || req.body.matKhauMoi.length < 6) {
+      throw new Error("mật khẩu cũ và mật khẩu mới phải có ít nhất 6 ký tự.");
+    }
+    if (req.body.matKhauCu.length > 50 || req.body.matKhauMoi.length > 50) {
+      throw new Error("mật khẩu cũ và mật khẩu mới phải không được vượt quá 50 kí tự");
+    }
     if (!matKhauMoi) {
       return res.json({
         success: false,
