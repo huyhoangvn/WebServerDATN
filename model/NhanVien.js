@@ -15,8 +15,8 @@ const NhanVienSchema = new db.mongodb.Schema(
         trangThai: { type: Boolean, required: true },
         phanQuyen: {
             type: Number,
-            enum: [0, 1],
-            default: 1, // 1: nhân viên ;0: Quản Lý
+            enum: [0, 1, 2],
+            default: 1, // 1: nhân viên ;0: Quản Lý; 2: Chờ duyệt
         },
     }, { collection: 'NhanVien' }
 );
