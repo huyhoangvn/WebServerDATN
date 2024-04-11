@@ -314,6 +314,37 @@ const updateKhachHang = async (req, res) => {
   }
 }
 
+const finAccount = async (req, res) => {
+  try {
+    const email = req.params.email;
+    if(email == ""){
+      return res.json({
+        error: 'Email không được để trống',
+        success: false
+      });
+    }
+    const khachHang = await KhachHang.model.findOne({ taiKhoan: email});
+    if (!khachHang) {
+      return res.json({
+        error: 'Tài khoản không tồn tại',
+        success: false
+      });
+    }
+    return res.json({
+      message: "Tìm tài khoản thành công",
+      success: true,
+      id: khachHang._id
+    });
+  } catch (error) {
+    console.error(error);
+    return res.json({
+      error: "Lỗi khi tìm tài khoản",
+      success: false
+    });
+  }
+}
+
+
 
 //xóa mềm tài khoản khách hàng
 const softDeleteKhachHang = async (req, res) => {
@@ -439,5 +470,6 @@ module.exports = {
   getSoLuongKhachHang,
   getSoLuongKhachHangApi,
   getKhachHangbyidKhachHang,
-  updateMatKhau
+  updateMatKhau,
+  finAccount
 }
