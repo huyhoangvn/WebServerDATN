@@ -44,7 +44,6 @@ const dangKy = async (req, res, next) => {
   }
 };
 
-
 //đăng nhập
 
 const dangNhap = async (req, res) => {
@@ -198,43 +197,114 @@ const getSoLuongKhachHang = async (req, res) => {
   }
 }
 
+const getKhachHangbyidKhachHang = async (req, res) => {
+  try {
+    const id = new mongo.Types.ObjectId(req.params.id);
+    const khachHang = await KhachHang.model.findById(id);
+
+    if (!khachHang) {
+      return res.json({
+        success: false,
+        msg: 'Không tìm thấy khách hàng',
+      });
+    }
+
+    res.json({
+      index: khachHang,
+      success: true,
+      msg: 'Thành công',
+    });
+  } catch (error) {
+    console.error(error);
+    res.json({
+      success: false,
+      msg: 'Đã xảy ra lỗi',
+    });
+  }
+};
+
+
+const updateMatKhau = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const matKhauCu = req.body.matKhauCu;
+    const matKhauMoi = req.body.matKhauMoi;
+
+    // Kiểm tra trường matKhauMoi có tồn tại hay không
+    if (!matKhauMoi) {
+      return res.json({
+        success: false,
+        msg: "Vui lòng cung cấp mật khẩu mới.",
+      });
+    }
+
+    const item = await KhachHang.model.findById(id);
+    if (!item) {
+      return res.json({ success: false, msg: "Không tìm thấy khách hàng" });
+    }
+
+    // Kiểm tra mật khẩu cũ
+    if (matKhauCu !== item.matKhau) {
+      return res.json({ success: false, msg: "Mật khẩu cũ không chính xác." });
+    }
+
+    // Cập nhật mật khẩu mới
+    item.matKhau = matKhauMoi;
+    const savedKhachHang = await item.save();
+
+    res.json({
+      success: true,
+      msg: "Mật khẩu đã được cập nhật thành công.",
+      index: savedKhachHang,
+    });
+  } catch (e) {
+    console.error(e);
+    res.json({ success: false, msg: "Đã xảy ra lỗi khi đổi mật khẩu" });
+  }
+};
+
 
 //sửa thông tin khách hàng
 const updateKhachHang = async (req, res) => {
   try {
     const idKH = new mongo.Types.ObjectId(req.params.idKH);
-    const tenKH = req.body.tenKH;
-    const diaChi = req.body.diaChi;
-    const sdt = req.body.sdt;
-    const gioiTinh = req.body.gioiTinh;
-    const hinhAnh = req.body.hinhAnh;
 
-    const filter = { _id: idKH }
-    const update = {
-      tenKH: tenKH,
-      diaChi: diaChi,
-      sdt: sdt,
-      gioiTinh: gioiTinh,
-      hinhAnh: hinhAnh,
+    let updateFields = {};
+
+    // Kiểm tra từng trường và thêm vào object updateFields nếu tồn tại giá trị
+    if (req.body.tenKH !== undefined) {
+      updateFields.tenKH = req.body.tenKH;
     }
-    const index = await KhachHang.model.findOneAndUpdate(filter, update, { new: true })
-    if (!index) {
-      return res.json({
-        msg: 'Không tìm thấy khách hàng để sửa',
-        success: false
-      });
-    } else if (tenKH == "" || diaChi == "" || sdt == "" || gioiTinh == "" || hinhAnh == "") {
-      return res.json({
-        msg: 'cập nhật thông tin khách hàng lỗi do thiếu thông tin',
-        success: false
-      });
-    } else {
-      return res.json({
-        index,
-        msg: 'cập nhật thông tin khách hàng thành công',
-        success: true
+    if (req.body.diaChi !== undefined) {
+      updateFields.diaChi = req.body.diaChi;
+    }
+    if (req.body.sdt !== undefined) {
+      updateFields.sdt = req.body.sdt;
+    }
+    if (req.body.gioiTinh !== undefined) {
+      updateFields.gioiTinh = req.body.gioiTinh;
+    }
+    if (req.body.trangThai !== undefined) {
+      updateFields.trangThai = req.body.trangThai;
+    }
+    if (req.files.hinhAnh && req.files.hinhAnh.length > 0) {
+      updateFields.hinhAnh = `${req.protocol}://${req.get("host")}/public/images/${req.files.hinhAnh[req.files.hinhAnh.length - 1].filename}`;
+    }
+
+    if (Object.keys(updateFields).length === 0) {
+      return ({
+        error: "Không có trường nào cần cập nhật",
+        success: false,
       });
     }
+    const filter = { _id: idKH };
+    const index = await KhachHang.model.findOneAndUpdate(filter, updateFields, { new: true });
+    return res.json({
+      index,
+      msg: "Sửa thông tin thành công",
+      success: true,
+    });
+
   } catch (error) {
     console.error(error);
     res.json({
@@ -268,6 +338,39 @@ const deleteKhachHang = async (req, res) => {
     const data = await KhachHang.model.findByIdAndDelete(req.params.id)
     if (!data) {
       return res.json({
+        error: "Xóa khách hàng thất bại !",
+        success: false
+      })
+    } else {
+      return {
+        message: "Xóa khách hàng thành công !",
+        success: true
+      }
+    }
+  } catch (err) {
+    return res.status(500).json({ message: err.message })
+
+  }
+}
+
+const deleteKhachHangWeb = async (req, res) => {
+  try {
+    const idKH = new mongo.Types.ObjectId(req.params.idKH)
+    const filter = { _id: idKH }
+    const khachHangTim = await KhachHang.model.findOne({ _id: idKH })
+    let khachHangSua = {}
+    if (khachHangTim.trangThai == true) {
+      const update = { trangThai: false }
+      const data = await KhachHang.model.findOneAndUpdate(filter, update, { new: true })
+      khachHangSua = data
+    } else {
+      const update = { trangThai: true }
+      const data = await KhachHang.model.findOneAndUpdate(filter, update, { new: true })
+      khachHangSua = data
+    }
+
+    if (!khachHangSua) {
+      return ({
         error: "Xóa khách hàng thất bại !",
         success: false
       })
@@ -332,6 +435,9 @@ module.exports = {
   getKhachHangTheoTenApi,
   updateKhachHang,
   deleteKhachHang,
+  deleteKhachHangWeb,
   getSoLuongKhachHang,
   getSoLuongKhachHangApi,
+  getKhachHangbyidKhachHang,
+  updateMatKhau
 }

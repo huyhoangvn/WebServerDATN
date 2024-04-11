@@ -65,12 +65,6 @@
                   <p>Món bán chạy</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="/thong-ke/giao-dich" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Giao dịch</p>
-                </a>
-              </li>
             </ul>
           </li>
           <!-- Quản lý khách hàng -->
@@ -170,7 +164,7 @@
             </ul>
           </li>
           <!-- hóa đơn -->
-          <li class="nav-item menu-open">
+          <li class="nav-item ">
             <a href="" class="nav-link open">
               <i class="nav-icon fas fa-users"></i>
               <p>
@@ -204,7 +198,7 @@
   </aside>
   <!-- <h1><%= (!!locals.title)?title:'' %></h1> -->
 
-  <div class="content-wrapper">
+  <div class="content-wrapper bg-white" style="min-height: 100vh; max-height: 100vh; overflow-y: auto;">
     <div class="content-header border border-bottom-1">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -284,7 +278,7 @@
                   <a data-toggle="modal" data-target="#suaTrangThaiModal"
                     class=" <%= data[i].trangThai ? 'text-success' : 'text-danger' %>" data-idnv="<%=data[i]._id%>"
                     data-trangthai="<%=data[i].trangThai%>">
-                    <%= data[i].trangThai ? 'Đã được duyệt' : 'Chưa được duyệt' %>
+                    <%= data[i].trangThai ? 'Hoạt Động' : 'Khóa' %>
                   </a>
                 </td>
 
@@ -319,7 +313,6 @@
                     <p><strong>tên cửa hàng:</strong> <span id="tenCH"></span></p>
                     <p><strong>Tài khoản:</strong> <span id="taiKhoan"></span></p>
                     <p><strong>Thời gian tạo:</strong> <span id="thoiGianTao"></span></p>
-                    <!-- <p><strong>Email:</strong> <span id="email"></span></p> -->
                     <p><strong>Số điện thoại:</strong> <span id="sdt"></span></p>
                     <p><strong>Phân quyền:</strong> <span id="phanQuyen"></span></p>
                     <p><strong>Trạng thái:</strong> <span id="trangThai"></span></p>

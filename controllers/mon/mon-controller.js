@@ -145,6 +145,31 @@ const deletemonapi = async (req, res) => {
     });
   }
 };
+const deleteMonWeb = async (req, res) => {
+  try {
+    const idMon = new mongo.Types.ObjectId(req.params.idMon)
+    const filter = { _id: idMon }
+    const monTim = await Mon.model.findOne({ _id: idMon })
+    let monSua = {}
+    if (monTim.trangThai == true) {
+      const update = { trangThai: false }
+      const data = await Mon.model.findOneAndUpdate(filter, update, { new: true })
+      monSua = data
+    } else {
+      const update = { trangThai: true }
+      const data = await Mon.model.findOneAndUpdate(filter, update, { new: true })
+      monSua = data
+    }
+
+    if (!monSua) {
+      return({ error: "Xóa món thất bại !", success: false }); // Phản hồi 404 nếu không tìm thấy món
+    } else {
+      return({ message: "Xóa món thành công !", success: true }); // Phản hồi 200 nếu thành công
+    }
+  } catch (err) {
+    return({ message: err.message }); // Phản hồi 500 nếu có lỗi xảy ra
+  }
+}
 
 const getTatCaMon = async (req, res) => {
   try {
@@ -766,6 +791,7 @@ module.exports = {
 
   getTatCaMonApi,
   deletemonapi,
+  deleteMonWeb,
   updatemonapi,
   updatemon,
   getMonTheoid,

@@ -13,6 +13,7 @@ const getList = async (req, res) => {
         const totalPages = Math.ceil(soLuongKhuyenMai.count / soLuongKhuyenMaiTrenTrang);
         const result = await getTatCaKhuyenMai(req, res);
         res.render("khuyenmai/danh-sach", {
+            soLuongKhuyenMai:soLuongKhuyenMai.count,
             data: result.list,
             admin: req.session.ten,
             totalPages: totalPages,

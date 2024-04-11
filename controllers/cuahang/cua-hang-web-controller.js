@@ -5,16 +5,32 @@ const mongo = require('mongoose');
 var CuaHangCtrl = require("../../controllers/cuahang/cuahang-controller");
 
 const getList = async (req, res, next) => {
-    const trang = parseInt( req.query.trang ) || 1;
+    const trang = parseInt(req.query.trang) || 1;
     const listCH = await CuaHangCtrl.GetCuaHang(req, res);
-    const soCuaHangTrenTrang = 10; 
+    const soCuaHangTrenTrang = 10;
     const soLuongCuaHang = await CuaHangCtrl.GetSoLuongCuaHang(req, res);
     const totalPages = Math.ceil(soLuongCuaHang.index / soCuaHangTrenTrang);
     res.render("cuahang/danh-sach", {
-        count:soLuongCuaHang.index,
+        count: soLuongCuaHang.index,
         totalPages,
-        currentPage:trang,
-        listCH:listCH.index,  
+        currentPage: trang,
+        listCH: listCH.index,
+        admin: req.session.ten,
+        msg: ""
+    })
+}
+const xoaCuaHang = async (req, res, next) => {
+    await CuaHangCtrl.deleteCuaHangWeb(req,res)
+    const trang = parseInt(req.query.trang) || 1;
+    const listCH = await CuaHangCtrl.GetCuaHang(req, res);
+    const soCuaHangTrenTrang = 10;
+    const soLuongCuaHang = await CuaHangCtrl.GetSoLuongCuaHang(req, res);
+    const totalPages = Math.ceil(soLuongCuaHang.index / soCuaHangTrenTrang);
+    res.render("cuahang/danh-sach", {
+        count: soLuongCuaHang.index,
+        totalPages,
+        currentPage: trang,
+        listCH: listCH.index,
         admin: req.session.ten,
         msg: ""
     })
@@ -65,9 +81,7 @@ const getAdd = async (req, res, next) => {
                     hinhAnh,
                 trangThai: trangThai,
             });
-            res.render("cuahang/them-moi", {
-                admin: req.session.ten,
-            });
+            res.redirect("/cua-hang/chi-tiet/" + index._id);
         }
     } catch (error) {
         console.error(error);
@@ -83,13 +97,12 @@ const chiTietCuaHang = async (req, res, next) => {
         const idCH = new mongo.Types.ObjectId(req.params.idCH);
         const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
 
-        const NVQL = await NhanVien.find({idCH:idCH, phanQuyen:0});
-        console.log(chiTiet.data.danhSachMonAn.items);
+        const NVQL = await NhanVien.find({ idCH: idCH, phanQuyen: 0 });
 
         res.render("cuahang/chi-tiet", {
             NVQL,
-            chiTietCH:chiTiet.data.cuaHang,
-            monCH:chiTiet.data.danhSachMonAn.items,
+            chiTietCH: chiTiet.data.cuaHang,
+            monCH: chiTiet.data.danhSachMonAn.items,
             admin: req.session.ten,
             msg: ""
         })
@@ -99,10 +112,81 @@ const chiTietCuaHang = async (req, res, next) => {
         res.status(500).send('Đã xảy ra lỗi khi hiển thị chi tiết cửa hàng');
     }
 }
+const themNhanVienQuanLy = async (req, res) => {
+    try {
+        let msg = "";
+        const idCH = new mongo.Types.ObjectId(req.params.idCH);
+        const taiKhoan = req.body.taiKhoan;
+        const matKhau = req.body.matKhau;
+        const tenNV = req.body.tenNV;
+        const gioiTinh = req.body.gioiTinh;
+        const hinhAnh = req.body.hinhAnh || 'default_image.png';
+        const sdt = req.body.sdt;
+        const diaChi = req.body.diaChi;
+        const phanQuyen = 0;
+        const trangThai = 1;
+
+
+        const NVQL = await NhanVien.find({ idCH: idCH, phanQuyen: 0 });
+        if (taiKhoan == "" || matKhau == "" || sdt == "" || diaChi == "" || tenNV == "" || gioiTinh == "") {
+            res.render("cuahang/chi-tiet", {
+                NVQL,
+                chiTietCH: chiTiet.data.cuaHang,
+                monCH: chiTiet.data.danhSachMonAn.items,
+                msg: 'Thêm nhân viên quản lý lỗi do thiếu thông tin',
+                success: false
+            });
+        }
+        else if (NVQL.length >= 5) {
+            const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
+            res.render("cuahang/chi-tiet", {
+                NVQL,
+                chiTietCH: chiTiet.data.cuaHang,
+                monCH: chiTiet.data.danhSachMonAn.items,
+                msg: 'Số lượng nhân viên quản lý đã đạt tối đa. Vui lòng xóa một nhân viên quản lý trước khi thêm mới.',
+                success: false
+            });
+        }
+        else {
+            const index = await NhanVien.create({
+                idCH: idCH,
+                taiKhoan: taiKhoan,
+                matKhau: matKhau,
+                sdt: sdt,
+                diaChi: diaChi,
+                tenNV: tenNV,
+                gioiTinh: gioiTinh,
+                hinhAnh: req.protocol +
+                    "://" +
+                    req.get("host") +
+                    "/public/images/" +
+                    hinhAnh,
+                phanQuyen: phanQuyen,
+                trangThai: trangThai,
+            });
+            const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
+            res.render("cuahang/chi-tiet", {
+                NVQL,
+                chiTietCH: chiTiet.data.cuaHang,
+                monCH: chiTiet.data.danhSachMonAn.items,
+                admin: req.session.ten,
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        return {
+            error: 'Lỗi khi thêm nhân viên quản lý',
+            success: false
+        };
+    }
+
+}
 
 module.exports = {
     getList,
     getAdd,
     getAddView,
-    chiTietCuaHang
+    chiTietCuaHang,
+    themNhanVienQuanLy,
+    xoaCuaHang
 }

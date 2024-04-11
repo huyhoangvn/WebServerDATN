@@ -73,12 +73,6 @@
                   <p>Món bán chạy</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="/thong-ke/giao-dich" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Giao dịch</p>
-                </a>
-              </li>
             </ul>
           </li>
           <!-- Quản lý khách hàng -->
@@ -212,7 +206,7 @@
   </aside>
   <!-- <h1><%= (!!locals.title)?title:'' %></h1> -->
 
-  <div class="content-wrapper">
+  <div class="content-wrapper bg-white" style="min-height: 100vh; max-height: 100vh; overflow-y: auto;">
     <div class="content-header border border-bottom-1">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -240,7 +234,7 @@
             <div>
               <p>Doanh thu trong 1 ngày</p>
               <p class="fw-bold">
-                <%=tongTienMotNgay%>đ
+                <%=tongTienMotNgay.toLocaleString()%>đ
               </p>
             </div>
           </div>
@@ -248,7 +242,7 @@
             <div>
               <p>Doanh thu trong 10 ngày</p>
               <p class="fw-bold">
-                <%=tongTienMuoiNgay%>đ
+                <%=tongTienMuoiNgay.toLocaleString()%>đ
               </p>
             </div>
           </div>
@@ -256,7 +250,7 @@
             <div>
               <p class="text-white">Doanh thu trong 30 ngày</p>
               <p class="fw-bold text-white">
-                <%=tongTienBaMuoiNgay%>đ
+                <%=tongTienBaMuoiNgay.toLocaleString()%>đ
               </p>
             </div>
           </div>
@@ -272,7 +266,7 @@
               <input type="text" class="form-control" value="" name="nam" placeholder="Nhập năm để thống kê ">
             </div>
             <div class="col-2">
-              <button class="btn btn-dark w-100" type="submit">Thống kê</button>
+              <button class="btn btn-dark w-100" type="submit" id="thongKe">Thống kê</button>
             </div>
           </div>
 
@@ -280,9 +274,10 @@
         <!-- kết thúc filter -->
 
         <!-- bắt đầu biểu đồ -->
-        <label for="">biểu đồ cột doanh thu theo năm </label>
+        <label for="" class="font-weight-normal">biểu đồ cột doanh thu theo năm <%=nam%> </label>
         <br>
-        <label for="">Tổng doanh thu năm </label>
+        <label for="" class="font-weight-normal">Tổng doanh thu năm <%=nam%> </label>
+        <label for=""><%=tongTienNam.toLocaleString()%></label>
         <br>
         <div class="row">
           <div class="col">
@@ -311,7 +306,7 @@
                     <%=i+1%>
                   </td>
                   <td scope="col-9" data-revenue="<%=cacThang[i].tong%>">
-                    <%=cacThang[i].tong%>
+                    <%=cacThang[i].tong.toLocaleString()%>đ
                   </td>
                 </tr>
                 <%}%>
@@ -319,7 +314,7 @@
                     <tr>
                       <td scope="col-1">0</td>
                       <td scope="col-2">0</td>
-                      <td scope="col-9">0</td>
+                      <td scope="col-9">0đ</td>
                     </tr>
                     <%}%>
 
@@ -386,6 +381,8 @@
         }
       }
     });
+
+
   </script>
 </body>
 

@@ -75,7 +75,7 @@ const SuaKhuyenMai = async function (req, res) {
     try {
         const idKM = new mongo.Types.ObjectId(req.params.idKM);
         const tieuDe = req.body.tieuDe;
-        const ngayBatDau = new Date(req.body.ngayBatDau);
+        const ngayBatDau = req.body.ngayBatDau;
         const ngayHetHan = req.body.ngayHetHan;
         const phanTramKhuyenMai = req.body.phanTramKhuyenMai;
         const donToiThieu = req.body.donToiThieu;
@@ -89,6 +89,7 @@ const SuaKhuyenMai = async function (req, res) {
             donToiThieu: donToiThieu,
 
         }
+        console.log(idKM);
         const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
         if (!index) {
             return res.json({
@@ -96,10 +97,10 @@ const SuaKhuyenMai = async function (req, res) {
                 success: false
             });
         } else if (tieuDe == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu == "") {
-            return res.json({
+            return {
                 error: 'Sửa khuyến mãi lỗi do thiếu thông tin',
                 success: false
-            });
+            };
         } else {
             return {
                 index,
@@ -109,10 +110,10 @@ const SuaKhuyenMai = async function (req, res) {
         }
     } catch (error) {
         console.error(error);
-        res.json({
+        return {
             error: 'Lỗi khi sửa khuyến mãi',
             success: false
-        });
+        };
     }
 
 }
@@ -501,6 +502,7 @@ const getSoLuongKhuyenMai = async (req, res) => {
                 $count: "count",
             }
         ])
+        console.log(result[0].count);
 
         return {
             count: result[0].count,

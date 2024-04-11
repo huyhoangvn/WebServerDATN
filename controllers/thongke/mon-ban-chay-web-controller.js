@@ -6,6 +6,23 @@ const mongo = require('mongoose');
 const getView = async (req, res, next) => {
     var currentMonth = new Date().getMonth() + 1;
     var currentYear = new Date().getFullYear();
+    const AllLoaiMon = await LoaiMon.find({});
+    req.query.nam = currentYear
+    req.query.thang = currentMonth
+    const monBanChay = await ThongKeCtrl.thongKeMonBanChayTheoNam(req, res);
+    res.render("thongke/mon-ban-chay", {
+        currentMonth,
+        currentYear,
+        AllLoaiMon,
+        monBanChay:monBanChay.data,
+        admin: req.session.ten,
+        msg: ""
+    })
+   
+}
+const getList = async (req, res, next) => {
+    var currentMonth = new Date().getMonth() + 1;
+    var currentYear = new Date().getFullYear();
     const idLM = new mongo.Types.ObjectId(req.query.idLM);
     const tenLM = req.query.tenLM;
     const AllLoaiMon = await LoaiMon.find({});
@@ -26,8 +43,10 @@ const getView = async (req, res, next) => {
         admin: req.session.ten,
         msg: ""
     })
+
 }
 
 module.exports = {
-    getView
+    getView,
+    getList
 }

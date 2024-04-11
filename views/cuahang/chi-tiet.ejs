@@ -13,6 +13,7 @@
     crossorigin="anonymous"></script>
   <script src="https://kit.fontawesome.com/b5123099c5.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
   <!-- <style>
       .sidebar-dark-primary {
         background-color: #030025 !important; /* Change to green color */
@@ -45,28 +46,22 @@
           <li class="nav-item">
             <a href="" class="nav-link open">
               <i class="nav-icon fas fa-chart-bar"></i>
-              <label>
+              <p>
                 Thống kê
                 <i class="right fas fa-angle-left"></i>
-              </label>
+              </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="/thong-ke/doanh-thu" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <label>Doanh thu</label>
+                  <p>Doanh thu</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="/thong-ke/mon-ban-chay" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <label>Món bán chạy</label>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="/thong-ke/giao-dich" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <label>Giao dịch</label>
+                  <p>Món bán chạy</p>
                 </a>
               </li>
             </ul>
@@ -75,16 +70,16 @@
           <li class="nav-item">
             <a href="" class="nav-link open">
               <i class="nav-icon fas fa-users"></i>
-              <label>
+              <p>
                 Quản lý khách hàng
                 <i class="right fas fa-angle-left"></i>
-              </label>
+              </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="/khach-hang/danh-sach" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <label>Danh sách</label>
+                  <p>Danh sách</p>
                 </a>
               </li>
             </ul>
@@ -93,22 +88,22 @@
           <li class="nav-item">
             <a href="" class="nav-link open">
               <i class="nav-icon fas fa-tags"></i>
-              <label>
+              <p>
                 Quản lý khuyến mãi
                 <i class="right fas fa-angle-left"></i>
-              </label>
+              </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="/khuyen-mai/danh-sach" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <label>Danh sách</label>
+                  <p>Danh sách</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="/khuyen-mai/them-moi" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <label>Thêm mới</label>
+                  <p>Thêm mới</p>
                 </a>
               </li>
             </ul>
@@ -117,22 +112,22 @@
           <li class="nav-item">
             <a href="" class="nav-link open">
               <i class="nav-icon fas fa-utensils"></i>
-              <label>
+              <p>
                 Quản lý món
                 <i class="right fas fa-angle-left"></i>
-              </label>
+              </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="/mon/danh-sach" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <label>Danh sách</label>
+                  <p>Danh sách</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="/loai-mon/danh-sach" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <label>Loại món</label>
+                  <p>Loại món</p>
                 </a>
               </li>
             </ul>
@@ -141,46 +136,46 @@
           <li class="nav-item menu-open">
             <a href="" class="nav-link open">
               <i class="nav-icon fas fa-store"></i>
-              <label>
+              <p>
                 Quản lý cửa hàng
                 <i class="right fas fa-angle-left"></i>
-              </label>
+              </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="/cua-hang/danh-sach" class="nav-link active">
+                <a href="/cua-hang/danh-sach" class="nav-link  active">
                   <i class="far fa-circle nav-icon"></i>
-                  <label>Danh sách</label>
+                  <p>Danh sách</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="/cua-hang/them-moi" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <label>Thêm mới</label>
+                  <p>Thêm mới</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="/quan-ly/danh-sach" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <label>Tài khoản quản lý</label>
+                  <p>Tài khoản quản lý</p>
                 </a>
               </li>
             </ul>
           </li>
           <!-- hóa đơn -->
-          <li class="nav-item menu-open">
+          <li class="nav-item ">
             <a href="" class="nav-link open">
               <i class="nav-icon fas fa-users"></i>
-              <label>
+              <p>
                 Quản lý Hóa Đơn
                 <i class="right fas fa-angle-left"></i>
-              </label>
+              </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="/hoa-don/danh-sach" class="nav-link">
+                <a href="/hoa-don/danh-sach" class="nav-link ">
                   <i class="far fa-circle nav-icon"></i>
-                  <label>Danh sách</label>
+                  <p>Danh sách</p>
                 </a>
               </li>
             </ul>
@@ -189,9 +184,9 @@
           <li class="nav-item border-top border-1 ">
             <a href="/auth/sign-out" class="nav-link">
               <i class="fa-solid fa-arrow-right-from-bracket nav-icon"></i>
-              <label>
+              <p>
                 Sign-Out
-              </label>
+              </p>
             </a>
           </li>
         </ul>
@@ -202,7 +197,7 @@
   </aside>
   <!-- <h1><%= (!!locals.title)?title:'' %></h1> -->
 
-  <div class="content-wrapper">
+  <div class="content-wrapper bg-white" style="min-height: 100vh; max-height: 100vh; overflow-y: auto;">
     <div class="content-header border border-bottom-1">
       <div class="container-fluid">
         <div class="row mb-2">
@@ -299,7 +294,10 @@
                 </tbody>
               </table>
               <div class="row justify-content-center">
-                <button type="button" class="btn btn-dark col-2">Thêm mới</button>
+                <button data-toggle="modal" data-target="#themNhanVienQuanLy" type="button"
+                  data-idch="<%=chiTietCH._id%>" class="btn btn-dark col-2">
+                  Thêm mới
+                </button>
               </div>
 
               <!-- Kết thúc bảng tài khoản quản lý-->
@@ -361,6 +359,61 @@
                           <%}%>
                 </tbody>
               </table>
+              <!-- modal them nhan vien quản lý  -->
+              <div class="modal fade" id="themNhanVienQuanLy" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Thêm nhân viên quản lý</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form id="formThemNhanVien" method="post" action="/cua-hang/them-nv/<%=chiTietCH._id%>">
+                        <div class="form-group">
+                          <label for="taiKhoan">Tài Khoản</label>
+                          <input type="text" class="form-control" name="taiKhoan" id="taiKhoan"
+                            placeholder="nhập tài khoản ">
+                        </div>
+                        <div class="form-group">
+                          <label for="matKhau">Mật khẩu</label>
+                          <input type="text" class="form-control" name="matKhau" id="matKhau"
+                            placeholder="nhập mật khẩu ">
+                        </div>
+                        <div class="form-group">
+                          <label for="tenNV">nhập tên nhân viên</label>
+                          <input type="text" class="form-control" name="tenNV" id="tenNV" placeholder="tên nhân viên">
+                        </div>
+                        <div class="form-group">
+                          <label for="gioiTinh">giới tính</label>
+                          <input type="text" class="form-control" name="gioiTinh" id="gioiTinh" placeholder="giới tính">
+                        </div>
+                        <div class="form-group">
+                          <label for="sdt">số điện thoại</label>
+                          <input type="text" class="form-control" name="sdt" id="sdt" placeholder="số điện thoại">
+                        </div>
+                        <div class="form-group">
+                          <label for="diaChi">địa chỉ</label>
+                          <input type="text" class="form-control" name="diaChi" id="diaChi" placeholder="địa chỉ">
+                        </div>
+                        <div class="form-group">
+                          <label class="form-label" for="hinhAnh">Hình ảnh</label>
+                          <div>
+                            <input type="file" accept="image/*" class="form-control-file" name="hinhAnh" id="hinhAnh"
+                              onchange="previewImage(event)">
+                            <span id="fileName" style="display:none;"></span>
+                          </div>
+                        </div>
+                        <input type="hidden" class="form-control" name="idCH" id="idCH">
+                        <br>
+                        <button type="submit" class="btn btn-primary">Thêm</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <!-- Kết thúc bảng tài khoản quản lý-->
       </div>
@@ -378,6 +431,21 @@
       )
     }
     )
+    $(document).ready(function () {
+      // Khi nút "Thêm mới" được nhấp
+      $('button[data-target="#themNhanVienQuanLy"]').on('click', function () {
+        var idCH = $(this).data('idch');
+        $('#idCH').val(idCH);
+
+        // $('#formThemNhanVien').attr('action', '/cua-hang/them-nv/' + idCH);
+      });
+    });
+    function previewImage(event) {
+      var selectedImage = document.getElementById('selectedImage');
+      selectedImage.style.display = 'block';
+      selectedImage.src = URL.createObjectURL(event.target.files[0]);
+    }
+
   </script>
 </body>
 

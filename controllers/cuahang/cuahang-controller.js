@@ -358,6 +358,40 @@ const huyKichHoatCuaHang = async (req, res, next) => {
     }
 };
 
+const deleteCuaHangWeb = async (req, res) => {
+    try {
+        const idCH = new mongo.Types.ObjectId(req.params.idCH); // Sửa thành idCH
+        const filter = { _id: idCH };
+        const filterNVCu = await NhanVien.findOne({ idCH: idCH });
+        const filterMonCu = await Mon.findOne({ idCH: idCH });
+        const cuaHangTim = await CuaHang.findOne({ _id: idCH })
+        
+        console.log("avavbsabraner");
+        if (cuaHangTim) { // Kiểm tra xem cuaHangTim có tồn tại không trước khi truy cập vào trangThai
+            if (cuaHangTim.trangThai == true) {
+                console.log("true");
+                const update = { trangThai: false };
+                const filterNV = { idCH: idCH };
+                const filterMon = { idCH: idCH };
+                const data = await CuaHang.findOneAndUpdate(filter, update, { new: true });
+                const MonSua = await Mon.updateMany(filterMon, update, { new: true });
+                const nhanVienSua = await NhanVien.updateMany(filterNV, update, { new: true });
+                return({ error: "Xóa của hàng thành công !", success: false });
+            } else {
+                const update = { trangThai: true };
+                const data = await CuaHang.findOneAndUpdate(filter, update, { new: true });
+                return({ error: "Xóa cửa hàng thành công !", success: false });
+            }
+        } else {
+            return({ msg: "Không tìm thấy cửa hàng", success: false });
+        }
+    } catch (e) {
+        console.log(e);
+        res.json({ success: false, msg: "Đã xảy ra lỗi " });
+    }
+
+}
+
 
 const chiTietCuaHangWeb = async (req, res, next) => {
     try {
@@ -594,5 +628,6 @@ module.exports = {
     GetSoLuongCuaHang,
     getCuaHangApi,
     chiTietCuaHangAppApi,
-    chiTietCuaHangWebApi
+    chiTietCuaHangWebApi,
+    deleteCuaHangWeb
 };

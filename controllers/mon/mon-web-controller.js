@@ -4,8 +4,8 @@ const { model: CuaHang } = require("../../model/CuaHang");
 const { model: LoaiMon } = require("../../model/LoaiMon");
 const { model: DanhGia } = require("../../model/DanhGia");
 const mongo = require('mongoose');
-const { getTatCaMon, getSoLuongTatCaMon } = require("./mon-controller");
-const { GetSoLuongDanhGiaTheoMon,GetSoLuongDanhGiaTheoMonVoiFilter } = require("../danhgia/danhgia-controller");
+const { getTatCaMon, getSoLuongTatCaMon, deleteMonWeb } = require("./mon-controller");
+const { GetDanhSachDanhGiaTheoMonVoiFilter, GetDanhSachTheoTenMon } = require("../danhgia/danhgia-controller");
 
 
 const getList =  async (req, res)=>{
@@ -68,7 +68,13 @@ const getChiTietMon = async (req, res) => {
         });
         const danhGiaTrungBinh = (query.length > 0 ? (danhGiaTong / query.length) : 0);//kết thúc tính tổng số lượng và trung bình
 
-        const layDanhSach = await GetSoLuongDanhGiaTheoMonVoiFilter(req, res);//đây là để lấy ra tất cả đánh giá của món
+        const layDanhSach = await GetDanhSachDanhGiaTheoMonVoiFilter(req, res);//đây là để lấy ra tất cả đánh giá của món
+
+        const trang = parseInt(req.query.trang) || 1;
+        const soMonTrenTrang = 10; 
+        const soLuongMon = await GetDanhSachTheoTenMon(req, res);
+        const totalPages = Math.ceil(soLuongMon.count / soMonTrenTrang);
+
         res.render("mon/chi-tiet", {
             list:layDanhSach.list,
             danhGiaTrungBinh: parseFloat(danhGiaTrungBinh.toFixed(1)),
@@ -77,7 +83,9 @@ const getChiTietMon = async (req, res) => {
             idMon:idMon,
             cuaHang:cuaHang,
             loaiMon:loaiMon,
-            admin: req.session.ten
+            admin: req.session.ten,
+            totalPages: totalPages,
+            currentPage: trang,
         });
 
         //Thiếu phân trang
@@ -85,10 +93,35 @@ const getChiTietMon = async (req, res) => {
         console.error("Error fetching data:", error);
     }
 }
+const xoaMon = async (req, res) => {
+    await deleteMonWeb(req, res);
+    if(req.query.giaTien === 1){
+        req.query.giaTienMax = 100000
+        req.query.giaTienMin = 0
+    } else{
+        req.query.giaTienMax = 100000
+        req.query.giaTienMin = 0
+    }
+    const trang = parseInt(req.query.trang) || 1;
+    const soMonTrenTrang = 10; 
+    const soLuongMon = await getSoLuongTatCaMon(req, res);
+    const totalPages = Math.ceil(soLuongMon.count / soMonTrenTrang);
+    const result = await getTatCaMon(req,res);
+
+    res.render("mon/danh-sach", {
+        data: result.list,
+        admin: req.session.ten,
+        msg: result.list,
+        totalPages: totalPages,
+        currentPage: trang,
+    });
+
+}
 
 
 
 module.exports = {
     getList,
-    getChiTietMon
+    getChiTietMon,
+    xoaMon
 }
