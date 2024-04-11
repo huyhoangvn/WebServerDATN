@@ -118,6 +118,10 @@ const updateCuaHang = async (req, res) => {
         const thoiGianMo = req.body.thoiGianMo || item.thoiGianMo;
         const thoiGianDong = req.body.thoiGianDong || item.thoiGianDong;
 
+        if (tenCH.length > 50 || email.length > 50 || diaChi.length > 100 || sdt.length > 10) {
+            throw new Error("các trường thông tin vượt quá số ký tự cho phép");
+        }
+
         let hinhAnh = item.hinhAnh; // Mặc định sử dụng ảnh hiện tại
 
         // Kiểm tra xem có tệp được tải lên hay không
@@ -365,7 +369,7 @@ const deleteCuaHangWeb = async (req, res) => {
         const filterNVCu = await NhanVien.findOne({ idCH: idCH });
         const filterMonCu = await Mon.findOne({ idCH: idCH });
         const cuaHangTim = await CuaHang.findOne({ _id: idCH })
-        
+
         console.log("avavbsabraner");
         if (cuaHangTim) { // Kiểm tra xem cuaHangTim có tồn tại không trước khi truy cập vào trangThai
             if (cuaHangTim.trangThai == true) {
@@ -376,14 +380,14 @@ const deleteCuaHangWeb = async (req, res) => {
                 const data = await CuaHang.findOneAndUpdate(filter, update, { new: true });
                 const MonSua = await Mon.updateMany(filterMon, update, { new: true });
                 const nhanVienSua = await NhanVien.updateMany(filterNV, update, { new: true });
-                return({ error: "Xóa của hàng thành công !", success: false });
+                return ({ error: "Xóa của hàng thành công !", success: false });
             } else {
                 const update = { trangThai: true };
                 const data = await CuaHang.findOneAndUpdate(filter, update, { new: true });
-                return({ error: "Xóa cửa hàng thành công !", success: false });
+                return ({ error: "Xóa cửa hàng thành công !", success: false });
             }
         } else {
-            return({ msg: "Không tìm thấy cửa hàng", success: false });
+            return ({ msg: "Không tìm thấy cửa hàng", success: false });
         }
     } catch (e) {
         console.log(e);
