@@ -28,7 +28,7 @@ const addKMCuaToi = async (req, res, next) => {
 
     } catch (e) {
         console.error(e);
-        return({ error: e.message || "Đã xảy ra lỗi khi thêm khuyến mãi " })
+        return ({ error: e.message || "Đã xảy ra lỗi khi thêm khuyến mãi " })
 
     }
 }
@@ -109,7 +109,7 @@ const getAllKhuyenMaiCT = async (req, res, next) => {
             msg: "lấy danh sách thành công"
         };
     } catch (error) {
-        return({ message: "Lỗi khi lấy danh sách Khuyến mãi", error });
+        return ({ msg: "Lỗi khi lấy danh sách Khuyến mãi", success: false });
     }
 };
 
@@ -123,7 +123,7 @@ const deleteKhuyenMaiCT = async (req, res) => {
             message: "Xóa Khuyến mãi thành công"
         };
     } catch (error) {
-        return({
+        return ({
             message: "Lỗi khi xóa Khuyến mãi", error
         });
     }
@@ -150,7 +150,6 @@ const addKMCuaToiApi = async (req, res, next) => {
 const getAllKhuyenMaiCTApi = async (req, res, next) => {
     try {
         const result = await getAllKhuyenMaiCT(req, res, next);
-        console.log(result);
         if (!res.headersSent) {
             // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi
             res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
