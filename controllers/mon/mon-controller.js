@@ -711,7 +711,7 @@ const updatemon = async (req, res) => {
     });
 
   } catch (error) {
-    res.json({
+    return({
       msg: "Lỗi khi sửa món",
       error,
       success: false,

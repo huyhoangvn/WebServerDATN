@@ -163,7 +163,7 @@ const XoaKhuyenMai = async function (req, res) {
         }
     } catch (error) {
         console.error(error);
-        res.json({
+        return({
             error: 'Lỗi khi xóa khuyến mãi',
             success: false
         });
