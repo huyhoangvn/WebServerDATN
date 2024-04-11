@@ -268,40 +268,43 @@ const updateMatKhau = async (req, res, next) => {
 const updateKhachHang = async (req, res) => {
   try {
     const idKH = new mongo.Types.ObjectId(req.params.idKH);
-    const tenKH = req.body.tenKH;
-    const diaChi = req.body.diaChi;
-    const sdt = req.body.sdt;
-    const gioiTinh = req.body.gioiTinh;
-    const hinhAnh = req.body.hinhAnh || "default-avatar.png";
 
-    const hinhAnhLink = `${req.protocol}://${req.get("host")}/public/images/${hinhAnh}`
+    let updateFields = {};
 
-    const filter = { _id: idKH }
-    const update = {
-      tenKH: tenKH,
-      diaChi: diaChi,
-      sdt: sdt,
-      gioiTinh: gioiTinh,
-      hinhAnh: hinhAnhLink,
+    // Kiểm tra từng trường và thêm vào object updateFields nếu tồn tại giá trị
+    if (req.body.tenKH !== undefined) {
+      updateFields.tenKH = req.body.tenKH;
     }
-    const index = await KhachHang.model.findOneAndUpdate(filter, update, { new: true })
-    if (!index) {
-      return res.json({
-        msg: 'Không tìm thấy khách hàng để sửa',
-        success: false
-      });
-    } else if (tenKH == "" || diaChi == "" || sdt == "" || gioiTinh == "" || hinhAnh == "") {
-      return res.json({
-        msg: 'cập nhật thông tin khách hàng lỗi do thiếu thông tin',
-        success: false
-      });
-    } else {
-      return res.json({
-        index,
-        msg: 'cập nhật thông tin khách hàng thành công',
-        success: true
+    if (req.body.diaChi !== undefined) {
+      updateFields.diaChi = req.body.diaChi;
+    }
+    if (req.body.sdt !== undefined) {
+      updateFields.sdt = req.body.sdt;
+    }
+    if (req.body.gioiTinh !== undefined) {
+      updateFields.gioiTinh = req.body.gioiTinh;
+    }
+    if (req.body.trangThai !== undefined) {
+      updateFields.trangThai = req.body.trangThai;
+    }
+    if (req.files.hinhAnh && req.files.hinhAnh.length > 0) {
+      updateFields.hinhAnh = `${req.protocol}://${req.get("host")}/public/images/${req.files.hinhAnh[req.files.hinhAnh.length - 1].filename}`;
+    }
+
+    if (Object.keys(updateFields).length === 0) {
+      return ({
+        error: "Không có trường nào cần cập nhật",
+        success: false,
       });
     }
+    const filter = { _id: idKH };
+    const index = await KhachHang.model.findOneAndUpdate(filter, updateFields, { new: true });
+    return res.json({
+      index,
+      msg: "Sửa thông tin thành công",
+      success: true,
+    });
+
   } catch (error) {
     console.error(error);
     res.json({
@@ -310,6 +313,37 @@ const updateKhachHang = async (req, res) => {
     });
   }
 }
+
+const finAccount = async (req, res) => {
+  try {
+    const email = req.params.email;
+    if(email == ""){
+      return res.json({
+        error: 'Email không được để trống',
+        success: false
+      });
+    }
+    const khachHang = await KhachHang.model.findOne({ taiKhoan: email});
+    if (!khachHang) {
+      return res.json({
+        error: 'Tài khoản không tồn tại',
+        success: false
+      });
+    }
+    return res.json({
+      message: "Tìm tài khoản thành công",
+      success: true,
+      id: khachHang._id
+    });
+  } catch (error) {
+    console.error(error);
+    return res.json({
+      error: "Lỗi khi tìm tài khoản",
+      success: false
+    });
+  }
+}
+
 
 
 //xóa mềm tài khoản khách hàng
@@ -436,5 +470,6 @@ module.exports = {
   getSoLuongKhachHang,
   getSoLuongKhachHangApi,
   getKhachHangbyidKhachHang,
-  updateMatKhau
+  updateMatKhau,
+  finAccount
 }

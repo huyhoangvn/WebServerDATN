@@ -20,7 +20,7 @@ const getList = async (req, res, next) => {
     })
 }
 const xoaCuaHang = async (req, res, next) => {
-    await CuaHangCtrl.deleteCuaHangWeb(req,res)
+    await CuaHangCtrl.deleteCuaHangWeb(req, res)
     const trang = parseInt(req.query.trang) || 1;
     const listCH = await CuaHangCtrl.GetCuaHang(req, res);
     const soCuaHangTrenTrang = 10;
@@ -58,6 +58,12 @@ const getAdd = async (req, res, next) => {
         if (tenCH == "" || email == "" || sdt == "" || diaChi == "") {
             res.render("cuahang/them-moi", {
                 error: 'Thêm cửa hàng lỗi do thiếu thông tin',
+                success: false
+            });
+        }
+        else if (tenCH.length > 50 || email.length > 50 || sdt.length > 10 || diaChi.length > 100) {
+            res.render("cuahang/them-moi", {
+                error: 'các trường nhập vào đang quá ký tự cho phép',
                 success: false
             });
         }
@@ -123,17 +129,27 @@ const themNhanVienQuanLy = async (req, res) => {
         const hinhAnh = req.body.hinhAnh || 'default_image.png';
         const sdt = req.body.sdt;
         const diaChi = req.body.diaChi;
-        const phanQuyen = 0;
+        const phanQuyen = 2;
         const trangThai = 1;
 
 
-        const NVQL = await NhanVien.find({ idCH: idCH, phanQuyen: 0 });
+        const NVQL = await NhanVien.find({ idCH: idCH, phanQuyen: 2 });
         if (taiKhoan == "" || matKhau == "" || sdt == "" || diaChi == "" || tenNV == "" || gioiTinh == "") {
+            const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
             res.render("cuahang/chi-tiet", {
                 NVQL,
                 chiTietCH: chiTiet.data.cuaHang,
                 monCH: chiTiet.data.danhSachMonAn.items,
                 msg: 'Thêm nhân viên quản lý lỗi do thiếu thông tin',
+                success: false
+            });
+        } else if (tenNV.length > 50 || taiKhoan.length > 50 || matKhau.length > 50 || diaChi.length > 100 || sdt.length > 10) {
+            const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
+            res.render("cuahang/chi-tiet", {
+                NVQL,
+                chiTietCH: chiTiet.data.cuaHang,
+                monCH: chiTiet.data.danhSachMonAn.items,
+                msg: 'các trường thông tin nhập vào đang có trường vượt quá ký tự cho phép',
                 success: false
             });
         }
