@@ -200,7 +200,7 @@ const getSoLuongKhachHang = async (req, res) => {
 const getKhachHangbyidKhachHang = async (req, res) => {
   try {
     const id = new mongo.Types.ObjectId(req.params.id);
-    const khachHang = await KhachHang.model.findById(id).select('-taiKhoan -matKhau');
+    const khachHang = await KhachHang.model.findById(id).select('-matKhau');
 
     if (!khachHang) {
       return res.json({
