@@ -35,6 +35,7 @@ const addKMCuaToi = async (req, res, next) => {
 
 const getAllKhuyenMaiCT = async (req, res, next) => {
     try {
+        const idKH = req.params.idKH;
         const page = parseInt(req.query.trang) || 1;
         const limit = 10; // Số lượng phần tử trên mỗi trang
         const timkiem = {};

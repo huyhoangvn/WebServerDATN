@@ -18,9 +18,9 @@ const HoaDonSchema = new db.mongodb.Schema(
         diaChiGiaoHang: { type: String, default: "" },
         ghiChu: { type: String, default: "" },
         thoiGianTao: { type: Date, default: Date.now() },
-        thoiGianDuyet: { type: Date, default: Date.now() },
+        thoiGianDuyet: { type: Date, default: null },
         tongTien: { type: Number, default: 0 },
-        thoiGianGiaoHangDuKien: { type: Date, default: Date.now() },
+        thoiGianGiaoHangDuKien: { type: Date, default: null },
 
         trangThaiThanhToan: {
             type: Number,

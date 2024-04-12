@@ -15,6 +15,9 @@ const themLoaiMon = async (req, res, next) => {
     if (foundLoaiMon) {
       throw new Error("Loại món đã tồn tại");
     }
+    if (req.body.tenLM.length > 100) {
+      throw new Error("tên loại món vượt quá ký tự cho phép");
+    }
 
     // Tạo mới loại món
     await Loaimon.model.create({
@@ -142,7 +145,7 @@ const deleteLoaiMonWeb = async (req, res) => {
   try {
     const idLM = new mongo.Types.ObjectId(req.params.idLM)
     const filter = { _id: idLM }
-    const filterLM = await Mon.model.findOne({idLM:idLM})
+    const filterLM = await Mon.model.findOne({ idLM: idLM })
     let monSua = {}
     if (filterLM) {
       return ({ alert: "Đang tồn tại món hoạt động !" });
@@ -153,20 +156,20 @@ const deleteLoaiMonWeb = async (req, res) => {
       const data = await Loaimon.model.findOneAndUpdate(filter, update, { new: true })
       monSua = data
     }
-    if(loaiMonTim.trangThai == false) {
+    if (loaiMonTim.trangThai == false) {
       const update = { trangThai: true }
       const data = await Loaimon.model.findOneAndUpdate(filter, update, { new: true })
       monSua = data
     }
 
     if (!monSua) {
-      return({ error: "Xóa món thất bại !", success: false }); // Phản hồi 404 nếu không tìm thấy món
+      return ({ error: "Xóa món thất bại !", success: false }); // Phản hồi 404 nếu không tìm thấy món
     } else {
-      return({ msg: "Xóa món thành công !", success: true }); // Phản hồi 200 nếu thành công
+      return ({ msg: "Xóa món thành công !", success: true }); // Phản hồi 200 nếu thành công
     }
-  
+
   } catch (err) {
-    return({ msg: err.message }); // Phản hồi 500 nếu có lỗi xảy ra
+    return ({ msg: err.message }); // Phản hồi 500 nếu có lỗi xảy ra
   }
 }
 // Sua
@@ -184,9 +187,9 @@ const updateLoaiMon = async (req, res) => {
         error: 'Không tìm thấy loại món để sửa',
         success: false
       });
-    } else if (tenLM === '') {
+    } else if (tenLM === '' || tenLM.length > 50) {
       return res.json({
-        error: 'Sửa loại món không thành công do thiếu thông tin',
+        error: 'Sửa loại món không thành công do thiếu thông tin  hoặc vượt quá ký tự cho phép',
         success: false
       });
     } else {
@@ -352,7 +355,7 @@ const GetSoLuongLoaiMon = async (req, res) => {
       },
       {
         $count: "count",
-    }
+      }
 
 
     ]);
