@@ -22,6 +22,10 @@ const updateHoaDon = async (req, res) => {
         const trangThaiMua = 0;
         const trangThaiThanhToan = 0;
 
+        if (diaChiGiaoHang.length > 100 || ghiChu.length > 100) {
+            throw new Error(" địa chỉ hoặc ghi chú vượt quá số lượng ký tự cho phép")
+        }
+
         const updateFields = {
             diaChiGiaoHang: diaChiGiaoHang,
             ghiChu: ghiChu,
@@ -475,10 +479,6 @@ const deleteHoaDonCung = async (req, res, next) => {
 
         return {
             msg: "Đã xóa hoá đơn thành công",
-            data: {
-                deletedHoaDon,
-                deletedMonDat,
-            },
             success: true,
         };
     } catch (e) {
@@ -558,12 +558,16 @@ const chiTietHoaDon = async (req, res, next) => {
             }
         ]);
         const formatDate = (date) => {
-            const day = ("0" + date.getDate()).slice(-2);
-            const month = ("0" + (date.getMonth() + 1)).slice(-2);
-            const year = date.getFullYear();
-            const hours = ("0" + date.getHours()).slice(-2);
-            const minutes = ("0" + date.getMinutes()).slice(-2);
-            return `${day}/${month}/${year} ${hours}:${minutes}`;
+            if (date) {
+                const day = ("0" + date.getDate()).slice(-2);
+                const month = ("0" + (date.getMonth() + 1)).slice(-2);
+                const year = date.getFullYear();
+                const hours = ("0" + date.getHours()).slice(-2);
+                const minutes = ("0" + date.getMinutes()).slice(-2);
+                return `${day}/${month}/${year} ${hours}:${minutes}`;
+            }
+            return "00:00:00 00:00";
+
         };
 
         // Sử dụng hàm formatDate để chuyển đổi các trường thời gian

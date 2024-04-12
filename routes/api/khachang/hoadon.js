@@ -9,6 +9,6 @@ router.post('/add', hoadonctrl.addHoaDonApi);
 
 router.get('/detail/:id', hoadonctrl.chiTietHoaDonApi);
 
-router.post('/delete/:id', hoadonctrl.deleteHoaDonApi); // hủy 
+router.delete('/delete/:idHD', hoadonctrl.deleteHoaDonApi); // hủy 
 
 module.exports = router;

@@ -13,7 +13,7 @@ const getList = async (req, res) => {
         const totalPages = Math.ceil(soLuongKhachHang.count / soKhachHangTrenTrang);
         const result = await getKhachHangTheoTen(req, res);
         res.render("khachhang/danh-sach", {
-            soLuongKhachHang:soLuongKhachHang.count,
+            soLuongKhachHang: soLuongKhachHang.count,
             data: result.list,
             admin: req.session.ten,
             msg: result.list,
@@ -38,7 +38,7 @@ const xoaKhachHang = async (req, res) => {
         const result = await getKhachHangTheoTen(req, res);
 
         res.render("khachhang/danh-sach", {
-            soLuongKhachHang:soLuongKhachHang.count,
+            soLuongKhachHang: soLuongKhachHang.count,
             data: result.list,
             admin: req.session.ten,
             msg: result.list,
@@ -54,23 +54,7 @@ const xoaKhachHang = async (req, res) => {
 };
 
 
-
-// const getChiTietKhachHang = async (req, res) => {
-//     try {
-//         const idKH = new mongo.Types.ObjectId(req.params.idKH);
-//         const data = await KhachHang.findById(idKH);//tìm món theo id
-//         console.log(data)
-//         res.render("khachhang/chi-tiet", {
-//             index: data,
-//             admin: req.session.ten,
-//         });
-//     } catch (error) {
-//         console.error("Error fetching data:", error);
-//     }
-// };
-
 module.exports = {
     getList,
     xoaKhachHang
-    // getChiTietKhachHang,
 }

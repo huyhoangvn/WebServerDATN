@@ -68,26 +68,26 @@ const dangNhap = async (req, res) => {
     const khachHang = await KhachHang.model.findOne({ taiKhoan });
 
     if (!khachHang) {
-      return({
+      return ({
         success: false,
         successMessage: 'Tài khoản không tồn tại.'
       });
     }
 
     if (matKhau !== khachHang.matKhau) {
-      return({
+      return ({
         success: false,
         msg: 'Mật khẩu không đúng.'
       });
     }
 
-    return({
+    return ({
       success: true,
       successMessage: 'Đăng nhập thành công.', khachHang
     });
   } catch (error) {
     console.error(error);
-    return({ successMessage: 'Lỗi server.' });
+    return ({ successMessage: 'Lỗi server.' });
   }
 }
 
@@ -144,7 +144,7 @@ const getKhachHangTheoTen = async (req, res) => {
     };
   } catch (error) {
     console.error(error);
-    return({
+    return ({
       error: 'Lỗi khi lấy danh sách theo tên khách hàng',
       success: false
     });
@@ -237,6 +237,13 @@ const updateMatKhau = async (req, res, next) => {
         msg: "Vui lòng cung cấp mật khẩu mới.",
       });
     }
+    if (req.body.matKhauCu.length > 50 || req.body.matKhauMoi.length > 50) {
+      throw new Error("mật khẩu không được vượt quá số lượng ký tự quy định")
+    }
+    if (req.body.matKhauCu.length < 6 || req.body.matKhauMoi.length < 6) {
+      throw new Error("mật khẩu không được nhỏ hơn 6 ký tự")
+    }
+
 
     const item = await KhachHang.model.findById(id);
     if (!item) {
@@ -317,13 +324,13 @@ const updateKhachHang = async (req, res) => {
 const finAccount = async (req, res) => {
   try {
     const email = req.params.email;
-    if(email == ""){
+    if (email == "") {
       return res.json({
         error: 'Email không được để trống',
         success: false
       });
     }
-    const khachHang = await KhachHang.model.findOne({ taiKhoan: email});
+    const khachHang = await KhachHang.model.findOne({ taiKhoan: email });
     if (!khachHang) {
       return res.json({
         error: 'Tài khoản không tồn tại',
@@ -368,7 +375,7 @@ const deleteKhachHang = async (req, res) => {
   try {
     const data = await KhachHang.model.findByIdAndDelete(req.params.id)
     if (!data) {
-      return({
+      return ({
         error: "Xóa khách hàng thất bại !",
         success: false
       })
@@ -379,7 +386,7 @@ const deleteKhachHang = async (req, res) => {
       }
     }
   } catch (err) {
-    return({ msg: err.message })
+    return ({ msg: err.message })
 
   }
 }
@@ -412,7 +419,7 @@ const deleteKhachHangWeb = async (req, res) => {
       }
     }
   } catch (err) {
-    return({ msg: err.message })
+    return ({ msg: err.message })
 
   }
 }
