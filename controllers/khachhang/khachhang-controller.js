@@ -295,7 +295,7 @@ const updateKhachHang = async (req, res) => {
       updateFields.trangThai = req.body.trangThai;
     }
     if (req.files.hinhAnh && req.files.hinhAnh.length > 0) {
-      updateFields.hinhAnh = `${req.protocol}://${req.get("host")}/public/images/${req.files.hinhAnh[req.files.hinhAnh.length - 1].filename}`;
+      updateFields.hinhAnh = `/public/images/${req.files.hinhAnh[req.files.hinhAnh.length - 1].filename}`;
     }
 
     if (Object.keys(updateFields).length === 0) {
