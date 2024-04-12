@@ -574,7 +574,7 @@ const chiTietHoaDon = async (req, res, next) => {
 
 
         return {
-            hoaDon: {
+            index: {
                 idHD: item._id,
                 idKH: item.idKH,
                 idCH: item.idCH,
@@ -594,7 +594,7 @@ const chiTietHoaDon = async (req, res, next) => {
                 tenKH: khachHang ? khachHang.tenKH : "",
                 tenCH: cuaHang ? cuaHang.tenCH : ""  // Lấy tên cửa hàng từ bảng CuaHang
             },
-            monDat: result,
+            list: result,
             count: result.length,
             msg: "Lấy chi tiết thành công",
             success: true
