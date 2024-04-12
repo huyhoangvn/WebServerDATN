@@ -200,7 +200,7 @@ const getSoLuongKhachHang = async (req, res) => {
 const getKhachHangbyidKhachHang = async (req, res) => {
   try {
     const id = new mongo.Types.ObjectId(req.params.id);
-    const khachHang = await KhachHang.model.findById(id);
+    const khachHang = await KhachHang.model.findById(id).select('-taiKhoan -matKhau');
 
     if (!khachHang) {
       return res.json({
@@ -208,6 +208,9 @@ const getKhachHangbyidKhachHang = async (req, res) => {
         msg: 'Không tìm thấy khách hàng',
       });
     }
+
+    // Thay đổi định dạng của đường dẫn hình ảnh
+    khachHang.hinhAnh = req.protocol + "://" + req.get("host") + "/public/images/" + khachHang.hinhAnh;
 
     res.json({
       index: khachHang,
@@ -295,8 +298,9 @@ const updateKhachHang = async (req, res) => {
       updateFields.trangThai = req.body.trangThai;
     }
     if (req.files.hinhAnh && req.files.hinhAnh.length > 0) {
-      updateFields.hinhAnh = req.protocol + "://" + req.get("host") + "/public/images/" + req.files.hinhAnh[req.files.hinhAnh.length - 1].filename;
+      updateFields.hinhAnh = req.files.hinhAnh.map((file) => file.filename)[0];
     }
+
 
     if (Object.keys(updateFields).length === 0) {
       return ({
