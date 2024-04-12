@@ -28,32 +28,17 @@ const addKMCuaToi = async (req, res, next) => {
 
     } catch (e) {
         console.error(e);
-        res.json({ error: e.message || "Đã xảy ra lỗi khi thêm khuyến mãi " })
+        return ({ error: e.message || "Đã xảy ra lỗi khi thêm khuyến mãi " })
 
     }
 }
 
 const getAllKhuyenMaiCT = async (req, res, next) => {
     try {
+        const idKH = req.params.idKH;
         const page = parseInt(req.query.trang) || 1;
         const limit = 10; // Số lượng phần tử trên mỗi trang
         const timkiem = {};
-
-        if (typeof (req.query.tieuDe) !== 'undefined' && req.query.tieuDe !== "") {
-            timkiem.tieuDe = { $regex: req.query.tieuDe, $options: 'i' };
-        }
-        if (typeof (req.query.ngayBatDau) !== 'undefined' && req.query.ngayBatDau !== "") {
-            const parts = req.query.ngayBatDau.split('/');
-            const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
-            timkiem.ngayBatDau = { $gte: new Date(formattedDate) };
-        }
-
-        if (typeof (req.query.ngayHetHan) !== 'undefined' && req.query.ngayHetHan !== "") {
-            const parts = req.query.ngayHetHan.split('/');
-            const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
-            timkiem.ngayHetHan = { $lte: new Date(formattedDate) };
-        }
-
         if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
             const trangThaiValue = parseInt(req.query.trangThai);
             if (trangThaiValue === 1 || trangThaiValue === 0) {
@@ -99,9 +84,14 @@ const getAllKhuyenMaiCT = async (req, res, next) => {
                 $limit: limit, // Giới hạn số lượng bản ghi trên mỗi trang
             },
         ]);
+        const formattedResult = result.map(item => ({
+            ...item,
+            ngayBatDau: item.ngayBatDau.toISOString().split('T')[0],
+            ngayHetHan: item.ngayHetHan.toISOString().split('T')[0]
+        }));
 
         return {
-            list: result,
+            list: formattedResult,
             currentPage: currentPage,
             totalItems: totalCount,
             totalPages: totalPages,
@@ -109,7 +99,7 @@ const getAllKhuyenMaiCT = async (req, res, next) => {
             msg: "lấy danh sách thành công"
         };
     } catch (error) {
-        res.json({ message: "Lỗi khi lấy danh sách Khuyến mãi", error });
+        return ({ msg: "Lỗi khi lấy danh sách Khuyến mãi", success: false });
     }
 };
 
@@ -123,7 +113,7 @@ const deleteKhuyenMaiCT = async (req, res) => {
             message: "Xóa Khuyến mãi thành công"
         };
     } catch (error) {
-        res.json({
+        return ({
             message: "Lỗi khi xóa Khuyến mãi", error
         });
     }
@@ -150,7 +140,6 @@ const addKMCuaToiApi = async (req, res, next) => {
 const getAllKhuyenMaiCTApi = async (req, res, next) => {
     try {
         const result = await getAllKhuyenMaiCT(req, res, next);
-        console.log(result);
         if (!res.headersSent) {
             // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi
             res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify

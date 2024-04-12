@@ -171,7 +171,7 @@ const updatetrangThaiMuaGiaoHangThanhCongApi = async (req, res, next) => {
 
 const deleteHoaDonApi = async (req, res, next) => {
     try {
-        const result = await HoaDonController.deleteHoaDon(req, res, next);
+        const result = await HoaDonController.deleteHoaDonCung(req, res, next);
         res.json(result);  // Send the result directly without using JSON.stringify
     } catch (error) {
         // Check if headers have already been sent

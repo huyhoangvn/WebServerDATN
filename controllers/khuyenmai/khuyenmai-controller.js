@@ -163,7 +163,7 @@ const XoaKhuyenMai = async function (req, res) {
         }
     } catch (error) {
         console.error(error);
-        res.json({
+        return ({
             error: 'Lỗi khi xóa khuyến mãi',
             success: false
         });
@@ -380,7 +380,6 @@ const GetKhuyenMaiTheoNgay = async function (req, res) {
 
 const getTatCaKhuyenMai = async (req, res) => {
     try {
-
         const trangThai = req.params.trangThai;
         const trang = parseInt(req.query.trang) || 1;
         const timkiem = {};
@@ -604,11 +603,13 @@ const getTatCaKhuyenMaiApp = async (req, res) => {
 
         ]);
 
-
-
-
+        const formattedList = list.map(item => ({
+            ...item,
+            ngayBatDau: item.ngayBatDau ? item.ngayBatDau.toISOString().split('T')[0] : null,
+            ngayHetHan: item.ngayHetHan ? item.ngayHetHan.toISOString().split('T')[0] : null
+        }));
         return {
-            list: list,
+            list: formattedList,
             currentPage: currentPage,
             totalItems: totalCount,
             totalPages: totalPages,

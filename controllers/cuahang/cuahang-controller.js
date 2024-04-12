@@ -55,52 +55,6 @@ const addCuaHang = async (req, res, next) => {
     }
 };
 
-// const updateCuaHang = async (req, res, next) => {
-//     try {
-//         const cuaHangId = req.params.id;
-//         const item = await CuaHang.findById(cuaHangId);
-
-//         if (!item) {
-//             return res.json({ msg: 'Không tìm thấy cửa hàng để cập nhật', dataSave: null });
-//         }
-
-//         const tenCH = req.body.tenCH || item.tenCH;
-//         const email = req.body.email || item.email;
-//         const sdt = req.body.sdt || item.sdt;
-//         const diaChi = req.body.diaChi || item.diaChi;
-//         const thoiGianMo = req.body.thoiGianMo || item.thoiGianMo;
-//         const thoiGianDong = req.body.thoiGianDong || item.thoiGianDong;
-
-//         let hinhAnh = item.hinhAnh; // Mặc định sử dụng ảnh hiện tại
-//         if (req.files && req.files.length > 0) {
-//             hinhAnh = req.files[0].filename; // Sử dụng tên của file đầu tiên nếu chỉ cho phép một file
-//         }
-//         const trangThai = 0;
-
-//         const updateFields = {
-//             tenCH: tenCH,
-//             email: email,
-//             sdt: sdt,
-//             diaChi: diaChi,
-//             thoiGianMo: thoiGianMo,
-//             thoiGianDong: thoiGianDong,
-//             hinhAnh: hinhAnh,
-//             trangThai: trangThai,
-//         };
-
-//         const updatedCH = await CuaHang.findByIdAndUpdate(
-//             cuaHangId,
-//             { $set: updateFields },
-//             { new: true }
-//         );
-
-//         return res.json({ msg: 'Cập nhật thành công', dataSave: updatedCH });
-//     } catch (error) {
-//         // Xử lý lỗi và trả về một thông báo lỗi thân thiện với người dùng
-//         console.error(error);
-//         return res.json({ msg: 'Đã xảy ra lỗi khi cập nhật cửa hàng', error: 'Lỗi không xác định' });
-//     }
-// };
 
 const updateCuaHang = async (req, res) => {
     try {
@@ -117,6 +71,10 @@ const updateCuaHang = async (req, res) => {
         const diaChi = req.body.diaChi || item.diaChi;
         const thoiGianMo = req.body.thoiGianMo || item.thoiGianMo;
         const thoiGianDong = req.body.thoiGianDong || item.thoiGianDong;
+
+        if (tenCH.length > 50 || email.length > 50 || diaChi.length > 100 || sdt.length > 10) {
+            throw new Error("các trường thông tin vượt quá số ký tự cho phép");
+        }
 
         let hinhAnh = item.hinhAnh; // Mặc định sử dụng ảnh hiện tại
 
@@ -366,28 +324,26 @@ const deleteCuaHangWeb = async (req, res) => {
         const filterMonCu = await Mon.findOne({ idCH: idCH });
         const cuaHangTim = await CuaHang.findOne({ _id: idCH })
         
-        console.log("avavbsabraner");
         if (cuaHangTim) { // Kiểm tra xem cuaHangTim có tồn tại không trước khi truy cập vào trangThai
             if (cuaHangTim.trangThai == true) {
-                console.log("true");
                 const update = { trangThai: false };
                 const filterNV = { idCH: idCH };
                 const filterMon = { idCH: idCH };
                 const data = await CuaHang.findOneAndUpdate(filter, update, { new: true });
                 const MonSua = await Mon.updateMany(filterMon, update, { new: true });
                 const nhanVienSua = await NhanVien.updateMany(filterNV, update, { new: true });
-                return({ error: "Xóa của hàng thành công !", success: false });
+                return ({ error: "Xóa của hàng thành công !", success: false });
             } else {
                 const update = { trangThai: true };
                 const data = await CuaHang.findOneAndUpdate(filter, update, { new: true });
-                return({ error: "Xóa cửa hàng thành công !", success: false });
+                return ({ error: "Xóa cửa hàng thành công !", success: false });
             }
         } else {
-            return({ msg: "Không tìm thấy cửa hàng", success: false });
+            return ({ msg: "Không tìm thấy cửa hàng", success: false });
         }
     } catch (e) {
         console.log(e);
-        res.json({ success: false, msg: "Đã xảy ra lỗi " });
+        return({ success: false, msg: "Đã xảy ra lỗi " });
     }
 
 }

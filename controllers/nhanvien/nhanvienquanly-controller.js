@@ -1,4 +1,5 @@
 const { model: NhanVien } = require("../../model/NhanVien");
+const mongo = require("mongoose");
 
 // vd postMan: http://localhost:3000/api/nhanvien/nhanvienquanly/them-nhanvien-ban?id=65cde08fd4d49481146db396
 const addNhanVienBan = async (req, res, next) => {
@@ -28,6 +29,12 @@ const addNhanVienBan = async (req, res, next) => {
           success: false,
           msg: "Thông tin nhân viên không đầy đủ hoặc không hợp lệ.",
         });
+      }
+      if (req.body.taiKhoan.length < 6 || req.body.matKhau.length < 6) {
+        throw new Error("tài khoản và mật khẩu phải có ít nhất 6 ký tự.");
+      }
+      if (req.body.taiKhoan.length > 50 || req.body.matKhau.length > 50) {
+        throw new Error("tài khoản và mật khẩu không được vượt quá 50 ký tự");
       }
 
       // Thiết lập hình ảnh mặc định nếu không có ảnh được tải lên
@@ -86,6 +93,12 @@ const suaNhanVienBan = async (req, res, next) => {
         msg: "Thông tin nhân viên không đầy đủ hoặc không hợp lệ.",
       });
     }
+    if (tenNV.length > 50 || diaChi.length > 100) {
+      throw new Error("tên hoặc địa chỉ đang vượt quá số lượng ký tự");
+    }
+    if (sdt.length > 10) {
+      throw new Error("số điện thoại  đang vượt quá số lượng ký tự");
+    }
 
     // Kiểm tra xem nhân viên có tồn tại không
     const item = await NhanVien.findById(idNhanVien);
@@ -131,6 +144,87 @@ const suaNhanVienBan = async (req, res, next) => {
     res.json({ success: false, msg: "Đã xảy ra lỗi khi cập nhật nhân viên." });
   }
 };
+
+const XoaQuanLy = async function (req, res) {
+  const idNV = req.params.idNV;
+
+  try {
+    const filter = { _id: idNV }
+    // const update = { trangThai: false }
+    const NV = await NhanVien.findOne(filter)
+    if (NV.trangThai == true) {
+      const update = { trangThai: false }
+      const index = await NhanVien.findOneAndUpdate(filter, update, { new: true })
+      if (!index) {
+        return ({
+          error: 'Không tìm thấy nhân viên để xóa',
+          success: false
+        });
+      } else {
+        return ({
+          index,
+          message: 'Xóa nhân viên thành công',
+          success: true
+        });
+      }
+    } else {
+      const update = { trangThai: true }
+      const index = await NhanVien.findOneAndUpdate(filter, update, { new: true })
+      if (!index) {
+        return ({
+          error: 'Không tìm thấy nhân viên để xóa',
+          success: false
+        });
+      } else {
+        return ({
+          index,
+          message: 'Xóa nhân viên thành công',
+          success: true
+        });
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    res.json({
+      error: 'Lỗi khi xóa nhân viên',
+      success: false
+    });
+  }
+
+}
+
+const duyetQuanLy = async function (req, res) {
+  const idNV = new mongo.Types.ObjectId(req.params.idNV);
+
+  try {
+    const filter = { _id: idNV }
+    const NV = await NhanVien.findOne(filter)
+    if (NV.phanQuyen == 2) {
+      const update = { phanQuyen: 0 }
+      const index = await NhanVien.findOneAndUpdate(filter, update, { new: true })
+      if (!index) {
+        return ({
+          error: 'Không tìm thấy nhân viên để duyệt',
+          success: false
+        });
+      } else {
+        return ({
+          index,
+          message: 'duyệt nhân viên thành công',
+          success: true
+        });
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    res.json({
+      error: 'Lỗi khi duyệt nhân viên nhân viên',
+      success: false
+    });
+  }
+
+}
+
 
 const huyKichHoatNhanVien = async (req, res, next) => {
   try {
@@ -230,6 +324,13 @@ const addNhanVienQuanLy = async (req, res, next) => {
         success: false,
         msg: "Thông tin nhân viên không đầy đủ hoặc không hợp lệ.",
       });
+    }
+
+    if (req.body.taiKhoan.length < 6 || req.body.matKhau.length < 6) {
+      throw new Error("tài khoản và mật khẩu phải có ít nhất 6 ký tự.");
+    }
+    if (req.body.taiKhoan.length > 50 || req.body.matKhau.length > 50) {
+      throw new Error("tài khoản và mật khẩu không được vượt quá 50 ký tự");
     }
 
     // Thiết lập hình ảnh mặc định nếu không có ảnh được tải lên
@@ -386,6 +487,13 @@ const updateNhanvienQuanLy = async (req, res, next) => {
         msg: "Thông tin nhân viên không đầy đủ hoặc không hợp lệ.",
       });
     }
+    if (tenNV.length > 50 || diaChi.length > 100) {
+      throw new Error("tên hoặc địa chỉ đang vượt quá giới hạn ký tự");
+    }
+    if (sdt.length > 10) {
+      throw new Error("số điện thoại đang vượt quá ký tự cho phép");
+    }
+
     const item = await NhanVien.findById(idNhanVien);
 
     if (!item) {
@@ -427,6 +535,12 @@ const updateMatKhau = async (req, res, next) => {
     const matKhauCu = req.body.matKhauCu;
     const matKhauMoi = req.body.matKhauMoi;
 
+    if (req.body.matKhauCu.length < 6 || req.body.matKhauMoi.length < 6) {
+      throw new Error("mật khẩu cũ và mật khẩu mới phải có ít nhất 6 ký tự.");
+    }
+    if (req.body.matKhauCu.length > 50 || req.body.matKhauMoi.length > 50) {
+      throw new Error("mật khẩu cũ và mật khẩu mới phải không được vượt quá 50 kí tự");
+    }
     // Kiểm tra trường matKhauMoi có tồn tại hay không
     if (!matKhauMoi) {
       return res.json({
@@ -459,53 +573,6 @@ const updateMatKhau = async (req, res, next) => {
     res.json({ success: false, msg: "Đã xảy ra lỗi khi đổi mật khẩu" });
   }
 };
-// const getListNhanVienQuanly = async (req, res, next) => {
-//   try {
-//     const { tenNV, phanQuyen, trangThai, limit } = req.query;
-
-//     // Sử dụng mô hình NhanVien để thực hiện truy vấn
-//     const query = {};
-
-//     if (tenNV) {
-//       query.tenNV = { $regex: tenNV, $options: "i" };
-//     }
-
-//     if (phanQuyen) {
-//       query.phanQuyen = phanQuyen;
-//     }
-
-//     if (trangThai !== undefined && trangThai !== '') {
-//       query.trangThai = trangThai === 'true'; // Chuyển đổi từ chuỗi sang boolean
-//     }
-
-//     // Chỉ định trường cần hiển thị
-//     const projection = { email: 1, sdt: 1, tenNV: 1, trangThai: 1, _id: 1, phanQuyen: 1,hinhAnh: 1,gioiTinh: 1,taiKhoan: 1, diaChi: 1};
-
-//     // Thực hiện truy vấn để lấy danh sách nhân viên quản lý
-//     let listNhanVienQuanLy = NhanVien.find(query, projection);
-
-//     // Áp dụng giới hạn dữ liệu nếu có
-//     if (limit) {
-//       listNhanVienQuanLy = listNhanVienQuanLy.limit(parseInt(limit));
-//     }
-
-//     // Thực hiện truy vấn
-//     listNhanVienQuanLy = await listNhanVienQuanLy;
-
-//     res.json({
-//       success: true,
-//       index: listNhanVienQuanLy,
-//       soluong: listNhanVienQuanLy.length,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.json({
-//       success: false,
-//       msg: "Đã xảy ra lỗi khi lấy danh sách nhân viên quản lý.",
-//     });
-//   }
-// };
-
 
 const getListNhanVienQuanly = async (req, res, next) => {
   try {
@@ -859,7 +926,9 @@ const getTatCaNhanVienQuanLy = async (req, res) => {
     if (trang === '') {
       currentPage = 1;
     }
-    const filter = { phanQuyen: 0 };
+    const filter = {
+      phanQuyen: { $in: [0, 2] }, // Phân quyền là 0 hoặc 2
+    };
     if (typeof (req.query.tenNV) !== 'undefined' && req.query.tenNV !== "") {
       filter.tenNV = { $regex: req.query.tenNV, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
     }
@@ -1028,4 +1097,6 @@ module.exports = {
   chiTietNhanVienQuanLyApi,
   getSoLuongNhanVienQuanLy,
   getTatCaNhanVienQuanLy,
+  XoaQuanLy,
+  duyetQuanLy
 };

@@ -1,12 +1,14 @@
 const { model: GioHang } = require("../../model/GioHang");
 const { model: KhachHang } = require("../../model/KhachHang");
+const { model: mon } = require("../../model/Mon");
 const mongo = require('mongoose');
 
 
 //thêm giỏ hàng
 const addGioHang = async (req, res, next) => {
   let msg = "";
-  const { idKH, idMon } = req.body;
+  const idKH = req.params.idKH;
+  const idMon = req.body.idMon;
 
   // Kiểm tra xem món đã tồn tại trong giỏ hàng của khách hàng chưa
   let foundGioHang = await GioHang.findOne({ idMon });
@@ -81,10 +83,14 @@ const getAllGioHang = async (req, res) => {
           _id: 1,
           idKH: 1,
           idMon: 1,
+          idCH: "$mon.idCH",
           giaTien: "$mon.giaTien",
           tenMon: "$mon.tenMon",
           tenCH: "$cuaHang.tenCH",
-          tenLM: "$loaiMon.tenLM"
+          tenLM: "$loaiMon.tenLM",
+          hinhAnh: { $concat: [req.protocol, "://", req.get("host"), "/public/images/", "$mon.hinhAnh"] }
+
+
         }
       },
       {
@@ -139,7 +145,7 @@ const getGioHangByUserIdApi = async (req, res) => {
 const deleteGioHang = async (req, res) => {
   try {
     const id = req.params.id;
-    let foundGioHang = await GioHang.findOne({ id });
+    let foundGioHang = await GioHang.findOne({ _id: id });
 
     if (!foundGioHang) {
       return {
@@ -154,9 +160,32 @@ const deleteGioHang = async (req, res) => {
       message: "Xóa giỏ hàng thành công"
     };
   } catch (error) {
-    res.json({
+    return ({
       message: "Lỗi khi xóa giỏ hàng", error
     });
+  }
+};
+
+const kiemTraGioHang = async (req, res) => {
+  try {
+    const idMon = req.body.idMon;
+    const idKH = req.params.idKH;
+
+    // Kiểm tra xem giỏ hàng của khách hàng có món hàng có idMon không
+    const gioHang = await GioHang.findOne({
+      idKH: idKH,
+      idMon: idMon,
+      trangThai: true // Chỉ kiểm tra các giỏ hàng có trạng thái là true
+    });
+
+    if (gioHang) {
+      return res.json({ index: true, success: true, message: 'Món hàng đã có trong giỏ hàng của khách hàng' });
+    } else {
+      return res.json({ index: false, success: false, message: 'Món hàng không tồn tại trong giỏ hàng của khách hàng hoặc giỏ hàng không ở trạng thái true' });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.json({ success: false, message: 'Lỗi khi kiểm tra giỏ hàng' });
   }
 };
 
@@ -226,4 +255,5 @@ module.exports = {
   deleteGioHangApi,
   getAllGioHangApi,
   getGioHangByUserIdApi,
+  kiemTraGioHang
 };

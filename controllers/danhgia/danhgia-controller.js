@@ -3,10 +3,10 @@ const mongo = require('mongoose');
 
 
 const ThemDanhGia = async function (req, res) {
-    const idKH = new mongo.Types.ObjectId(req.params.idKH);
-    const idMon = new mongo.Types.ObjectId(req.params.idMon);
-    const danhGia = req.body.danhGia;
     try {
+        const idKH = new mongo.Types.ObjectId(req.params.idKH);
+        const idMon = new mongo.Types.ObjectId(req.params.idMon);
+        const danhGia = req.body.danhGia;
         const daDanhGia = await DanhGia.findOne({ idKH: idKH, idMon: idMon })
         if (daDanhGia) {
             if (daDanhGia.trangThai !== false) {
@@ -53,10 +53,9 @@ const ThemDanhGia = async function (req, res) {
 }
 
 const SuaDanhGia = async function (req, res) {
-    const idDG = new mongo.Types.ObjectId(req.params.idDG);
-    const danhGia = req.body.danhGia;
-
     try {
+        const idDG = new mongo.Types.ObjectId(req.params.idDG);
+        const danhGia = req.body.danhGia;
         const filter = { _id: idDG }
         const update = { danhGia: danhGia }
         const index = await DanhGia.findOneAndUpdate(filter, update, { new: true })
@@ -89,9 +88,8 @@ const SuaDanhGia = async function (req, res) {
 
 
 const XoaDanhGia = async function (req, res) {
-    const idDG = new mongo.Types.ObjectId(req.params.idDG);
-
     try {
+        const idDG = new mongo.Types.ObjectId(req.params.idDG);
         const filter = { _id: idDG }
         const update = { trangThai: false }
         const index = await DanhGia.findOneAndUpdate(filter, update, { new: true })
@@ -193,7 +191,7 @@ const GetDanhSachTheoTenMon = async function (req, res) {
             success: true
         });
     } catch (error) {
-        res.json({
+        return({
             error: 'Lỗi khi lấy đánh giá theo tên món',
             success: false
         });
@@ -201,11 +199,10 @@ const GetDanhSachTheoTenMon = async function (req, res) {
 }
 
 const GetDanhSachTheoTenKhachHang = async function (req, res) {
-    const idKH = new mongo.Types.ObjectId(req.params.idKH);
-    const trang = parseInt(req.query.trang) || 1;
-    const itemsPerPage = 10; // Giới hạn số lượng đánh giá trên mỗi trang
-
     try {
+        const idKH = new mongo.Types.ObjectId(req.params.idKH);
+        const trang = parseInt(req.query.trang) || 1;
+        const itemsPerPage = 10; // Giới hạn số lượng đánh giá trên mỗi trang
         // Đếm tổng số đánh giá cho khách hàng cụ thể
         const totalCount = await DanhGia.countDocuments({ idKH });
 
@@ -270,8 +267,8 @@ const GetDanhSachTheoTenKhachHang = async function (req, res) {
 
 
 const GetDanhGiaTheoId = async function (req, res) {
-    const idDanhGia = new mongo.Types.ObjectId(req.params.idDanhGia);
     try {
+        const idDanhGia = new mongo.Types.ObjectId(req.params.idDanhGia);
         const index = await DanhGia.findOne({ _id: idDanhGia });
         res.json({
             index,
@@ -287,8 +284,9 @@ const GetDanhGiaTheoId = async function (req, res) {
 
 }
 const GetTrungBinhDanhGiaTheoMon = async function (req, res) {
-    const idMon = new mongo.Types.ObjectId(req.params.idMon);
+
     try {
+        const idMon = new mongo.Types.ObjectId(req.params.idMon);
         const query = await DanhGia.aggregate([
             {
                 $match: {
@@ -318,13 +316,13 @@ const GetTrungBinhDanhGiaTheoMon = async function (req, res) {
         ]);
 
 
-        return ({
+        return res.json({
             index: parseFloat(query[0].avgDanhGia.toFixed(1)),
             msg: 'Get số lượng đánh giá theo tên món thành công',
             success: true
         });
     } catch (error) {
-        res.json({
+        return({
             error: 'Lỗi khi lấy số lượng đánh giá theo tên món',
             success: false
         });
@@ -398,6 +396,12 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
                 $match:
                     timkiem,
             },
+            {
+                $skip: (trang - 1) * 10,
+            },
+            {
+                $limit: 10,
+            },
         ]);
         const count = await GetDanhSachTheoTenMon(req, res);
         const soDanhGiaTrenTrang = 10;
@@ -411,7 +415,7 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
             success: true
         });
     } catch (error) {
-        res.json({
+        return({
             error: 'Lỗi khi lấy số lượng đánh giá theo tên món',
             success: false
         });
@@ -424,8 +428,8 @@ const GetDanhSachDanhGiaTheoMonVoiFilterApi = async (req, res) => {
 }
 
 const GetSoLuongDanhGiaTheoKhachHang = async function (req, res) {
-    const idKH = new mongo.Types.ObjectId(req.params.idKH);
     try {
+        const idKH = new mongo.Types.ObjectId(req.params.idKH);
         const query = await DanhGia.aggregate([
             {
                 $match: {

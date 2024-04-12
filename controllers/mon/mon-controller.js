@@ -24,6 +24,9 @@ const themMon = async (req, res, next) => {
         };
       }
     }
+    if (req.body.tenMon.length > 100) {
+      throw new Error("tên món vượt quá số lượng ký tự cho phép")
+    }
     //lấy cửa hàng từ nhân viên
     const nhanVien = await NhanVien.model.findById(idNV)
     const idCH = new mongo.Types.ObjectId(nhanVien.idCH);
@@ -162,12 +165,12 @@ const deleteMonWeb = async (req, res) => {
     }
 
     if (!monSua) {
-      return({ error: "Xóa món thất bại !", success: false }); // Phản hồi 404 nếu không tìm thấy món
+      return ({ error: "Xóa món thất bại !", success: false }); // Phản hồi 404 nếu không tìm thấy món
     } else {
-      return({ message: "Xóa món thành công !", success: true }); // Phản hồi 200 nếu thành công
+      return ({ message: "Xóa món thành công !", success: true }); // Phản hồi 200 nếu thành công
     }
   } catch (err) {
-    return({ message: err.message }); // Phản hồi 500 nếu có lỗi xảy ra
+    return ({ message: err.message }); // Phản hồi 500 nếu có lỗi xảy ra
   }
 }
 
@@ -691,7 +694,9 @@ const updatemon = async (req, res) => {
       updateFields.hinhAnh = req.files.hinhAnh.map((file) => file.filename)[0];
     }
 
-
+    if (req.body.tenMon.length > 100) {
+      throw new Error("tên món vượt quá số lượng ký tự cho phép")
+    }
 
     // Nếu không có trường nào cần cập nhật, trả về lỗi
     if (Object.keys(updateFields).length === 0) {
@@ -711,7 +716,7 @@ const updatemon = async (req, res) => {
     });
 
   } catch (error) {
-    res.json({
+    return ({
       msg: "Lỗi khi sửa món",
       error,
       success: false,

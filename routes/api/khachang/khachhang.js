@@ -13,4 +13,6 @@ router.post('/doi-mat-khau/:id', KhachHangCtrl.updateMatKhau);
 
 router.put("/:idKH", multer.upload.fields([{ name: 'hinhAnh', maxCount: 1 }]), KhachHangCtrl.updateKhachHang); //http://localhost:3000/api/khachhang/khachhang/updateKhachHang
 
+router.post('/find-account/:email',KhachHangCtrl.finAccount); //http://localhost:3000/api/khachhang/khachhang/find-account
+
 module.exports = router;
