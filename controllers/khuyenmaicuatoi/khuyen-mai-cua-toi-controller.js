@@ -74,7 +74,8 @@ const getAllKhuyenMaiCT = async (req, res, next) => {
                     ngayHetHan: { $arrayElemAt: ["$km.ngayHetHan", 0] },
                     phanTramKhuyenMai: { $arrayElemAt: ["$km.phanTramKhuyenMai", 0] },
                     donToiThieu: { $arrayElemAt: ["$km.donToiThieu", 0] },
-                    trangThaiKM: 1
+                    trangThaiKM: 1,
+                    maKhuyenMai: { $arrayElemAt: ["$km.maKhuyenMai", 0] }
                 }
             },
             {
