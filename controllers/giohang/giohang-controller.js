@@ -29,7 +29,7 @@ const addGioHang = async (req, res, next) => {
   return res.json({
     index: list,
     success: true,
-    msg: msg
+    msg: "thêm thành công"
   });
 };
 
