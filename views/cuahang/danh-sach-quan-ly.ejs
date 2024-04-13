@@ -221,7 +221,7 @@
         <form action="/quan-ly/danh-sach">
           <!-- Main content nằm ở dây -->
           <div class="d-flex row justify-content-between mb-1">
-            <div class="col-6">
+            <div class="col-4">
               <input type="text" id="tenNV" class="form-control" name="tenNV"
                 placeholder="Nhập tên quản lý để tìm kiếm">
             </div>
@@ -230,12 +230,21 @@
             </div>
 
             <div class="col-2">
-              <select class="form-control" id="trangThai" name="trangThai">
-                <option value="-1">trạng thái </option>
-                <option value="1">Đã được duyệt</option>
-                <option value="0">Chưa được duyệt</option>
+              <select class="form-control" id="phanQuyen" name="phanQuyen">
+                <option value="">Vai trò </option>
+                <option value="0">Quản lý</option>
+                <option value="2">Chưa được duyệt</option>
               </select>
             </div>
+
+            <div class="col-2">
+              <select class="form-control" id="trangThai" name="trangThai">
+                <option value="-1">Trạng thái </option>
+                <option value="1">Hoạt Động</option>
+                <option value="0">Khóa</option>
+              </select>
+            </div>
+
 
             <div class="col-2">
               <button class="btn btn-dark w-100" type="submit">Tìm kiếm</button>

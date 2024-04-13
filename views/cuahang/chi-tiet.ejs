@@ -387,8 +387,16 @@
                           <input type="text" class="form-control" name="tenNV" id="tenNV" placeholder="tên nhân viên">
                         </div>
                         <div class="form-group">
-                          <label for="gioiTinh">giới tính</label>
-                          <input type="text" class="form-control" name="gioiTinh" id="gioiTinh" placeholder="giới tính">
+                          <label for="gioiTinh">Giới tính</label><br>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gioiTinh" id="gioiTinhNam" value="1"
+                              checked>
+                            <label class="form-check-label" for="gioiTinhNam">Nam</label>
+                          </div>
+                          <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="gioiTinh" id="gioiTinhNu" value="2">
+                            <label class="form-check-label" for="gioiTinhNu">Nữ</label>
+                          </div>
                         </div>
                         <div class="form-group">
                           <label for="sdt">số điện thoại</label>
@@ -414,8 +422,30 @@
                   </div>
                 </div>
               </div>
+              <% if(typeof alert !=='undefined' && alert !==null) { %>
+                <input type="hidden" id="thongBao" value="<%= alert %>">
+                <% } else { %>
+                  <input type="hidden" id="thongBao" value="">
+                  <% } %>
 
-              <!-- Kết thúc bảng tài khoản quản lý-->
+                    <div class="modal fade" id="alertModal" tabindex="-1" role="dialog"
+                      aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Cảnh báo</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body" id="alertContent">
+                            <!-- Nội dung cảnh báo sẽ được thêm vào đây -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Kết thúc bảng tài khoản quản lý-->
       </div>
     </section>
   </div>
@@ -444,6 +474,23 @@
       var selectedImage = document.getElementById('selectedImage');
       selectedImage.style.display = 'block';
       selectedImage.src = URL.createObjectURL(event.target.files[0]);
+    }
+
+    var alertContent = document.getElementById("thongBao").value;
+    // Kiểm tra xem alertContent có giá trị không
+    if (alertContent) {
+      // Hiển thị cảnh báo trong modal
+      var modal = $('#alertModal');
+      var alertText = $('#alertContent');
+      alertText.text(alertContent);
+
+      // Hiển thị modal
+      modal.modal('show');
+
+      // Đóng modal sau một khoảng thời gian (3 giây)
+      setTimeout(function () {
+        modal.modal('hide');
+      }, 2000);
     }
 
   </script>

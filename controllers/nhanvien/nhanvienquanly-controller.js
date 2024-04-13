@@ -929,6 +929,11 @@ const getTatCaNhanVienQuanLy = async (req, res) => {
     const filter = {
       phanQuyen: { $in: [0, 2] }, // Phân quyền là 0 hoặc 2
     };
+
+    if (typeof req.query.phanQuyen !== 'undefined' && req.query.phanQuyen !== "") {
+      filter.phanQuyen = parseInt(req.query.phanQuyen);
+    }
+
     if (typeof (req.query.tenNV) !== 'undefined' && req.query.tenNV !== "") {
       filter.tenNV = { $regex: req.query.tenNV, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
     }
@@ -1010,12 +1015,13 @@ const getSoLuongNhanVienQuanLy = async (req, res) => {
     if (trang === '') {
       currentPage = 1;
     }
-    const filter = {};
+    const filter = { phanQuyen: { $in: [0, 2] }, };
+
     if (typeof (req.query.tenNV) !== 'undefined' && req.query.tenNV !== "") {
       filter.tenNV = { $regex: req.query.tenNV, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
     }
     if (typeof req.query.phanQuyen !== 'undefined' && req.query.phanQuyen !== "") {
-      filter.phanQuyen = 0; // Chỉ lấy nhân viên có phân quyền bằng 0
+      filter.phanQuyen = parseInt(req.query.phanQuyen);
     }
 
     if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {

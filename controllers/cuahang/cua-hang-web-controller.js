@@ -57,19 +57,19 @@ const getAdd = async (req, res, next) => {
         const timeRegex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/;
         if (tenCH == "" || email == "" || sdt == "" || diaChi == "") {
             res.render("cuahang/them-moi", {
-                error: 'Thêm cửa hàng lỗi do thiếu thông tin',
+                alert: 'Thêm cửa hàng lỗi do thiếu thông tin',
                 success: false
             });
         }
         else if (tenCH.length > 50 || email.length > 50 || sdt.length > 10 || diaChi.length > 100) {
             res.render("cuahang/them-moi", {
-                error: 'các trường nhập vào đang quá ký tự cho phép',
+                alert: 'các trường nhập vào đang quá ký tự cho phép',
                 success: false
             });
         }
         else if (!timeRegex.test(thoiGianMo) || !timeRegex.test(thoiGianDong)) {
             res.render("cuahang/them-moi", {
-                error: 'Định dạng thời gian không hợp lệ. Vui lòng nhập lại theo định dạng 00:00:00',
+                alert: 'Định dạng thời gian không hợp lệ. Vui lòng nhập lại theo định dạng 00:00:00',
                 success: false
             });
         } else {
@@ -131,36 +131,53 @@ const themNhanVienQuanLy = async (req, res) => {
         const diaChi = req.body.diaChi;
         const phanQuyen = 2;
         const trangThai = 1;
+        const NVQL = await NhanVien.find({ idCH: idCH, phanQuyen: 0 });
+        const taiKhoanTonTai = await NhanVien.findOne({ taiKhoan: taiKhoan });
+        if (taiKhoanTonTai) {
+            // Nếu tài khoản đã tồn tại, trả về một thông báo lỗi
+            const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
+            return res.render("cuahang/chi-tiet", {
+                NVQL,
+                chiTietCH: chiTiet.data.cuaHang,
+                monCH: chiTiet.data.danhSachMonAn.items,
+                msg: 'Tài khoản đã tồn tại. Vui lòng chọn tài khoản khác.',
+                success: false,
+                alert: "Tài khoản đã tồn tại. Vui lòng chọn tài khoản khác."
+            });
+        }
 
-
-        const NVQL = await NhanVien.find({ idCH: idCH, phanQuyen: 2 });
         if (taiKhoan == "" || matKhau == "" || sdt == "" || diaChi == "" || tenNV == "" || gioiTinh == "") {
+
             const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
             res.render("cuahang/chi-tiet", {
                 NVQL,
                 chiTietCH: chiTiet.data.cuaHang,
                 monCH: chiTiet.data.danhSachMonAn.items,
                 msg: 'Thêm nhân viên quản lý lỗi do thiếu thông tin',
-                success: false
+                success: false,
+                alert: " Thêm nhân viên quản lý lỗi do thiếu thông tin"
             });
         } else if (tenNV.length > 50 || taiKhoan.length > 50 || matKhau.length > 50 || diaChi.length > 100 || sdt.length > 10) {
+
             const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
             res.render("cuahang/chi-tiet", {
                 NVQL,
                 chiTietCH: chiTiet.data.cuaHang,
                 monCH: chiTiet.data.danhSachMonAn.items,
-                msg: 'các trường thông tin nhập vào đang có trường vượt quá ký tự cho phép',
-                success: false
+                msg: 'Thêm nhân viên quản lý lỗi do thiếu thông tin',
+                success: false,
+                alert: " thêm thông tin lỗi do có thông tin thừa số lượng ký tự cho phép"
             });
-        }
-        else if (NVQL.length >= 5) {
+        } else if (NVQL.length >= 5) {
+
             const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
             res.render("cuahang/chi-tiet", {
                 NVQL,
                 chiTietCH: chiTiet.data.cuaHang,
                 monCH: chiTiet.data.danhSachMonAn.items,
                 msg: 'Số lượng nhân viên quản lý đã đạt tối đa. Vui lòng xóa một nhân viên quản lý trước khi thêm mới.',
-                success: false
+                success: false,
+                alert: " Số lượng nhân viên quản lý đã đạt tối đa. Vui lòng xóa một nhân viên quản lý trước khi thêm mới."
             });
         }
         else {
@@ -180,13 +197,7 @@ const themNhanVienQuanLy = async (req, res) => {
                 phanQuyen: phanQuyen,
                 trangThai: trangThai,
             });
-            const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
-            res.render("cuahang/chi-tiet", {
-                NVQL,
-                chiTietCH: chiTiet.data.cuaHang,
-                monCH: chiTiet.data.danhSachMonAn.items,
-                admin: req.session.ten,
-            });
+            res.redirect("/cua-hang/chi-tiet/" + index.idCH);
         }
     } catch (error) {
         console.error(error);
