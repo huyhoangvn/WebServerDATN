@@ -4,7 +4,7 @@ const hoadonctrl = require('../../../controllers/hoadon/hoadon-controller-api')
 const hoadonctrl1 = require('../../../controllers/hoadon/hoadon-controller')
 
 /* GET users listing. */
-router.post('/add', hoadonctrl.addHoaDonApi);
+// router.post('/add', hoadonctrl.addHoaDonApi);
 // get all 
 router.get('/', hoadonctrl.getHoaDonApi);
 
