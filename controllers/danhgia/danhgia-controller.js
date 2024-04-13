@@ -341,10 +341,10 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
         if (typeof (req.query.danhGia) !== 'undefined' && req.query.danhGia !== "" && req.query.danhGia !== "-1") {
             timkiem.danhGia = parseInt(req.query.danhGia);
         }
-        if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(typeof (req.query.trangThai))) {
-            const trangThaiValue = typeof (req.query.trangThai);
-            if (trangThaiValue === true || trangThaiValue === false) {
-                timkiem.trangThai = trangThaiValue === true;
+        if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+            const trangThaiValue = parseInt(req.query.trangThai);
+            if (trangThaiValue === 1 || trangThaiValue === 0) {
+              timkiem.trangThai = trangThaiValue === 1;
             }
         }
         const query = await DanhGia.aggregate([
