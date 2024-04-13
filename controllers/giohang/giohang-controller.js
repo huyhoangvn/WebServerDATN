@@ -19,23 +19,18 @@ const addGioHang = async (req, res, next) => {
     });
   }
 
-  await GioHang
+  const list = await GioHang
     .create({
       idKH: idKH,
       idMon: idMon,
       trangThai: 1
     })
-    .then((response) => {
-      msg = "Thêm món vào giỏ hàng thành công";
-    })
-    .catch(() => {
-      msg = "Thêm món vào giỏ hàng thất bại";
-    });
 
-  return {
+  return res.json({
+    index: list,
     success: true,
-    msg: msg
-  };
+    msg: "thêm thành công"
+  });
 };
 
 //lấy danh sách giỏ hàng
@@ -160,13 +155,14 @@ const deleteGioHang = async (req, res) => {
     }
 
     await GioHang.findByIdAndDelete(id);
-    return {
+    return res.json({
+      index: true,
       success: true,
-      message: "Xóa giỏ hàng thành công"
-    };
+      msg: "Xóa giỏ hàng thành công"
+    });
   } catch (error) {
     return ({
-      message: "Lỗi khi xóa giỏ hàng", error
+      msg: "Lỗi khi xóa giỏ hàng", error
     });
   }
 };
@@ -195,41 +191,7 @@ const kiemTraGioHang = async (req, res) => {
 };
 
 
-const addGioHangApi = async (req, res, next) => {
-  try {
-    const result = await addGioHang(req, res, next);
-    if (!res.headersSent) {
-      res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
-    } else {
-      console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi kết quả.");
-    };
-  } catch (error) {
-    // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
-    if (!res.headersSent) {
-      res.status(500).json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
-    } else {
-      console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
-    }
-  }
-}
-const deleteGioHangApi = async (req, res, next) => {
-  try {
-    const result = await deleteGioHang(req, res, next);
-    if (!res.headersSent) {
-      // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi
-      res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
-    } else {
-      console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi kết quả.");
-    };
-  } catch (error) {
-    // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
-    if (!res.headersSent) {
-      res.json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
-    } else {
-      console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
-    }
-  }
-}
+
 const getAllGioHangApi = async (req, res, next) => {
   try {
     const result = await getAllGioHang(req, res, next);
@@ -255,8 +217,8 @@ const getAllGioHangApi = async (req, res, next) => {
 
 
 module.exports = {
-  addGioHangApi,
-  deleteGioHangApi,
+  addGioHang,
+  deleteGioHang,
   getAllGioHangApi,
   getGioHangByUserIdApi,
   kiemTraGioHang
