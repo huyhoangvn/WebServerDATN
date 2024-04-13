@@ -40,11 +40,16 @@ const addGioHang = async (req, res, next) => {
 
 //lấy danh sách giỏ hàng
 const getAllGioHang = async (req, res) => {
+  const idKH = new mongo.Types.ObjectId(req.params.idKH);
+
   const trang = parseInt(req.query.trang) || 1; // Trang hiện tại, mặc định là trang 1 nếu không có truy vấn currentPage
   const itemsPerPage = 10; // Số lượng mục trên mỗi trang
 
   try {
     const gioHangList = await GioHang.aggregate([
+      {
+        $match: { idKH: idKH } // Lọc theo idKH
+      },
       {
         $lookup: {
           from: "Mon",
@@ -108,16 +113,16 @@ const getAllGioHang = async (req, res) => {
 
     // Lấy danh sách giỏ hàng cho trang hiện tại
 
-    return res.json({
+    return {
       list: gioHangList,
       trang,
       totalPages,
       totalCount,
       success: true,
       msg: "Thành công"
-    });
+    };
   } catch (error) {
-    res.json({ message: "Lỗi khi lấy danh sách giỏ hàng", error });
+    return { msg: "Lỗi khi lấy danh sách giỏ hàng", error };
   }
 };
 
@@ -194,7 +199,6 @@ const addGioHangApi = async (req, res, next) => {
   try {
     const result = await addGioHang(req, res, next);
     if (!res.headersSent) {
-      // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi
       res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
     } else {
       console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi kết quả.");
