@@ -5,42 +5,42 @@ const HoaDonController = require("../../controllers/hoadon/hoadon-controller");
 const mongo = require("mongoose");
 
 
-const addHoaDonApi = async (req, res, next) => {
+// const addHoaDonApi = async (req, res, next) => {
 
-    try {
-        const { idKH, idCH, diaChiGiaoHang } = req.body;
-        if (!idKH || !idCH || !diaChiGiaoHang) {
-            return res.json({ msg: 'Vui lòng điền đầy đủ thông tin' });
-        }
+//     try {
+//         const { idKH, idCH, diaChiGiaoHang } = req.body;
+//         if (!idKH || !idCH || !diaChiGiaoHang) {
+//             return res.json({ msg: 'Vui lòng điền đầy đủ thông tin' });
+//         }
 
-        const khachHang = await KhachHang.findById(idKH);
-        if (!khachHang || !khachHang.trangThai) {
-            return res.json({ msg: "Khách hàng không tồn tại hoặc không có trạng thái đúng" });
-        }
-        // Kiểm tra xem cửa hàng có tồn tại không
-        const cuaHang = await CuaHang.findById(idCH);
-        if (!cuaHang || !cuaHang.trangThai) {
-            return res.json({ msg: "Khách hàng không tồn tại hoặc không có trạng thái đúng" });
-        }
+//         const khachHang = await KhachHang.findById(idKH);
+//         if (!khachHang || !khachHang.trangThai) {
+//             return res.json({ msg: "Khách hàng không tồn tại hoặc không có trạng thái đúng" });
+//         }
+//         // Kiểm tra xem cửa hàng có tồn tại không
+//         const cuaHang = await CuaHang.findById(idCH);
+//         if (!cuaHang || !cuaHang.trangThai) {
+//             return res.json({ msg: "Khách hàng không tồn tại hoặc không có trạng thái đúng" });
+//         }
 
-        const saveHD = await HoaDon.create({
-            idKH,
-            idCH,
-            diaChiGiaoHang,
-            trangThaiMua: 0,
-            trangThai: true,
-            trangThaiThanhToan: 0,
-        });
-        res.json({
-            index: saveHD,
-            message: "Thêm mới hóa đơn thành công",
-            success: true,
-        });
-    } catch (error) {
-        console.error(error);
-        res.json({ message: "Lỗi khi thêm mới hóa đơn", error });
-    }
-};
+//         const saveHD = await HoaDon.create({
+//             idKH,
+//             idCH,
+//             diaChiGiaoHang,
+//             trangThaiMua: 0,
+//             trangThai: true,
+//             trangThaiThanhToan: 0,
+//         });
+//         res.json({
+//             index: saveHD,
+//             message: "Thêm mới hóa đơn thành công",
+//             success: true,
+//         });
+//     } catch (error) {
+//         console.error(error);
+//         res.json({ message: "Lỗi khi thêm mới hóa đơn", error });
+//     }
+// };
 const updateHoaDonApi = async (req, res, next) => {
     try {
         const result = await HoaDonController.updateHoaDon(req, res, next);
@@ -377,7 +377,6 @@ const deleteHoaDonCungApi = async (req, res, next) => {
 
 // Export các hàm API
 module.exports = {
-    addHoaDonApi,
     deleteHoaDonApi,
     getHoaDonApi,
     getDanhSachHoaDonByIdKhachHangApi,

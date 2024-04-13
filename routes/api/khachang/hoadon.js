@@ -5,7 +5,6 @@ const hoadonctrl = require('../../../controllers/hoadon/hoadon-controller-api')
 
 router.get('/:idKH', hoadonctrl.getDanhSachHoaDonByIdKhachHangApi);
 
-router.post('/add', hoadonctrl.addHoaDonApi);
 
 router.get('/detail/:id', hoadonctrl.chiTietHoaDonApi);
 

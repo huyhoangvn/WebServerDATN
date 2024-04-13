@@ -17,13 +17,6 @@ const addHoaDonVaMonDat = async (req, res, next) => {
             idKM = req.body.idKM;
             // Kiểm tra khuyến mãi
             const khuyenMai = await KhuyenMai.findById(idKM);
-            if (!khuyenMai || !khuyenMai.trangThai) {
-                return res.json({ msg: 'Khuyến mãi không tồn tại hoặc không hoạt động', success: false });
-            }
-
-            if (!khuyenMai) {
-                return res.json({ msg: 'Không tìm thấy thông tin khuyến mãi', success: false });
-            }
 
             phanTramKhuyenMaiDat = khuyenMai.phanTramKhuyenMai;
         } catch (e) {
@@ -57,7 +50,6 @@ const addHoaDonVaMonDat = async (req, res, next) => {
         const hoaDon = await HoaDon.create({
             idKH,
             idCH,
-            idKM,
             diaChiGiaoHang,
             phanTramKhuyenMaiDat,
             trangThaiMua: 0,
@@ -180,7 +172,7 @@ const addMonDat = async (req, res, next) => {
         };
     } catch (e) {
         console.error(e);
-        return({ error: e.message || "Đã xảy ra lỗi khi thêm món đặt" });
+        return ({ error: e.message || "Đã xảy ra lỗi khi thêm món đặt" });
     }
 }
 
@@ -236,7 +228,7 @@ const updateMonDat = async (req, res, next) => {
         };
     } catch (e) {
         console.error(e);
-        return({ error: e.message || "Đã xảy ra lỗi khi cập nhật món đặt" });
+        return ({ error: e.message || "Đã xảy ra lỗi khi cập nhật món đặt" });
     }
 }
 
@@ -277,7 +269,7 @@ const deleteMonDat = async (req, res, next) => {
         };
     } catch (e) {
         console.error(e);
-        return({ error: e.message || "Đã xảy ra lỗi khi xóa món đặt" });
+        return ({ error: e.message || "Đã xảy ra lỗi khi xóa món đặt" });
     }
 }
 
@@ -291,7 +283,7 @@ const deleteMonDatMem = async (req, res, next) => {
             { new: true },
         );
         if (!trangThai) {
-            return({ error: "Không tìm thấy hoa đơn" });
+            return ({ error: "Không tìm thấy hoa đơn" });
         }
         return {
             msg: "update thành công",
@@ -299,7 +291,7 @@ const deleteMonDatMem = async (req, res, next) => {
         };
     } catch (e) {
         console.log(e);
-        return({ error: "Đã xảy ra lỗi khi update " });
+        return ({ error: "Đã xảy ra lỗi khi update " });
     }
 }
 
@@ -312,9 +304,9 @@ const getDanhSachMonDatByIdHoaDon = async (req, res, next) => {
         let foundHoaDon = await HoaDon.findOne({ _id: id });
 
         if (!foundHoaDon) {
-            return res.json({
+            return {
                 msg: "hóa đơn không tồn tại"
-            });
+            };
         }
 
         // Tính chỉ số bắt đầu và giới hạn cho phân trang
@@ -338,7 +330,7 @@ const getDanhSachMonDatByIdHoaDon = async (req, res, next) => {
         };
     } catch (error) {
         console.error(error);
-        return({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của món đặt', error: error.message });
+        return ({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của món đặt', error: error.message });
     }
 };
 

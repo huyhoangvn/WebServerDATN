@@ -46,7 +46,7 @@ const dangNhap = async(req, res, next)=>{
                 $match: {
                     taiKhoan: taiKhoan,
                     matKhau: matKhau,
-                    trangThai: 1
+                    trangThai: true 
                 }
             }
         ]);        
