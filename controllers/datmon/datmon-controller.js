@@ -17,13 +17,6 @@ const addHoaDonVaMonDat = async (req, res, next) => {
             idKM = req.body.idKM;
             // Kiểm tra khuyến mãi
             const khuyenMai = await KhuyenMai.findById(idKM);
-            if (!khuyenMai || !khuyenMai.trangThai) {
-                return res.json({ msg: 'Khuyến mãi không tồn tại hoặc không hoạt động', success: false });
-            }
-
-            if (!khuyenMai) {
-                return res.json({ msg: 'Không tìm thấy thông tin khuyến mãi', success: false });
-            }
 
             phanTramKhuyenMaiDat = khuyenMai.phanTramKhuyenMai;
         } catch (e) {
