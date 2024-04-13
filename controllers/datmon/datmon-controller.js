@@ -4,6 +4,7 @@ const { model: Mon } = require("../../model/Mon");
 const { model: KhuyenMai } = require("../../model/KhuyenMai");
 const { model: KhachHang } = require("../../model/KhachHang");
 const { model: CuaHang } = require("../../model/CuaHang");
+const { model: KhuyenMaiCuaToi } = require("../../model/KhuyenMaiCuaToi");
 const mongoose = require('mongoose');
 const mongo = mongoose.Types.ObjectId;
 
@@ -19,6 +20,14 @@ const addHoaDonVaMonDat = async (req, res, next) => {
             const khuyenMai = await KhuyenMai.findById(idKM);
 
             phanTramKhuyenMaiDat = khuyenMai.phanTramKhuyenMai;
+
+            const khuyenMaiCuaToi = await KhuyenMaiCuaToi.findOne({ idKM: idKM });
+
+            if (khuyenMaiCuaToi) {
+                // Cập nhật trạng thái của bảng KhuyenMaiCuaToi
+                khuyenMaiCuaToi.trangThai = false;
+                await khuyenMaiCuaToi.save();
+            }
         } catch (e) {
 
         }
