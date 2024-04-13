@@ -750,14 +750,14 @@ const getMonTheoid = async (req, res) => {
       tenCH: cuaHang.tenCH,
       tenLM: loaiMon.tenLM
     }
-    res.json({
+    return res.json({
       index,
       msg: "Get món theo id thành công",
       success: true,
     });
   } catch (error) {
 
-    res.json({
+    return res.json({
       msg: "Lỗi khi lấy món theo id",
       success: false,
     });

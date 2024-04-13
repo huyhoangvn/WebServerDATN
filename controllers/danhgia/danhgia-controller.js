@@ -316,7 +316,7 @@ const GetTrungBinhDanhGiaTheoMon = async function (req, res) {
         ]);
 
 
-        return res.json({
+        return ({
             index: parseFloat(query[0].avgDanhGia.toFixed(1)),
             msg: 'Get số lượng đánh giá theo tên món thành công',
             success: true
