@@ -35,10 +35,10 @@ const addKMCuaToi = async (req, res, next) => {
 
 const getAllKhuyenMaiCT = async (req, res, next) => {
     try {
-        const idKH = req.params.idKH;
+        const idKH = new mongo.Types.ObjectId(req.params.idKH);
         const page = parseInt(req.query.trang) || 1;
         const limit = 10; // Số lượng phần tử trên mỗi trang
-        const timkiem = {};
+        const timkiem = { idKH: idKH };
         if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
             const trangThaiValue = parseInt(req.query.trangThai);
             if (trangThaiValue === 1 || trangThaiValue === 0) {
