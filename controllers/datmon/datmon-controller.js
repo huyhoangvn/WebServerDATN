@@ -50,7 +50,6 @@ const addHoaDonVaMonDat = async (req, res, next) => {
         const hoaDon = await HoaDon.create({
             idKH,
             idCH,
-            idKM,
             diaChiGiaoHang,
             phanTramKhuyenMaiDat,
             trangThaiMua: 0,
