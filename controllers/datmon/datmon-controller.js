@@ -180,7 +180,7 @@ const addMonDat = async (req, res, next) => {
         };
     } catch (e) {
         console.error(e);
-        return({ error: e.message || "Đã xảy ra lỗi khi thêm món đặt" });
+        return ({ error: e.message || "Đã xảy ra lỗi khi thêm món đặt" });
     }
 }
 
@@ -236,7 +236,7 @@ const updateMonDat = async (req, res, next) => {
         };
     } catch (e) {
         console.error(e);
-        return({ error: e.message || "Đã xảy ra lỗi khi cập nhật món đặt" });
+        return ({ error: e.message || "Đã xảy ra lỗi khi cập nhật món đặt" });
     }
 }
 
@@ -277,7 +277,7 @@ const deleteMonDat = async (req, res, next) => {
         };
     } catch (e) {
         console.error(e);
-        return({ error: e.message || "Đã xảy ra lỗi khi xóa món đặt" });
+        return ({ error: e.message || "Đã xảy ra lỗi khi xóa món đặt" });
     }
 }
 
@@ -291,7 +291,7 @@ const deleteMonDatMem = async (req, res, next) => {
             { new: true },
         );
         if (!trangThai) {
-            return({ error: "Không tìm thấy hoa đơn" });
+            return ({ error: "Không tìm thấy hoa đơn" });
         }
         return {
             msg: "update thành công",
@@ -299,7 +299,7 @@ const deleteMonDatMem = async (req, res, next) => {
         };
     } catch (e) {
         console.log(e);
-        return({ error: "Đã xảy ra lỗi khi update " });
+        return ({ error: "Đã xảy ra lỗi khi update " });
     }
 }
 
@@ -312,9 +312,9 @@ const getDanhSachMonDatByIdHoaDon = async (req, res, next) => {
         let foundHoaDon = await HoaDon.findOne({ _id: id });
 
         if (!foundHoaDon) {
-            return res.json({
+            return {
                 msg: "hóa đơn không tồn tại"
-            });
+            };
         }
 
         // Tính chỉ số bắt đầu và giới hạn cho phân trang
@@ -338,7 +338,7 @@ const getDanhSachMonDatByIdHoaDon = async (req, res, next) => {
         };
     } catch (error) {
         console.error(error);
-        return({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của món đặt', error: error.message });
+        return ({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của món đặt', error: error.message });
     }
 };
 
