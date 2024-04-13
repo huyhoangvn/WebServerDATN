@@ -323,7 +323,7 @@ const deleteCuaHangWeb = async (req, res) => {
         const filterNVCu = await NhanVien.findOne({ idCH: idCH });
         const filterMonCu = await Mon.findOne({ idCH: idCH });
         const cuaHangTim = await CuaHang.findOne({ _id: idCH })
-        
+
         if (cuaHangTim) { // Kiểm tra xem cuaHangTim có tồn tại không trước khi truy cập vào trangThai
             if (cuaHangTim.trangThai == true) {
                 const update = { trangThai: false };
@@ -343,7 +343,7 @@ const deleteCuaHangWeb = async (req, res) => {
         }
     } catch (e) {
         console.log(e);
-        return({ success: false, msg: "Đã xảy ra lỗi " });
+        return ({ success: false, msg: "Đã xảy ra lỗi " });
     }
 
 }
@@ -425,7 +425,7 @@ const chiTietCuaHangWeb = async (req, res, next) => {
 
     } catch (e) {
         console.log(e);
-        res.json({ success: false, msg: "Đã xảy ra lỗi khi lấy chi tiết cửa hàng" });
+        return { success: false, msg: "Đã xảy ra lỗi khi lấy chi tiết cửa hàng" };
     }
 };
 
