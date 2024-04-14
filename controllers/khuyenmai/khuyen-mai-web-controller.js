@@ -13,7 +13,7 @@ const getList = async (req, res) => {
         const totalPages = Math.ceil(soLuongKhuyenMai.count / soLuongKhuyenMaiTrenTrang);
         const result = await getTatCaKhuyenMai(req, res);
         res.render("khuyenmai/danh-sach", {
-            soLuongKhuyenMai:soLuongKhuyenMai.count,
+            soLuongKhuyenMai: soLuongKhuyenMai.count,
             data: result.list,
             admin: req.session.ten,
             totalPages: totalPages,
@@ -66,12 +66,19 @@ const getAdd = async (req, res) => {
                     success: false
                 });
             }
-        } else if (tieuDe == "" || maKhuyenMai == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu == "") {
+        } else if (tieuDe == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu == "") {
             res.render("khuyenmai/them-moi", {
                 error: 'Thêm khuyễn mãi lỗi do thiếu thông tin',
                 success: false
             });
-        } else {
+        }
+        else if (tieuDe > 50) {
+            res.render("khuyenmai/them-moi", {
+                error: 'Tiêu đề đang vượt quá giới hơn ký tự',
+                success: false
+            });
+        }
+        else {
             const index = await KhuyenMai.create({
                 tieuDe: tieuDe,
                 maKhuyenMai: maKhuyenMai,

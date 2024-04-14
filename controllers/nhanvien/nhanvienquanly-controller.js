@@ -327,10 +327,23 @@ const addNhanVienQuanLy = async (req, res, next) => {
     }
 
     if (req.body.taiKhoan.length < 6 || req.body.matKhau.length < 6) {
-      throw new Error("tài khoản và mật khẩu phải có ít nhất 6 ký tự.");
+      return res.json({
+        success: false,
+        msg: "tài khoản và mật khẩu phải có ít nhất 6 ký tự."
+      });
     }
     if (req.body.taiKhoan.length > 50 || req.body.matKhau.length > 50) {
-      throw new Error("tài khoản và mật khẩu không được vượt quá 50 ký tự");
+      return res.json({
+        success: false,
+        msg: "tài khoản và mật khẩu không được vượt quá 50 ký tự"
+      });
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(req.body.taiKhoan)) {
+      return res.json({
+        success: false,
+        msg: "tài khoản không đúng định dạng."
+      });
     }
 
     // Thiết lập hình ảnh mặc định nếu không có ảnh được tải lên
@@ -778,26 +791,6 @@ const kichHoatnhanVienQuanLyApi = async (req, res, next) => {
     }
   }
 };
-const addNhanVienQuanLyApi = async (req, res, next) => {
-  try {
-    const result = await addNhanVienQuanLy(req, res, next);
-    if (!res.headersSent) {
-      res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
-    }
-  } catch (error) {
-    if (!res.headersSent) {
-      res.json({
-        success: false,
-        msg: "Đã xảy ra lỗi thêm nhan viên",
-        error: error.message,
-      });
-    } else {
-      console.error(
-        "Headers have already been sent. Cannot send error response."
-      );
-    }
-  }
-};
 const xoaCungNhanVienQuanLyApi = async (req, res, next) => {
   try {
     const result = await xoaCungtNhanVienQuanLy(req, res, next);
@@ -1092,7 +1085,7 @@ module.exports = {
   suaNhanVienBanApi,
   huyKichHoatNhanVienApi,
   kichHoatnhanVienBanApi,
-  addNhanVienQuanLyApi,
+  addNhanVienQuanLy,
   xoaNhanVienQuanLyApi,
   kichHoatnhanVienQuanLyApi,
   xoaCungNhanVienQuanLyApi,

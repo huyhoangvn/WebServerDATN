@@ -117,9 +117,6 @@ const addHoaDonVaMonDat = async (req, res, next) => {
     }
 }
 
-
-
-
 // Thêm mới món đặt
 const addMonDat = async (req, res, next) => {
     try {
@@ -342,7 +339,6 @@ const getDanhSachMonDatByIdHoaDon = async (req, res, next) => {
         return ({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của món đặt', error: error.message });
     }
 };
-
 
 
 const addMonDatApi = async (req, res, next) => {

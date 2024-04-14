@@ -72,8 +72,36 @@ const updateCuaHang = async (req, res) => {
         const thoiGianMo = req.body.thoiGianMo || item.thoiGianMo;
         const thoiGianDong = req.body.thoiGianDong || item.thoiGianDong;
 
-        if (tenCH.length > 50 || email.length > 50 || diaChi.length > 100 || sdt.length > 10) {
-            throw new Error("các trường thông tin vượt quá số ký tự cho phép");
+        if (tenCH.length > 50) {
+            return res.json({
+                success: false,
+                msg: 'tên cửa hàng vượt quá số lượng ký tự cho phép'
+            });
+        }
+        if (email.length > 50) {
+            return res.json({
+                success: false,
+                msg: 'email cửa hàng vượt quá số lượng ký tự cho phép'
+            });
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return res.json({
+                success: false,
+                msg: 'email không đúng định dạng'
+            });
+        }
+        if (diaChi.length > 100) {
+            return res.json({
+                success: false,
+                msg: 'địa chỉ vượt quá số lượng ký tự cho phép'
+            });
+        }
+        if (sdt.length > 10) {
+            return res.json({
+                success: false,
+                msg: 'số điện thoại vượt quá số lượng ký tự cho phép'
+            });
         }
 
         let hinhAnh = item.hinhAnh; // Mặc định sử dụng ảnh hiện tại
@@ -117,9 +145,6 @@ const updateCuaHang = async (req, res) => {
         return { success: false, msg: 'Đã xảy ra lỗi khi cập nhật cửa hàng', error: 'Lỗi không xác định' };
     }
 };
-
-
-
 
 const kichHoatCuaHang = async (req, res, next) => {
     try {
@@ -348,7 +373,6 @@ const deleteCuaHangWeb = async (req, res) => {
 
 }
 
-
 const chiTietCuaHangWeb = async (req, res, next) => {
     try {
         const idCH = new mongo.Types.ObjectId(req.params.idCH);
@@ -457,7 +481,6 @@ const chiTietCuaHangApp = async (req, res, next) => {
     }
 };
 
-
 // api
 const addCuaHangApi = async (req, res, next) => {
     try {
@@ -492,8 +515,6 @@ const updateCuaHangApi = async (req, res, next) => {
     }
 }
 
-
-
 const kichHoatCuaHangApi = async (req, res, next) => {
     try {
         const result = await kichHoatCuaHang(req, res, next);
@@ -522,7 +543,6 @@ const huyKichHoatCuaHangApi = async (req, res, next) => {
     }
 }
 
-
 const getCuaHangCuaHangApi = async (req, res, next) => {
     try {
         const result = await getCuaHang(req, res, next);
@@ -536,7 +556,6 @@ const getCuaHangCuaHangApi = async (req, res, next) => {
         }
     }
 }
-
 
 const chiTietCuaHangAppApi = async (req, res, next) => {
     try {
@@ -565,8 +584,6 @@ const chiTietCuaHangWebApi = async (req, res, next) => {
         }
     }
 }
-
-
 
 module.exports = {
     // Api

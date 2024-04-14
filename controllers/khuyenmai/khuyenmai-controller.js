@@ -422,6 +422,7 @@ const getTatCaKhuyenMai = async (req, res) => {
                     "trangThai": "$trangThai",
                 }
             },
+            { $sort: { ngayBatDau: -1 } },
             {
                 $skip: (trang - 1) * 10,
             },

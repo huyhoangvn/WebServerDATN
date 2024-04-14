@@ -3,16 +3,32 @@ const { model: NhanVien } = require("../../model/NhanVien");
 
 const addNhanVien = async (req, res, next) => {
   try {
-    // check thông tin body
+    // Kiểm tra các trường thông tin nhân viên
     if (!req.body || !req.body.taiKhoan || !req.body.matKhau) {
-      throw new Error("Thông tin nhân viên không đầy đủ hoặc không hợp lệ.");
-    }
-    if (req.body.taiKhoan.length > 50 || req.body.matKhau.length > 50) {
-      throw new Error("Tài khoản hoặc mật khẩu không được quá 50 ký tự.");
+      return res.json({
+        success: false,
+        msg: "Thông tin nhân viên không đầy đủ hoặc không hợp lệ.",
+      });
     }
 
     if (req.body.taiKhoan.length < 6 || req.body.matKhau.length < 6) {
-      throw new Error("Tài khoản và mật khẩu phải có ít nhất 6 ký tự.");
+      return res.json({
+        success: false,
+        msg: "tài khoản và mật khẩu phải có ít nhất 6 ký tự."
+      });
+    }
+    if (req.body.taiKhoan.length > 50 || req.body.matKhau.length > 50) {
+      return res.json({
+        success: false,
+        msg: "tài khoản và mật khẩu không được vượt quá 50 ký tự"
+      });
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(req.body.taiKhoan)) {
+      return res.json({
+        success: false,
+        msg: "tài khoản không đúng định dạng."
+      });
     }
     // Tạo một nhân viên mới từ body
     const newNhanVien = new NhanVien(req.body);
