@@ -254,184 +254,211 @@
         </form>
 
         <!-- Bảng hiển thị -->
-        <%if(soLuongKhuyenMai == undefined){%>
+        <%if(soLuongKhuyenMai==undefined){%>
           <label for="">Đã tìm thấy 0 kết quả</label>
-        <%}else{%>
-          <label for="">Đã tìm thấy <%=soLuongKhuyenMai%> kết quả</label>
-        <%}%>
-        <table class="table table-bordered border-secondary">
-          <thead>
-            <tr class="table-secondary">
-              <td scope="col-1">STT</td>
-              <td scope="col-2">Tiêu Đề </td>
-              <td scope="col-2">Ngày Bắt Đầu</td>
-              <td scope="col-2">Ngày Kết Thúc</td>
-              <td scope="col-2">Sửa</td>
-              <td scope="col-2">Trạng Thái</td>
-              <td scope="col-1">Chức năng</td>
-            </tr>
-          </thead>
-          <tbody>
-            <% for (var i=0; i<data.length; i++) {%>
-              <tr>
-                <td scope="col-1">
-                  <%=i+1%>
-                </td>
-                <td scope="col-2">
-                  <%=data[i].tieuDe%>
-                </td>
-                <td scope="col-2">
-                  <% var startDate=new Date(data[i].ngayBatDau); %>
-                    <%= ("0" + startDate.getDate()).slice(-2) %>/<%= ("0" + (startDate.getMonth() + 1)).slice(-2) %>/<%=
-                          startDate.getFullYear() %>
-                </td>
-                <td scope="col-2">
-                  <% var endDate=new Date(data[i].ngayHetHan); %>
-                    <%= ("0" + endDate.getDate()).slice(-2) %>/<%= ("0" + (endDate.getMonth() + 1)).slice(-2) %>/<%=
-                          endDate.getFullYear() %>
-                </td>
-                <td class="text-primary" scope="col-1">
-                  <a data-toggle="modal" data-target="#suaKhuyenMaiModal" data-idkm="<%=data[i]._id%>"
-                    data-tieude="<%=data[i].tieuDe%>" data-makhuyenmai="<%=data[i].maKhuyenMai%>"
-                    data-ngaybatdau="<%=data[i].ngayBatDau%>" data-ngayhethan="<%=data[i].ngayHetHan%>"
-                    data-phantramkhuyenmai="<%=data[i].phanTramKhuyenMai%>" data-dontoithieu="<%=data[i].donToiThieu%>"
-                    data-trangthai="<%=data[i].trangThai%>">
-                    Sửa </a>
-                </td>
+          <%}else{%>
+            <label for="">Đã tìm thấy <%=soLuongKhuyenMai%> kết quả</label>
+            <%}%>
+              <table class="table table-bordered border-secondary">
+                <thead>
+                  <tr class="table-secondary">
+                    <td scope="col-1">STT</td>
+                    <td scope="col-2">Tiêu Đề </td>
+                    <td scope="col-2">Ngày Bắt Đầu</td>
+                    <td scope="col-2">Ngày Kết Thúc</td>
+                    <td scope="col-2">Sửa</td>
+                    <td scope="col-2">Trạng Thái</td>
+                    <td scope="col-1">Chức năng</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% for (var i=0; i<data.length; i++) {%>
+                    <tr>
+                      <td scope="col-1">
+                        <%=i+1%>
+                      </td>
+                      <td scope="col-2">
+                        <%=data[i].tieuDe%>
+                      </td>
+                      <td scope="col-2">
+                        <% var startDate=new Date(data[i].ngayBatDau); %>
+                          <%= ("0" + startDate.getDate()).slice(-2) %>/<%= ("0" + (startDate.getMonth() + 1)).slice(-2)
+                              %>/<%= startDate.getFullYear() %>
+                      </td>
+                      <td scope="col-2">
+                        <% var endDate=new Date(data[i].ngayHetHan); %>
+                          <%= ("0" + endDate.getDate()).slice(-2) %>/<%= ("0" + (endDate.getMonth() + 1)).slice(-2) %>/
+                              <%= endDate.getFullYear() %>
+                      </td>
+                      <td class="text-primary" scope="col-1">
+                        <a data-toggle="modal" data-target="#suaKhuyenMaiModal" data-idkm="<%=data[i]._id%>"
+                          data-tieude="<%=data[i].tieuDe%>" data-makhuyenmai="<%=data[i].maKhuyenMai%>"
+                          data-ngaybatdau="<%=data[i].ngayBatDau%>" data-ngayhethan="<%=data[i].ngayHetHan%>"
+                          data-phantramkhuyenmai="<%=data[i].phanTramKhuyenMai%>"
+                          data-dontoithieu="<%=data[i].donToiThieu%>" data-trangthai="<%=data[i].trangThai%>">
+                          Sửa </a>
+                      </td>
 
-                <td class="text-primary scope-col-2">
-                  <a data-toggle="modal" data-target="#suaTrangThaiModal"
-                    class=" <%= data[i].trangThai ? 'text-success' : 'text-danger' %>" data-idkm="<%=data[i]._id%>"
-                    data-trangthai="<%=data[i].trangThai%>">
-                    <%= data[i].trangThai ? 'Hoạt động' : 'Khóa' %>
-                  </a>
-                </td>
+                      <td class="text-primary scope-col-2">
+                        <a data-toggle="modal" data-target="#suaTrangThaiModal"
+                          class=" <%= data[i].trangThai ? 'text-success' : 'text-danger' %>"
+                          data-idkm="<%=data[i]._id%>" data-trangthai="<%=data[i].trangThai%>">
+                          <%= data[i].trangThai ? 'Hoạt động' : 'Khóa' %>
+                        </a>
+                      </td>
 
-                <td class="text-primary" scope="col-1">
-                  <a data-toggle="modal" data-target="#exampleModal" data-tieude="<%=data[i].tieuDe%>"
-                    data-makhuyenmai="<%=data[i].maKhuyenMai%>" data-ngaybatdau="<%=data[i].ngayBatDau%>"
-                    data-ngayhethan="<%=data[i].ngayHetHan%>" data-phantramkhuyenmai="<%=data[i].phanTramKhuyenMai%>"
-                    data-dontoithieu="<%=data[i].donToiThieu%>" data-trangthai="<%=data[i].trangThai%>">
-                    Chi tiết</a>
-                </td>
-              </tr>
-              <%}%>
-          </tbody>
-        </table>
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-          aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Chi tiết khuyến mãi</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col-12">
-                    <h4 id="tieude"></h4>
-                    <p><strong>Mã Khuyến Mãi:</strong> <span id="makhuyenmai"></span></p>
-                    <p><strong>Ngày bắt đầu:</strong> <span id="ngaybatdau"></span></p>
-                    <p><strong>Ngày kết thúc:</strong> <span id="ngayhethan"></span></p>
-                    <p><strong>Phần trăm khuyến mãi:</strong> <span id="phantramkhuyenmai"></span></p>
-                    <p><strong>Đơn tối thiểu:</strong> <span id="dontoithieu"></span></p>
-                    <p><strong>Trạng thái:</strong> <span id="trangthai"></span></p>
+                      <td class="text-primary" scope="col-1">
+                        <a data-toggle="modal" data-target="#exampleModal" data-tieude="<%=data[i].tieuDe%>"
+                          data-makhuyenmai="<%=data[i].maKhuyenMai%>" data-ngaybatdau="<%=data[i].ngayBatDau%>"
+                          data-ngayhethan="<%=data[i].ngayHetHan%>"
+                          data-phantramkhuyenmai="<%=data[i].phanTramKhuyenMai%>"
+                          data-dontoithieu="<%=data[i].donToiThieu%>" data-trangthai="<%=data[i].trangThai%>">
+                          Chi tiết</a>
+                      </td>
+                    </tr>
+                    <%}%>
+                </tbody>
+              </table>
+              <!-- Modal -->
+              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Chi tiết khuyến mãi</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="row">
+                        <div class="col-12">
+                          <h4 id="tieude"></h4>
+                          <p><strong>Mã Khuyến Mãi:</strong> <span id="makhuyenmai"></span></p>
+                          <p><strong>Ngày bắt đầu:</strong> <span id="ngaybatdau"></span></p>
+                          <p><strong>Ngày kết thúc:</strong> <span id="ngayhethan"></span></p>
+                          <p><strong>Phần trăm khuyến mãi:</strong> <span id="phantramkhuyenmai"></span></p>
+                          <p><strong>Đơn tối thiểu:</strong> <span id="dontoithieu"></span></p>
+                          <p><strong>Trạng thái:</strong> <span id="trangthai"></span></p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
-              </div>
-            </div>
-          </div>
-        </div>
 
 
-        <!-- Modal Sửa Khuyến Mãi -->
-        <div class="modal fade" id="suaKhuyenMaiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-          aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Sửa Khuyến Mãi</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
+              <!-- Modal Sửa Khuyến Mãi -->
+              <div class="modal fade" id="suaKhuyenMaiModal" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Sửa Khuyến Mãi</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form id="formSuaKhuyenMai" method="post" action="/khuyen-mai/sua/">
+                        <div class="form-group">
+                          <label for="tieuDe">Tiêu đề</label>
+                          <input type="text" class="form-control" name="tieuDe" id="tieuDe" placeholder="Tiêu đề">
+                        </div>
+                        <div class="form-group">
+                          <label for="ngayBatDau">Ngày bắt đầu</label>
+                          <input type="date" class="form-control" name="ngayBatDau" id="ngayBatDau"
+                            placeholder="Ngày bắt đầu">
+                        </div>
+                        <div class="form-group">
+                          <label for="ngayHetHan">Ngày kết thúc</label>
+                          <input type="date" class="form-control" name="ngayHetHan" id="ngayHetHan"
+                            placeholder="Ngày kết thúc">
+                        </div>
+                        <div class="form-group">
+                          <label for="phanTramKhuyenMai">Phần trăm khuyến mãi</label>
+                          <input type="text" class="form-control" name="phanTramKhuyenMai" id="phanTramKhuyenMai"
+                            placeholder="Phần trăm khuyến mãi">
+                        </div>
+                        <div class="form-group">
+                          <label for="donToiThieu">Đơn tối thiểu</label>
+                          <input type="text" class="form-control" name="donToiThieu" id="donToiThieu"
+                            placeholder="Đơn tối thiểu">
+                        </div>
+                        <input type="hidden" class="form-control" name="idKM" id="idKM">
+                        <br>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div class="modal-body">
-                <form id="formSuaKhuyenMai" method="post" action="/khuyen-mai/sua/">
-                  <div class="form-group">
-                    <label for="tieuDe">Tiêu đề</label>
-                    <input type="text" class="form-control" name="tieuDe" id="tieuDe" placeholder="Tiêu đề">
+
+              <div class="modal fade" id="suaTrangThaiModal" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Sửa Trạng Thái</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form id="formSuaTrangThai" action="/khuyen-mai/xoa" method="post">
+                        <div class="form-group">
+                          <label for="trangThai">bạn có muốn sửa không</label>
+                        </div>
+                        <input type="hidden" class="form-control" name="idKM" id="idKM">
+                        <br>
+                        <div class="modal-footer justify-content-end">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                          <button type="submit" class="btn btn-primary">Sửa</button>
+                        </div>
+                      </form>
+                    </div>
                   </div>
-                  <div class="form-group">
-                    <label for="ngayBatDau">Ngày bắt đầu</label>
-                    <input type="date" class="form-control" name="ngayBatDau" id="ngayBatDau"
-                      placeholder="Ngày bắt đầu">
-                  </div>
-                  <div class="form-group">
-                    <label for="ngayHetHan">Ngày kết thúc</label>
-                    <input type="date" class="form-control" name="ngayHetHan" id="ngayHetHan"
-                      placeholder="Ngày kết thúc">
-                  </div>
-                  <div class="form-group">
-                    <label for="phanTramKhuyenMai">Phần trăm khuyến mãi</label>
-                    <input type="text" class="form-control" name="phanTramKhuyenMai" id="phanTramKhuyenMai"
-                      placeholder="Phần trăm khuyến mãi">
-                  </div>
-                  <div class="form-group">
-                    <label for="donToiThieu">Đơn tối thiểu</label>
-                    <input type="text" class="form-control" name="donToiThieu" id="donToiThieu"
-                      placeholder="Đơn tối thiểu">
-                  </div>
-                  <input type="hidden" class="form-control" name="idKM" id="idKM">
-                  <br>
-                  <button type="submit" class="btn btn-primary">Lưu</button>
-                </form>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
+
+              <% if(typeof alert !=='undefined' && alert !==null) { %>
+                <input type="hidden" id="thongBao" value="<%= alert %>">
+                <% } else { %>
+                  <input type="hidden" id="thongBao" value="">
+                  <% } %>
+
+                    <div class="modal fade" id="alertModal" tabindex="-1" role="dialog"
+                      aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Cảnh báo</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body" id="alertContent">
+                            <!-- Nội dung cảnh báo sẽ được thêm vào đây -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 
 
-        <!-- Modal Sửa Trạng Thái -->
-        <div class="modal fade" id="suaTrangThaiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-          aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Sửa Trạng Thái</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <form id="formSuaTrangThai" action="/khuyen-mai/xoa" method="post">
-                  <div class="form-group">
-                    <label for="trangThai">bạn có muốn sửa trạng thái không</label>
-                  </div>
-                  <input type="hidden" class="form-control" name="idKM" id="idKM">
-                  <br>
-                  <button type="submit" class="btn btn-primary">Sửa</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <nav aria-label=" Page navigation">
-          <ul class="pagination justify-content-center">
-            <% for (var i=1; i <=totalPages; i++) { %>
-              <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-                <a class="page-link" href="?trang=<%= i %>">
-                  <%= i %>
-                </a>
-              </li>
-              <% } %>
-          </ul>
-        </nav>
+                    <nav aria-label=" Page navigation">
+                      <ul class="pagination justify-content-center">
+                        <% for (var i=1; i <=totalPages; i++) { %>
+                          <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                            <a class="page-link" href="?trang=<%= i %>">
+                              <%= i %>
+                            </a>
+                          </li>
+                          <% } %>
+                      </ul>
+                    </nav>
 
 
       </div>
@@ -521,8 +548,8 @@
     });
 
     // Lưu trạng thái của các trường dữ liệu đã chọn vào session khi nhấn nút tìm kiếm
-$(document).ready(function() {
-    $('form[action="/khuyen-mai/danh-sach"]').submit(function(event) {
+    $(document).ready(function () {
+      $('form[action="/khuyen-mai/danh-sach"]').submit(function (event) {
         var tieuDe = $('#searchTieuDe').val();
         var ngayBatDau = $('#ngayBatDau').val();
         var ngayHetHan = $('#ngayHetHan').val();
@@ -533,23 +560,39 @@ $(document).ready(function() {
         sessionStorage.setItem('ngayBatDau', ngayBatDau);
         sessionStorage.setItem('ngayHetHan', ngayHetHan);
         sessionStorage.setItem('trangThai', trangThai);
+      });
     });
-});
 
-// Kiểm tra và đặt lại giá trị cho các trường dữ liệu khi trang được load lại
-$(document).ready(function() {
-    var tieuDe = sessionStorage.getItem('tieuDe');
-    var ngayBatDau = sessionStorage.getItem('ngayBatDau');
-    var ngayHetHan = sessionStorage.getItem('ngayHetHan');
-    var trangThai = sessionStorage.getItem('trangThai');
+    // Kiểm tra và đặt lại giá trị cho các trường dữ liệu khi trang được load lại
+    $(document).ready(function () {
+      var tieuDe = sessionStorage.getItem('tieuDe');
+      var ngayBatDau = sessionStorage.getItem('ngayBatDau');
+      var ngayHetHan = sessionStorage.getItem('ngayHetHan');
+      var trangThai = sessionStorage.getItem('trangThai');
 
-    // Đặt giá trị cho các trường dữ liệu nếu đã được lưu trước đó
-    if (tieuDe) $('#searchTieuDe').val(tieuDe);
-    if (ngayBatDau) $('#ngayBatDau').val(ngayBatDau);
-    if (ngayHetHan) $('#ngayHetHan').val(ngayHetHan);
-    if (trangThai) $('#trangThai').val(trangThai);
-});
+      // Đặt giá trị cho các trường dữ liệu nếu đã được lưu trước đó
+      if (tieuDe) $('#searchTieuDe').val(tieuDe);
+      if (ngayBatDau) $('#ngayBatDau').val(ngayBatDau);
+      if (ngayHetHan) $('#ngayHetHan').val(ngayHetHan);
+      if (trangThai) $('#trangThai').val(trangThai);
+    });
 
+    var alertContent = document.getElementById("thongBao").value;
+    // Kiểm tra xem alertContent có giá trị không
+    if (alertContent) {
+      // Hiển thị cảnh báo trong modal
+      var modal = $('#alertModal');
+      var alertText = $('#alertContent');
+      alertText.text(alertContent);
+
+      // Hiển thị modal
+      modal.modal('show');
+
+      // Đóng modal sau một khoảng thời gian (3 giây)
+      setTimeout(function () {
+        modal.modal('hide');
+      }, 2000);
+    }
   </script>
 
 </body>

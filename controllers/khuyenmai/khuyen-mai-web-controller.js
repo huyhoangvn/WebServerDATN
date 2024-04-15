@@ -103,14 +103,52 @@ const getAdd = async (req, res) => {
 }
 const updateKhuyenMai = async (req, res) => {
 
-    const index = await SuaKhuyenMai(req, res);
-    await getList(req, res);
+
+    try {
+        const index = await SuaKhuyenMai(req, res);
+        const trang = parseInt(req.query.trang) || 1;
+        const soLuongKhuyenMaiTrenTrang = 10;
+        const soLuongKhuyenMai = await getSoLuongKhuyenMai(req, res);
+        const totalPages = Math.ceil(soLuongKhuyenMai.count / soLuongKhuyenMaiTrenTrang);
+        const result = await getTatCaKhuyenMai(req, res);
+        res.render("khuyenmai/danh-sach", {
+            soLuongKhuyenMai: soLuongKhuyenMai.count,
+            data: result.list,
+            alert: index.alert,
+            admin: req.session.ten,
+            totalPages: totalPages,
+            currentPage: trang,
+        });
+
+    } catch (error) {
+        console.error("Error fetching data:", error);
+
+    }
 }
 
 const updateTrangThai = async (req, res) => {
 
-    const index = await XoaKhuyenMai(req, res);
-    await getList(req, res);
+
+    try {
+        const index = await XoaKhuyenMai(req, res);
+        const trang = parseInt(req.query.trang) || 1;
+        const soLuongKhuyenMaiTrenTrang = 10;
+        const soLuongKhuyenMai = await getSoLuongKhuyenMai(req, res);
+        const totalPages = Math.ceil(soLuongKhuyenMai.count / soLuongKhuyenMaiTrenTrang);
+        const result = await getTatCaKhuyenMai(req, res);
+        res.render("khuyenmai/danh-sach", {
+            soLuongKhuyenMai: soLuongKhuyenMai.count,
+            data: result.list,
+            alert: index.alert,
+            admin: req.session.ten,
+            totalPages: totalPages,
+            currentPage: trang,
+        });
+
+    } catch (error) {
+        console.error("Error fetching data:", error);
+
+    }
 }
 
 module.exports = {
