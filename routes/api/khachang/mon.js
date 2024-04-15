@@ -6,5 +6,5 @@ const monCtrl = require("../../../controllers/mon/mon-controller");
 router.get("/:idMon", monCtrl.getMonTheoid);
 router.get("/", monCtrl.getTatCaMonApi);
 router.get("/theo-cua-hang/:idCH", monCtrl.getMonCuaCuaHang); //http://localhost:3000/api/nhanvien/mon/65edaf041b25866e0cc9e5ab
-router.get("/theo-loai-mon/:idLM", monCtrl.getMonCuaLoaiMon);
+router.put("/theo-loai-mon", monCtrl.getMonCuaLoaiMon);
 module.exports = router;
