@@ -21,7 +21,7 @@ const getList = async (req, res, next) => {
 }
 const xoaNhanVien = async (req, res, next) => {
     try {
-        await nhanVien.XoaQuanLy(req, res);
+        const nv = await nhanVien.XoaQuanLy(req, res);
         const trang = parseInt(req.query.trang) || 1;
         const soLuongNhanVienTrenTrang = 10;
         const soLuongNhanVien = await nhanVien.getSoLuongNhanVienQuanLy(req, res);
@@ -29,6 +29,7 @@ const xoaNhanVien = async (req, res, next) => {
         const result = await nhanVien.getTatCaNhanVienQuanLy(req, res);
         res.render("cuahang/danh-sach-quan-ly", {
             data: result.list,
+            alert: nv.alert,
             admin: req.session.ten,
             totalPages: totalPages,
             currentPage: trang,
