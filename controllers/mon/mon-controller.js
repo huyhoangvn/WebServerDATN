@@ -515,11 +515,11 @@ const getMonCuaCuaHang = async (req, res) => {
 
 const getMonCuaLoaiMon = async (req, res) => {
   try {
-
-    const idLM = new mongo.Types.ObjectId(req.params.idLM);
-
     const trangThai = req.params.trangThai;
     const trang = parseInt(req.query.trang) || 1;
+
+    const tatCaLM = await LoaiMon.model.find({})
+    let idLM = null;
     const timkiem = {
 
     };
@@ -531,9 +531,9 @@ const getMonCuaLoaiMon = async (req, res) => {
     if (typeof (req.query.tenCH) !== 'undefined' && req.query.tenCH !== "") {
       timkiem["KetQuaCuaHang.tenCH"] = { $regex: req.query.tenCH, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
     }
-    if (typeof (req.query.tenLM) !== 'undefined' && req.query.tenLM !== "") {
-      timkiem["KetQuaCuaHang.tenLM"] = { $regex: req.query.tenLM, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
-    }
+    // if (typeof (req.query.tenLM) !== 'undefined' && req.query.tenLM !== "") {
+    //   timkiem["KetQuaCuaHang.tenLM"] = { $regex: req.query.tenLM, $options: 'i' };
+    // } // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
     if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
       const trangThaiValue = parseInt(req.query.trangThai);
       if (trangThaiValue === 1 || trangThaiValue === 0) {
@@ -547,6 +547,16 @@ const getMonCuaLoaiMon = async (req, res) => {
     if (typeof (req.query.giaTienMax) !== 'undefined' && !isNaN(parseInt(req.query.giaTienMax))) {
       giaTienMax = parseInt(req.query.giaTienMax);
 
+    }
+    
+    if (typeof (req.query.indexLM) !== 'undefined' && !isNaN(parseInt(req.query.indexLM))) {
+      indexLM = parseInt(req.query.indexLM);
+      for(let i = 0; i<tatCaLM.length; i++){
+        if (indexLM === i) {
+          idLM = tatCaLM[i]._id;
+        }
+      }
+      
     }
 
     const list = await Mon.model.aggregate([
@@ -595,7 +605,7 @@ const getMonCuaLoaiMon = async (req, res) => {
           "trangThai": "$trangThai",
           "tenCH": "$KetQuaCuaHang.tenCH", // Thay vì "$tenCH"
           "tenLM": "$KetQuaLoaiMon.tenLM",
-          "idMon": "$idMON",
+          "idMon": "$_id",
         }
       },
       {
@@ -613,18 +623,26 @@ const getMonCuaLoaiMon = async (req, res) => {
         $limit: 10,
       },
     ])
+    let tenLM = ""; // Khởi tạo giá trị mặc định cho tenLM
+    if (idLM) {
+      const loaiMon = await LoaiMon.model.findOne({ _id: idLM });
+      if (loaiMon) {
+        tenLM = loaiMon.tenLM;
+      }
+    }
 
     res.json({
       count: list.length,
       list: list,
+      tenLM:tenLM,
       msg: 'Get món của loại món thành công',
       success: true,
 
     });
   } catch (error) {
-
+    console.error(error);
     res.json({
-      msg: 'Lỗi khi lấy món của loại món',
+      error,
       success: false
     });
   }
