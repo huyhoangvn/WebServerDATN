@@ -471,7 +471,7 @@ const deleteHoaDonCung = async (req, res, next) => {
         // Tìm và xóa hóa đơn cùng với các món đặt có idHoaDon tương ứng
         const deletedHoaDon = await HoaDon.findByIdAndDelete(idHD);
         if (!deletedHoaDon) {
-            return ({ error: "Không tìm thấy hoá đơn" });
+            return ({ msg: "Không tìm thấy hoá đơn", success: false });
         }
 
         // Xóa các món đặt có idHoaDon tương ứng

@@ -3,6 +3,7 @@ const { model: CuaHang } = require("../../model/CuaHang");
 const { model: NhanVien } = require("../../model/NhanVien");
 const mongo = require('mongoose');
 var CuaHangCtrl = require("../../controllers/cuahang/cuahang-controller");
+const nhanVien = require("../../controllers/nhanvien/nhanvienquanly-controller");
 
 const getList = async (req, res, next) => {
     const trang = parseInt(req.query.trang) || 1;
@@ -53,6 +54,7 @@ const getAdd = async (req, res, next) => {
     const hinhAnh = 'default_image.png';
     const trangThai = 0; // Đặt trạng thái là 0
     // Kiểm tra tính hợp lệ của dữ liệu
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     try {
         const timeRegex = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$/;
         if (tenCH == "" || email == "" || sdt == "" || diaChi == "") {
@@ -61,9 +63,33 @@ const getAdd = async (req, res, next) => {
                 success: false
             });
         }
-        else if (tenCH.length > 50 || email.length > 50 || sdt.length > 10 || diaChi.length > 100) {
+        else if (tenCH.length > 50) {
             res.render("cuahang/them-moi", {
-                alert: 'các trường nhập vào đang quá ký tự cho phép',
+                alert: 'tên cửa hàng đang quá ký tự cho phép',
+                success: false
+            });
+        }
+        else if (email.length > 50) {
+            res.render("cuahang/them-moi", {
+                alert: 'email nhập  vào đang quá ký tự cho phép',
+                success: false
+            });
+        }
+        else if (!emailRegex.test(email)) {
+            res.render("cuahang/them-moi", {
+                alert: 'Định dạng email không hợp lệ. Vui lòng nhập lại.',
+                success: false
+            });
+        }
+        else if (sdt.length > 10) {
+            res.render("cuahang/them-moi", {
+                alert: 'số điện thoại nhập vào đang quá ký tự cho phép',
+                success: false
+            });
+        }
+        else if (diaChi.length > 100) {
+            res.render("cuahang/them-moi", {
+                alert: 'địa chỉ nhập vào đang quá ký tự cho phép',
                 success: false
             });
         }
@@ -103,7 +129,7 @@ const chiTietCuaHang = async (req, res, next) => {
         const idCH = new mongo.Types.ObjectId(req.params.idCH);
         const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
 
-        const NVQL = await NhanVien.find({ idCH: idCH, phanQuyen: 0 });
+        const NVQL = await NhanVien.find({ idCH: idCH, phanQuyen: 0, trangThai: true });
 
         res.render("cuahang/chi-tiet", {
             NVQL,
@@ -131,8 +157,8 @@ const themNhanVienQuanLy = async (req, res) => {
         const diaChi = req.body.diaChi;
         const phanQuyen = 2;
         const trangThai = 1;
-        const NVQL = await NhanVien.find({ idCH: idCH, phanQuyen: 0 });
-        const taiKhoanTonTai = await NhanVien.findOne({ taiKhoan: taiKhoan });
+        const NVQL = await NhanVien.find({ idCH: idCH, phanQuyen: 0, trangThai: true });
+        const taiKhoanTonTai = await NhanVien.findOne({ idCH: idCH, taiKhoan: taiKhoan });
         if (taiKhoanTonTai) {
             // Nếu tài khoản đã tồn tại, trả về một thông báo lỗi
             const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
@@ -146,6 +172,9 @@ const themNhanVienQuanLy = async (req, res) => {
             });
         }
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
         if (taiKhoan == "" || matKhau == "" || sdt == "" || diaChi == "" || tenNV == "" || gioiTinh == "") {
 
             const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
@@ -157,7 +186,7 @@ const themNhanVienQuanLy = async (req, res) => {
                 success: false,
                 alert: " Thêm nhân viên quản lý lỗi do thiếu thông tin"
             });
-        } else if (tenNV.length > 50 || taiKhoan.length > 50 || matKhau.length > 50 || diaChi.length > 100 || sdt.length > 10) {
+        } else if (tenNV.length > 50) {
 
             const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
             res.render("cuahang/chi-tiet", {
@@ -166,18 +195,66 @@ const themNhanVienQuanLy = async (req, res) => {
                 monCH: chiTiet.data.danhSachMonAn.items,
                 msg: 'Thêm nhân viên quản lý lỗi do thiếu thông tin',
                 success: false,
-                alert: " thêm thông tin lỗi do có thông tin thừa số lượng ký tự cho phép"
+                alert: " Tên nhân viên vượt quá ký tự cho phép"
             });
-        } else if (NVQL.length >= 5) {
+        }
+        else if (taiKhoan.length > 50 || taiKhoan.length < 6) {
 
             const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
             res.render("cuahang/chi-tiet", {
                 NVQL,
                 chiTietCH: chiTiet.data.cuaHang,
                 monCH: chiTiet.data.danhSachMonAn.items,
-                msg: 'Số lượng nhân viên quản lý đã đạt tối đa. Vui lòng xóa một nhân viên quản lý trước khi thêm mới.',
+                msg: 'Thêm nhân viên quản lý lỗi do thiếu thông tin',
                 success: false,
-                alert: " Số lượng nhân viên quản lý đã đạt tối đa. Vui lòng xóa một nhân viên quản lý trước khi thêm mới."
+                alert: " Tài khoản vượt quá ký tự cho phép"
+            });
+        }
+        else if (!emailRegex.test(taiKhoan)) {
+            const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
+            res.render("cuahang/chi-tiet", {
+                NVQL,
+                chiTietCH: chiTiet.data.cuaHang,
+                monCH: chiTiet.data.danhSachMonAn.items,
+                msg: 'Thêm nhân viên quản lý lỗi do thiếu thông tin',
+                success: false,
+                alert: " tài khoản định dạng không hợp lệ"
+            });
+        }
+        else if (matKhau.length > 50 || matKhau.length < 6) {
+
+            const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
+            res.render("cuahang/chi-tiet", {
+                NVQL,
+                chiTietCH: chiTiet.data.cuaHang,
+                monCH: chiTiet.data.danhSachMonAn.items,
+                msg: 'Thêm nhân viên quản lý lỗi do thiếu thông tin',
+                success: false,
+                alert: " mật Khẩu vượt quá ký tự hoặc chưa đủ ký tự  cho phép "
+            });
+        }
+        else if (diaChi.length > 100) {
+
+            const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
+            res.render("cuahang/chi-tiet", {
+                NVQL,
+                chiTietCH: chiTiet.data.cuaHang,
+                monCH: chiTiet.data.danhSachMonAn.items,
+                msg: 'Thêm nhân viên quản lý lỗi do thiếu thông tin',
+                success: false,
+                alert: " địa chỉ vượt quá ký tự cho phép"
+            });
+        }
+        else if (sdt.length > 10) {
+
+            const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
+            res.render("cuahang/chi-tiet", {
+                NVQL,
+                chiTietCH: chiTiet.data.cuaHang,
+                monCH: chiTiet.data.danhSachMonAn.items,
+                msg: 'Thêm nhân viên quản lý lỗi do thiếu thông tin',
+                success: false,
+                alert: " số điện thoại vượt quá ký tự cho phép"
             });
         }
         else {
@@ -209,11 +286,27 @@ const themNhanVienQuanLy = async (req, res) => {
 
 }
 
+const xoaNhanVien = async (req, res, next) => {
+    try {
+        const idCH1 = new mongo.Types.ObjectId(req.body.idCH1);
+        await nhanVien.XoaQuanLy(req, res);
+
+        console.log(idCH1);
+
+
+        res.redirect("/cua-hang/chi-tiet/" + idCH1);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+
+    }
+}
+
 module.exports = {
     getList,
     getAdd,
     getAddView,
     chiTietCuaHang,
     themNhanVienQuanLy,
-    xoaCuaHang
+    xoaCuaHang,
+    xoaNhanVien
 }

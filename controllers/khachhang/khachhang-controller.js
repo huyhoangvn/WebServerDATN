@@ -241,10 +241,16 @@ const updateMatKhau = async (req, res, next) => {
       });
     }
     if (req.body.matKhauCu.length > 50 || req.body.matKhauMoi.length > 50) {
-      throw new Error("mật khẩu không được vượt quá số lượng ký tự quy định")
+      return res.json({
+        success: false,
+        msg: "mật khẩu đang vượt quá ký tự cho phép",
+      });
     }
     if (req.body.matKhauCu.length < 6 || req.body.matKhauMoi.length < 6) {
-      throw new Error("mật khẩu không được nhỏ hơn 6 ký tự")
+      return res.json({
+        success: false,
+        msg: "vui lòng nhập mật khẩu nhiều hơn 6 ký tự",
+      });
     }
 
 
@@ -304,7 +310,7 @@ const updateKhachHang = async (req, res) => {
 
     if (Object.keys(updateFields).length === 0) {
       return ({
-        error: "Không có trường nào cần cập nhật",
+        msg: "Không có trường nào cần cập nhật",
         success: false,
       });
     }
@@ -331,6 +337,7 @@ const finAccount = async (req, res) => {
     if (email == "") {
       return res.json({
         error: 'Email không được để trống',
+        msg: 'Email không được để trống',
         success: false
       });
     }
@@ -338,11 +345,13 @@ const finAccount = async (req, res) => {
     if (!khachHang) {
       return res.json({
         error: 'Tài khoản không tồn tại',
+        msg: 'Tài khoản không tồn tại',
         success: false
       });
     }
     return res.json({
       message: "Tìm tài khoản thành công",
+      msg: "Tìm tài khoản thành công",
       success: true,
       id: khachHang._id
     });
@@ -350,6 +359,7 @@ const finAccount = async (req, res) => {
     console.error(error);
     return res.json({
       error: "Lỗi khi tìm tài khoản",
+      msg: "Lỗi khi tìm tài khoản",
       success: false
     });
   }
