@@ -3,6 +3,7 @@ const { model: CuaHang } = require("../../model/CuaHang");
 const { model: NhanVien } = require("../../model/NhanVien");
 const mongo = require('mongoose');
 var CuaHangCtrl = require("../../controllers/cuahang/cuahang-controller");
+const nhanVien = require("../../controllers/nhanvien/nhanvienquanly-controller");
 
 const getList = async (req, res, next) => {
     const trang = parseInt(req.query.trang) || 1;
@@ -128,7 +129,7 @@ const chiTietCuaHang = async (req, res, next) => {
         const idCH = new mongo.Types.ObjectId(req.params.idCH);
         const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
 
-        const NVQL = await NhanVien.find({ idCH: idCH, phanQuyen: 0 });
+        const NVQL = await NhanVien.find({ idCH: idCH, phanQuyen: 0, trangThai: true });
 
         res.render("cuahang/chi-tiet", {
             NVQL,
@@ -156,8 +157,8 @@ const themNhanVienQuanLy = async (req, res) => {
         const diaChi = req.body.diaChi;
         const phanQuyen = 2;
         const trangThai = 1;
-        const NVQL = await NhanVien.find({ idCH: idCH, phanQuyen: 0 });
-        const taiKhoanTonTai = await NhanVien.findOne({ taiKhoan: taiKhoan });
+        const NVQL = await NhanVien.find({ idCH: idCH, phanQuyen: 0, trangThai: true });
+        const taiKhoanTonTai = await NhanVien.findOne({ idCH: idCH, taiKhoan: taiKhoan });
         if (taiKhoanTonTai) {
             // Nếu tài khoản đã tồn tại, trả về một thông báo lỗi
             const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
@@ -256,19 +257,6 @@ const themNhanVienQuanLy = async (req, res) => {
                 alert: " số điện thoại vượt quá ký tự cho phép"
             });
         }
-
-        else if (NVQL.length >= 5) {
-
-            const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
-            res.render("cuahang/chi-tiet", {
-                NVQL,
-                chiTietCH: chiTiet.data.cuaHang,
-                monCH: chiTiet.data.danhSachMonAn.items,
-                msg: 'Số lượng nhân viên quản lý đã đạt tối đa. Vui lòng xóa một nhân viên quản lý trước khi thêm mới.',
-                success: false,
-                alert: " Số lượng nhân viên quản lý đã đạt tối đa. Vui lòng xóa một nhân viên quản lý trước khi thêm mới."
-            });
-        }
         else {
             const index = await NhanVien.create({
                 idCH: idCH,
@@ -298,11 +286,27 @@ const themNhanVienQuanLy = async (req, res) => {
 
 }
 
+const xoaNhanVien = async (req, res, next) => {
+    try {
+        const idCH1 = new mongo.Types.ObjectId(req.body.idCH1);
+        await nhanVien.XoaQuanLy(req, res);
+
+        console.log(idCH1);
+
+
+        res.redirect("/cua-hang/chi-tiet/" + idCH1);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+
+    }
+}
+
 module.exports = {
     getList,
     getAdd,
     getAddView,
     chiTietCuaHang,
     themNhanVienQuanLy,
-    xoaCuaHang
+    xoaCuaHang,
+    xoaNhanVien
 }

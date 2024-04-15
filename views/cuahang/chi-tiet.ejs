@@ -14,6 +14,7 @@
   <script src="https://kit.fontawesome.com/b5123099c5.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <!-- <style>
       .sidebar-dark-primary {
         background-color: #030025 !important; /* Change to green color */
@@ -282,12 +283,22 @@
                           <td scope="col-2" class="col-2">
                             <%=NVQL[i].sdt%>
                           </td>
-                          <% if(NVQL[i].trangThai==true){%>
-                            <td class="text-success" scope="col-2" class="col-2">Hoạt động</td>
-                            <%}else{%>
-                              <td class="text-danger" scope="col-2" class="col-2">Khóa</td>
-                              <%}%>
-                                <td scope="col-1" class="text-primary col-2">chi tiết</td>
+                          <td class="text-primary scope-col-2">
+                            <a data-toggle="modal" data-target="#suaTrangThaiModal"
+                              class=" <%= NVQL[i].trangThai ? 'text-success' : 'text-danger' %>"
+                              data-idch="<%=chiTietCH._id%>" data-idnv="<%=NVQL[i]._id%>"
+                              data-trangthai="<%=NVQL[i].trangThai%>">
+                              <%= NVQL[i].trangThai ? 'Hoạt Động' : 'Khóa' %>
+                            </a>
+                          </td>
+
+                          <td class="text-primary" scope="col-1">
+                            <a href="#" data-toggle="modal" data-target="#staticBackdrop"
+                              data-tenNV="<%=NVQL[i].tenNV%>" data-thoiGianTao="<%=NVQL[i].thoiGianTao%>"
+                              data-sdt="<%=NVQL[i].sdt%>" data-phanQuyen="<%=NVQL[i].phanQuyen%>"
+                              data-trangThai="<%=NVQL[i].trangThai%>" data-taiKhoan="<%=NVQL[i].taiKhoan%>"
+                              data-diaChi="<%=NVQL[i].diaChi%>" data-gioiTinh="<%=NVQL[i].gioiTinh%>">Chi tiết</a>
+                          </td>
                         </tr>
                         <%}%>
                           <%}%>
@@ -445,6 +456,61 @@
                       </div>
                     </div>
 
+                    <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false"
+                      tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">chi tiết nhân viên quản lý</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <p><strong>Tên nhân viên:</strong> <span id="tenNV"></span></p>
+                            <p><strong>Tài khoản:</strong> <span id="taiKhoan"></span></p>
+                            <p><strong>Thời gian tạo:</strong> <span id="thoiGianTao"></span></p>
+                            <p><strong>Số điện thoại:</strong> <span id="sdt"></span></p>
+                            <p><strong>Phân quyền:</strong> <span id="phanQuyen"></span></p>
+                            <p><strong>Trạng thái:</strong> <span id="trangThai"></span></p>
+                            <p><strong>Địa chỉ:</strong> <span id="diaChi"></span></p>
+                            <p><strong>Giới tính:</strong> <span id="gioiTinh"></span></p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="modal fade" id="suaTrangThaiModal" tabindex="-1" role="dialog"
+                      aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel1">Sửa Trạng Thái</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <form id="formSuaTrangThai" action="/cua-hang/xoa/NVQL[i]._id" method="post">
+                              <div class="form-group">
+                                <label for="trangThai">Bạn có muốn sửa không?</label>
+                                <input type="hidden" class="form-control" name="idCH1" id="idCH1"
+                                  value="<%=chiTietCH._id%>">
+                              </div>
+                              <div class="modal-footer justify-content-end">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                                <button type="submit" class="btn btn-primary">Sửa</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                     <!-- Kết thúc bảng tài khoản quản lý-->
       </div>
     </section>
@@ -467,9 +533,18 @@
         var idCH = $(this).data('idch');
         $('#idCH').val(idCH);
 
-        // $('#formThemNhanVien').attr('action', '/cua-hang/them-nv/' + idCH);
       });
     });
+    $(document).ready(function () {
+      // Khi nút "Thêm mới" được nhấp
+      $('button[data-target="#suaTrangThaiModal"]').on('click', function () {
+        var idCH = $(this).data('idch');
+        $('#idCH1').val(idCH);
+
+      });
+    });
+
+
     function previewImage(event) {
       var selectedImage = document.getElementById('selectedImage');
       selectedImage.style.display = 'block';
@@ -492,7 +567,72 @@
         modal.modal('hide');
       }, 2000);
     }
+    function convertTrangThai(trangThai) {
+      if (trangThai === true) {
+        return "Hoạt động";
+      } else {
+        return "Ngưng hoạt động";
+      }
+    }
+    function convertPhanQuyen(phanQuyen) {
+      if (phanQuyen === 0) {
+        return "Nhân viên quản lý";
+      } else if (phanQuyen === 1) {
+        return "Nhân viên thường";
+      } else {
+        return "đợi duyệt";
+      }
+    }
 
+    // Hàm chuyển đổi giới tính
+    function convertGioiTinh(gioiTinh) {
+      if (gioiTinh === 1) {
+        return "Nam";
+      } else if (gioiTinh === 2) {
+        return "Nữ";
+      } else {
+        return "Không xác định";
+      }
+    }
+    $(document).ready(function () {
+      $('a[data-target="#staticBackdrop"]').on('click', function () {
+        var tenNV = $(this).data('tennv');
+        var tenCH = $(this).data('tench');
+        var thoiGianTao = moment($(this).data('thoigiantao')).format('DD/MM/YYYY'); // Format thời gian tạo
+        var sdt = $(this).data('sdt');
+        var phanQuyen = $(this).data('phanquyen');
+        var trangThai = $(this).data('trangthai');
+        var taiKhoan = $(this).data('taikhoan');
+        var diaChi = $(this).data('diachi');
+        var gioiTinh = $(this).data('gioitinh');
+
+
+        var trangThaiText = convertTrangThai(trangThai);
+        var gioiTinhText = convertGioiTinh(gioiTinh);
+        var phanQuyenText = convertPhanQuyen(phanQuyen);
+
+        $('#staticBackdrop').find('#tenNV').text(tenNV);
+        $('#staticBackdrop').find('#tenCH').text(tenCH);
+        $('#staticBackdrop').find('#thoiGianTao').text(thoiGianTao);
+        $('#staticBackdrop').find('#sdt').text(sdt);
+        $('#staticBackdrop').find('#phanQuyen').text(phanQuyenText);
+        $('#staticBackdrop').find('#trangThai').text(trangThaiText);
+        $('#staticBackdrop').find('#taiKhoan').text(taiKhoan);
+        $('#staticBackdrop').find('#diaChi').text(diaChi);
+        $('#staticBackdrop').find('#gioiTinh').text(gioiTinhText);
+      });
+    });
+
+    $(document).ready(function () {
+      $('a[data-target="#suaTrangThaiModal"]').on('click', function () {
+        var idNV = $(this).data('idnv');
+
+        $('#idNV').val(idNV);
+
+        $('#formSuaTrangThai').attr('action', '/cua-hang/xoa/' + idNV);
+
+      });
+    });
   </script>
 </body>
 

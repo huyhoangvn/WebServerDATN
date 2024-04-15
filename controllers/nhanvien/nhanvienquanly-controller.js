@@ -197,34 +197,33 @@ const duyetQuanLy = async function (req, res) {
   const idNV = new mongo.Types.ObjectId(req.params.idNV);
 
   try {
-    const filter = { _id: idNV }
-    const NV = await NhanVien.findOne(filter)
+    const filter = { _id: idNV };
+    const NV = await NhanVien.findOne(filter);
+    const soLuongNVQL = await NhanVien.countDocuments({ idCH: NV.idCH, phanQuyen: 0, trangThai: true });
+    if (soLuongNVQL >= 5) {
+      return ({
+        alert: 'Đã đạt số lượng tối đa (5) nhân viên quản lý trong cửa hàng này. Vui lòng xóa một nhân viên quản lý trước khi thêm mới.',
+        success: false
+      });
+    }
     if (NV.phanQuyen == 2) {
-      const update = { phanQuyen: 0 }
-      const index = await NhanVien.findOneAndUpdate(filter, update, { new: true })
-      if (!index) {
-        return ({
-          error: 'Không tìm thấy nhân viên để duyệt',
-          success: false
-        });
-      } else {
-        return ({
-          index,
-          message: 'duyệt nhân viên thành công',
-          success: true
-        });
-      }
+      // Kiểm tra số lượng nhân viên quản lý hiện tại trong cửa hàng
+      const update = { phanQuyen: 0 };
+      const index = await NhanVien.findOneAndUpdate(filter, update, { new: true });
+      return ({
+        index,
+        alert: 'Duyệt nhân viên thành công',
+        success: true
+      });
     }
   } catch (error) {
     console.error(error);
     res.json({
-      error: 'Lỗi khi duyệt nhân viên nhân viên',
+      msg: 'Lỗi khi duyệt nhân viên',
       success: false
     });
   }
-
-}
-
+};
 
 const huyKichHoatNhanVien = async (req, res, next) => {
   try {
@@ -989,7 +988,7 @@ const getTatCaNhanVienQuanLy = async (req, res) => {
     return {
       count: result.length,
       list: result,
-      message: 'Get tat ca khuyen mai thanh cong',
+      message: 'Get tat ca nhân viên thanh cong',
       success: true,
     };
 
