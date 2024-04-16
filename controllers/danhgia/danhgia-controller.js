@@ -328,6 +328,11 @@ const GetTrungBinhDanhGiaTheoMon = async function (req, res) {
         });
     }
 }
+
+const getTrungBinhDanhGiaApi = async (req, res) => {
+    const result = await GetTrungBinhDanhGiaTheoMon(req, res);
+    res.json(result)
+}
 const getTatCaDanhGiaTheoMonApi = async (req, res) => {
     const result = await GetDanhSachTheoTenMon(req, res);
     res.json(result)
@@ -482,5 +487,6 @@ module.exports = {
     GetSoLuongDanhGiaTheoKhachHang,
     getTatCaDanhGiaTheoMonApi,
     GetDanhSachDanhGiaTheoMonVoiFilter,
-    GetDanhSachDanhGiaTheoMonVoiFilterApi
+    GetDanhSachDanhGiaTheoMonVoiFilterApi,
+    getTrungBinhDanhGiaApi
 }
