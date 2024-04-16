@@ -303,7 +303,7 @@ const updatetrangThaiThanhToan = async (req, res, next) => {
             { new: true },
         );
         if (!updatetrangThaiThanhToan) {
-            return res.json({ msg: "Không tìm thấy hoa đơn" });
+            return res.json({ msg: "Không tìm thấy hoa đơn", success: false });
         }
         return {
             msg: "update thành công",
@@ -384,7 +384,7 @@ const updatetrangThaiMuaGiaoHangThatBai = async (req, res, next) => {
             { new: true },
         );
         if (!updatetrangThaiMua) {
-            return ({ msg: "Không tìm thấy hoa đơn" });
+            return ({ msg: "Không tìm thấy hoa đơn", success: false });
         }
         return {
             msg: "update thành công",
@@ -406,7 +406,7 @@ const updatetrangThaiMuaGiaoHangThanhCong = async (req, res, next) => {
             { new: true },
         );
         if (!updatetrangThaiMua) {
-            return ({ msg: "Không tìm thấy hoa đơn" });
+            return ({ msg: "Không tìm thấy hoa đơn", success: false });
         }
         return {
             msg: "update thành công",
@@ -430,7 +430,7 @@ const deleteHoaDon = async (req, res, next) => {
         );
 
         if (!deleteHoaDon) {
-            return ({ error: "Không tìm thấy hoa don" });
+            return ({ msg: "Không tìm thấy hoa don", success: false });
         }
 
         return {
@@ -440,7 +440,7 @@ const deleteHoaDon = async (req, res, next) => {
         };
     } catch (e) {
         console.log(e);
-        return ({ error: "Đã xảy ra lỗi khi xóa hóa đơn" });
+        return ({ msg: "Đã xảy ra lỗi khi xóa hóa đơn", success: false });
     }
 };
 
