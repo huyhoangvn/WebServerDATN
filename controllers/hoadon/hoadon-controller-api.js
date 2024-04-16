@@ -88,9 +88,9 @@ const chiTietHoaDonApi = async (req, res, next) => {
     }
 }
 
-const updatetrangThaiThanhToanTrueApi = async (req, res, next) => {
+const updatetrangThaiThanhToanApi = async (req, res, next) => {
     try {
-        const result = await HoaDonController.updatetrangThaiThanhToanTrue(req, res, next);
+        const result = await HoaDonController.updatetrangThaiThanhToan(req, res, next);
         res.json(result);  // Send the result directly without using JSON.stringify
     } catch (error) {
         // Check if headers have already been sent
@@ -102,19 +102,7 @@ const updatetrangThaiThanhToanTrueApi = async (req, res, next) => {
     }
 }
 
-const updatetrangThaiThanhToanFalseApi = async (req, res, next) => {
-    try {
-        const result = await HoaDonController.updatetrangThaiThanhToanFalse(req, res, next);
-        res.json(result);  // Send the result directly without using JSON.stringify
-    } catch (error) {
-        // Check if headers have already been sent
-        if (res.headersSent) {
-            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
-        } else {
-            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt Hóa Đơn', error: error.message });
-        }
-    }
-}
+
 const updatetrangThaiMuaDangChuanBiApi = async (req, res, next) => {
     try {
         const result = await HoaDonController.updatetrangThaiMuaDangChuanBi(req, res, next);
@@ -383,8 +371,7 @@ module.exports = {
     getDanhSachHoaDonByIdCuaHangApi,
     chiTietHoaDonApi,
     updateHoaDonApi,
-    updatetrangThaiThanhToanTrueApi,
-    updatetrangThaiThanhToanFalseApi,
+    updatetrangThaiThanhToanApi,
     updatetrangThaiMuaDangChuanBiApi,
     updatetrangThaiMuaDangGiaoHangApi,
     updatetrangThaiMuaGiaoHangThatBaiApi,

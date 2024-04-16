@@ -293,7 +293,7 @@ const getSoLuongHoaDon = async (req, res, next) => {
     }
 }
 
-const updatetrangThaiThanhToanTrue = async (req, res, next) => {
+const updatetrangThaiThanhToan = async (req, res, next) => {
     try {
         const id = req.params.id;
 
@@ -303,7 +303,7 @@ const updatetrangThaiThanhToanTrue = async (req, res, next) => {
             { new: true },
         );
         if (!updatetrangThaiThanhToan) {
-            return res.json({ error: "Không tìm thấy hoa đơn" });
+            return res.json({ msg: "Không tìm thấy hoa đơn", success: false });
         }
         return {
             msg: "update thành công",
@@ -312,31 +312,10 @@ const updatetrangThaiThanhToanTrue = async (req, res, next) => {
         };
     } catch (e) {
         console.log(e);
-        return ({ error: "Đã xảy ra lỗi khi update " });
+        return ({ msg: "Đã xảy ra lỗi khi update ", success: false });
     }
 }
-const updatetrangThaiThanhToanFalse = async (req, res, next) => {
-    try {
-        const id = req.params.id;
 
-        const updatetrangThaiThanhToan = await HoaDon.findOneAndUpdate(
-            { _id: id },
-            { $set: { trangThaiThanhToan: 0 } },
-            { new: true },
-        );
-        if (!updatetrangThaiThanhToan) {
-            return ({ error: "Không tìm thấy hoa đơn" });
-        }
-        return {
-            msg: "update thành công",
-            data: updatetrangThaiThanhToan,
-            success: true,
-        };
-    } catch (e) {
-        console.log(e);
-        return ({ error: "Đã xảy ra lỗi khi update " });
-    }
-}
 const updatetrangThaiMuaDangChuanBi = async (req, res, next) => {
     try {
         const id = req.params.id;
@@ -346,7 +325,7 @@ const updatetrangThaiMuaDangChuanBi = async (req, res, next) => {
 
         // Kiểm tra nếu không tìm thấy hoặc hoá đơn đã được mua
         if (!hoaDon || hoaDon.trangThaiMua === 1) {
-            return ({ error: "Không tìm thấy hoặc hoá đơn đã đang giao" });
+            return ({ msg: "Không tìm thấy hoặc hoá đơn đã đang giao", success: false });
         }
 
         // Cập nhật trạng thái mua
@@ -383,7 +362,7 @@ const updatetrangThaiMuaDangGiaoHang = async (req, res, next) => {
             { new: true },
         );
         if (!updatetrangThaiMua) {
-            return ({ error: "Không tìm thấy hoa đơn" });
+            return ({ msg: "Không tìm thấy hoa đơn", success: false });
         }
         return {
             msg: "update thành công",
@@ -392,20 +371,20 @@ const updatetrangThaiMuaDangGiaoHang = async (req, res, next) => {
         };
     } catch (e) {
         console.log(e);
-        return ({ error: "Đã xảy ra lỗi khi update " });
+        return ({ msg: "Đã xảy ra lỗi khi update ", success: false });
     }
 }
 const updatetrangThaiMuaGiaoHangThatBai = async (req, res, next) => {
     try {
         const id = req.params.id;
-
+        const ghiChu = req.body.ghiChu;
         const updatetrangThaiMua = await HoaDon.findOneAndUpdate(
             { _id: id },
-            { $set: { trangThaiMua: 4 } },
+            { $set: { trangThaiMua: 4, ghiChu: ghiChu } },
             { new: true },
         );
         if (!updatetrangThaiMua) {
-            return ({ error: "Không tìm thấy hoa đơn" });
+            return ({ msg: "Không tìm thấy hoa đơn", success: false });
         }
         return {
             msg: "update thành công",
@@ -414,20 +393,20 @@ const updatetrangThaiMuaGiaoHangThatBai = async (req, res, next) => {
         };
     } catch (e) {
         console.log(e);
-        return ({ error: "Đã xảy ra lỗi khi update " });
+        return ({ msg: "Đã xảy ra lỗi khi update ", success: false });
     }
 }
 const updatetrangThaiMuaGiaoHangThanhCong = async (req, res, next) => {
     try {
         const id = req.params.id;
-
+        const ghiChu = req.body.ghiChu;
         const updatetrangThaiMua = await HoaDon.findOneAndUpdate(
             { _id: id },
-            { $set: { trangThaiMua: 3 } },
+            { $set: { trangThaiMua: 3, ghiChu: ghiChu } },
             { new: true },
         );
         if (!updatetrangThaiMua) {
-            return ({ error: "Không tìm thấy hoa đơn" });
+            return ({ msg: "Không tìm thấy hoa đơn", success: false });
         }
         return {
             msg: "update thành công",
@@ -436,21 +415,22 @@ const updatetrangThaiMuaGiaoHangThanhCong = async (req, res, next) => {
         };
     } catch (e) {
         console.log(e);
-        return ({ error: "Đã xảy ra lỗi khi update " });
+        return ({ msg: "Đã xảy ra lỗi khi update ", success: false });
     }
 }
 
 const deleteHoaDon = async (req, res, next) => {
     try {
         const id = req.params.id;
+        const ghiChu = req.body.ghiChu;
         const deleteHoaDon = await HoaDon.findOneAndUpdate(
             { _id: id },
-            { $set: { trangThai: false } },
+            { $set: { trangThai: false, ghiChu: ghiChu } },
             { new: true } // Trả về bản ghi đã được cập nhật
         );
 
         if (!deleteHoaDon) {
-            return ({ error: "Không tìm thấy hoa don" });
+            return ({ msg: "Không tìm thấy hoa don", success: false });
         }
 
         return {
@@ -460,7 +440,7 @@ const deleteHoaDon = async (req, res, next) => {
         };
     } catch (e) {
         console.log(e);
-        return ({ error: "Đã xảy ra lỗi khi xóa hóa đơn" });
+        return ({ msg: "Đã xảy ra lỗi khi xóa hóa đơn", success: false });
     }
 };
 
@@ -616,8 +596,7 @@ module.exports = {
     updatetrangThaiMuaDangGiaoHang,
     updatetrangThaiMuaGiaoHangThanhCong,
     updatetrangThaiMuaGiaoHangThatBai,
-    updatetrangThaiThanhToanTrue,
-    updatetrangThaiThanhToanFalse,
+    updatetrangThaiThanhToan,
     getHoaDonWeb,
     deleteHoaDonCung,
 
