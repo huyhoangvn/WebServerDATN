@@ -362,7 +362,7 @@ const updatetrangThaiMuaDangGiaoHang = async (req, res, next) => {
             { new: true },
         );
         if (!updatetrangThaiMua) {
-            return ({ msg: "Không tìm thấy hoa đơn" });
+            return ({ msg: "Không tìm thấy hoa đơn", success: false });
         }
         return {
             msg: "update thành công",
