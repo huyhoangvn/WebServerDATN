@@ -4,7 +4,7 @@ var KhachHangDangNhapCtrl = require("../../../controllers/khachhang/dangnhap-con
 const passportConfig = require('../../../config/auth/jwt-decode-khachhang')
 const passport = require('passport')
 
-router.post('/', passport.authenticate('jwt', { session: false }), KhachHangDangNhapCtrl.dangNhapApi);
+router.post('/', KhachHangDangNhapCtrl.dangNhapApi);
 
 module.exports = router;
 

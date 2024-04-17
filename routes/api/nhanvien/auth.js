@@ -4,6 +4,6 @@ var NhanVienDangNhapCtrl = require("../../../controllers/nhanvien/dangnhap-contr
 const passportConfig = require('../../../config/auth/jwt-decode-nhanvien')
 const passport = require('passport')
 
-router.post('/', passport.authenticate('jwt', { session: false }), NhanVienDangNhapCtrl.dangNhapApi);
+router.post('/', NhanVienDangNhapCtrl.dangNhapApi);
 
 module.exports = router;
