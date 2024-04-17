@@ -45,16 +45,16 @@ const dangNhap = async (req, res, next) => {
             matKhau: matKhau,
         }).then((loginResult) => {
             if (loginResult) {
-                if (loginResult.trangThai === 0 && loginResult.phanQuyen === 0) {
+                if (loginResult.trangThai === false && loginResult.phanQuyen === 0) {
                     success = false
                     msg = "Tài khoản quản lý đang bị khóa"
                 }
-                else if (loginResult.trangThai === 0 && loginResult.phanQuyen === 1) {
+                else if (loginResult.trangThai === false && loginResult.phanQuyen === 1) {
                     success = false
                     msg = "Tài khoản nhân viên bán hàng đang bị khóa"
                 }
-                else if (loginResult.trangThai === 1 && loginResult.phanQuyen === 2 ||
-                    loginResult.trangThai === 0 && loginResult.phanQuyen === 2) {
+                else if (loginResult.trangThai === true && loginResult.phanQuyen === 2 ||
+                    loginResult.trangThai === false && loginResult.phanQuyen === 2) {
                     success = false
                     msg = "Tài khoản quản lý đang đợi duyệt"
                 }

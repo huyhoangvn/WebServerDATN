@@ -32,8 +32,8 @@ const getChiTiet = async (req, res, next) => {
             return { error: "Đã xảy ra lỗi khi lấy chi tiết hóa đơn" };
         }
         res.render("hoadon/chi-tiet", {
-            index: data.hoaDon,
-            data: data.monDat,
+            index: data.index,
+            data: data.list,
             admin: req.session.ten,
             msg: ""
         });

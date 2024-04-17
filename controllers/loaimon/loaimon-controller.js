@@ -64,6 +64,11 @@ const getloaimonApi = async (req, res) => {
     }
     const list = await Loaimon.model.aggregate([
       {
+        $match: {
+            "trangThai": true
+        }
+      },
+      {
         $match:
           timkiem1,
 

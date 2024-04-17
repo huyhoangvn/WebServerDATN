@@ -11,7 +11,8 @@ const {
   GetSoLuongDanhGiaTheoKhachHang,
   getTatCaDanhGiaTheoMonApi,
   GetDanhSachDanhGiaTheoMonVoiFilter,
-  GetDanhSachDanhGiaTheoMonVoiFilterApi} = require('../../../controllers/danhgia/danhgia-controller');
+  GetDanhSachDanhGiaTheoMonVoiFilterApi,
+  getTrungBinhDanhGiaApi} = require('../../../controllers/danhgia/danhgia-controller');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -39,6 +40,6 @@ router.get("/get-so-luong-theo-khach-hang/:idKH",GetSoLuongDanhGiaTheoKhachHang)
 
 router.get("/get-danh-sach-theo-mon-filter/:idMon",GetDanhSachDanhGiaTheoMonVoiFilterApi);
 
-router.get("/get-trung-binh/:idMon",GetTrungBinhDanhGiaTheoMon);
+router.get("/get-trung-binh/:idMon",getTrungBinhDanhGiaApi);
 
 module.exports = router;

@@ -13,4 +13,6 @@ router.get('/xoa/:idCH', sessionAdmin.setTokenHeader, passport.authenticate('jwt
 
 router.post('/them-nv/:idCH', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.themNhanVienQuanLy);
 
+router.post('/xoa/:idNV', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.xoaNhanVien);
+
 module.exports = router;

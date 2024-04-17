@@ -13,8 +13,7 @@ router.post('/kich-hoat/:id', CuaHangCtr.kichHoatCuaHangApi);
 
 router.delete('/huy-kich-hoat/:id', CuaHangCtr.huyKichHoatCuaHangApi);
 
+router.get('/chi-tiet/:id', CuaHangCtr.chiTietCuaHangAppApi);
 
-
-router.get('/chi-tiet-web/:idCH', CuaHangCtr.chiTietCuaHangWebApi);
 
 module.exports = router;

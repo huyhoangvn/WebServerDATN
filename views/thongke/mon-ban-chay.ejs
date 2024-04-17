@@ -220,37 +220,42 @@
       <div class="container-fluid bg-white m-2">
 
         <!-- Main content nằm ở dây -->
-<!-- Bắt đầu filter -->
+        <!-- Bắt đầu filter -->
         <form action="/thong-ke/mon-ban-chay-filter" method="GET">
 
           <!-- tìm theo tên loại món, theo ngày-->
           <div class="d-flex row justify-content-between mb-1">
 
-            <div class="col-3">
+            <div class="col-4">
               <select class="form-control" name="tenLM">
                 <option value="">Tất cả lọai món</option>
-                <% for (var i = 0; i<AllLoaiMon.length; i++) {%>
-                  <option value="<%=AllLoaiMon[i].tenLM%>"><%=AllLoaiMon[i].tenLM%></option>
-                <%}%>
+                <% for (var i=0; i<AllLoaiMon.length; i++) {%>
+                  <option value="<%=AllLoaiMon[i].tenLM%>">
+                    <%=AllLoaiMon[i].tenLM%>
+                  </option>
+                  <%}%>
               </select>
             </div>
 
-            <div class="col-3">
+            <div class="col-4">
               <select class="form-control" name="thang" id="thangSelect">
-                  <option value="">Tháng</option>
-                  <% for (var i = 1; i <= 12; i++) { %>
-                      <% if (currentMonth && currentMonth == i) { %>
-                          <option value="<%= i %>" selected>Tháng <%= i %></option>
-                      <% } else { %>
-                          <option value="<%= i %>">Tháng <%= i %></option>
+                <option value="">Tháng</option>
+                <% for (var i=1; i <=12; i++) { %>
+                  <% if (currentMonth && currentMonth==i) { %>
+                    <option value="<%= i %>" selected>Tháng <%= i %>
+                    </option>
+                    <% } else { %>
+                      <option value="<%= i %>">Tháng <%= i %>
+                      </option>
                       <% } %>
-                  <% } %>
+                        <% } %>
               </select>
-          </div>
+            </div>
 
 
-            <div class="input-group col-3">
-              <input type="text" class="form-control" value="<%=currentYear%>" name="nam" id="yearPicker" placeholder="Chọn năm" autocomplete="off">
+            <div class="input-group col-2">
+              <input type="text" class="form-control" value="<%=currentYear%>" name="nam" id="yearPicker"
+                placeholder="Chọn năm" autocomplete="off">
             </div>
 
             <div class="col-2">
@@ -258,9 +263,9 @@
             </div>
           </div>
         </form>
-<!-- Kết thúc filter -->
+        <!-- Kết thúc filter -->
 
-<!-- Bắt đầu bảng -->
+        <!-- Bắt đầu bảng -->
         <table class="table table-bordered border-secondary">
           <thead>
             <tr class="table-secondary">
@@ -272,25 +277,33 @@
           </thead>
           <tbody>
             <%if(!!locals.monBanChay){%>
-              <% for (var i = 0; i<monBanChay.length; i++) {%>
+              <% for (var i=0; i<monBanChay.length; i++) {%>
                 <tr>
-                  <td scope="col-1"><%=i+1%></td>
-                  <td scope="col-2" ><%=monBanChay[i].tenMon%></td>
-                  <td scope="col-9" ><%=monBanChay[i].tenLM%></td>
-                  <td scope="col-9" ><%=monBanChay[i].doanhThu%></td>
+                  <td scope="col-1">
+                    <%=i+1%>
+                  </td>
+                  <td scope="col-2">
+                    <%=monBanChay[i].tenMon%>
+                  </td>
+                  <td scope="col-9">
+                    <%=monBanChay[i].tenLM%>
+                  </td>
+                  <td scope="col-9">
+                    <%=monBanChay[i].doanhThu%>
+                  </td>
                 </tr>
                 <%}%>
-            <%}else{%>
-              <tr>
-                <td scope="col-1">0</td>
-                <td scope="col-2">0</td>
-                <td scope="col-9">0</td>
-              </tr>
-            <%}%>
-            
-        </tbody> 
+                  <%}else{%>
+                    <tr>
+                      <td scope="col-1">0</td>
+                      <td scope="col-2">0</td>
+                      <td scope="col-9">0</td>
+                    </tr>
+                    <%}%>
+
+          </tbody>
         </table>
-<!--kết thúc bảng -->
+        <!--kết thúc bảng -->
       </div>
     </section>
   </div>
@@ -308,8 +321,8 @@
     });
 
 
-     // Khởi tạo datepicker chỉ hiển thị năm
-     $(document).ready(function(){
+    // Khởi tạo datepicker chỉ hiển thị năm
+    $(document).ready(function () {
       $('#yearPicker').datepicker({
         format: "yyyy",
         viewMode: "years",
@@ -319,38 +332,38 @@
       });
 
       // Xử lý sự kiện khi nút "Xóa" được nhấn
-      $('#clearBtn').click(function(){
+      $('#clearBtn').click(function () {
         $('#yearPicker').val('');
       });
-      });
+    });
 
 
-      window.onload = function() {
-    // Lấy URL hiện tại
-    var currentUrl = window.location.href;
-    
-    // Phân tích các tham số truy vấn từ URL
-    var urlParams = new URLSearchParams(currentUrl.split('?')[1]);
+    window.onload = function () {
+      // Lấy URL hiện tại
+      var currentUrl = window.location.href;
 
-    // Lấy giá trị của các tham số từ URL
-    var selectedLM = urlParams.get('tenLM');
-    var selectedMonth = urlParams.get('thang');
-    var selectedYear = urlParams.get('nam');
+      // Phân tích các tham số truy vấn từ URL
+      var urlParams = new URLSearchParams(currentUrl.split('?')[1]);
 
-    // Gán giá trị của các tham số cho các trường trong biểu mẫu
-    if (selectedLM) {
+      // Lấy giá trị của các tham số từ URL
+      var selectedLM = urlParams.get('tenLM');
+      var selectedMonth = urlParams.get('thang');
+      var selectedYear = urlParams.get('nam');
+
+      // Gán giá trị của các tham số cho các trường trong biểu mẫu
+      if (selectedLM) {
         document.querySelector('select[name="tenLM"]').value = selectedLM;
-    }
-    if (selectedMonth) {
+      }
+      if (selectedMonth) {
         document.querySelector('select[name="thang"]').value = selectedMonth;
-    }
-    if (selectedYear) {
+      }
+      if (selectedYear) {
         document.querySelector('input[name="nam"]').value = selectedYear;
-    }
+      }
 
-    // Đánh dấu trang đã được tải lại từ tìm kiếm
-    localStorage.setItem('isReloaded', 'true');
-};
+      // Đánh dấu trang đã được tải lại từ tìm kiếm
+      localStorage.setItem('isReloaded', 'true');
+    };
 
 
 

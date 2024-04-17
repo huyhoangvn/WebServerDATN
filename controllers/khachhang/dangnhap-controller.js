@@ -45,7 +45,7 @@ const dangNhap = async (req, res, next) => {
             matKhau: matKhau,
         }).then((loginResult) => {
             if (loginResult) {
-                if (loginResult.trangThai === 0) {
+                if (loginResult.trangThai === false) {
                     success = false
                     msg = "Tài khoản đang bị khóa"
                 }

@@ -35,10 +35,10 @@ const addKMCuaToi = async (req, res, next) => {
 
 const getAllKhuyenMaiCT = async (req, res, next) => {
     try {
-        const idKH = req.params.idKH;
+        const idKH = new mongo.Types.ObjectId(req.params.idKH);
         const page = parseInt(req.query.trang) || 1;
         const limit = 10; // Số lượng phần tử trên mỗi trang
-        const timkiem = {};
+        const timkiem = { idKH: idKH };
         if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
             const trangThaiValue = parseInt(req.query.trangThai);
             if (trangThaiValue === 1 || trangThaiValue === 0) {
@@ -69,12 +69,14 @@ const getAllKhuyenMaiCT = async (req, res, next) => {
             },
             {
                 $project: {
+                    idKM: "$_id",
                     tieuDe: { $arrayElemAt: ["$km.tieuDe", 0] },
                     ngayBatDau: { $arrayElemAt: ["$km.ngayBatDau", 0] },
                     ngayHetHan: { $arrayElemAt: ["$km.ngayHetHan", 0] },
                     phanTramKhuyenMai: { $arrayElemAt: ["$km.phanTramKhuyenMai", 0] },
                     donToiThieu: { $arrayElemAt: ["$km.donToiThieu", 0] },
-                    trangThaiKM: 1
+                    trangThaiKM: 1,
+                    maKhuyenMai: { $arrayElemAt: ["$km.maKhuyenMai", 0] }
                 }
             },
             {

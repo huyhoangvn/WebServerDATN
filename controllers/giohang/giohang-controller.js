@@ -19,32 +19,32 @@ const addGioHang = async (req, res, next) => {
     });
   }
 
-  await GioHang
+  const list = await GioHang
     .create({
       idKH: idKH,
       idMon: idMon,
       trangThai: 1
     })
-    .then((response) => {
-      msg = "Thêm món vào giỏ hàng thành công";
-    })
-    .catch(() => {
-      msg = "Thêm món vào giỏ hàng thất bại";
-    });
 
-  return {
+  return res.json({
+    index: list,
     success: true,
-    msg: msg
-  };
+    msg: "thêm thành công"
+  });
 };
 
 //lấy danh sách giỏ hàng
 const getAllGioHang = async (req, res) => {
+  const idKH = new mongo.Types.ObjectId(req.params.idKH);
+
   const trang = parseInt(req.query.trang) || 1; // Trang hiện tại, mặc định là trang 1 nếu không có truy vấn currentPage
   const itemsPerPage = 10; // Số lượng mục trên mỗi trang
 
   try {
     const gioHangList = await GioHang.aggregate([
+      {
+        $match: { idKH: idKH } // Lọc theo idKH
+      },
       {
         $lookup: {
           from: "Mon",
@@ -108,16 +108,16 @@ const getAllGioHang = async (req, res) => {
 
     // Lấy danh sách giỏ hàng cho trang hiện tại
 
-    return res.json({
+    return {
       list: gioHangList,
       trang,
       totalPages,
       totalCount,
       success: true,
       msg: "Thành công"
-    });
+    };
   } catch (error) {
-    res.json({ message: "Lỗi khi lấy danh sách giỏ hàng", error });
+    return { msg: "Lỗi khi lấy danh sách giỏ hàng", error };
   }
 };
 
@@ -144,24 +144,26 @@ const getGioHangByUserIdApi = async (req, res) => {
 //xóa cứng giỏ hàng
 const deleteGioHang = async (req, res) => {
   try {
-    const id = req.params.id;
-    let foundGioHang = await GioHang.findOne({ _id: id });
-
+    const idKH = req.params.idKH;
+    const idMon = req.body.idMon;
+    let foundGioHang = await GioHang.findOne({ idKH: idKH, idMon: idMon});
+    console.log({ idKH: idKH, idMon: idMon})
     if (!foundGioHang) {
-      return {
-        msg: "giỏ hàng không tồn tại",
-        success: true,
-      };
+      return res.json({
+        msg: "Xóa thất bại",
+        success: false,
+      });
     }
-
-    await GioHang.findByIdAndDelete(id);
-    return {
+    await GioHang.findOneAndDelete({ idKH: idKH, idMon: idMon});
+    return res.json({
+      index: true,
       success: true,
-      message: "Xóa giỏ hàng thành công"
-    };
+      msg: "Xóa giỏ hàng thành công"
+    });
   } catch (error) {
-    return ({
-      message: "Lỗi khi xóa giỏ hàng", error
+    return res.json({
+      msg: "Lỗi khi xóa giỏ hàng", 
+      success: false
     });
   }
 };
@@ -190,42 +192,7 @@ const kiemTraGioHang = async (req, res) => {
 };
 
 
-const addGioHangApi = async (req, res, next) => {
-  try {
-    const result = await addGioHang(req, res, next);
-    if (!res.headersSent) {
-      // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi
-      res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
-    } else {
-      console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi kết quả.");
-    };
-  } catch (error) {
-    // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
-    if (!res.headersSent) {
-      res.status(500).json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
-    } else {
-      console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
-    }
-  }
-}
-const deleteGioHangApi = async (req, res, next) => {
-  try {
-    const result = await deleteGioHang(req, res, next);
-    if (!res.headersSent) {
-      // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi
-      res.json(result); // Gửi kết quả trực tiếp mà không sử dụng JSON.stringify
-    } else {
-      console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi kết quả.");
-    };
-  } catch (error) {
-    // Kiểm tra xem headers đã được gửi chưa trước khi gửi phản hồi lỗi
-    if (!res.headersSent) {
-      res.json({ msg: 'Đã xảy ra lỗi khi update Hóa đơn', error: error.message });
-    } else {
-      console.error("Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
-    }
-  }
-}
+
 const getAllGioHangApi = async (req, res, next) => {
   try {
     const result = await getAllGioHang(req, res, next);
@@ -251,8 +218,8 @@ const getAllGioHangApi = async (req, res, next) => {
 
 
 module.exports = {
-  addGioHangApi,
-  deleteGioHangApi,
+  addGioHang,
+  deleteGioHang,
   getAllGioHangApi,
   getGioHangByUserIdApi,
   kiemTraGioHang

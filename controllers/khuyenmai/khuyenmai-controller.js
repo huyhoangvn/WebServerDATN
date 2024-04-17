@@ -98,13 +98,22 @@ const SuaKhuyenMai = async function (req, res) {
             });
         } else if (tieuDe == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu == "") {
             return {
-                error: 'Sửa khuyến mãi lỗi do thiếu thông tin',
+                alert: 'Sửa khuyến mãi lỗi do thiếu thông tin',
                 success: false
             };
-        } else {
+
+        }
+        else if (tieuDe.length > 50) {
+            return {
+                alert: 'Sửa khuyến mãi lỗi do tiêu đề vượt quá số lượng ký tự (50) cho phép',
+                success: false
+            };
+        }
+        else {
             return {
                 index,
-                message: 'Sửa khuyến mãi thành công',
+                msg: 'Sửa khuyến mãi thành công',
+                aler: 'Sửa khuyến mãi thành công',
                 success: true
             };
         }
@@ -135,13 +144,14 @@ const XoaKhuyenMai = async function (req, res) {
             const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
             if (!index) {
                 return ({
-                    error: 'Không tìm thấy khuyến mãi để xóa',
+                    alert: 'Không tìm thấy khuyến mãi để xóa',
                     success: false
                 });
             } else {
                 return ({
                     index,
-                    message: 'Xóa khuyến mãi thành công',
+                    alert: 'khóa khuyến mãi thành công',
+                    msg: 'khóa khuyến mãi thành công',
                     success: true
                 });
             }
@@ -156,7 +166,8 @@ const XoaKhuyenMai = async function (req, res) {
             } else {
                 return ({
                     index,
-                    message: 'Xóa khuyến mãi thành công',
+                    msg: 'Xóa khuyến mãi thành công',
+                    alert: 'kích hoạt khuyến mãi thành công',
                     success: true
                 });
             }
@@ -422,6 +433,7 @@ const getTatCaKhuyenMai = async (req, res) => {
                     "trangThai": "$trangThai",
                 }
             },
+            { $sort: { ngayBatDau: -1 } },
             {
                 $skip: (trang - 1) * 10,
             },

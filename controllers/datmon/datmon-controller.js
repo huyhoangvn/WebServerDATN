@@ -4,6 +4,7 @@ const { model: Mon } = require("../../model/Mon");
 const { model: KhuyenMai } = require("../../model/KhuyenMai");
 const { model: KhachHang } = require("../../model/KhachHang");
 const { model: CuaHang } = require("../../model/CuaHang");
+const { model: KhuyenMaiCuaToi } = require("../../model/KhuyenMaiCuaToi");
 const mongoose = require('mongoose');
 const mongo = mongoose.Types.ObjectId;
 
@@ -17,15 +18,16 @@ const addHoaDonVaMonDat = async (req, res, next) => {
             idKM = req.body.idKM;
             // Kiểm tra khuyến mãi
             const khuyenMai = await KhuyenMai.findById(idKM);
-            if (!khuyenMai || !khuyenMai.trangThai) {
-                return res.json({ msg: 'Khuyến mãi không tồn tại hoặc không hoạt động', success: false });
-            }
-
-            if (!khuyenMai) {
-                return res.json({ msg: 'Không tìm thấy thông tin khuyến mãi', success: false });
-            }
 
             phanTramKhuyenMaiDat = khuyenMai.phanTramKhuyenMai;
+
+            const khuyenMaiCuaToi = await KhuyenMaiCuaToi.findOne({ idKM: idKM });
+
+            if (khuyenMaiCuaToi) {
+                // Cập nhật trạng thái của bảng KhuyenMaiCuaToi
+                khuyenMaiCuaToi.trangThai = false;
+                await khuyenMaiCuaToi.save();
+            }
         } catch (e) {
 
         }
@@ -57,7 +59,6 @@ const addHoaDonVaMonDat = async (req, res, next) => {
         const hoaDon = await HoaDon.create({
             idKH,
             idCH,
-            idKM,
             diaChiGiaoHang,
             phanTramKhuyenMaiDat,
             trangThaiMua: 0,
@@ -115,9 +116,6 @@ const addHoaDonVaMonDat = async (req, res, next) => {
         res.json({ message: "Lỗi khi thêm mới hóa đơn và món đặt", error });
     }
 }
-
-
-
 
 // Thêm mới món đặt
 const addMonDat = async (req, res, next) => {
@@ -180,7 +178,7 @@ const addMonDat = async (req, res, next) => {
         };
     } catch (e) {
         console.error(e);
-        return({ error: e.message || "Đã xảy ra lỗi khi thêm món đặt" });
+        return ({ error: e.message || "Đã xảy ra lỗi khi thêm món đặt" });
     }
 }
 
@@ -236,7 +234,7 @@ const updateMonDat = async (req, res, next) => {
         };
     } catch (e) {
         console.error(e);
-        return({ error: e.message || "Đã xảy ra lỗi khi cập nhật món đặt" });
+        return ({ error: e.message || "Đã xảy ra lỗi khi cập nhật món đặt" });
     }
 }
 
@@ -277,7 +275,7 @@ const deleteMonDat = async (req, res, next) => {
         };
     } catch (e) {
         console.error(e);
-        return({ error: e.message || "Đã xảy ra lỗi khi xóa món đặt" });
+        return ({ error: e.message || "Đã xảy ra lỗi khi xóa món đặt" });
     }
 }
 
@@ -291,7 +289,7 @@ const deleteMonDatMem = async (req, res, next) => {
             { new: true },
         );
         if (!trangThai) {
-            return({ error: "Không tìm thấy hoa đơn" });
+            return ({ error: "Không tìm thấy hoa đơn" });
         }
         return {
             msg: "update thành công",
@@ -299,7 +297,7 @@ const deleteMonDatMem = async (req, res, next) => {
         };
     } catch (e) {
         console.log(e);
-        return({ error: "Đã xảy ra lỗi khi update " });
+        return ({ error: "Đã xảy ra lỗi khi update " });
     }
 }
 
@@ -312,9 +310,9 @@ const getDanhSachMonDatByIdHoaDon = async (req, res, next) => {
         let foundHoaDon = await HoaDon.findOne({ _id: id });
 
         if (!foundHoaDon) {
-            return res.json({
+            return {
                 msg: "hóa đơn không tồn tại"
-            });
+            };
         }
 
         // Tính chỉ số bắt đầu và giới hạn cho phân trang
@@ -338,10 +336,9 @@ const getDanhSachMonDatByIdHoaDon = async (req, res, next) => {
         };
     } catch (error) {
         console.error(error);
-        return({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của món đặt', error: error.message });
+        return ({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của món đặt', error: error.message });
     }
 };
-
 
 
 const addMonDatApi = async (req, res, next) => {

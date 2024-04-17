@@ -316,7 +316,7 @@ const GetTrungBinhDanhGiaTheoMon = async function (req, res) {
         ]);
 
 
-        return res.json({
+        return ({
             index: parseFloat(query[0].avgDanhGia.toFixed(1)),
             msg: 'Get số lượng đánh giá theo tên món thành công',
             success: true
@@ -327,6 +327,11 @@ const GetTrungBinhDanhGiaTheoMon = async function (req, res) {
             success: false
         });
     }
+}
+
+const getTrungBinhDanhGiaApi = async (req, res) => {
+    const result = await GetTrungBinhDanhGiaTheoMon(req, res);
+    res.json(result)
 }
 const getTatCaDanhGiaTheoMonApi = async (req, res) => {
     const result = await GetDanhSachTheoTenMon(req, res);
@@ -341,10 +346,10 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
         if (typeof (req.query.danhGia) !== 'undefined' && req.query.danhGia !== "" && req.query.danhGia !== "-1") {
             timkiem.danhGia = parseInt(req.query.danhGia);
         }
-        if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(typeof (req.query.trangThai))) {
-            const trangThaiValue = typeof (req.query.trangThai);
-            if (trangThaiValue === true || trangThaiValue === false) {
-                timkiem.trangThai = trangThaiValue === true;
+        if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
+            const trangThaiValue = parseInt(req.query.trangThai);
+            if (trangThaiValue === 1 || trangThaiValue === 0) {
+              timkiem.trangThai = trangThaiValue === 1;
             }
         }
         const query = await DanhGia.aggregate([
@@ -482,5 +487,6 @@ module.exports = {
     GetSoLuongDanhGiaTheoKhachHang,
     getTatCaDanhGiaTheoMonApi,
     GetDanhSachDanhGiaTheoMonVoiFilter,
-    GetDanhSachDanhGiaTheoMonVoiFilterApi
+    GetDanhSachDanhGiaTheoMonVoiFilterApi,
+    getTrungBinhDanhGiaApi
 }
