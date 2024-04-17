@@ -62,7 +62,7 @@ const deleteNhanVien = async (req, res, next) => {
     );
     // Kiểm tra nếu không tìm thấy nhân viên
     if (!updatedNhanVien) {
-      return res.json({ success: false, error: "Không tìm thấy nhân viên" });
+      return res.json({ success: false, error: "Không tìm thấy nhân viên", msg: "Không tìm thấy nhân viên" });
     }
     res.json({
       success: true,
@@ -114,10 +114,10 @@ const doiMatKhau = async (req, res) => {
 
     // Kiểm tra trường matKhauMoi có tồn tại hay không
     if (req.body.matKhauCu.length < 6 || req.body.matKhauMoi.length < 6) {
-      throw new Error("mật khẩu cũ và mật khẩu mới phải có ít nhất 6 ký tự.");
+      return res.json({ msg: "mật khẩu cũ và mật khẩu mới phải có ít nhất 6 ký tự.", success: false });
     }
     if (req.body.matKhauCu.length > 50 || req.body.matKhauMoi.length > 50) {
-      throw new Error("mật khẩu cũ và mật khẩu mới phải không được vượt quá 50 kí tự");
+      return res.json({ msg: "mật khẩu cũ và mật khẩu mới phải không được vượt quá 50 kí tự", success: false });
     }
     if (!matKhauMoi) {
       return res.json({

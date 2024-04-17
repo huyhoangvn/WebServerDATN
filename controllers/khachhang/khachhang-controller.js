@@ -70,7 +70,8 @@ const dangNhap = async (req, res) => {
     if (!khachHang) {
       return ({
         success: false,
-        successMessage: 'Tài khoản không tồn tại.'
+        successMessage: 'Tài khoản không tồn tại.',
+        msg: 'Tài khoản không tồn tại.'
       });
     }
 
@@ -83,11 +84,12 @@ const dangNhap = async (req, res) => {
 
     return ({
       success: true,
-      successMessage: 'Đăng nhập thành công.', khachHang
+      successMessage: 'Đăng nhập thành công.', khachHang,
+      msg: 'Đăng nhập thành công.',
     });
   } catch (error) {
     console.error(error);
-    return ({ successMessage: 'Lỗi server.' });
+    return ({ successMessage: 'Lỗi server.', success: false });
   }
 }
 
@@ -424,6 +426,7 @@ const deleteKhachHangWeb = async (req, res) => {
     if (!khachHangSua) {
       return ({
         error: "Xóa khách hàng thất bại !",
+        msg: "Xóa khách hàng thất bại !",
         success: false
       })
     } else {

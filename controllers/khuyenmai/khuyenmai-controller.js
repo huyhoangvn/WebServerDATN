@@ -31,17 +31,20 @@ const ThemKhuyenMai = async function (req, res) {
                 res.json({
                     index,
                     message: 'Thêm khuyến mãi lại thành công',
+                    msg: 'Thêm khuyến mãi lại thành công',
                     success: true
                 });
             } else if (khuyenMaiDaCo.trangThai != false) {
                 res.json({
                     error: 'Khuyễn mãi đã tồn tại',
+                    msg: 'Khuyễn mãi đã tồn tại',
                     success: false
                 });
             }
         } else if (tieuDe == "" || maKhuyenMai == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu == "") {
             res.json({
                 error: 'Thêm khuyễn mãi lỗi do thiếu thông tin',
+                msg: 'Thêm khuyễn mãi lỗi do thiếu thông tin',
                 success: false
             });
         } else {
@@ -57,6 +60,7 @@ const ThemKhuyenMai = async function (req, res) {
             res.json({
                 index,
                 message: 'Thêm khuyến mãi thành công',
+                msg: 'Thêm khuyến mãi thành công',
                 success: true
             });
         }
@@ -64,6 +68,7 @@ const ThemKhuyenMai = async function (req, res) {
         console.error(error);
         res.json({
             error: 'Lỗi khi thêm khuyến mãi',
+            msg: 'Lỗi khi thêm khuyến mãi',
             success: false
         });
     }
@@ -94,6 +99,7 @@ const SuaKhuyenMai = async function (req, res) {
         if (!index) {
             return res.json({
                 error: 'Không tìm thấy khuyến mãi để sửa',
+                msg: 'Không tìm thấy khuyến mãi để sửa',
                 success: false
             });
         } else if (tieuDe == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu == "") {
@@ -121,6 +127,7 @@ const SuaKhuyenMai = async function (req, res) {
         console.error(error);
         return {
             error: 'Lỗi khi sửa khuyến mãi',
+            msg: 'Lỗi khi sửa khuyến mãi',
             success: false
         };
     }
@@ -161,6 +168,7 @@ const XoaKhuyenMai = async function (req, res) {
             if (!index) {
                 return ({
                     error: 'Không tìm thấy khuyến mãi để xóa',
+                    msg: 'Không tìm thấy khuyến mãi để xóa',
                     success: false
                 });
             } else {
@@ -176,6 +184,7 @@ const XoaKhuyenMai = async function (req, res) {
         console.error(error);
         return ({
             error: 'Lỗi khi xóa khuyến mãi',
+            msg: 'Lỗi khi xóa khuyến mãi',
             success: false
         });
     }
@@ -202,6 +211,7 @@ const GetKhuyenMaiTheoTieuDe = async function (req, res) {
         if (list.length == 0) {
             res.json({
                 message: 'không có khuyến mãi này',
+                msg: 'không có khuyến mãi này',
                 success: true
             });
         } else {
@@ -209,6 +219,7 @@ const GetKhuyenMaiTheoTieuDe = async function (req, res) {
                 list,
                 count: list.length,
                 message: 'Get khuyến mãi theo tiêu đề thành công',
+                msg: 'Get khuyến mãi theo tiêu đề thành công',
                 success: true
             });
         }
@@ -217,6 +228,7 @@ const GetKhuyenMaiTheoTieuDe = async function (req, res) {
         console.error(error);
         res.json({
             error: 'Lỗi khi lấy khuyến mãi theo tiêu đề',
+            msg: 'Lỗi khi lấy khuyến mãi theo tiêu đề',
             success: false
         });
     }
@@ -237,6 +249,7 @@ const GetKhuyenMaiTheoMaKhuyenMai = async function (req, res) {
         if (list.length == 0) {
             res.json({
                 message: 'không có khuyến mãi này',
+                msg: 'không có khuyến mãi này',
                 success: false
             });
         } else {
@@ -244,6 +257,7 @@ const GetKhuyenMaiTheoMaKhuyenMai = async function (req, res) {
                 list,
                 count: list.length,
                 message: 'Get khuyến mãi theo tiêu đề thành công',
+                msg: 'Get khuyến mãi theo tiêu đề thành công',
                 success: true
             });
         }
@@ -252,6 +266,7 @@ const GetKhuyenMaiTheoMaKhuyenMai = async function (req, res) {
         console.error(error);
         res.json({
             error: 'Lỗi khi lấy khuyến mãi theo tiêu đề',
+            msg: 'Lỗi khi lấy khuyến mãi theo tiêu đề',
             success: false
         });
     }
@@ -446,6 +461,7 @@ const getTatCaKhuyenMai = async (req, res) => {
             count: list.length,
             list: list,
             message: 'Get tat ca khuyen mai thanh cong',
+            msg: 'Get tat ca khuyen mai thanh cong',
             success: true,
         };
 
@@ -460,6 +476,7 @@ const getTatCaKhuyenMai = async (req, res) => {
         console.error(error);
         return {
             error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+            msg: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
             success: false
         };
     }

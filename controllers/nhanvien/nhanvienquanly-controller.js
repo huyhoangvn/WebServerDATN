@@ -30,11 +30,25 @@ const addNhanVienBan = async (req, res, next) => {
           msg: "Thông tin nhân viên không đầy đủ hoặc không hợp lệ.",
         });
       }
+
       if (req.body.taiKhoan.length < 6 || req.body.matKhau.length < 6) {
-        throw new Error("tài khoản và mật khẩu phải có ít nhất 6 ký tự.");
+        return res.json({
+          success: false,
+          msg: "tài khoản và mật khẩu phải có ít nhất 6 ký tự."
+        });
       }
       if (req.body.taiKhoan.length > 50 || req.body.matKhau.length > 50) {
-        throw new Error("tài khoản và mật khẩu không được vượt quá 50 ký tự");
+        return res.json({
+          success: false,
+          msg: "tài khoản và mật khẩu không được vượt quá 50 ký tự"
+        });
+      }
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(req.body.taiKhoan)) {
+        return res.json({
+          success: false,
+          msg: "tài khoản không đúng định dạng."
+        });
       }
 
       // Thiết lập hình ảnh mặc định nếu không có ảnh được tải lên
@@ -94,10 +108,10 @@ const suaNhanVienBan = async (req, res, next) => {
       });
     }
     if (tenNV.length > 50 || diaChi.length > 100) {
-      throw new Error("tên hoặc địa chỉ đang vượt quá số lượng ký tự");
+      return res.json({ msg: "tên hoặc địa chỉ đang vượt quá số lượng ký tự", success: false });
     }
     if (sdt.length > 10) {
-      throw new Error("số điện thoại  đang vượt quá số lượng ký tự");
+      return res.json({ msg: "số điện thoại  đang vượt quá số lượng ký tự", success: false });
     }
 
     // Kiểm tra xem nhân viên có tồn tại không

@@ -10,10 +10,10 @@ const addKMCuaToi = async (req, res, next) => {
         const idKH = req.body.idKH;
         const khuyenmai = await khuyenMai.findById(idKM);
         if (!khuyenmai) {
-            throw new Error("Không tìm thấy khuyến mãi.");
+            return res.json({ msg: "Không tìm thấy khuyến mãi.", success: false });
         }
         if (!khuyenmai.trangThai) {
-            throw new Error("khuyến mãi không ở trạng thái hoạt động.");
+            return res.json({ msg: "khuyến mãi không ở trạng thái hoạt động.", success: false });
         }
 
         await KhuyenMaiCuaToi.create({
@@ -28,7 +28,7 @@ const addKMCuaToi = async (req, res, next) => {
 
     } catch (e) {
         console.error(e);
-        return ({ error: e.message || "Đã xảy ra lỗi khi thêm khuyến mãi " })
+        return ({ error: e.message, msg: "Đã xảy ra lỗi khi thêm khuyến mãi ", success: false });
 
     }
 }
@@ -112,11 +112,13 @@ const deleteKhuyenMaiCT = async (req, res) => {
         await KhuyenMaiCuaToi.findByIdAndDelete(req.params.id);
         return {
             success: true,
-            message: "Xóa Khuyến mãi thành công"
+            message: "Xóa Khuyến mãi thành công",
+            msg: "Xóa Khuyến mãi thành công"
         };
     } catch (error) {
         return ({
-            message: "Lỗi khi xóa Khuyến mãi", error
+            message: "Lỗi khi xóa Khuyến mãi", error,
+            msg: "Lỗi khi xóa Khuyến mãi"
         });
     }
 };

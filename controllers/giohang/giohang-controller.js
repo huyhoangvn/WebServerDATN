@@ -15,7 +15,8 @@ const addGioHang = async (req, res, next) => {
 
   if (foundGioHang) {
     return res.json({
-      msg: "Món đã tồn tại trong giỏ hàng"
+      msg: "Món đã tồn tại trong giỏ hàng",
+      success: false,
     });
   }
 
@@ -117,7 +118,7 @@ const getAllGioHang = async (req, res) => {
       msg: "Thành công"
     };
   } catch (error) {
-    return { msg: "Lỗi khi lấy danh sách giỏ hàng", error };
+    return { msg: "Lỗi khi lấy danh sách giỏ hàng", error, success: false };
   }
 };
 
@@ -137,7 +138,7 @@ const getGioHangByUserIdApi = async (req, res) => {
       msg: "lấy danh sách thành công"
     });
   } catch (error) {
-    res.json({ message: "Lỗi khi lấy giỏ hàng của khách hàng", error });
+    res.json({ message: "Lỗi khi lấy giỏ hàng của khách hàng", error, success: false });
   }
 };
 
@@ -146,15 +147,15 @@ const deleteGioHang = async (req, res) => {
   try {
     const idKH = req.params.idKH;
     const idMon = req.body.idMon;
-    let foundGioHang = await GioHang.findOne({ idKH: idKH, idMon: idMon});
-    console.log({ idKH: idKH, idMon: idMon})
+    let foundGioHang = await GioHang.findOne({ idKH: idKH, idMon: idMon });
+    console.log({ idKH: idKH, idMon: idMon })
     if (!foundGioHang) {
       return res.json({
         msg: "Xóa thất bại",
         success: false,
       });
     }
-    await GioHang.findOneAndDelete({ idKH: idKH, idMon: idMon});
+    await GioHang.findOneAndDelete({ idKH: idKH, idMon: idMon });
     return res.json({
       index: true,
       success: true,
@@ -162,7 +163,7 @@ const deleteGioHang = async (req, res) => {
     });
   } catch (error) {
     return res.json({
-      msg: "Lỗi khi xóa giỏ hàng", 
+      msg: "Lỗi khi xóa giỏ hàng",
       success: false
     });
   }
@@ -181,13 +182,13 @@ const kiemTraGioHang = async (req, res) => {
     });
 
     if (gioHang) {
-      return res.json({ index: true, success: true, message: 'Món hàng đã có trong giỏ hàng của khách hàng' });
+      return res.json({ index: true, success: true, msg: 'Món hàng đã có trong giỏ hàng của khách hàng' });
     } else {
-      return res.json({ index: false, success: false, message: 'Món hàng không tồn tại trong giỏ hàng của khách hàng hoặc giỏ hàng không ở trạng thái true' });
+      return res.json({ index: false, success: false, msg: 'Món hàng không tồn tại trong giỏ hàng của khách hàng hoặc giỏ hàng không ở trạng thái true' });
     }
   } catch (error) {
     console.error(error);
-    return res.json({ success: false, message: 'Lỗi khi kiểm tra giỏ hàng' });
+    return res.json({ success: false, msg: 'Lỗi khi kiểm tra giỏ hàng' });
   }
 };
 

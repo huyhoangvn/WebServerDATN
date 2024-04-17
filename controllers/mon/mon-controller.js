@@ -25,7 +25,7 @@ const themMon = async (req, res, next) => {
       }
     }
     if (req.body.tenMon.length > 100) {
-      throw new Error("tên món vượt quá số lượng ký tự cho phép")
+      return res.json({ msg: "tên món vượt quá số lượng ký tự cho phép", success: false });
     }
     //lấy cửa hàng từ nhân viên
     const nhanVien = await NhanVien.model.findById(idNV)
@@ -135,7 +135,7 @@ const deletemonapi = async (req, res) => {
     );
     // Kiểm tra nếu không tìm thấy nhân viên
     if (!updatedNhanVien) {
-      return res.json({ error: "Không tìm thấy nhân viên" });
+      return res.json({ msg: "Không tìm thấy nhân viên", success: false });
     }
     res.json({
       msg: "Đã cập nhật trạng thái thành công",
@@ -165,12 +165,12 @@ const deleteMonWeb = async (req, res) => {
     }
 
     if (!monSua) {
-      return ({ error: "Xóa món thất bại !", success: false }); // Phản hồi 404 nếu không tìm thấy món
+      return ({ error: "Xóa món thất bại !", success: false, msg: "Xóa món thất bại !" }); // Phản hồi 404 nếu không tìm thấy món
     } else {
-      return ({ message: "Xóa món thành công !", success: true }); // Phản hồi 200 nếu thành công
+      return ({ message: "Xóa món thành công !", success: true, msg: "Xóa món thành công !" }); // Phản hồi 200 nếu thành công
     }
   } catch (err) {
-    return ({ message: err.message }); // Phản hồi 500 nếu có lỗi xảy ra
+    return ({ msg: err.msg }); // Phản hồi 500 nếu có lỗi xảy ra
   }
 }
 
@@ -548,15 +548,15 @@ const getMonCuaLoaiMon = async (req, res) => {
       giaTienMax = parseInt(req.query.giaTienMax);
 
     }
-    
+
     if (typeof (req.query.indexLM) !== 'undefined' && !isNaN(parseInt(req.query.indexLM))) {
       indexLM = parseInt(req.query.indexLM);
-      for(let i = 0; i<tatCaLM.length; i++){
+      for (let i = 0; i < tatCaLM.length; i++) {
         if (indexLM === i) {
           idLM = tatCaLM[i]._id;
         }
       }
-      
+
     }
 
     const list = await Mon.model.aggregate([
@@ -634,7 +634,7 @@ const getMonCuaLoaiMon = async (req, res) => {
     res.json({
       count: list.length,
       list: list,
-      tenLM:tenLM,
+      tenLM: tenLM,
       msg: 'Get món của loại món thành công',
       success: true,
 
@@ -713,13 +713,14 @@ const updatemon = async (req, res) => {
     }
 
     if (req.body.tenMon.length > 100) {
-      throw new Error("tên món vượt quá số lượng ký tự cho phép")
+      return res.json({ msg: "tên món vượt quá số lượng ký tự cho phép", success: false });
     }
 
     // Nếu không có trường nào cần cập nhật, trả về lỗi
     if (Object.keys(updateFields).length === 0) {
       return ({
         error: "Không có trường nào cần cập nhật",
+        msg: "Không có trường nào cần cập nhật",
         success: false,
       });
     }
