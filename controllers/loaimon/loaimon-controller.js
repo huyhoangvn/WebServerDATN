@@ -13,10 +13,10 @@ const themLoaiMon = async (req, res, next) => {
     });
 
     if (foundLoaiMon) {
-      throw new Error("Loại món đã tồn tại");
+      return res.json({ msg: "Loại món đã tồn tại", success: false });
     }
     if (req.body.tenLM.length > 100) {
-      throw new Error("tên loại món vượt quá ký tự cho phép");
+      return res.json({ msg: "tên loại món vượt quá ký tự cho phép", success: false });
     }
 
     // Tạo mới loại món
@@ -42,7 +42,7 @@ const getchitietloaiMonApi = async (req, res, next) => {
     const idLM = req.params.idLM;
     const loaimon = await Loaimon.model.findOne({ _id: idLM });
     if (!loaimon) {
-      res.json({ error: "không tìm thấy loại món" });
+      res.json({ msg: "không tìm thấy loại món", success: false });
     }
     res.json(loaimon);
   } catch (error) {
@@ -65,7 +65,7 @@ const getloaimonApi = async (req, res) => {
     const list = await Loaimon.model.aggregate([
       {
         $match: {
-            "trangThai": true
+          "trangThai": true
         }
       },
       {
@@ -93,6 +93,7 @@ const getloaimonApi = async (req, res) => {
     console.error(error);
     res.json({
       error: 'Lỗi khi lấy đánh giá theo tên món',
+      msg: 'Lỗi khi lấy đánh giá theo tên món',
       success: false
     });
   }
@@ -107,14 +108,14 @@ const kichhoatLoaiMonapi = async (req, res) => {
       { new: true }
     );
     if (!kichhoat) {
-      return res.json({ error: "Không tìm thấy loại món" });
+      return res.json({ msg: "Không tìm thấy loại món", success: false });
     }
     res.json({
       msg: "đã kích hoạt cửa hàng",
       data: kichhoat,
     });
   } catch (error) {
-    res.json({ msg: "Lỗi kích hoạt loại món", error: error });
+    res.json({ msg: "Lỗi kích hoạt loại món", error: error, success: false });
   }
 };
 // Delete
@@ -129,6 +130,7 @@ const deleteLoaiMon = async (req, res) => {
     if (!index) {
       return res.json({
         error: 'Không tìm thấy loại món để xóa',
+        msg: 'Không tìm thấy loại món để xóa',
         success: false
       });
     } else {
@@ -141,6 +143,7 @@ const deleteLoaiMon = async (req, res) => {
   } catch (error) {
     res.json({
       error: 'Lỗi khi xóa loại món',
+      msg: 'Lỗi khi xóa loại món',
       success: false
     });
   }
@@ -168,13 +171,13 @@ const deleteLoaiMonWeb = async (req, res) => {
     }
 
     if (!monSua) {
-      return ({ error: "Xóa món thất bại !", success: false }); // Phản hồi 404 nếu không tìm thấy món
+      return ({ msg: "Xóa món thất bại !", success: false }); // Phản hồi 404 nếu không tìm thấy món
     } else {
       return ({ msg: "Xóa món thành công !", success: true }); // Phản hồi 200 nếu thành công
     }
 
   } catch (err) {
-    return ({ msg: err.message }); // Phản hồi 500 nếu có lỗi xảy ra
+    return ({ msg: err.message, success: false }); // Phản hồi 500 nếu có lỗi xảy ra
   }
 }
 // Sua
@@ -190,10 +193,12 @@ const updateLoaiMon = async (req, res) => {
     if (!updatedLoaiMon) {
       return res.json({
         error: 'Không tìm thấy loại món để sửa',
+        msg: 'Không tìm thấy loại món để sửa',
         success: false
       });
     } else if (tenLM === '' || tenLM.length > 50) {
       return res.json({
+        error: 'Sửa loại món không thành công do thiếu thông tin  hoặc vượt quá ký tự cho phép',
         error: 'Sửa loại món không thành công do thiếu thông tin  hoặc vượt quá ký tự cho phép',
         success: false
       });

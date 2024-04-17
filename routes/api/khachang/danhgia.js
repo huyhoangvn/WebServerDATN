@@ -1,45 +1,47 @@
 var express = require('express');
 var router = express.Router();
+const passportConfig = require('../../../config/auth/jwt-decode-khachhang')
+const passport = require('passport')
 const {
   ThemDanhGia,
   SuaDanhGia,
   XoaDanhGia,
   GetDanhSachTheoTenMon,
   GetDanhSachTheoTenKhachHang,
-  GetDanhGiaTheoId, 
+  GetDanhGiaTheoId,
   GetTrungBinhDanhGiaTheoMon,
   GetSoLuongDanhGiaTheoKhachHang,
   getTatCaDanhGiaTheoMonApi,
   GetDanhSachDanhGiaTheoMonVoiFilter,
   GetDanhSachDanhGiaTheoMonVoiFilterApi,
-  getTrungBinhDanhGiaApi} = require('../../../controllers/danhgia/danhgia-controller');
+  getTrungBinhDanhGiaApi } = require('../../../controllers/danhgia/danhgia-controller');
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.end(JSON.stringify({
-    message:'Binh luan thành công'
+    message: 'Binh luan thành công'
   }));
 });
 
 // http://localhost:3000/api/khachhang/danhgia/them/65cc2e9d557054378b5490b2/65cc2e72557054378b5490ad
-router.post("/them/:idKH/:idMon",ThemDanhGia);
+router.post("/them/:idKH/:idMon", passport.authenticate('jwt', { session: false }), ThemDanhGia);
 // http://localhost:3000/api/khachhang/danhgia/sua/65cc2e9d557054378b5490b2/65cc2e72557054378b5490ad
-router.put("/sua/:idDG",SuaDanhGia);
+router.put("/sua/:idDG", passport.authenticate('jwt', { session: false }), SuaDanhGia);
 // http://localhost:3000/api/khachhang/danhgia/xoa/65cc2e9d557054378b5490b2/65cc2e72557054378b5490ad
-router.put("/xoa/:idDG",XoaDanhGia);
+router.put("/xoa/:idDG", passport.authenticate('jwt', { session: false }), XoaDanhGia);
 // http://localhost:3000/api/khachhang/danhgia/get-theo-ten-mon/65cc2e72557054378b5490ad
-router.get("/get-theo-ten-mon/:idMon",GetDanhSachTheoTenMon);
+router.get("/get-theo-ten-mon/:idMon", passport.authenticate('jwt', { session: false }), GetDanhSachTheoTenMon);
 // http://localhost:3000/api/khachhang/danhgia/get-theo-ten-khach-hang/65cc2e9d557054378b5490b2
-router.get("/get-theo-ten-khach-hang/:idKH",GetDanhSachTheoTenKhachHang);
+router.get("/get-theo-ten-khach-hang/:idKH", passport.authenticate('jwt', { session: false }), GetDanhSachTheoTenKhachHang);
 //http://localhost:3000/api/khachhang/danhgia/get-theo-id/65ceb821bf407aaa4e0a3fb9
-router.get("/get-theo-id/:idDanhGia",GetDanhGiaTheoId);
+router.get("/get-theo-id/:idDanhGia", passport.authenticate('jwt', { session: false }), GetDanhGiaTheoId);
 //http://localhost:3000/api/khachhang/danhgia/get-so-luong-theo-mon/65cc2e72557054378b5490ad
-router.get("/get-so-luong-theo-mon/:idMon",getTatCaDanhGiaTheoMonApi);
+router.get("/get-so-luong-theo-mon/:idMon", passport.authenticate('jwt', { session: false }), getTatCaDanhGiaTheoMonApi);
 // http://localhost:3000/api/khachhang/danhgia/get-so-luong-theo-khach-hang/65cc2e72557054378b5490ad
-router.get("/get-so-luong-theo-khach-hang/:idKH",GetSoLuongDanhGiaTheoKhachHang);
+router.get("/get-so-luong-theo-khach-hang/:idKH", passport.authenticate('jwt', { session: false }), GetSoLuongDanhGiaTheoKhachHang);
 
-router.get("/get-danh-sach-theo-mon-filter/:idMon",GetDanhSachDanhGiaTheoMonVoiFilterApi);
+router.get("/get-danh-sach-theo-mon-filter/:idMon", passport.authenticate('jwt', { session: false }), GetDanhSachDanhGiaTheoMonVoiFilterApi);
 
-router.get("/get-trung-binh/:idMon",getTrungBinhDanhGiaApi);
+router.get("/get-trung-binh/:idMon", passport.authenticate('jwt', { session: false }), getTrungBinhDanhGiaApi);
 
 module.exports = router;

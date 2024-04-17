@@ -176,7 +176,7 @@ const getDanhSachHoaDonByIdKhachHangApi = async (req, res, next) => {
         const trang = parseInt(req.query.trang) || 1;
 
         if (!idKH) {
-            return res.json({ msg: 'Vui lòng cung cấp ID khách hàng' });
+            return res.json({ msg: 'Vui lòng cung cấp ID khách hàng', success: false });
         }
 
         const filter = { idKH: idKH };
@@ -257,7 +257,7 @@ const getDanhSachHoaDonByIdKhachHangApi = async (req, res, next) => {
         });
     } catch (error) {
         console.error(error);
-        res.json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của khách hàng', error: error.message });
+        res.json({ msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn của khách hàng', error: error.message, success: false });
     }
 };
 const getDanhSachHoaDonByIdCuaHangApi = async (req, res, next) => {
@@ -266,7 +266,7 @@ const getDanhSachHoaDonByIdCuaHangApi = async (req, res, next) => {
         const trang = parseInt(req.query.trang) || 1;
 
         if (!idCH) {
-            return res.json({ msg: 'Vui lòng cung cấp ID cửa hàng' });
+            return res.json({ msg: 'Vui lòng cung cấp ID cửa hàng', success: false });
         }
 
         const filter = { idCH: idCH };

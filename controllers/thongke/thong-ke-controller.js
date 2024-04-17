@@ -47,7 +47,7 @@ const thongKeDoanhThuTheoNgay = async (req, res, next) => {
         console.error("Error:", error);
         return {
             success: false,
-            message: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+            msg: 'Đã xảy ra lỗi khi thực hiện thống kê.'
         };
     }
 };
@@ -96,7 +96,7 @@ const thongKeDoanhThuTheo10Ngay = async (req, res, next) => {
         console.error("Error:", error);
         return {
             success: false,
-            message: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+            msg: 'Đã xảy ra lỗi khi thực hiện thống kê.'
         };
     }
 };
@@ -146,7 +146,7 @@ const thongKeDoanhThuTheo30Ngay = async (req, res, next) => {
         console.error("Error:", error);
         return {
             success: false,
-            message: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+            msg: 'Đã xảy ra lỗi khi thực hiện thống kê.'
         };
     }
 };
@@ -195,7 +195,7 @@ const thongKeDoanhThuTheoNam = async (req, res, next) => {
         console.error("Error:", error);
         return {
             success: false,
-            message: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+            msg: 'Đã xảy ra lỗi khi thực hiện thống kê.'
         };
     }
 };
@@ -261,13 +261,13 @@ const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
         return {
             data: monthlyRevenue,
             success: true,
-            message: "Thành công"
+            msg: "Thành công"
         };
     } catch (error) {
         console.error("Error:", error);
-        return({
+        return ({
             success: false,
-            message: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+            msg: 'Đã xảy ra lỗi khi thực hiện thống kê.'
         });
     }
 }
@@ -283,7 +283,7 @@ const thongKeMonBanChayTheoTenLoaiMon = async (req, res) => {
         if (!loaiMon) {
             return res.json({
                 success: false,
-                message: "Không tìm thấy loại món có tên này."
+                msg: "Không tìm thấy loại món có tên này."
             });
         }
 
@@ -367,13 +367,13 @@ const thongKeMonBanChayTheoTenLoaiMon = async (req, res) => {
         return {
             data: top10Result,
             success: true,
-            message: "Thành công"
+            msg: "Thành công"
         };
     } catch (error) {
         console.error("Lỗi:", error);
-        return({
+        return ({
             success: false,
-            message: "Đã xảy ra lỗi khi thực hiện thống kê."
+            msg: "Đã xảy ra lỗi khi thực hiện thống kê."
         });
     }
 };
@@ -463,13 +463,13 @@ const thongKeMonBanChayTheoNam = async (req, res) => {
         return {
             data: top10Result,
             success: true,
-            message: "Thành công"
+            msg: "Thành công"
         };
     } catch (error) {
         console.error("Lỗi:", error);
-        return({
+        return ({
             success: false,
-            message: "Đã xảy ra lỗi khi thực hiện thống kê."
+            msg: "Đã xảy ra lỗi khi thực hiện thống kê."
         });
     }
 };
