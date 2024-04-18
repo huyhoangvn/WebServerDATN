@@ -261,7 +261,7 @@ const GetCuaHang = async (req, res, next) => {
         });
     } catch (error) {
         console.error(error);
-        res.json({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
+        return({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
     }
 }
 
@@ -308,7 +308,7 @@ const GetSoLuongCuaHang = async (req, res, next) => {
         });
     } catch (error) {
         console.error(error);
-        res.json({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
+        return({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
     }
 }
 
