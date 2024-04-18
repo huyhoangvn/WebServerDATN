@@ -171,12 +171,8 @@ const themNhanVienQuanLy = async (req, res) => {
                 alert: "Tài khoản đã tồn tại. Vui lòng chọn tài khoản khác."
             });
         }
-
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
         if (taiKhoan == "" || matKhau == "" || sdt == "" || diaChi == "" || tenNV == "" || gioiTinh == "") {
-
             const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
             res.render("cuahang/chi-tiet", {
                 NVQL,
@@ -187,7 +183,6 @@ const themNhanVienQuanLy = async (req, res) => {
                 alert: " Thêm nhân viên quản lý lỗi do thiếu thông tin"
             });
         } else if (tenNV.length > 50) {
-
             const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
             res.render("cuahang/chi-tiet", {
                 NVQL,
@@ -199,7 +194,6 @@ const themNhanVienQuanLy = async (req, res) => {
             });
         }
         else if (taiKhoan.length > 50 || taiKhoan.length < 6) {
-
             const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
             res.render("cuahang/chi-tiet", {
                 NVQL,
@@ -207,7 +201,7 @@ const themNhanVienQuanLy = async (req, res) => {
                 monCH: chiTiet.data.danhSachMonAn.items,
                 msg: 'Thêm nhân viên quản lý lỗi do thiếu thông tin',
                 success: false,
-                alert: " Tài khoản vượt quá ký tự cho phép"
+                alert: " Tài khoản vượt quá hoặc không đạt số lượng ký tự cho phép"
             });
         }
         else if (!emailRegex.test(taiKhoan)) {
@@ -222,7 +216,6 @@ const themNhanVienQuanLy = async (req, res) => {
             });
         }
         else if (matKhau.length > 50 || matKhau.length < 6) {
-
             const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
             res.render("cuahang/chi-tiet", {
                 NVQL,
@@ -230,11 +223,10 @@ const themNhanVienQuanLy = async (req, res) => {
                 monCH: chiTiet.data.danhSachMonAn.items,
                 msg: 'Thêm nhân viên quản lý lỗi do thiếu thông tin',
                 success: false,
-                alert: " mật Khẩu vượt quá ký tự hoặc chưa đủ ký tự  cho phép "
+                alert: " mật Khẩu vượt quá ký tự hoặc chưa đủ ký tự cho phép "
             });
         }
         else if (diaChi.length > 100) {
-
             const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
             res.render("cuahang/chi-tiet", {
                 NVQL,
@@ -242,11 +234,10 @@ const themNhanVienQuanLy = async (req, res) => {
                 monCH: chiTiet.data.danhSachMonAn.items,
                 msg: 'Thêm nhân viên quản lý lỗi do thiếu thông tin',
                 success: false,
-                alert: " địa chỉ vượt quá ký tự cho phép"
+                alert: " Địa chỉ vượt quá ký tự cho phép"
             });
         }
         else if (sdt.length > 10) {
-
             const chiTiet = await CuaHangCtrl.chiTietCuaHangWeb(req, res);
             res.render("cuahang/chi-tiet", {
                 NVQL,
@@ -254,7 +245,7 @@ const themNhanVienQuanLy = async (req, res) => {
                 monCH: chiTiet.data.danhSachMonAn.items,
                 msg: 'Thêm nhân viên quản lý lỗi do thiếu thông tin',
                 success: false,
-                alert: " số điện thoại vượt quá ký tự cho phép"
+                alert: " Số điện thoại vượt quá ký tự cho phép"
             });
         }
         else {
