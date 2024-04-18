@@ -7,6 +7,7 @@ const KhuyenMaiSchema = new db.mongodb.Schema(
         maKhuyenMai: { type: String, default: "" },
         ngayBatDau: { type: Date, default: "" },
         ngayHetHan: { type: Date, default: "" },
+        ngayTao: { type: Date, default: Date.now() },
         phanTramKhuyenMai: { type: Number, default: 0 },
         donToiThieu: { type: Number, default: 0 },
         trangThai: { type: Boolean, default: true }
