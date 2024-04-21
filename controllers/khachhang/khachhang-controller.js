@@ -70,7 +70,8 @@ const dangNhap = async (req, res) => {
     if (!khachHang) {
       return ({
         success: false,
-        successMessage: 'Tài khoản không tồn tại.'
+        successMessage: 'Tài khoản không tồn tại.',
+        msg: 'Tài khoản không tồn tại.'
       });
     }
 
@@ -83,11 +84,12 @@ const dangNhap = async (req, res) => {
 
     return ({
       success: true,
-      successMessage: 'Đăng nhập thành công.', khachHang
+      successMessage: 'Đăng nhập thành công.', khachHang,
+      msg: 'Đăng nhập thành công.',
     });
   } catch (error) {
     console.error(error);
-    return ({ successMessage: 'Lỗi server.' });
+    return ({ successMessage: 'Lỗi server.', success: false });
   }
 }
 
@@ -336,7 +338,6 @@ const finAccount = async (req, res) => {
     const email = req.params.email;
     if (email == "") {
       return res.json({
-        error: 'Email không được để trống',
         msg: 'Email không được để trống',
         success: false
       });
@@ -344,13 +345,11 @@ const finAccount = async (req, res) => {
     const khachHang = await KhachHang.model.findOne({ taiKhoan: email });
     if (!khachHang) {
       return res.json({
-        error: 'Tài khoản không tồn tại',
         msg: 'Tài khoản không tồn tại',
         success: false
       });
     }
     return res.json({
-      message: "Tìm tài khoản thành công",
       msg: "Tìm tài khoản thành công",
       success: true,
       id: khachHang._id
@@ -358,8 +357,45 @@ const finAccount = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.json({
-      error: "Lỗi khi tìm tài khoản",
       msg: "Lỗi khi tìm tài khoản",
+      success: false
+    });
+  }
+}
+
+const forgotPassword = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const matKhau = req.body.matKhau;
+    
+    if (!matKhau) {
+      return res.json({
+        msg: 'Mật khẩu không được để trống',
+        success: false
+      });
+    }
+
+    const khachHang = await KhachHang.model.findById(id);
+    
+    if (!khachHang) {
+      return res.json({
+        msg: 'Không tìm thấy khách hàng',
+        success: false
+      });
+    }
+
+    khachHang.matKhau = matKhau;
+    await khachHang.save();
+
+    return res.json({
+      msg: 'Mật khẩu đã được cập nhật thành công',
+      success: true
+    });
+    
+  } catch (error) {
+    console.error(error);
+    return res.json({
+      msg: "Lỗi khi quên mật khẩu",
       success: false
     });
   }
@@ -424,6 +460,7 @@ const deleteKhachHangWeb = async (req, res) => {
     if (!khachHangSua) {
       return ({
         error: "Xóa khách hàng thất bại !",
+        msg: "Xóa khách hàng thất bại !",
         success: false
       })
     } else {
@@ -492,5 +529,6 @@ module.exports = {
   getSoLuongKhachHangApi,
   getKhachHangbyidKhachHang,
   updateMatKhau,
-  finAccount
+  finAccount,
+  forgotPassword
 }

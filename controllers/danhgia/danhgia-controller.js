@@ -12,6 +12,7 @@ const ThemDanhGia = async function (req, res) {
             if (daDanhGia.trangThai !== false) {
                 return res.json({
                     error: 'đánh giá này đã tồn tại',
+                    msg: 'đánh giá này đã tồn tại',
                     success: false
                 });
             } else if (daDanhGia.trangThai === false) {
@@ -27,6 +28,7 @@ const ThemDanhGia = async function (req, res) {
             if (danhGia == "") {
                 res.json({
                     error: 'Thêm đánh giá lỗi do thiếu đánh giá',
+                    msg: 'Thêm đánh giá lỗi do thiếu đánh giá',
                     success: false
                 });
             } else {
@@ -47,6 +49,7 @@ const ThemDanhGia = async function (req, res) {
     } catch (error) {
         res.json({
             error: 'Lỗi khi thêm đánh giá',
+            msg: 'Lỗi khi thêm đánh giá',
             success: false
         });
     }
@@ -63,11 +66,13 @@ const SuaDanhGia = async function (req, res) {
         if (!index) {
             return res.json({
                 error: 'Không tìm thấy đánh giá để sửa',
+                msg: 'Không tìm thấy đánh giá để sửa',
                 success: false
             });
         } else if (danhGia == '') {
             return res.json({
                 error: 'Sửa đánh giá lỗi do thiếu đánh giá',
+                msg: 'Sửa đánh giá lỗi do thiếu đánh giá',
                 success: false
             });
         } else {
@@ -80,6 +85,7 @@ const SuaDanhGia = async function (req, res) {
     } catch (error) {
         res.json({
             error: 'Lỗi khi sửa đánh giá',
+            msg: 'Lỗi khi sửa đánh giá',
             success: false
         });
     }
@@ -97,6 +103,7 @@ const XoaDanhGia = async function (req, res) {
         if (!index) {
             return res.json({
                 error: 'Không tìm thấy đánh giá để xóa',
+                msg: 'Không tìm thấy đánh giá để xóa',
                 success: false
             });
         } else {
@@ -109,6 +116,7 @@ const XoaDanhGia = async function (req, res) {
     } catch (error) {
         res.json({
             error: 'Lỗi khi xóa đánh giá',
+            msg: 'Lỗi khi xóa đánh giá',
             success: false
         });
     }
@@ -191,8 +199,9 @@ const GetDanhSachTheoTenMon = async function (req, res) {
             success: true
         });
     } catch (error) {
-        return({
+        return ({
             error: 'Lỗi khi lấy đánh giá theo tên món',
+            msg: 'Lỗi khi lấy đánh giá theo tên món',
             success: false
         });
     }
@@ -260,6 +269,7 @@ const GetDanhSachTheoTenKhachHang = async function (req, res) {
     } catch (error) {
         res.json({
             error: 'Lỗi khi lấy đánh giá theo tên khách hàng',
+            msg: 'Lỗi khi lấy đánh giá theo tên khách hàng',
             success: false
         });
     }
@@ -278,6 +288,7 @@ const GetDanhGiaTheoId = async function (req, res) {
     } catch (error) {
         res.json({
             error: 'Lỗi khi lấy đánh giá theo id',
+            msg: 'Lỗi khi lấy đánh giá theo id',
             success: false
         });
     }
@@ -322,8 +333,9 @@ const GetTrungBinhDanhGiaTheoMon = async function (req, res) {
             success: true
         });
     } catch (error) {
-        return({
+        return ({
             error: 'Lỗi khi lấy số lượng đánh giá theo tên món',
+            msg: 'Lỗi khi lấy số lượng đánh giá theo tên món',
             success: false
         });
     }
@@ -349,7 +361,7 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
         if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
             const trangThaiValue = parseInt(req.query.trangThai);
             if (trangThaiValue === 1 || trangThaiValue === 0) {
-              timkiem.trangThai = trangThaiValue === 1;
+                timkiem.trangThai = trangThaiValue === 1;
             }
         }
         const query = await DanhGia.aggregate([
@@ -420,8 +432,9 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
             success: true
         });
     } catch (error) {
-        return({
+        return ({
             error: 'Lỗi khi lấy số lượng đánh giá theo tên món',
+            msg: 'Lỗi khi lấy số lượng đánh giá theo tên món',
             success: false
         });
     }
@@ -471,6 +484,7 @@ const GetSoLuongDanhGiaTheoKhachHang = async function (req, res) {
     } catch (error) {
         res.json({
             error: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
+            msg: 'Lỗi khi lấy số lượng đánh giá theo tên khách hàng',
             success: false
         });
     }

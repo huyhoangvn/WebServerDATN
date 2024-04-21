@@ -62,7 +62,7 @@ const updateCuaHang = async (req, res) => {
         const item = await CuaHang.findById(cuaHangId);
 
         if (!item) {
-            return res.json({ msg: 'Không tìm thấy cửa hàng để cập nhật', dataSave: null });
+            return res.json({ msg: 'Không tìm thấy cửa hàng để cập nhật', dataSave: null, success: false });
         }
 
         const tenCH = req.body.tenCH || item.tenCH;
@@ -197,6 +197,7 @@ const getCuaHang = async (req, res, next) => {
         res.json({
             data: danhSachCuaHang,
             soluong: danhSachCuaHang.length,
+            msg: "lấy danh sách thành công"
         });
     } catch (error) {
         console.error(error);
@@ -260,7 +261,7 @@ const GetCuaHang = async (req, res, next) => {
         });
     } catch (error) {
         console.error(error);
-        res.json({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
+        return({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
     }
 }
 
@@ -307,7 +308,7 @@ const GetSoLuongCuaHang = async (req, res, next) => {
         });
     } catch (error) {
         console.error(error);
-        res.json({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
+        return({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
     }
 }
 
@@ -481,20 +482,8 @@ const chiTietCuaHangApp = async (req, res, next) => {
     }
 };
 
-// api
-const addCuaHangApi = async (req, res, next) => {
-    try {
-        const result = await addCuaHang(req, res, next);
-        res.json(result);  // Send the result directly without using JSON.stringify
-    } catch (error) {
-        // Check if headers have already been sent
-        if (res.headersSent) {
-            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
-        } else {
-            res.json({ success: false, msg: 'Đã xảy ra lỗi khi thêm cửa hàng', error: error.message });
-        }
-    }
-}
+
+
 
 const updateCuaHangApi = async (req, res, next) => {
     try {
@@ -543,19 +532,7 @@ const huyKichHoatCuaHangApi = async (req, res, next) => {
     }
 }
 
-const getCuaHangCuaHangApi = async (req, res, next) => {
-    try {
-        const result = await getCuaHang(req, res, next);
-        res.json(result);  // Send the result directly without using JSON.stringify
-    } catch (error) {
-        // Check if headers have already been sent
-        if (res.headersSent) {
-            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
-        } else {
-            res.json({ success: false, msg: 'Đã xảy ra lỗi khi kích hoạt cửa hàng', error: error.message });
-        }
-    }
-}
+
 
 const chiTietCuaHangAppApi = async (req, res, next) => {
     try {
@@ -587,11 +564,9 @@ const chiTietCuaHangWebApi = async (req, res, next) => {
 
 module.exports = {
     // Api
-    addCuaHangApi,
     updateCuaHangApi,
     kichHoatCuaHangApi,
     huyKichHoatCuaHangApi,
-    getCuaHangCuaHangApi,
     chiTietCuaHangAppApi,
     chiTietCuaHangWebApi,
     chiTietCuaHangWeb,
@@ -602,5 +577,6 @@ module.exports = {
     getCuaHangApi,
     chiTietCuaHangAppApi,
     chiTietCuaHangWebApi,
-    deleteCuaHangWeb
+    deleteCuaHangWeb,
+    addCuaHang
 };

@@ -12,7 +12,7 @@ const updateHoaDon = async (req, res) => {
         const item = await HoaDon.findById(id);
 
         if (!item) {
-            return ({ msg: 'Không tìm thấy hóa đơn để cập nhật', dataSave: null });
+            return ({ msg: 'Không tìm thấy hóa đơn để cập nhật', dataSave: null, success: false });
         }
         const diaChiGiaoHang = req.body.diaChiGiaoHang || item.diaChiGiaoHang;
         const ghiChu = req.body.ghiChu || item.ghiChu;
@@ -23,7 +23,7 @@ const updateHoaDon = async (req, res) => {
         const trangThaiThanhToan = 0;
 
         if (diaChiGiaoHang.length > 100 || ghiChu.length > 100) {
-            throw new Error(" địa chỉ hoặc ghi chú vượt quá số lượng ký tự cho phép")
+            return req.json({ msg: " địa chỉ hoặc ghi chú vượt quá số lượng ký tự cho phép", success: false });
         }
 
         const updateFields = {
@@ -52,7 +52,7 @@ const updateHoaDon = async (req, res) => {
     } catch (error) {
         // Xử lý lỗi và cung cấp một thông báo lỗi thân thiện với người dùng
         console.error(error);
-        return { msg: 'Đã xảy ra lỗi khi cập nhật hóa đơn', error: 'Lỗi không xác định' };
+        return { msg: 'Đã xảy ra lỗi khi cập nhật hóa đơn', error: 'Lỗi không xác định', success: false };
     }
 };
 
@@ -146,7 +146,7 @@ const getHoaDon = async (req, res, next) => {
         };
     } catch (error) {
         console.error(error);
-        return ({ error: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn' });
+        return ({ error: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn', msg: 'Đã xảy ra lỗi khi lấy danh sách hóa đơn', success: false });
     }
 }
 const getHoaDonWeb = async (req, res, next) => {
