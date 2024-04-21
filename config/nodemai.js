@@ -15,6 +15,6 @@ exports.handleSendMail = async (val) => {
         await transporter.sendMail(val);
         return 'OK';
     } catch (error) {
-     console.log("🚀 ~ exports.handleSendMail= ~ error:", error)
+        throw new ApiError(httpStatus.INTERNAL_SERVER_ERROR, 'Unable to send email', false, error.message);
     }
 };

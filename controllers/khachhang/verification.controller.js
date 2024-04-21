@@ -20,14 +20,13 @@ const VerificationControllers = {
 
       res.json({
         success: true,
-        msg: 'Send verification code successfully!!!',
+        message: 'Send verification code successfully!!!',
         data: {
           code: verificationCode,
         },
       });
     } catch (error) {
-      console.log("🚀 ~ verification:asyncHandle ~ error:", error)
-      res.json({ success: false, msg: 'không đúng email' })
+      res.json({ success: false, message: 'không đúng email' })
     }
   })
 }

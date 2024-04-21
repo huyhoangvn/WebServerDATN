@@ -338,6 +338,7 @@ const finAccount = async (req, res) => {
     const email = req.params.email;
     if (email == "") {
       return res.json({
+        error: 'Email không được để trống',
         msg: 'Email không được để trống',
         success: false
       });
@@ -345,11 +346,13 @@ const finAccount = async (req, res) => {
     const khachHang = await KhachHang.model.findOne({ taiKhoan: email });
     if (!khachHang) {
       return res.json({
+        error: 'Tài khoản không tồn tại',
         msg: 'Tài khoản không tồn tại',
         success: false
       });
     }
     return res.json({
+      message: "Tìm tài khoản thành công",
       msg: "Tìm tài khoản thành công",
       success: true,
       id: khachHang._id
@@ -357,45 +360,8 @@ const finAccount = async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.json({
+      error: "Lỗi khi tìm tài khoản",
       msg: "Lỗi khi tìm tài khoản",
-      success: false
-    });
-  }
-}
-
-const forgotPassword = async (req, res) => {
-  try {
-    const id = req.params.id;
-    const matKhau = req.body.matKhau;
-    
-    if (!matKhau) {
-      return res.json({
-        msg: 'Mật khẩu không được để trống',
-        success: false
-      });
-    }
-
-    const khachHang = await KhachHang.model.findById(id);
-    
-    if (!khachHang) {
-      return res.json({
-        msg: 'Không tìm thấy khách hàng',
-        success: false
-      });
-    }
-
-    khachHang.matKhau = matKhau;
-    await khachHang.save();
-
-    return res.json({
-      msg: 'Mật khẩu đã được cập nhật thành công',
-      success: true
-    });
-    
-  } catch (error) {
-    console.error(error);
-    return res.json({
-      msg: "Lỗi khi quên mật khẩu",
       success: false
     });
   }
@@ -529,6 +495,5 @@ module.exports = {
   getSoLuongKhachHangApi,
   getKhachHangbyidKhachHang,
   updateMatKhau,
-  finAccount,
-  forgotPassword
+  finAccount
 }

@@ -15,8 +15,6 @@ router.post('/doi-mat-khau/:id', passport.authenticate('jwt', { session: false }
 
 router.put("/:idKH", passport.authenticate('jwt', { session: false }), multer.upload.fields([{ name: 'hinhAnh', maxCount: 1 }]), KhachHangCtrl.updateKhachHang); //http://localhost:3000/api/khachhang/khachhang/updateKhachHang
 
-router.post('/find-account/:email', KhachHangCtrl.finAccount); //http://localhost:3000/api/khachhang/khachhang/find-account
-
-router.put('/forgot-password/:id', KhachHangCtrl.forgotPassword); //http://localhost:3000/api/khachhang/khachhang/forgot-password
+router.post('/find-account/:email', passport.authenticate('jwt', { session: false }), KhachHangCtrl.finAccount); //http://localhost:3000/api/khachhang/khachhang/find-account
 
 module.exports = router;
