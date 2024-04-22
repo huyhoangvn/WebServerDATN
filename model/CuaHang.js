@@ -14,7 +14,12 @@ const CuaHangSchema = new db.mongodb.Schema(
         thoiGianMo: { type: String, default: "00:00:00" },
         thoiGianDong: { type: String, default: "00:00:00" },
         hinhAnh: { type: String, default: "N/A" },
-        trangThai: { type: Boolean, required: true }
+        trangThai: { type: Boolean, required: true },
+
+        //Thanh toán
+        app_id: { type: String, default: "" },
+        key1: { type: String, default: "" },
+        key2: { type: String, default: "" },
     }, { collection: 'CuaHang' }
 )
 
