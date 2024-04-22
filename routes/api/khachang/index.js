@@ -15,5 +15,6 @@ router.use('/hinhanh', require('./hinhanhmon'))
 router.use('/khuyenmaicuatoi', require('./khuyenmaicuatoi'))
 router.use('/thongke', require('./thongke'))
 router.use('/verification', require('./verification'))
+router.use('/thanhtoan', require('./thanhtoan'))
 
 module.exports = router;
