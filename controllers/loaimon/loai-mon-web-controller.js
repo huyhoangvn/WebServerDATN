@@ -17,22 +17,34 @@ const getList = async (req, res, next) => {
 }
 const AddLoaiMon =  async (req, res, next)=>{
     if(req.body.tenLM == "" || req.body.tenLM == "undefined"){
-        const result = await LoaiMonCtrl.GetSoLuongMonTheoLoaiMon(req, res);
-        res.render("mon/loai-mon", {
-            listLM: result.list,
-            admin: req.session.ten,
-            msg: "thiếu tên loại món"
-        })
-        // res.redirect("/mon/loai-mon")
+        // const result = await LoaiMonCtrl.GetSoLuongMonTheoLoaiMon(req, res);
+        // const trang = parseInt(req.query.trang) || 1;
+        // const soMonTrenTrang = 10; 
+        // const soLuongMon = await LoaiMonCtrl.GetSoLuongLoaiMon(req, res);
+        // const totalPages = Math.ceil(soLuongMon.count / soMonTrenTrang);
+        // res.render("mon/loai-mon", {
+        //     totalPages: totalPages,
+        //     currentPage: trang,
+        //     listLM: result.list,
+        //     admin: req.session.ten,
+        //     msg: "thiếu tên loại món"
+        // })
+        res.redirect("/loai-mon/danh-sach")
     }else{
         const data = await LoaiMonCtrl.themLoaiMon(req, res, next)
-        const result = await LoaiMonCtrl.GetSoLuongMonTheoLoaiMon(req, res);
-        res.render("mon/loai-mon", {
-            listLM: result.list,
-            admin: req.session.ten,
-            msg: data.msg
-        })
-        // res.redirect("/mon/loai-mon")
+        // const result = await LoaiMonCtrl.GetSoLuongMonTheoLoaiMon(req, res);
+        // const trang = parseInt(req.query.trang) || 1;
+        // const soMonTrenTrang = 10; 
+        // const soLuongMon = await LoaiMonCtrl.GetSoLuongLoaiMon(req, res);
+        // const totalPages = Math.ceil(soLuongMon.count / soMonTrenTrang);
+        // res.render("mon/loai-mon", {
+        //     totalPages: totalPages,
+        //     currentPage: trang,
+        //     listLM: result.list,
+        //     admin: req.session.ten,
+        //     msg: data.msg
+        // })
+        res.redirect("/loai-mon/danh-sach")
     }
 }
 
