@@ -217,7 +217,7 @@
     <section class="content">
       <div class="container-fluid bg-white m-2">
         <!-- Main content nằm ở dây -->
-<!-- Bắt đầu filter -->
+        <!-- Bắt đầu filter -->
         <form action="/cua-hang/danh-sach" method="GET">
           <!-- tìm theo tên món và tên cửa hàng -->
           <div class="d-flex row justify-content-between mb-1">
@@ -241,15 +241,16 @@
             </div>
           </div>
         </form>
-<!-- Kết thúc filter -->
+        <!-- Kết thúc filter -->
 
-<!-- Bắt đầu bảng -->
+        <!-- Bắt đầu bảng -->
         <label for="">Đã tìm thấy <%=count%> kết quả</label>
         <table class="table table-bordered border-secondary">
           <thead>
             <tr class="table-secondary">
               <td scope="col-1">STT</td>
               <td scope="col-2">Tên cửa hàng</td>
+              <td scope="col-2">Số điện thoại</td>
               <td scope="col-2">Số nhân viên</td>
               <td scope="col-2">Địa chỉ</td>
               <td scope="col-2">Trạng thái</td>
@@ -266,6 +267,9 @@
                   <%=listCH[i].tenCH%>
                 </td>
                 <td scope="col-2">
+                  <%=listCH[i].sdt%>
+                </td>
+                <td scope="col-2">
                   <%=listCH[i].soLuongNhanVien%>
                 </td>
                 <td scope="col-2">
@@ -275,47 +279,47 @@
                   <a data-toggle="modal" data-target="#suaTrangThaiModal"
                     class=" <%= listCH[i].trangThai ? 'text-success' : 'text-danger' %>" data-idch="<%=listCH[i]._id%>"
                     data-trangthai="<%=listCH[i].trangThai%>">
-                    <%= listCH[i].trangThai ? 'Hoạt động' : 'Khóa' %> 
+                    <%= listCH[i].trangThai ? 'Hoạt động' : 'Khóa' %>
                   </a>
                 </td>
 
-                      <td class="text-primary" scope="col-1">
-                        <a href="/cua-hang/chi-tiet/<%=listCH[i].idCH%>">Chi tiết</a>
-                      </td>
+                <td class="text-primary" scope="col-1">
+                  <a href="/cua-hang/chi-tiet/<%=listCH[i].idCH%>">Chi tiết</a>
+                </td>
               </tr>
               <%}%>
           </tbody>
         </table>
-<!-- Kết thúc bảng -->
+        <!-- Kết thúc bảng -->
 
-<!-- Modal Sửa Trạng Thái -->
+        <!-- Modal Sửa Trạng Thái -->
         <div class="modal fade" id="suaTrangThaiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-        <div class="modal-content">
-        <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Sửa Trạng Thái</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-        </div>
-        <div class="modal-body">
-        <form id="formSuaTrangThai" action="/cua-hang/xoa/listCH[i]._id" method="get">
-          <div class="form-group">
-            <label for="">Việc sửa này sẽ sửa đồng thời cả món và nhân viên</label>
-            <label for="trangThai">Bạn có muốn sửa không?</label>
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sửa Trạng Thái</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form id="formSuaTrangThai" action="/cua-hang/xoa/listCH[i]._id" method="get">
+                  <div class="form-group">
+                    <label for="">Việc sửa này sẽ sửa đồng thời cả món và nhân viên</label>
+                    <label for="trangThai">Bạn có muốn sửa không?</label>
+                  </div>
+                  <div class="modal-footer justify-content-end">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Sửa</button>
+                  </div>
+              </div>
+            </div>
           </div>
-          <div class="modal-footer justify-content-end">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-              <button type="submit" class="btn btn-primary">Sửa</button>
-          </div>
         </div>
-        </div>
-        </div>
-        </div>
-<!-- Hết modal -->
+        <!-- Hết modal -->
 
-<!-- Bắt đầu phân trang -->
+        <!-- Bắt đầu phân trang -->
         <label for=""></label>
         <nav aria-label="Page navigation">
           <ul class="pagination justify-content-center">
@@ -328,7 +332,7 @@
               <% } %>
           </ul>
         </nav>
-<!-- kết thúc phân trang -->
+        <!-- kết thúc phân trang -->
       </div>
     </section>
   </div>

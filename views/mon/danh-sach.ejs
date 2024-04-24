@@ -202,7 +202,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Món</h1>
+            <h1 class="m-0">Danh sách món</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -300,38 +300,38 @@
                   </a>
                 </td>
 
-                      <td class="text-primary" scope="col-1">
-                        <a href="/mon/chi-tiet/<%=data[i].idMon%>">Chi tiết</a>
-                      </td>
+                <td class="text-primary" scope="col-1">
+                  <a href="/mon/chi-tiet/<%=data[i].idMon%>">Chi tiết</a>
+                </td>
               </tr>
               <%}%>
           </tbody>
         </table>
 
-         <!-- Modal Sửa Trạng Thái -->
-         <div class="modal fade" id="suaTrangThaiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-         <div class="modal-dialog" role="document">
-           <div class="modal-content">
-             <div class="modal-header">
-               <h5 class="modal-title" id="exampleModalLabel">Sửa Trạng Thái</h5>
-               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                 <span aria-hidden="true">&times;</span>
-               </button>
-             </div>
-             <div class="modal-body">
-               <form id="formSuaTrangThai" action="/mon/xoa/data[i].idMon" method="get">
-                 <div class="form-group">
-                   <label for="trangThai">Bạn có muốn sửa trạng thái không?</label>
-                 </div>
-                 <div class="modal-footer justify-content-end">
-                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                     <button type="submit" class="btn btn-primary">Sửa</button>
-                 </div>
-             </div>
-           </div>
-         </div>
-       </div>
+        <!-- Modal Sửa Trạng Thái -->
+        <div class="modal fade" id="suaTrangThaiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Sửa Trạng Thái</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form id="formSuaTrangThai" action="/mon/xoa/data[i].idMon" method="get">
+                  <div class="form-group">
+                    <label for="trangThai">Bạn có muốn sửa trạng thái không?</label>
+                  </div>
+                  <div class="modal-footer justify-content-end">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Sửa</button>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- Phân trang hiển thị-->
         <nav aria-label="Page navigation">
@@ -365,48 +365,48 @@
     )
 
     // Hàm để trích xuất các tham số từ URL
-  function getUrlParameter(name) {
-    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-    var results = regex.exec(location.search);
-    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-  }
-
-  // Hàm để điền lại các trường trong form từ các tham số trong URL
-function fillFormFieldsFromURL() {
-  var tenMon = getUrlParameter('tenMon') || '';
-  var tenCH = getUrlParameter('tenCH') || '';
-  var tenLM = getUrlParameter('tenLM') || '';
-  var giaTien = getUrlParameter('giaTien') || '0'; // Mặc định là '0' nếu không có giá trị trong URL
-  var trangThai = getUrlParameter('trangThai') || '-1'; // Mặc định là '-1' nếu không có giá trị trong URL
-
-  // Gán giá trị cho các trường trong form
-  document.getElementById('searchMon').value = tenMon;
-  document.getElementById('searchCuaHang').value = tenCH;
-  document.getElementsByName('tenLM')[0].value = tenLM;
-
-  // Duyệt qua tất cả các option trong select giaTien và trangThai để thiết lập selected cho option tương ứng
-  var giaTienSelect = document.getElementsByName('giaTien')[0];
-  var trangThaiSelect = document.getElementsByName('trangThai')[0];
-
-  for (var i = 0; i < giaTienSelect.options.length; i++) {
-    if (giaTienSelect.options[i].value === giaTien) {
-      giaTienSelect.options[i].selected = true;
+    function getUrlParameter(name) {
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      var results = regex.exec(location.search);
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
     }
-  }
 
-  for (var j = 0; j < trangThaiSelect.options.length; j++) {
-    if (trangThaiSelect.options[j].value === trangThai) {
-      trangThaiSelect.options[j].selected = true;
+    // Hàm để điền lại các trường trong form từ các tham số trong URL
+    function fillFormFieldsFromURL() {
+      var tenMon = getUrlParameter('tenMon') || '';
+      var tenCH = getUrlParameter('tenCH') || '';
+      var tenLM = getUrlParameter('tenLM') || '';
+      var giaTien = getUrlParameter('giaTien') || '0'; // Mặc định là '0' nếu không có giá trị trong URL
+      var trangThai = getUrlParameter('trangThai') || '-1'; // Mặc định là '-1' nếu không có giá trị trong URL
+
+      // Gán giá trị cho các trường trong form
+      document.getElementById('searchMon').value = tenMon;
+      document.getElementById('searchCuaHang').value = tenCH;
+      document.getElementsByName('tenLM')[0].value = tenLM;
+
+      // Duyệt qua tất cả các option trong select giaTien và trangThai để thiết lập selected cho option tương ứng
+      var giaTienSelect = document.getElementsByName('giaTien')[0];
+      var trangThaiSelect = document.getElementsByName('trangThai')[0];
+
+      for (var i = 0; i < giaTienSelect.options.length; i++) {
+        if (giaTienSelect.options[i].value === giaTien) {
+          giaTienSelect.options[i].selected = true;
+        }
+      }
+
+      for (var j = 0; j < trangThaiSelect.options.length; j++) {
+        if (trangThaiSelect.options[j].value === trangThai) {
+          trangThaiSelect.options[j].selected = true;
+        }
+      }
     }
-  }
-}
 
-// Gọi hàm fillFormFieldsFromURL() khi trang được tải
-window.onload = function() {
-  fillFormFieldsFromURL();
-};
-  $(document).ready(function () {
+    // Gọi hàm fillFormFieldsFromURL() khi trang được tải
+    window.onload = function () {
+      fillFormFieldsFromURL();
+    };
+    $(document).ready(function () {
       $('a[data-target="#suaTrangThaiModal"]').on('click', function () {
 
         var idMon = $(this).data('idmon');

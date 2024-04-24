@@ -241,6 +241,12 @@
                     <label for="" class="p-0 m-0 font-weight-normal">Địa chỉ giao hàng: <%=index.diaChiGiaoHang%>
                     </label>
                     <br>
+                    <label for="" class="p-0 m-0 font-weight-normal">Thời gian duyệt : <%=index.thoiGianDuyet%></label>
+                    <br>
+                    <label for="" class="p-0 m-0 font-weight-normal">Thời gian giao hàng dự kiến:
+                        <%=index.thoiGianGiaoHangDuKien%>
+                    </label>
+                    <br>
                     <label for="" class="p-0 m-0 font-weight-normal">Ghi chú: <%=index.ghiChu%>
                     </label>
                     <br>
@@ -257,20 +263,20 @@
                                 <br>
                                 <% if(index.trangThaiMua==0){%>
                                     <label class="font-weight-normal">Trạng thái mua: </label>
-                                    <label class="text-secondary" scope="col-2">Đang đợi duyệt</label>
+                                    <label>Đang đợi duyệt</label>
                                     <%}else if(index.trangThaiMua==1){%>
                                         <label class="font-weight-normal">Trạng thái mua: </label>
-                                        <label class="text-warning" scope="col-2">Đang chuẩn bị</label>
+                                        <label scope="col-2">Đang chuẩn bị</label>
                                         <%}else if(index.trangThaiMua==2){%>
                                             <label class="font-weight-normal">Trạng thái mua: </label>
-                                            <label class="text-info" scope="col-2">Đang giao hàng</label>
+                                            <label scope="col-2">Đang giao hàng</label>
                                             <%}else if(index.trangThaiMua==3){%>
                                                 <label class="font-weight-normal">Trạng thái mua: </label>
-                                                <label class="text-success" scope="col-2">giao hàng thành công
+                                                <label scope="col-2">giao hàng thành công
                                                 </label>
                                                 <%}else if(index.trangThaiMua==4){%>
                                                     <label class="font-weight-normal">Trạng thái mua: </label>
-                                                    <label class="text-danger" scope="col-2">Giao hàng thất bại
+                                                    <label scope="col-2">Giao hàng thất bại
                                                     </label>
                                                     <%}%>
                                                         <br>

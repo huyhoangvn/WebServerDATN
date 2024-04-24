@@ -16,4 +16,6 @@ router.get('/12-thang', passport.authenticate('jwt', { session: false }), thongk
 router.get('/tenLM', passport.authenticate('jwt', { session: false }), thongkeCrl.thongKeMonBanChayTheoTenLoaiMonApi);// hàm này dùng để tìm kiếm theo tên LM năm và tháng
 router.get('/nam-tenLM', passport.authenticate('jwt', { session: false }), thongkeCrl.thongKeMonBanChayTheoNamApi);// hàm này dùng để tìm kiếm theo năm và tháng
 
+router.get('/ngay-to-ngay', thongkeCrl.thongKeDoanhThuTheoNgaytoNgayApi);
+
 module.exports = router;
