@@ -88,9 +88,7 @@ const getAdd = async (req, res) => {
                 donToiThieu: donToiThieu,
                 trangThai: true
             })
-            res.render("khuyenmai/them-moi", {
-                admin: req.session.ten,
-            });
+            res.redirect("/khuyen-mai/danh-sach/");
         }
     } catch (error) {
         console.error(error);
