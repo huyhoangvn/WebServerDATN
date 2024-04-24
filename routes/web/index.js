@@ -17,7 +17,7 @@ router.use('/hoa-don', require('./hoadon'))
 
 //Thanh toán
 router.post('/callback', (req, res) => {
-    console.log("Hi")
+    console.log(req.body.data)
     let result = {};
   
     try {

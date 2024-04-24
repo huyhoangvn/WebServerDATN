@@ -34,6 +34,7 @@ const thanhToanController = {
       const embed_data = {};
       const items = [hd];
       const transID = Math.floor(Math.random() * 1000000);
+      console.log(`${req.protocol}://${req.get("host")}/callback`)
       const order = {
         app_id: config.app_id,
         app_trans_id: `${moment().format("YYMMDD")}_${transID}`,

@@ -446,6 +446,7 @@ const thongKeMonBanChayTheoNam = async (req, res) => {
                     tenMon: currentValue.mon.tenMon,
                     tenLM: currentValue.loaiMon.tenLM, // Sửa đổi tên loại món
                     soLuong: currentValue.soLuong,
+                    giaTien: currentValue.giaTienDat,
                     doanhThu: currentValue.giaTienDat * currentValue.soLuong,
                     hinhAnh: `${req.protocol}://${req.get("host")}/public/images/${currentValue.mon.hinhAnh}`
                 });

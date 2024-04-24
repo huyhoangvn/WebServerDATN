@@ -281,6 +281,7 @@ const updateLoaiMonApi = async (req, res, next) => {
 const GetSoLuongMonTheoLoaiMon = async (req, res) => {
   try {
     const timkiem = {};
+    const trang = parseInt(req.query.trang) || 1;
 
     if (typeof (req.query.tenLM) !== 'undefined' && typeof (req.query.tenLM) !== "") {
       timkiem.tenLM = { $regex: req.query.tenLM, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
@@ -310,13 +311,13 @@ const GetSoLuongMonTheoLoaiMon = async (req, res) => {
           "soLuongMon": { $size: "$monData" } // Đếm số lượng phần tử trong mảng "monData"
         }
       },
-      // {
-      //     $skip: (trang-1)*10,
-      // },
+      {
+          $skip: (trang-1)*10,
+      },
 
-      // {
-      //         $limit: 10,
-      // },
+      {
+              $limit: 10,
+      },
     ]);
 
     return ({
