@@ -2,6 +2,7 @@ const { model: HoaDon } = require("../../model/HoaDon");
 const mongo = require('mongoose');
 const thongke = require('../../controllers/thongke/thong-ke-controller');
 
+const moment = require('moment');
 // api 
 const thongKeDoanhThuTheoNgayApi = async (req, res, next) => {
     try {
@@ -101,6 +102,20 @@ const thongKeMonBanChayTheoNamApi = async (req, res, next) => {
     }
 }
 
+
+const thongKeDoanhThuTheoNgaytoNgayApi = async (req, res, next) => {
+    try {
+        const index = await thongke.thongKeDoanhThuTheoNgayToNgay(req, res, next);
+        res.json(index);  // Send the result directly without using JSON.stringify
+    } catch (error) {
+        // Check if headers have already been sent
+        if (res.headersSent) {
+            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        } else {
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt hóa đơn', error: error.message });
+        }
+    }
+}
 module.exports = {
     //thống kê doanh thu
     thongKeDoanhThuTheoNgayApi,
@@ -112,5 +127,6 @@ module.exports = {
     // thống kê món bán chạy theo tên loại món
     thongKeMonBanChayTheoTenLoaiMonApi,
     thongKeMonBanChayTheoNamApi,
+    thongKeDoanhThuTheoNgaytoNgayApi,
 
 }

@@ -201,7 +201,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0">Hóa Đơn</h1>
+                        <h1 class="m-0">Danh sách hóa đơn</h1>
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
@@ -249,8 +249,9 @@
                             <td scope="col-1">STT</td>
                             <td scope="col-2">Mã hóa đơn </td>
                             <td scope="col-2">Thời gian tạo</td>
-                            <td scope="col-2">trạng thái thanh toán</td>
-                            <td scope="col-2">giao hàng</td>
+                            <td scope="col-2">Thành tiền</td>
+                            <td scope="col-2">Trạng thái thanh toán</td>
+                            <td scope="col-2">Trạng thái giao hàng</td>
                             <td scope="col-1">Chức năng</td>
                         </tr>
                     </thead>
@@ -268,6 +269,9 @@
                                         <%= ("0" + startDate.getDate()).slice(-2) %>/<%= ("0" + (startDate.getMonth() +
                                                 1)).slice(-2) %>/<%= startDate.getFullYear() %>
                                 </td>
+                                <td scope="col-2">
+                                    <%=data[i].thanhTien%> đ
+                                </td>
 
                                 <% if(data[i].trangThaiThanhToan==1){%>
                                     <td class="text-success" scope="col-2">Đã thanh toán</td>
@@ -275,16 +279,16 @@
                                         <td class="text-danger" scope="col-2">Chưa thanh Toán</td>
                                         <%}%>
                                             <% if(data[i].trangThaiMua==0){%>
-                                                <td class="text-secondary" scope="col-2">Đang đợi duyệt</td>
+                                                <td scope="col-2">Đang đợi duyệt</td>
                                                 <%}else if(data[i].trangThaiMua==1){%>
-                                                    <td class="text-warning" scope="col-2">Đang chuẩn bị</td>
+                                                    <td scope="col-2">Đang chuẩn bị</td>
                                                     <%}else if(data[i].trangThaiMua==2){%>
-                                                        <td class="text-info" scope="col-2">Đang giao hàng</td>
+                                                        <td scope="col-2">Đang giao hàng</td>
                                                         <%}else if(data[i].trangThaiMua==3){%>
-                                                            <td class="text-success" scope="col-2">giao hàng thành công
+                                                            <td scope="col-2">Giao hàng thành công
                                                             </td>
                                                             <%}else if(data[i].trangThaiMua==4){%>
-                                                                <td class="text-danger" scope="col-2">Giao hàng thất bại
+                                                                <td scope="col-2">Giao hàng thất bại
                                                                 </td>
                                                                 <%}%>
 

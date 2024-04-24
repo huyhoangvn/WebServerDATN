@@ -240,6 +240,7 @@ const GetCuaHang = async (req, res, next) => {
                 $project: {
                     "tenCH": "$tenCH",
                     "diaChi": "$diaChi",
+                    "sdt": "$sdt",
                     "trangThai": "$trangThai",
                     "idCH": "$_id",
                     "soLuongNhanVien": { $size: "$NhanViens" }
@@ -261,7 +262,7 @@ const GetCuaHang = async (req, res, next) => {
         });
     } catch (error) {
         console.error(error);
-        return({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
+        return ({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
     }
 }
 
@@ -308,7 +309,7 @@ const GetSoLuongCuaHang = async (req, res, next) => {
         });
     } catch (error) {
         console.error(error);
-        return({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
+        return ({ success: false, msg: 'Đã xảy ra lỗi khi lấy danh sách cửa hàng' });
     }
 }
 

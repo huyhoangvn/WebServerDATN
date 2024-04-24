@@ -131,7 +131,9 @@ const getKhachHangTheoTen = async (req, res) => {
         "tenKH": "$tenKH",
         "gioiTinh": "$gioiTinh",
         "taiKhoan": "$taiKhoan",
-        "trangThai": "$trangThai"
+        "trangThai": "$trangThai",
+        "sdt": "$sdt",
+        "diaChi": "$diaChi",
       }
     )
       .skip((trang - 1) * 10)
@@ -367,7 +369,7 @@ const forgotPassword = async (req, res) => {
   try {
     const id = req.params.id;
     const matKhau = req.body.matKhau;
-    
+
     if (!matKhau) {
       return res.json({
         msg: 'Mật khẩu không được để trống',
@@ -376,7 +378,7 @@ const forgotPassword = async (req, res) => {
     }
 
     const khachHang = await KhachHang.model.findById(id);
-    
+
     if (!khachHang) {
       return res.json({
         msg: 'Không tìm thấy khách hàng',
@@ -391,7 +393,7 @@ const forgotPassword = async (req, res) => {
       msg: 'Mật khẩu đã được cập nhật thành công',
       success: true
     });
-    
+
   } catch (error) {
     console.error(error);
     return res.json({

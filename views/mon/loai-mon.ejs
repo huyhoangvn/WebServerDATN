@@ -202,7 +202,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Món</h1>
+            <h1 class="m-0">Danh sách loại món</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -232,132 +232,133 @@
             </div>
           </div>
         </form>
-              <!-- Hết form thêm mới -->
-              <!-- Filter loại món -->
-              <label>Danh sách loại món</label>
-              <br>
-              <form action="/loai-mon/danh-sach" method="GET">
-                <div class="d-flex row justify-content-between mb-1">
-                  <div class="col-8">
-                    <input type="text" class="form-control" name="tenLM" placeholder="Nhập tên loại món để tìm kiếm">
-                  </div>
-                  <div class="col-2">
-                    <select class="form-control" name="trangThai">
-                      <option value="-1">Tất cả trạng thái</option>
-                      <option value="1">Hoạt động</option>
-                      <option value="0">Khóa</option>
-                    </select>
-                  </div>
-
-
-                  <div class="col-auto">
-                    <button class="btn btn-dark w-100" type="submit">Tìm kiếm</button>
-                  </div>
-                </div>
-
-              </form>
-              <!-- Hết filter loại món -->
-
-              <!-- Bảng hiển thị -->
-              <table class="table table-bordered border-secondary">
-                <thead>
-                  <tr class="table-secondary">
-                    <td scope="col-1">STT</td>
-                    <td scope="col-2">Loại món</td>
-                    <td scope="col-2">Số lượng món</td>
-                    <td scope="col-2">Trạng thái</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% for (var i=0; i<listLM.length; i++) {%>
-                    <tr>
-                      <td scope="col-1">
-                        <%=i+1%>
-                      </td>
-                      <td scope="col-2">
-                        <%=listLM[i].tenLM%>
-                      </td>
-                      <td scope="col-2">
-                        <%=listLM[i].soLuongMon%>
-                      </td>
-                      <td class="text-primary scope-col-2">
-                        <a data-toggle="modal" data-target="#suaTrangThaiModal"
-                          class=" <%= listLM[i].trangThai ? 'text-success' : 'text-danger' %>" data-idlm="<%=listLM[i]._id%>"
-                          data-trangthai="<%=listLM[i].trangThai%>">
-                          <%= listLM[i].trangThai ? 'Hoạt động' : 'Khóa' %> 
-                        </a>
-                      </td>
-
-                    </tr>
-                    <%}%>
-                </tbody>
-              </table>
-              <!-- hết bảng hiển thị -->
-
-              <!-- Bắt đầu phân trang -->
-                <label for=""></label>
-                <nav aria-label="Page navigation">
-                  <ul class="pagination justify-content-center">
-                    <% for (var i=1; i <=totalPages; i++) { %>
-                      <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-                        <a class="page-link" href="?trang=<%= i %>">
-                          <%= i %>
-                        </a>
-                      </li>
-                      <% } %>
-                  </ul>
-                </nav>
-              <!-- kết thúc phân trang -->
-
-              <!-- Modal Sửa Trạng Thái -->
-              <% if(typeof alert !== 'undefined' && alert !== null) { %>
-                <input type="text" id="thongBao" value="<%= alert %>">
-                <!-- <div><%= alert %></div> -->
-                <!-- alert(<%= alert %>) -->
-              <% } else { %>
-                <input type="hidden" id="thongBao" value="">
-              <% } %>
-         <div class="modal fade" id="suaTrangThaiModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-         <div class="modal-dialog" role="document">
-           <div class="modal-content">
-             <div class="modal-header">
-               <h5 class="modal-title" id="exampleModalLabel">Sửa Trạng Thái</h5>
-               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                 <span aria-hidden="true">&times;</span>
-               </button>
-             </div>
-             <div class="modal-body">
-               <form id="formSuaTrangThai" action="/mon/xoa/listLM[i]._id" method="get">
-                 <div class="form-group">
-                   <label for="trangThai">Bạn có muốn sửa trạng thái không?</label>
-                 </div>
-                 <div class="modal-footer justify-content-end">
-                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                     <button type="submit" class="btn btn-primary">Sửa</button>
-                 </div>
-             </div>
-           </div>
-         </div>
-       </div>
-      <!-- Hết modal -->
-       
-      <!-- Modal -->
-      <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Cảnh báo</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+        <!-- Hết form thêm mới -->
+        <!-- Filter loại món -->
+        <label>Danh sách loại món</label>
+        <br>
+        <form action="/loai-mon/danh-sach" method="GET">
+          <div class="d-flex row justify-content-between mb-1">
+            <div class="col-8">
+              <input type="text" class="form-control" name="tenLM" placeholder="Nhập tên loại món để tìm kiếm">
             </div>
-            <div class="modal-body" id="alertContent">
-              <!-- Nội dung cảnh báo sẽ được thêm vào đây -->
+            <div class="col-2">
+              <select class="form-control" name="trangThai">
+                <option value="-1">Tất cả trạng thái</option>
+                <option value="1">Hoạt động</option>
+                <option value="0">Khóa</option>
+              </select>
+            </div>
+
+
+            <div class="col-auto">
+              <button class="btn btn-dark w-100" type="submit">Tìm kiếm</button>
             </div>
           </div>
-        </div>
-      </div>
+
+        </form>
+        <!-- Hết filter loại món -->
+
+        <!-- Bảng hiển thị -->
+        <table class="table table-bordered border-secondary">
+          <thead>
+            <tr class="table-secondary">
+              <td scope="col-1">STT</td>
+              <td scope="col-2">Loại món</td>
+              <td scope="col-2">Số lượng món cùng loại</td>
+              <td scope="col-2">Trạng thái</td>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (var i=0; i<listLM.length; i++) {%>
+              <tr>
+                <td scope="col-1">
+                  <%=i+1%>
+                </td>
+                <td scope="col-2">
+                  <%=listLM[i].tenLM%>
+                </td>
+                <td scope="col-2">
+                  <%=listLM[i].soLuongMon%>
+                </td>
+                <td class="text-primary scope-col-2">
+                  <a data-toggle="modal" data-target="#suaTrangThaiModal"
+                    class=" <%= listLM[i].trangThai ? 'text-success' : 'text-danger' %>" data-idlm="<%=listLM[i]._id%>"
+                    data-trangthai="<%=listLM[i].trangThai%>">
+                    <%= listLM[i].trangThai ? 'Hoạt động' : 'Khóa' %>
+                  </a>
+                </td>
+
+              </tr>
+              <%}%>
+          </tbody>
+        </table>
+        <!-- hết bảng hiển thị -->
+
+        <!-- Bắt đầu phân trang -->
+        <label for=""></label>
+        <nav aria-label="Page navigation">
+          <ul class="pagination justify-content-center">
+            <% for (var i=1; i <=totalPages; i++) { %>
+              <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                <a class="page-link" href="?trang=<%= i %>">
+                  <%= i %>
+                </a>
+              </li>
+              <% } %>
+          </ul>
+        </nav>
+        <!-- kết thúc phân trang -->
+
+        <!-- Modal Sửa Trạng Thái -->
+        <% if(typeof alert !=='undefined' && alert !==null) { %>
+          <input type="text" id="thongBao" value="<%= alert %>">
+          <!-- <div><%= alert %></div> -->
+          <!-- alert(<%= alert %>) -->
+          <% } else { %>
+            <input type="hidden" id="thongBao" value="">
+            <% } %>
+              <div class="modal fade" id="suaTrangThaiModal" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Sửa Trạng Thái</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form id="formSuaTrangThai" action="/mon/xoa/listLM[i]._id" method="get">
+                        <div class="form-group">
+                          <label for="trangThai">Bạn có muốn sửa trạng thái không?</label>
+                        </div>
+                        <div class="modal-footer justify-content-end">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                          <button type="submit" class="btn btn-primary">Sửa</button>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Hết modal -->
+
+              <!-- Modal -->
+              <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Cảnh báo</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body" id="alertContent">
+                      <!-- Nội dung cảnh báo sẽ được thêm vào đây -->
+                    </div>
+                  </div>
+                </div>
+              </div>
 
       </div>
     </section>
@@ -387,22 +388,22 @@
       });
     });
 
-// Lấy giá trị của input có id là 'thongBao' từ view
-var alertContent = document.getElementById("thongBao").value;
+    // Lấy giá trị của input có id là 'thongBao' từ view
+    var alertContent = document.getElementById("thongBao").value;
     // Kiểm tra xem alertContent có giá trị không
     if (alertContent) {
-        // Hiển thị cảnh báo trong modal
-        var modal = $('#alertModal');
-        var alertText = $('#alertContent');
-        alertText.text(alertContent);
+      // Hiển thị cảnh báo trong modal
+      var modal = $('#alertModal');
+      var alertText = $('#alertContent');
+      alertText.text(alertContent);
 
-        // Hiển thị modal
-        modal.modal('show');
+      // Hiển thị modal
+      modal.modal('show');
 
-        // Đóng modal sau một khoảng thời gian (3 giây)
-        setTimeout(function(){
-            modal.modal('hide');
-        }, 2000);
+      // Đóng modal sau một khoảng thời gian (3 giây)
+      setTimeout(function () {
+        modal.modal('hide');
+      }, 2000);
     }
 
   </script>
