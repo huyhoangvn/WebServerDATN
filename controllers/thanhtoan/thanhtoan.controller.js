@@ -34,7 +34,6 @@ const thanhToanController = {
       const embed_data = {};
       const items = [hd];
       const transID = Math.floor(Math.random() * 1000000);
-      // `${moment().format("YYMMDD")}_${transID}`
       const order = {
         app_id: config.app_id,
         app_trans_id: `${moment().format("YYMMDD")}_${transID}`,
@@ -45,7 +44,7 @@ const thanhToanController = {
         amount: hd.thanhTien,
         description: `Thanh toán đơn hàng #${hd.maHD}`,
         bank_code: "zalopayapp",
-        callback_url: `${req.protocol}://${req.get("host")}/api/khachhang/thanhtoan/result/${idHD}`
+        callback_url: `${req.protocol}://${req.get("host")}/callback`
       };
       const data =
         config.app_id +
@@ -84,6 +83,7 @@ const thanhToanController = {
   },
   
   testCallBack: async (req, res) => {
+    console.log("Hi")
     try {
         const idHD = req.params.idHD;
         const hd = await HoaDon.findOne({ _id: idHD });

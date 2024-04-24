@@ -17,13 +17,14 @@ router.use('/hoa-don', require('./hoadon'))
 
 //Thanh toán
 router.post('/callback', (req, res) => {
+    console.log("Hi")
     let result = {};
   
     try {
       let dataStr = req.body.data;
       let reqMac = req.body.mac;
     
-      let mac = CryptoJS.HmacSHA256(dataStr, config.key2).toString();
+      let mac = CryptoJS.HmacSHA256(dataStr, "uUfsWgfLkRLzq6W2uNXTCxrfxs51auny").toString();
       console.log("mac =", mac);
   
   
