@@ -35,6 +35,13 @@ const HoaDonSchema = new db.mongodb.Schema(
 
         },
         trangThai: { type: Boolean, default: true },
+
+        phuongThucThanhToan: {
+            type: Number,
+            enum: [0, 1],
+            default: 0, // 0 tiền mặt ; 1 : đã chuyển khoản
+
+        },
     }, { collection: 'HoaDon' }
 );
 
