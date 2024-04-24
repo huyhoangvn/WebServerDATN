@@ -8,6 +8,6 @@ router.get('/', ()=>{
 
 router.post('/payZalo/:idHD', thanhToanController.paymentZalo);
 
-router.get('/result/:idHD', thanhToanController.testCallBack);
+// router.post('/result/:idHD', thanhToanController.testCallBack);
 
 module.exports = router;
