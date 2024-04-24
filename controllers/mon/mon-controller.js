@@ -182,7 +182,7 @@ const getTatCaMon = async (req, res) => {
 
     };
     let giaTienMin = 0;
-    let giaTienMax = 100000;
+    let giaTienMax = 10000000;
     if (typeof (req.query.tenMon) !== 'undefined' && req.query.tenMon !== "") {
       timkiem.tenMon = { $regex: req.query.tenMon, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
     }
