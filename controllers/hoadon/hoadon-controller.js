@@ -296,10 +296,11 @@ const getSoLuongHoaDon = async (req, res, next) => {
 const updatetrangThaiThanhToan = async (req, res, next) => {
     try {
         const id = req.params.id;
+        const phuongThucThanhToan = req.body.phuongThucThanhToan;
 
         const updatetrangThaiThanhToan = await HoaDon.findOneAndUpdate(
             { _id: id },
-            { $set: { trangThaiThanhToan: 1 } },
+            { $set: { trangThaiThanhToan: 1, phuongThucThanhToan: phuongThucThanhToan } },
             { new: true },
         );
         if (!updatetrangThaiThanhToan) {
@@ -571,6 +572,7 @@ const chiTietHoaDon = async (req, res, next) => {
                 trangThaiMua: item.trangThaiMua,
                 trangThai: item.trangThai,
                 maHD: item.maHD,
+                phuongThucThanhToan: item.phuongThucThanhToan,
                 tenKH: khachHang ? khachHang.tenKH : "",
                 tenCH: cuaHang ? cuaHang.tenCH : ""  // Lấy tên cửa hàng từ bảng CuaHang
             },
