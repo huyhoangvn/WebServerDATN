@@ -62,6 +62,17 @@ const getHoaDon = async (req, res, next) => {
         const trang = parseInt(req.query.trang) || 1;
         const currentPage = trang;
         const filter = {};
+
+        if (
+            (typeof req.query.ngayBatDau === 'undefined' && typeof req.query.ngayKetThuc !== 'undefined') ||
+            (typeof req.query.ngayBatDau !== 'undefined' && typeof req.query.ngayKetThuc === 'undefined')
+        ) {
+            return {
+                msg: 'Vui lòng nhập cả ngày bắt đầu và ngày kết thúc',
+                success: false
+            };
+        }
+
         if (typeof (req.query.maHD) !== 'undefined' && req.query.maHD !== "") {
             filter.maHD = { $regex: req.query.maHD, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
         }
@@ -92,18 +103,30 @@ const getHoaDon = async (req, res, next) => {
         }
 
         // Xử lý tìm kiếm theo thời gian tạo
-        if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
-            const parts = req.query.thoiGianTao.split('/');
-            const day = parseInt(parts[0]);
-            const month = parseInt(parts[1]);
-            const year = parseInt(parts[2]);
+        if (typeof req.query.ngayBatDau !== 'undefined' && typeof req.query.ngayKetThuc !== 'undefined') {
+            const ngayBatDauParts = req.query.ngayBatDau.split('/');
+            const ngayKetThucParts = req.query.ngayKetThuc.split('/');
 
-            const startDate = new Date(year, month - 1, day); // Lưu ý: Tháng trong JavaScript bắt đầu từ 0
-            const endDate = new Date(year, month - 1, day + 1); // Ngày kế tiếp
+            // Tạo đối tượng Date từ các thành phần của ngày bắt đầu
+            const ngayBatDau = new Date(
+                parseInt(ngayBatDauParts[2]), // Năm
+                parseInt(ngayBatDauParts[1]) - 1, // Tháng (lưu ý: tháng trong JavaScript bắt đầu từ 0)
+                parseInt(ngayBatDauParts[0]) // Ngày
+            );
+
+            // Tạo đối tượng Date từ các thành phần của ngày kết thúc
+            const ngayKetThuc = new Date(
+                parseInt(ngayKetThucParts[2]), // Năm
+                parseInt(ngayKetThucParts[1]) - 1, // Tháng (lưu ý: tháng trong JavaScript bắt đầu từ 0)
+                parseInt(ngayKetThucParts[0]) // Ngày
+            );
+
+            // Thêm 1 ngày vào ngày kết thúc để bao gồm cả ngày đó trong khoảng thời gian tìm kiếm
+            ngayKetThuc.setDate(ngayKetThuc.getDate() + 1);
 
             filter.thoiGianTao = {
-                $gte: startDate,
-                $lt: endDate
+                $gte: ngayBatDau,
+                $lt: ngayKetThuc
             };
         }
 
@@ -122,7 +145,7 @@ const getHoaDon = async (req, res, next) => {
                     "trangThaiThanhToan": "$trangThaiThanhToan",
                     "trangThaiMua": "$trangThaiMua",
                     "tongTien": "$tongTien",
-                    "thoiGianTao": "$thoiGianTao",
+                    "thoiGianTao": { $dateToString: { format: "%d/%m/%Y", date: "$thoiGianTao" } },
                     "thanhTien": "$thanhTien",
                     "trangThai": "$trangThai",
                 }
@@ -296,10 +319,11 @@ const getSoLuongHoaDon = async (req, res, next) => {
 const updatetrangThaiThanhToan = async (req, res, next) => {
     try {
         const id = req.params.id;
+        const phuongThucThanhToan = req.body.phuongThucThanhToan;
 
         const updatetrangThaiThanhToan = await HoaDon.findOneAndUpdate(
             { _id: id },
-            { $set: { trangThaiThanhToan: 1 } },
+            { $set: { trangThaiThanhToan: 1, phuongThucThanhToan: phuongThucThanhToan } },
             { new: true },
         );
         if (!updatetrangThaiThanhToan) {
@@ -571,6 +595,7 @@ const chiTietHoaDon = async (req, res, next) => {
                 trangThaiMua: item.trangThaiMua,
                 trangThai: item.trangThai,
                 maHD: item.maHD,
+                phuongThucThanhToan: item.phuongThucThanhToan,
                 tenKH: khachHang ? khachHang.tenKH : "",
                 tenCH: cuaHang ? cuaHang.tenCH : ""  // Lấy tên cửa hàng từ bảng CuaHang
             },

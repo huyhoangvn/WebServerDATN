@@ -201,8 +201,11 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Món</h1>
-          </div><!-- /.col -->
+            <a href="/mon/danh-sach" class="btn btn-dark btn-md">
+              <i class="fas fa-chevron-left"></i>
+            </a>
+            <span class="h2" style="margin: 15px;">Chi Tiết Món</span>
+          </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Món</a></li>
@@ -230,7 +233,7 @@
             </h2>
             <label for="" class="p-0 m-0 font-weight-normal">Loại món: <%=loaiMon.tenLM%></label>
             <br>
-            <label for="" class="p-0 m-0 font-weight-normal">Của hàng: <%=cuaHang.tenCH%></label>
+            <label for="" class="p-0 m-0 font-weight-normal">Cửa hàng: <%=cuaHang.tenCH%></label>
             <br>
             <label for="" class="p-0 m-0 font-weight-normal">Giá tiền: <%=index.giaTien%>đ</label>
             <br>
@@ -288,7 +291,7 @@
           <thead>
             <tr class="table-secondary">
               <td scope="col-1">STT</td>
-              <td scope="col-4">Thời gian tạo</td>
+              <td scope="col-4">Người đánh giá</td>
               <td scope="col-4">Số sao</td>
               <td scope="col-2">Trạng thái</td>
               <td scope="col-1">Chức năng</td>
@@ -301,7 +304,7 @@
                   <%=i+1%>
                 </td>
                 <td scope="col-2">
-                  <%=list[i].thoiGianTao%>
+                  <%=list[i].tenKH%>
                 </td>
                 <td scope="col-2">
                   <%=list[i].danhGia%>

@@ -203,7 +203,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Cửa hàng</h1>
+            <h1 class="m-0">Danh sách quản lý nhân viên</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -225,11 +225,8 @@
               <input type="text" id="tenNV" class="form-control" name="tenNV"
                 placeholder="Nhập tên quản lý để tìm kiếm">
             </div>
-            <div class="col-2">
-              <input type="date" class="form-control" name="thoiGianTao" id="thoiGianTao" placeholder="Ngày tạo">
-            </div>
 
-            <div class="col-2">
+            <div class="col-3">
               <select class="form-control" id="phanQuyen" name="phanQuyen">
                 <option value="">Vai trò </option>
                 <option value="0">Quản lý</option>
@@ -237,7 +234,7 @@
               </select>
             </div>
 
-            <div class="col-2">
+            <div class="col-3">
               <select class="form-control" id="trangThai" name="trangThai">
                 <option value="-1">Trạng thái </option>
                 <option value="1">Hoạt Động</option>
@@ -258,7 +255,7 @@
             <tr class="table-secondary">
               <td scope="col-1">STT</td>
               <td scope="col-2">Tên quản lý </td>
-              <td scope="col-2">Thời gian tạo</td>
+              <td scope="col-2">Số điện thoại</td>
               <td scope="col-2">Cửa hàng</td>
               <td scope="col-2">Vai trò</td>
               <td scope="col-2">Trạng Thái</td>
@@ -275,9 +272,7 @@
                   <%=data[i].tenNV%>
                 </td>
                 <td scope="col-2">
-                  <% var startDate=new Date(data[i].thoiGianTao); %>
-                    <%= ("0" + startDate.getDate()).slice(-2) %>/<%= ("0" + (startDate.getMonth() + 1)).slice(-2) %>/<%=
-                          startDate.getFullYear() %>
+                  <%=data[i].sdt%>
                 </td>
 
                 <td scope="col-2">
@@ -461,7 +456,7 @@
       } else if (phanQuyen === 1) {
         return "Nhân viên thường";
       } else {
-        return "đợi duyệt";
+        return "Đang đợi duyệt";
       }
     }
 

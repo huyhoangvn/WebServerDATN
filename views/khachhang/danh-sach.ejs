@@ -202,7 +202,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Khách hàng</h1>
+            <h1 class="m-0">Danh sách khách hàng</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -251,28 +251,35 @@
             <tr class="table-secondary">
               <td scope="col-1">STT</td>
               <td scope="col-2">Tên </td>
-              <td scope="col-2">Giới Tính</td>
-              <td scope="col-2">Tài Khoản</td>
+              <td scope="col-2">Số điện thoại</td>
               <td scope="col-2">Trạng Thái</td>
+              <td scope="col-1">Chức Năng</td>
             </tr>
           </thead>
           <tbody>
             <% for (var i=0; i<data.length; i++) {%>
               <tr>
-                <td scope="col-1"><%=i+1%></td>
-                <td scope="col-2"><%=data[i].tenKH%></td>
-                <%if(data[i].gioiTinh==1){%>
-                  <td scope="col-2">nam</td>
-                <%}else{%>
-                  <td scope="col-2">nữ</td>
-                <%}%>
-                  <td scope="col-2"><%=data[i].taiKhoan%></td>
+                <td scope="col-1">
+                  <%=i+1%>
+                </td>
+                <td scope="col-2">
+                  <%=data[i].tenKH%>
+                </td>
+                <td scope="col-2">
+                  <%=data[i].sdt%>
+                </td>
                 <td class="text-primary scope-col-2">
                   <a data-toggle="modal" data-target="#suaTrangThaiModal"
                     class=" <%= data[i].trangThai ? 'text-success' : 'text-danger' %>" data-idkh="<%=data[i]._id%>"
                     data-trangthai="<%=data[i].trangThai%>">
                     <%= data[i].trangThai ? 'Hoạt động' : 'Khóa' %>
                   </a>
+                </td>
+                <td class="text-primary" scope="col-2">
+                  <a data-toggle="modal" data-target="#exampleModal" data-tenkh="<%=data[i].tenKH%>"
+                    data-gioitinh="<%=data[i].gioiTinh%>" data-sdt="<%=data[i].sdt%>" data-diachi="<%=data[i].diaChi%>"
+                    data-trangthai="<%=data[i].trangThai%>">
+                    Chi tiết</a>
                 </td>
               </tr>
               <%}%>
@@ -296,9 +303,40 @@
                     <label for="trangThai">Bạn có muốn sửa trạng thái không?</label>
                   </div>
                   <div class="modal-footer justify-content-end">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                      <button type="submit" class="btn btn-primary">Sửa</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Sửa</button>
                   </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Chi tiết khách hàng</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-12">
+                    <p>
+                      <strong>Tên khách hàng: </strong><span id="tenkh"></span>
+                    </p>
+                    <p><strong>Giới tính: </strong> <span id="gioitinh"></span></p>
+                    <p><strong>Địa chỉ: </strong> <span id="diachi"></span></p>
+                    <p><strong>Số điện thoại: </strong> <span id="sdt"></span></p>
+                    <p><strong>Trạng thái: </strong> <span id="trangthai"></span></p>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
               </div>
             </div>
           </div>
@@ -332,30 +370,30 @@
     }
     )
 
-     // Khôi phục các giá trị của các trường khi trang được tải lại
-  window.onload = function() {
-    var searchTenKH = localStorage.getItem('searchTenKH');
-    var searchTaiKhoanKH = localStorage.getItem('searchTaiKhoanKH');
-    var searchTrangThai = localStorage.getItem('searchTrangThai');
+    // Khôi phục các giá trị của các trường khi trang được tải lại
+    window.onload = function () {
+      var searchTenKH = localStorage.getItem('searchTenKH');
+      var searchTaiKhoanKH = localStorage.getItem('searchTaiKhoanKH');
+      var searchTrangThai = localStorage.getItem('searchTrangThai');
 
-    // Đặt lại giá trị của các trường
-    document.getElementById('searchTenKH').value = searchTenKH;
-    document.getElementById('searchTaiKhoanKH').value = searchTaiKhoanKH;
-    document.getElementById('searchTrangThai').value = searchTrangThai;
-  };
+      // Đặt lại giá trị của các trường
+      document.getElementById('searchTenKH').value = searchTenKH;
+      document.getElementById('searchTaiKhoanKH').value = searchTaiKhoanKH;
+      document.getElementById('searchTrangThai').value = searchTrangThai;
+    };
 
-  // Lưu các giá trị của các trường khi form được submit
-  document.getElementById('searchForm').addEventListener('submit', function() {
-    var searchTenKH = document.getElementById('searchTenKH').value;
-    var searchTaiKhoanKH = document.getElementById('searchTaiKhoanKH').value;
-    var searchTrangThai = document.getElementById('searchTrangThai').value;
+    // Lưu các giá trị của các trường khi form được submit
+    document.getElementById('searchForm').addEventListener('submit', function () {
+      var searchTenKH = document.getElementById('searchTenKH').value;
+      var searchTaiKhoanKH = document.getElementById('searchTaiKhoanKH').value;
+      var searchTrangThai = document.getElementById('searchTrangThai').value;
 
-    localStorage.setItem('searchTenKH', searchTenKH);
-    localStorage.setItem('searchTaiKhoanKH', searchTaiKhoanKH);
-    localStorage.setItem('searchTrangThai', searchTrangThai);
-  });
+      localStorage.setItem('searchTenKH', searchTenKH);
+      localStorage.setItem('searchTaiKhoanKH', searchTaiKhoanKH);
+      localStorage.setItem('searchTrangThai', searchTrangThai);
+    });
 
-  function convertTrangThai(trangThai) {
+    function convertTrangThai(trangThai) {
       if (trangThai === true) {
         return "Hoạt động";
       } else {
@@ -363,7 +401,7 @@
       }
     }
 
-  $(document).ready(function () {
+    $(document).ready(function () {
       $('a[data-target="#suaTrangThaiModal"]').on('click', function () {
 
         var idKH = $(this).data('idkh');
@@ -371,6 +409,34 @@
         $('#idKH').val(idKH);
 
         $('#formSuaTrangThai').attr('action', '/khach-hang/xoa/' + idKH);
+      });
+    });
+
+    function convertgioitinh(gioitinh) {
+      if (gioitinh === 1) {
+        return "Nam";
+      } else {
+        return "Nữ";
+      }
+    }
+
+    // chi tiết
+    $(document).ready(function () {
+      $('a[data-target="#exampleModal"]').on('click', function () {
+        var tenkh = $(this).data('tenkh');
+        var gioitinh = $(this).data('gioitinh');
+        var sdt = $(this).data('sdt');
+        var diachi = $(this).data('diachi');
+        var trangthai = $(this).data('trangthai');
+
+        var trangThaiText = convertTrangThai(trangthai);
+        var gioiTinhText = convertgioitinh(gioitinh);
+
+        $('#exampleModal').find('#tenkh').text(tenkh);
+        $('#exampleModal').find('#gioitinh').text(gioiTinhText);
+        $('#exampleModal').find('#sdt').text(sdt);
+        $('#exampleModal').find('#diachi').text(diachi);
+        $('#exampleModal').find('#trangthai').text(trangThaiText);
       });
     });
   </script>
