@@ -1,6 +1,7 @@
 const { model: HoaDon } = require("../../model/HoaDon");
 const { model: MonDat } = require("../../model/MonDat");
 const { model: LoaiMon } = require("../../model/LoaiMon");
+const { model: Mon } = require("../../model/Mon");
 const mongo = require('mongoose');
 
 const moment = require('moment');
@@ -532,6 +533,106 @@ const thongKeDoanhThuTheoNgayToNgay = async (req, res) => {
 };
 
 
+const getListMon = async () => {
+    try {
+        const listMon = await Mon.find({});
+        return listMon;
+    } catch (error) {
+        console.error("Lỗi khi lấy danh sách món:", error);
+        throw new Error("Đã xảy ra lỗi khi lấy danh sách món");
+    }
+};
+
+const thongKeMonBanChay = async (req, res) => {
+    try {
+        const nam = req.query.nam || new Date().getFullYear().toString();
+        const thang = req.query.thang || (new Date().getMonth() + 1).toString();
+        const trang = parseInt(req.query.trang) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        let startDate, endDate;
+        if (!req.query.thang) {
+            startDate = moment({ year: nam, month: 0, day: 1 }).startOf('year').toDate();
+            endDate = moment({ year: nam, month: 11, day: 31 }).endOf('year').toDate();
+        } else {
+            startDate = moment({ year: nam, month: thang - 1, day: 1 }).startOf('month').toDate();
+            endDate = moment({ year: nam, month: thang - 1, day: 1 }).endOf('month').toDate();
+        }
+
+        const hoaDon = await HoaDon.aggregate([
+            {
+                $match: {
+                    $expr: {
+                        $and: [
+                            { $gte: ["$thoiGianTao", startDate] },
+                            { $lte: ["$thoiGianTao", endDate] },
+                            { $eq: ["$trangThaiMua", 3] },
+                            { $eq: ["$trangThaiThanhToan", 1] },
+                            { $eq: ["$trangThai", true] }
+                        ]
+                    }
+                }
+            }
+        ]);
+
+        const listMonDatHD = await MonDat.aggregate([
+            {
+                $match: { idHD: { $in: hoaDon.map(hd => hd._id) } }
+            }
+        ]);
+
+        const listMon = await getListMon();
+
+        const finalResult = listMon.map(mon => {
+            const monDatInfo = listMonDatHD.find(item => item.idMon.toString() === mon._id.toString());
+            if (monDatInfo) {
+                return {
+                    _id: mon._id,
+                    tenMon: mon.tenMon,
+                    tenLM: mon.tenLM, // Sửa đổi tên loại món
+                    soLuong: monDatInfo.soLuong,
+                    giaTien: mon.giaTien,
+                    doanhThu: monDatInfo.giaTienDat * monDatInfo.soLuong,
+                    hinhAnh: `${req.protocol}://${req.get("host")}/public/images/${mon.hinhAnh}`
+                };
+            } else {
+                return {
+                    _id: mon._id,
+                    tenMon: mon.tenMon,
+                    tenLM: mon.tenLM, // Sửa đổi tên loại món
+                    soLuong: 0,
+                    giaTien: mon.giaTien,
+                    doanhThu: 0,
+                    hinhAnh: `${req.protocol}://${req.get("host")}/public/images/${mon.hinhAnh}`
+                };
+            }
+        });
+
+        finalResult.sort((a, b) => b.doanhThu - a.doanhThu);
+        const totalItems = finalResult.length;
+        const totalPages = Math.ceil(finalResult.length / limit);
+        const startIndex = (trang - 1) * limit;
+        const endIndex = trang * limit;
+        const paginatedResult = finalResult.slice(startIndex, endIndex);
+
+        return {
+            list: paginatedResult,
+            totalItems: totalItems,
+            totalPages: totalPages,
+            currentPage: trang,
+            itemsPerPage: paginatedResult.length,
+            success: true,
+            msg: "Thành công"
+        };
+    } catch (error) {
+        console.error("Lỗi:", error);
+        return ({
+            success: false,
+            msg: "Đã xảy ra lỗi khi thực hiện thống kê."
+        });
+    }
+}
+
 
 module.exports = {
     //thống kê doanh thu
@@ -544,7 +645,8 @@ module.exports = {
     //thống kê món bán chạy theo tên loại món
     thongKeMonBanChayTheoTenLoaiMon,
     thongKeMonBanChayTheoNam,
-    thongKeDoanhThuTheoNgayToNgay
+    thongKeDoanhThuTheoNgayToNgay,
+    thongKeMonBanChay
 
 
 }
