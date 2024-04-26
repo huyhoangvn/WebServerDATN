@@ -484,8 +484,6 @@ const chiTietCuaHangApp = async (req, res, next) => {
 };
 
 
-
-
 const updateCuaHangApi = async (req, res, next) => {
     try {
         const result = await updateCuaHang(req, res, next);
@@ -563,6 +561,42 @@ const chiTietCuaHangWebApi = async (req, res, next) => {
     }
 }
 
+const slideShowMonCuaHang = async (req, res, next) => {
+    const list = [
+        {
+            idMon: "1",
+            tenMon: "Gà rán",
+            hinhAnh: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRB6VtBoRuTrLgpIWKcNfbj96hO_Z9GFuygT7B43qR5Bw&s",
+        },
+        {
+            idMon: "2",
+            tenMon: "Beefsteak",
+            hinhAnh: "https://ussinavietnam.vn/wp-content/uploads/2022/05/B1_.png",
+        },
+        {
+            idMon: "3",
+            tenMon: "Cơm chiên",
+            hinhAnh: "https://top10monanngon.files.wordpress.com/2019/10/cach-trang-tri-com-chien-duong-chau.jpg?w=600",
+        },
+        {
+            idMon: "4",
+            tenMon: "Thịt chó",
+            hinhAnh: "https://static.kinhtedothi.vn/w960/images/upload/2021/12/26/thit-cho-trung-quoc-benh-dai.jpg",
+        },
+        {
+            idMon: "5",
+            tenMon: "Kem bốn mùa",
+            hinhAnh: "https://tiki.vn/blog/wp-content/uploads/2023/02/cach-lam-kem-696x522-1.jpg",
+        }
+    ];
+
+    res.json({
+        index: list,
+        success: true,
+        msg: "thành công"
+    })
+};
+
 module.exports = {
     // Api
     updateCuaHangApi,
@@ -579,5 +613,6 @@ module.exports = {
     chiTietCuaHangAppApi,
     chiTietCuaHangWebApi,
     deleteCuaHangWeb,
-    addCuaHang
+    addCuaHang,
+    slideShowMonCuaHang
 };
