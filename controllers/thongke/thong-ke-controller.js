@@ -578,28 +578,35 @@ const thongKeMonBanChay = async (req, res) => {
         const listMonDatHD = await MonDat.aggregate([
             {
                 $match: { idHD: { $in: hoaDon.map(hd => hd._id) } }
+            },
+            {
+                $group: {
+                    _id: "$idMon",
+                    soLuong: { $sum: "$soLuong" },
+                    doanhThu: { $sum: { $multiply: ["$giaTienDat", "$soLuong"] } }
+                }
             }
         ]);
 
         const listMon = await getListMon();
 
         const finalResult = listMon.map(mon => {
-            const monDatInfo = listMonDatHD.find(item => item.idMon.toString() === mon._id.toString());
+            const monDatInfo = listMonDatHD.find(item => item._id.toString() === mon._id.toString());
             if (monDatInfo) {
                 return {
                     _id: mon._id,
                     tenMon: mon.tenMon,
-                    tenLM: mon.tenLM, // Sửa đổi tên loại món
+                    tenLM: mon.tenLM,
                     soLuong: monDatInfo.soLuong,
                     giaTien: mon.giaTien,
-                    doanhThu: monDatInfo.giaTienDat * monDatInfo.soLuong,
+                    doanhThu: monDatInfo.doanhThu,
                     hinhAnh: `${req.protocol}://${req.get("host")}/public/images/${mon.hinhAnh}`
                 };
             } else {
                 return {
                     _id: mon._id,
                     tenMon: mon.tenMon,
-                    tenLM: mon.tenLM, // Sửa đổi tên loại món
+                    tenLM: mon.tenLM,
                     soLuong: 0,
                     giaTien: mon.giaTien,
                     doanhThu: 0,
@@ -626,12 +633,15 @@ const thongKeMonBanChay = async (req, res) => {
         };
     } catch (error) {
         console.error("Lỗi:", error);
-        return ({
+        return {
             success: false,
             msg: "Đã xảy ra lỗi khi thực hiện thống kê."
-        });
+        };
     }
 }
+
+
+
 
 
 module.exports = {
