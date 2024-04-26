@@ -16,20 +16,39 @@ router.use('/thong-ke', require('./thongke'))
 router.use('/hoa-don', require('./hoadon'))
 
 //Thanh toán
-router.post('/zalopay/callback', (req, res) => {
-  const { data, mac } = req.body;
+router.post('/callback', (req, res) => {
+  let result = {};
 
-  // Validate callback authenticity
-  const expectedMac = crypto.createHmac('sha256', appKey).update(data).digest('hex');
-  if (mac === expectedMac) {
-      // Handle payment status based on 'status' field in data
-      console.log('ZaloPay callback received:', data);
-      // Update your order status accordingly
-  } else {
-      console.error('Invalid ZaloPay callback. MAC mismatch.');
+  try {
+    let dataStr = req.body.data;
+    let reqMac = req.body.mac;
+
+    let mac = CryptoJS.HmacSHA256(dataStr, "uUfsWgfLkRLzq6W2uNXTCxrfxs51auny").toString();
+    console.log("mac =", mac);
+
+
+    // kiểm tra callback hợp lệ (đến từ ZaloPay server)
+    if (reqMac !== mac) {
+      // callback không hợp lệ
+      result.returncode = -1;
+      result.returnmessage = "mac not equal";
+    }
+    else {
+      // thanh toán thành công
+      // merchant cập nhật trạng thái cho đơn hàng
+      let dataJson = JSON.parse(dataStr, "uUfsWgfLkRLzq6W2uNXTCxrfxs51auny");
+      console.log("update order's status = success where apptransid =", dataJson["apptransid"]);
+
+      result.returncode = 1;
+      result.returnmessage = "success";
+    }
+  } catch (ex) {
+    result.returncode = 0; // ZaloPay server sẽ callback lại (tối đa 3 lần)
+    result.returnmessage = ex.message;
   }
 
-  res.sendStatus(200);
+  // thông báo kết quả cho ZaloPay server
+  res.json(result);
 });
 
 module.exports = router;

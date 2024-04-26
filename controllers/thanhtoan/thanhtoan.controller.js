@@ -14,31 +14,25 @@ const thanhToanController = {
     try {
       const idHD = req.params.idHD;
       const hd = await HoaDon.findOne({ _id: idHD });
-      let ch = null;
-      if(hd){ 
-        ch = await CuaHang.findOne({ _id: hd.idCH });
-      } else {
-        res.json({ msg: "Lỗi tìm hóa đơn", success: false });
+      // let ch = null;
+      // if(hd){ 
+      //   ch = await CuaHang.findOne({ _id: hd.idCH });
+      // } else {
+      //   res.json({ msg: "Lỗi tìm hóa đơn", success: false });
+      // };
+      let config = {
+        app_id: "554",
+        key1: "8NdU5pG5R2spGHGhyO99HN1OhD8IQJBn",
+        key2: "uUfsWgfLkRLzq6W2uNXTCxrfxs51auny",
+        endpoint: ZALOPAY_CREATE_ORDER_ENDPOINT,
       };
-      let config = {}
-      if(ch){
-        config = {
-          app_id: ch.app_id,
-          key1: ch.key1,
-          key2: ch.key2,
-          endpoint: ZALOPAY_CREATE_ORDER_ENDPOINT,
-        };
-      } else {
-        res.json({ msg: "Chưa có xác thực liên kết zalopay", success: false });
-      }
       const embed_data = {};
       const items = [hd];
       const transID = Math.floor(Math.random() * 1000000);
-      console.log(`${req.protocol}://${req.get("host")}/callback`)
       const order = {
         app_id: config.app_id,
         app_trans_id: `${moment().format("YYMMDD")}_${transID}`,
-        app_user: ch.tenCH,
+        app_user: "FoodCenter",
         app_time: Date.now(),
         item: JSON.stringify(items),
         embed_data: JSON.stringify(embed_data),
@@ -82,57 +76,5 @@ const thanhToanController = {
       return res.json({ msg: "Lỗi", success: false, error: error.message });
     }
   },
-  
-  testCallBack: async (req, res) => {
-    console.log("Hi")
-    try {
-        const idHD = req.params.idHD;
-        const hd = await HoaDon.findOne({ _id: idHD });
-        let ch = null;
-        if(hd){ 
-          ch = await CuaHang.findOne({ _id: hd.idCH });
-        } else {
-          res.json({ msg: "Lỗi tìm hóa đơn", success: false });
-        };
-        let config = {}
-        if(ch){
-          config = {
-            app_id: ch.app_id,
-            key1: ch.key1,
-            key2: ch.key2,
-            endpoint: ZALOPAY_CREATE_ORDER_ENDPOINT,
-          };
-        } else {
-          res.json({ msg: "Chưa có xác thực liên kết zalopay", success: false });
-        }
-        const postData = {
-            appid: config.appid,
-            apptransid: orderid,
-        };
-
-        const data = postData.appid + "|" + postData.apptransid + "|" + config.key1; // appid|apptransid|key1
-        postData.mac = CryptoJS.HmacSHA256(data, config.key1).toString();
-
-        const postConfig = {
-            method: 'post',
-            url: config.endpoint,
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            data: qs.stringify(postData)
-        };
-
-        const response = await axios(postConfig); // Gửi request kiểm tra trạng thái thanh toán
-
-        // Xử lý phản hồi và gửi lại kết quả cho client
-        if (response.data.returncode === 1) {
-            res.json({ success: true, msg: "Thanh toán thành công" });
-        } else {
-            res.json({ success: false, msg: "Thanh toán không thành công" });
-        }
-    } catch (error) {
-      res.json({ success: false, msg: "Lỗi kiểm tra giao dịch" });
-    }
-  }
 }
 module.exports = thanhToanController;
