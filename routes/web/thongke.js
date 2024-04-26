@@ -10,16 +10,7 @@ const passportConfig = require('../../config/auth/jwt-decode-admin')
 const sessionAdmin = require('../../config/auth/session-admin')
 
 //
-<<<<<<< Updated upstream
-router.get('/doanh-thu', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), DoanhThuCtrl.getView);
-router.get('/doanh-thu/theo-nam', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), DoanhThuCtrl.getChiTietDoanhThuTheoNam);
-router.get('/mon-ban-chay', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), MonBanChayCtrl.getView);
-router.get('/mon-ban-chay-filter', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), MonBanChayCtrl.getList);
-router.get('/giao-dich', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), GiaoDichCtrl.getView);
 
-
-
-=======
 router.get('/doanh-thu',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), DoanhThuCtrl.getView);
 router.get('/doanh-thu/theo-nam',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), DoanhThuCtrl.getChiTietDoanhThuTheoNam);
 router.get('/doanh-thu/ngay-to-ngay',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), DoanhThuCtrl.thongKeDoanhThuNgayToNgay);
@@ -27,5 +18,4 @@ router.get('/mon-ban-chay',sessionAdmin.setTokenHeader, passport.authenticate('j
 router.get('/mon-ban-chay-filter',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), MonBanChayCtrl.getList);
 router.get('/giao-dich',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), GiaoDichCtrl.getView);
  
->>>>>>> Stashed changes
 module.exports = router;
