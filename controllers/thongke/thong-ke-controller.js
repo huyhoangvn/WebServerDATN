@@ -525,7 +525,7 @@ const thongKeDoanhThuTheoNgayToNgay = async (req, res) => {
         });
     } catch (error) {
         console.error("Error:", error);
-        res.json({
+        return({
             success: false,
             msg: 'Đã xảy ra lỗi khi thực hiện thống kê.'
         });

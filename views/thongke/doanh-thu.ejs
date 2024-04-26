@@ -227,12 +227,16 @@
       <div class="container-fluid bg-white m-2">
 
         <!-- Main content nằm ở dây -->
-        <label for="" class="m-0">Thống kê doanh thu theo tháng của năm </label>
+        <label for="" class="m-0">Thống kê doanh thu theo khoảng ngày </label>
         <br>
-        <form action="/thong-ke/doanh-thu/theo-nam" method="GET">
+        <form action="/thong-ke/doanh-thu/ngay-to-ngay" method="GET">
           <div class="d-flex row justify-content-between mb-1">
-            <div class="col-10">
-              <input type="text" class="form-control" value="" name="nam" placeholder="Nhập năm để thống kê ">
+            <div class="col-5">
+              <input type="date" class="form-control" name="ngayBatDau" id="ngayBatDau" placeholder="Ngày bắt đầu">
+            </div>
+
+            <div class="col-5">
+              <input type="date" class="form-control" name="ngayKetThuc" id="ngayHetHan" placeholder="Ngày kết thúc">
             </div>
             <div class="col-2">
               <button class="btn btn-dark w-100" type="submit" id="thongKe">Thống kê</button>
@@ -241,8 +245,25 @@
 
         </form>
 
+        <div class="bg-light rounded text-center mb-1">
+          <div>
+              <% if (ngayBatDau !== "" || ngayKetThuc !== "") { %>
+                  <p>Doanh thu từ <%= ngayBatDau%> đến <%= ngayKetThuc%></p>
+                  <p class="fw-bold">
+                      <%= ngayToNgay.toLocaleString() %>đ
+                  </p>
+              <% } else { %>
+                  <p>Nhập ngày để thống kê</p>
+                  <p class="fw-bold">
+                      0đ
+                  </p>
+              <% } %>
+          </div>
+        </div>   
+
+
         <!-- bắt đầu doanh thu 3 ô -->
-        <div class="d-flex row justify-content-between mb-1">
+        <div class="row justify-content-between mb-1">
           <div class="col-3 bg-primary rounded pt-3 pb-2 text-center">
             <div>
               <p>Doanh thu trong 1 ngày</p>
