@@ -172,7 +172,7 @@
             </ul>
           </li>
           <!-- hóa đơn -->
-          <li class="nav-item menu-open">
+          <li class="nav-item">
             <a href="" class="nav-link open">
               <i class="nav-icon fas fa-users"></i>
               <p>
@@ -227,9 +227,22 @@
       <div class="container-fluid bg-white m-2">
 
         <!-- Main content nằm ở dây -->
+        <label for="" class="m-0">Thống kê doanh thu theo tháng của năm </label>
+        <br>
+        <form action="/thong-ke/doanh-thu/theo-nam" method="GET">
+          <div class="d-flex row justify-content-between mb-1">
+            <div class="col-10">
+              <input type="text" class="form-control" value="" name="nam" placeholder="Nhập năm để thống kê ">
+            </div>
+            <div class="col-2">
+              <button class="btn btn-dark w-100" type="submit" id="thongKe">Thống kê</button>
+            </div>
+          </div>
+
+        </form>
 
         <!-- bắt đầu doanh thu 3 ô -->
-        <div class="d-flex justify-content-between row mb-1">
+        <div class="d-flex row justify-content-between mb-1">
           <div class="col-3 bg-primary rounded pt-3 pb-2 text-center">
             <div>
               <p>Doanh thu trong 1 ngày</p>
@@ -257,6 +270,7 @@
         </div>
         <!-- kết thúc doanh thu 3 ô -->
 
+        
         <!-- bắt đầu filter -->
         <label for="" class="m-0">Thống kê doanh thu theo tháng của năm </label>
         <br>
@@ -278,7 +292,7 @@
         <br>
         <label for="" class="font-weight-normal">Tổng doanh thu năm <%=nam%> </label>
         <label for="">
-          <%=tongTienNam.toLocaleString()%>
+          <%=tongTienNam.toLocaleString()%>đ
         </label>
         <br>
         <div class="row">
