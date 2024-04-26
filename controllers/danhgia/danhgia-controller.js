@@ -9,19 +9,19 @@ const ThemDanhGia = async function (req, res) {
         const danhGia = req.body.danhGia;
         const daDanhGia = await DanhGia.findOne({ idKH: idKH, idMon: idMon })
         if (daDanhGia) {
-            if (daDanhGia.trangThai !== false) {
-                return res.json({
-                    error: 'đánh giá này đã tồn tại',
-                    msg: 'đánh giá này đã tồn tại',
-                    success: false
-                });
-            } else if (daDanhGia.trangThai === false) {
-                await DanhGia.updateOne({ idKH, idMon }, { trangThai: true });
+            if (daDanhGia.trangThai === true) {
+                await DanhGia.updateOne({ idKH, idMon }, { danhGia: danhGia });
                 const index = await DanhGia.findOne({ idKH: idKH, idMon: idMon });
                 res.json({
                     index,
                     msg: 'Thêm đánh giá lại thành công',
                     success: true
+                });
+            } else if (daDanhGia.trangThai === false) {
+                return res.json({
+                    error: 'Bạn bị khóa đánh giá món hiện tại',
+                    msg: 'Bạn bị khóa đánh giá món hiện tại',
+                    success: false
                 });
             }
         } else {
@@ -168,7 +168,7 @@ const GetDanhSachTheoTenMon = async function (req, res) {
             {
                 $unwind: {
                     path: "$KhachHangInfo",
-                    preserveNullAndEmptyArrays: true
+                    preserveNullAndEmptyArrays: false
                 }
             },
             {
