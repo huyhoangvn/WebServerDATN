@@ -10,7 +10,7 @@ const ThemDanhGia = async function (req, res) {
         const daDanhGia = await DanhGia.findOne({ idKH: idKH, idMon: idMon })
         if (daDanhGia) {
             if (daDanhGia.trangThai === true) {
-                await DanhGia.updateOne({ idKH, idMon }, { danhGia: danhGia });
+                await DanhGia.updateOne({ idKH, idMon }, { danhGia: danhGia, thoiGianTao: Date.now()});
                 const index = await DanhGia.findOne({ idKH: idKH, idMon: idMon });
                 res.json({
                     index,
@@ -412,6 +412,9 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
             {
                 $match:
                     timkiem,
+            },
+            {
+                $sort: {thoiGianTao: -1}
             },
             {
                 $skip: (trang - 1) * 10,
