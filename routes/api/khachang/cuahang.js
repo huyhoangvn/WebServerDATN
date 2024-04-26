@@ -7,4 +7,6 @@ const passport = require('passport')
 /* GET users listing. */
 router.get('/chi-tiet/:id', passport.authenticate('jwt', { session: false }), CuaHangCtr.chiTietCuaHangAppApi);
 
+router.get('/slideshow', passport.authenticate('jwt', { session: false }), CuaHangCtr.slideShowMonCuaHang);
+
 module.exports = router;
