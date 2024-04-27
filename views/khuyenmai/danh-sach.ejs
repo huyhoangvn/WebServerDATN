@@ -175,19 +175,19 @@
         <form action="/khuyen-mai/danh-sach">
           <!-- Main content nằm ở dây -->
           <div class="d-flex row justify-content-between mb-1">
-            <div class="col-4">
+            <div class="col-3">
               <input type="text" id="searchTieuDe" class="form-control" name="tieuDe"
                 placeholder="Nhập tiêu đề để tìm kiếm">
             </div>
 
-            <div class="mb-3">
+            <div class="mb-2">
               <input type="date" class="form-control" name="ngayBatDau" id="ngayBatDau" placeholder="Ngày bắt đầu">
             </div>
 
-            <div class="mb-3">
+            <div class="mb-2">
               <input type="date" class="form-control" name="ngayHetHan" id="ngayHetHan" placeholder="Ngày hết hạn">
             </div>
-            <div class="col-2">
+            <div class="mb-1">
               <select class="form-control" name="trangThai">
                 <option value="-1">Tất cả trạng thái</option>
                 <option value="1">Hoạt động</option>
@@ -195,8 +195,12 @@
               </select>
             </div>
 
-            <div class="col-2">
+            <div class="mb-1">
               <button class="btn btn-dark w-100" type="submit">Tìm kiếm</button>
+            </div>
+
+            <div class="col-3 ">
+              <a class="btn btn-dark w-100" href="/khuyen-mai/them-moi">Thêm Mới khuyến mãi</a>
             </div>
           </div>
 
@@ -398,9 +402,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-3 justify-content-center">
-                      <a class="btn btn-dark w-100" href="/khuyen-mai/them-moi">Thêm Mới khuyến mãi</a>
-                    </div>
+
 
 
                     <nav aria-label=" Page navigation">
