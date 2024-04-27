@@ -578,16 +578,6 @@ const slideShowMonCuaHang = async (req, res, next) => {
             tenMon: "Cơm chiên",
             hinhAnh: "https://top10monanngon.files.wordpress.com/2019/10/cach-trang-tri-com-chien-duong-chau.jpg?w=600",
         },
-        {
-            idMon: "4",
-            tenMon: "Thịt chó",
-            hinhAnh: "https://static.kinhtedothi.vn/w960/images/upload/2021/12/26/thit-cho-trung-quoc-benh-dai.jpg",
-        },
-        {
-            idMon: "5",
-            tenMon: "Kem bốn mùa",
-            hinhAnh: "https://tiki.vn/blog/wp-content/uploads/2023/02/cach-lam-kem-696x522-1.jpg",
-        }
     ];
 
     res.json({
