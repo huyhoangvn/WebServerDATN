@@ -16,10 +16,6 @@ const CuaHangSchema = new db.mongodb.Schema(
         hinhAnh: { type: String, default: "N/A" },
         trangThai: { type: Boolean, required: true },
 
-        //Thanh toán
-        app_id: { type: String, default: "" },
-        key1: { type: String, default: "" },
-        key2: { type: String, default: "" },
     }, { collection: 'CuaHang' }
 )
 

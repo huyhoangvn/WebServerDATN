@@ -1,8 +1,10 @@
 //Website
 const { model: CuaHang } = require("../../model/CuaHang");
 const { model: NhanVien } = require("../../model/NhanVien");
+const { model: Mon } = require("../../model/Mon");
 const mongo = require('mongoose');
 var CuaHangCtrl = require("../../controllers/cuahang/cuahang-controller");
+var MonCtrl = require("../../controllers/mon/mon-controller");
 const nhanVien = require("../../controllers/nhanvien/nhanvienquanly-controller");
 
 const getList = async (req, res, next) => {
@@ -292,6 +294,15 @@ const xoaNhanVien = async (req, res, next) => {
     }
 }
 
+const xoaMon = async (req, res) => {
+    const idMon = new mongo.Types.ObjectId(req.params.idMon) 
+    const monTim = await Mon.findOne({_id:idMon})
+    const idCH =monTim.idCH;
+    await MonCtrl.deleteMonWeb(req, res);
+    res.redirect("/cua-hang/chi-tiet/"+idCH);   
+
+}
+
 module.exports = {
     getList,
     getAdd,
@@ -299,5 +310,6 @@ module.exports = {
     chiTietCuaHang,
     themNhanVienQuanLy,
     xoaCuaHang,
-    xoaNhanVien
+    xoaNhanVien,
+    xoaMon
 }

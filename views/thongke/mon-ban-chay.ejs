@@ -271,8 +271,9 @@
             <tr class="table-secondary">
               <td scope="col-1">STT</td>
               <td scope="col-2">Tên món</td>
-              <td scope="col-9">Loại món</td>
-              <td scope="col-9">Doanh thu</td>
+              <td scope="col-1">Giá tiền</td>
+              <td scope="col-1">Loại món</td>
+              <td scope="col-8">Doanh thu</td>
             </tr>
           </thead>
           <tbody>
@@ -285,10 +286,13 @@
                   <td scope="col-2">
                     <%=monBanChay[i].tenMon%>
                   </td>
-                  <td scope="col-9">
+                  <td scope="col-1">
+                    <%=monBanChay[i].giaTien.toLocaleString()%>đ
+                  </td>
+                  <td scope="col-1">
                     <%=monBanChay[i].tenLM%>
                   </td>
-                  <td scope="col-9">
+                  <td scope="col-8">
                     <%=monBanChay[i].doanhThu.toLocaleString()%>đ
                   </td>
                 </tr>
@@ -297,6 +301,8 @@
                     <tr>
                       <td scope="col-1">0</td>
                       <td scope="col-2">0</td>
+                      <td scope="col-9">0</td>
+                      <td scope="col-9">0</td>
                       <td scope="col-9">0</td>
                     </tr>
                     <%}%>

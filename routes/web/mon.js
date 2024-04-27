@@ -9,5 +9,7 @@ router.get('/danh-sach',sessionAdmin.setTokenHeader, passport.authenticate('jwt'
 // router.get('/chi-tiet/:idMon',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), ()=>{ res.end("Chi tiết") });
 router.get('/chi-tiet/:idMon',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), MonCtrl.getChiTietMon );
 router.get('/xoa/:idMon',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), MonCtrl.xoaMon );
+router.get('/xoa-danh-gia/:idDG',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), MonCtrl.xoaDanhGia );
+
 
 module.exports = router;
