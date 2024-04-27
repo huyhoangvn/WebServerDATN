@@ -7,8 +7,6 @@ const CuaHangSchema = new db.mongodb.Schema(
         tenCH: { type: String, required: true },
         email: { type: String, default: "" },
         sdt: { type: String, default: "0000000000" },
-        tenTaiKhoan: { type: String, default: "" },
-        taiKhoanThanhToan: { type: String, default: 0 },
         diaChi: { type: String, default: "" },
         thoiGianTao: { type: Date, default: Date.now() },
         thoiGianMo: { type: String, default: "00:00:00" },
@@ -16,6 +14,9 @@ const CuaHangSchema = new db.mongodb.Schema(
         hinhAnh: { type: String, default: "N/A" },
         trangThai: { type: Boolean, required: true },
 
+        tenTaiKhoan: { type: String, default: "" },
+        taiKhoanThanhToan: { type: String, default: "" },
+        nganHangThuHuong: { type: String, default: "" }
     }, { collection: 'CuaHang' }
 )
 
