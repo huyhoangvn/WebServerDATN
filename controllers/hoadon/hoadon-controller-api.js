@@ -3,6 +3,7 @@ const { model: CuaHang } = require("../../model/CuaHang");
 const { model: KhachHang } = require("../../model/KhachHang");
 const HoaDonController = require("../../controllers/hoadon/hoadon-controller");
 const mongo = require("mongoose");
+const { response } = require("express");
 
 
 // const addHoaDonApi = async (req, res, next) => {
@@ -182,10 +183,10 @@ const getDanhSachHoaDonByIdKhachHangApi = async (req, res, next) => {
             (typeof req.query.ngayBatDau === 'undefined' && typeof req.query.ngayKetThuc !== 'undefined') ||
             (typeof req.query.ngayBatDau !== 'undefined' && typeof req.query.ngayKetThuc === 'undefined')
         ) {
-            return {
+            return res.json({
                 msg: 'Vui lòng nhập cả ngày bắt đầu và ngày kết thúc',
                 success: false
-            };
+            });
         }
 
         const filter = { idKH: idKH };
@@ -218,7 +219,7 @@ const getDanhSachHoaDonByIdKhachHangApi = async (req, res, next) => {
         }
 
         // Xử lý tìm kiếm theo thời gian tạo
-        if (typeof req.query.ngayBatDau !== 'undefined' && typeof req.query.ngayKetThuc !== 'undefined') {
+        if (typeof req.query.ngayBatDau !== 'undefined' && req.query.ngayBatDau !== "" && typeof req.query.ngayKetThuc !== 'undefined' && req.query.ngayKetThuc !== "") {
             const ngayBatDauParts = req.query.ngayBatDau.split('/');
             const ngayKetThucParts = req.query.ngayKetThuc.split('/');
 
@@ -293,19 +294,17 @@ const getDanhSachHoaDonByIdCuaHangApi = async (req, res, next) => {
         if (!idCH) {
             return res.json({ msg: 'Vui lòng cung cấp ID cửa hàng', success: false });
         }
-
-        const filter = { idCH: idCH };
-
-
         if (
             (typeof req.query.ngayBatDau === 'undefined' && typeof req.query.ngayKetThuc !== 'undefined') ||
             (typeof req.query.ngayBatDau !== 'undefined' && typeof req.query.ngayKetThuc === 'undefined')
         ) {
-            return {
+            return res.json({
                 msg: 'Vui lòng nhập cả ngày bắt đầu và ngày kết thúc',
                 success: false
-            };
+            });
         }
+
+        const filter = { idCH: idCH };
 
         if (typeof req.query.maHD !== 'undefined' && req.query.maHD !== "") {
             filter.maHD = { $regex: req.query.maHD, $options: 'i' };
@@ -317,6 +316,7 @@ const getDanhSachHoaDonByIdCuaHangApi = async (req, res, next) => {
                 filter.trangThaiThanhToan = trangThaiValue;
             }
         }
+
         if (typeof req.query.trangThai !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
             const trangThaiValue = parseInt(req.query.trangThai);
             if (trangThaiValue === 1 || trangThaiValue === 0) {
@@ -335,7 +335,7 @@ const getDanhSachHoaDonByIdCuaHangApi = async (req, res, next) => {
         }
 
         // Xử lý tìm kiếm theo thời gian tạo
-        if (typeof req.query.ngayBatDau !== 'undefined' && typeof req.query.ngayKetThuc !== 'undefined') {
+        if (typeof req.query.ngayBatDau !== 'undefined' && req.query.ngayBatDau !== "" && typeof req.query.ngayKetThuc !== 'undefined' && req.query.ngayKetThuc !== "") {
             const ngayBatDauParts = req.query.ngayBatDau.split('/');
             const ngayKetThucParts = req.query.ngayKetThuc.split('/');
 
