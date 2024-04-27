@@ -525,7 +525,7 @@ const thongKeDoanhThuTheoNgayToNgay = async (req, res) => {
         });
     } catch (error) {
         console.error("Error:", error);
-        return({
+        return ({
             success: false,
             msg: 'Đã xảy ra lỗi khi thực hiện thống kê.'
         });
@@ -535,7 +535,7 @@ const thongKeDoanhThuTheoNgayToNgay = async (req, res) => {
 
 const getListMon = async () => {
     try {
-        const listMon = await Mon.find({});
+        const listMon = await Mon.find({ trangThai: true });
         return listMon;
     } catch (error) {
         console.error("Lỗi khi lấy danh sách món:", error);

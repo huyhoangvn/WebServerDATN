@@ -597,6 +597,7 @@ const chiTietHoaDon = async (req, res, next) => {
                 maHD: item.maHD,
                 phuongThucThanhToan: item.phuongThucThanhToan,
                 tenKH: khachHang ? khachHang.tenKH : "",
+                sdt: khachHang ? khachHang.sdt : "",
                 tenCH: cuaHang ? cuaHang.tenCH : ""  // Lấy tên cửa hàng từ bảng CuaHang
             },
             list: result,
