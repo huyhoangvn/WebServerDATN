@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var CuaHangCtrl = require("../../controllers/cuahang/cua-hang-web-controller");
+var MonCtrl = require("../../controllers/mon/mon-web-controller");
 const passport = require('passport')
 const passportConfig = require('../../config/auth/jwt-decode-admin')
 const sessionAdmin = require('../../config/auth/session-admin')
@@ -14,5 +15,6 @@ router.get('/xoa/:idCH', sessionAdmin.setTokenHeader, passport.authenticate('jwt
 router.post('/them-nv/:idCH', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.themNhanVienQuanLy);
 
 router.post('/xoa/:idNV', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.xoaNhanVien);
+router.get('/xoa-mon/:idMon',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), CuaHangCtrl.xoaMon );
 
 module.exports = router;

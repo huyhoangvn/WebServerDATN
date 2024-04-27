@@ -6,7 +6,7 @@ const passportConfig = require('../../../config/auth/jwt-decode-khachhang')
 const passport = require('passport')
 
 /* GET users listing. */
-router.post('/dang-ky', passport.authenticate('jwt', { session: false }), KhachHangCtrl.dangKyApi); //http://localhost:3000/api/khachhang/khachhang/dangKy
+router.post('/dang-ky', KhachHangCtrl.dangKyApi); //http://localhost:3000/api/khachhang/khachhang/dangKy
 router.post('/dang-nhap', passport.authenticate('jwt', { session: false }), KhachHangCtrl.dangNhap); //http://localhost:3000/api/khachhang/khachhang/dangNhap
 
 router.get('/thong-tin/:id', passport.authenticate('jwt', { session: false }), KhachHangCtrl.getKhachHangbyidKhachHang);

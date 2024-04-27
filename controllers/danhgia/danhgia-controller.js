@@ -9,19 +9,19 @@ const ThemDanhGia = async function (req, res) {
         const danhGia = req.body.danhGia;
         const daDanhGia = await DanhGia.findOne({ idKH: idKH, idMon: idMon })
         if (daDanhGia) {
-            if (daDanhGia.trangThai !== false) {
-                return res.json({
-                    error: 'đánh giá này đã tồn tại',
-                    msg: 'đánh giá này đã tồn tại',
-                    success: false
-                });
-            } else if (daDanhGia.trangThai === false) {
-                await DanhGia.updateOne({ idKH, idMon }, { trangThai: true });
+            if (daDanhGia.trangThai === true) {
+                await DanhGia.updateOne({ idKH, idMon }, { danhGia: danhGia, thoiGianTao: Date.now() });
                 const index = await DanhGia.findOne({ idKH: idKH, idMon: idMon });
                 res.json({
                     index,
                     msg: 'Thêm đánh giá lại thành công',
                     success: true
+                });
+            } else if (daDanhGia.trangThai === false) {
+                return res.json({
+                    error: 'Bạn bị khóa đánh giá món hiện tại',
+                    msg: 'Bạn bị khóa đánh giá món hiện tại',
+                    success: false
                 });
             }
         } else {
@@ -123,6 +123,40 @@ const XoaDanhGia = async function (req, res) {
 
 }
 
+const XoaDanhGiaWeb = async function (req, res) {
+    try {
+        const idDG = new mongo.Types.ObjectId(req.params.idDG);
+        const filter = { _id: idDG }
+        const update = { trangThai: false }
+        // const index = await DanhGia.findOneAndUpdate(filter, update, { new: true })
+        const danhGiaTim = await DanhGia.findOne(filter)
+        let danhGiaSua = {}
+        if (danhGiaTim.trangThai == true) {
+            const update = { trangThai: false }
+            const data = await DanhGia.findOneAndUpdate(filter, update, { new: true })
+            danhGiaSua = data
+        }
+        if (danhGiaTim.trangThai == false) {
+            const update = { trangThai: true }
+            const data = await DanhGia.findOneAndUpdate(filter, update, { new: true })
+            danhGiaSua = data
+        }
+
+        if (!danhGiaSua) {
+            return ({ msg: "Xóa đánh giá thất bại !", success: false }); // Phản hồi 404 nếu không tìm thấy món
+          } else {
+            return ({ msg: "Xóa đánh giá thành công !", success: true }); // Phản hồi 200 nếu thành công
+          }
+    } catch (error) {
+        return({
+            error: 'Lỗi khi xóa đánh giá',
+            msg: 'Lỗi khi xóa đánh giá',
+            success: false
+        });
+    }
+
+}
+
 const GetDanhSachTheoTenMon = async function (req, res) {
     try {
         const idMon = new mongo.Types.ObjectId(req.params.idMon);
@@ -141,6 +175,7 @@ const GetDanhSachTheoTenMon = async function (req, res) {
             {
                 $match: {
                     idMon: idMon,
+                    trangThai: true 
                 }
             },
             {
@@ -168,7 +203,7 @@ const GetDanhSachTheoTenMon = async function (req, res) {
             {
                 $unwind: {
                     path: "$KhachHangInfo",
-                    preserveNullAndEmptyArrays: true
+                    preserveNullAndEmptyArrays: false
                 }
             },
             {
@@ -301,7 +336,8 @@ const GetTrungBinhDanhGiaTheoMon = async function (req, res) {
         const query = await DanhGia.aggregate([
             {
                 $match: {
-                    idMon: idMon
+                    idMon: idMon,
+                    trangThai: true
                 }
             },
             {
@@ -358,10 +394,14 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
         if (typeof (req.query.danhGia) !== 'undefined' && req.query.danhGia !== "" && req.query.danhGia !== "-1") {
             timkiem.danhGia = parseInt(req.query.danhGia);
         }
+        
+        if (typeof (req.query.tenKH) !== 'undefined' && typeof (req.query.tenKH) !== "") {
+            timkiem.tenKH = { $regex: req.query.tenKH, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+          }
         if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
             const trangThaiValue = parseInt(req.query.trangThai);
             if (trangThaiValue === 1 || trangThaiValue === 0) {
-                timkiem.trangThai = trangThaiValue === 1;
+                timkiem.trangThai = trangThaiValue === 0;
             }
         }
         const query = await DanhGia.aggregate([
@@ -414,6 +454,9 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
                     timkiem,
             },
             {
+                $sort: { thoiGianTao: -1 }
+            },
+            {
                 $skip: (trang - 1) * 10,
             },
             {
@@ -421,12 +464,14 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
             },
         ]);
         const count = await GetDanhSachTheoTenMon(req, res);
+        const sl = await DanhGia.countDocuments({ idMon });
         const soDanhGiaTrenTrang = 10;
         const totalPages = Math.ceil(count.count / soDanhGiaTrenTrang);
         return ({
             list: query,
             count: count.count,
-            totalPages,
+            soLuong: sl,
+            totalPages: totalPages,
             currentPage: trang,
             msg: 'Get số lượng đánh giá theo tên món thành công',
             success: true
@@ -502,5 +547,6 @@ module.exports = {
     getTatCaDanhGiaTheoMonApi,
     GetDanhSachDanhGiaTheoMonVoiFilter,
     GetDanhSachDanhGiaTheoMonVoiFilterApi,
-    getTrungBinhDanhGiaApi
+    getTrungBinhDanhGiaApi,
+    XoaDanhGiaWeb
 }

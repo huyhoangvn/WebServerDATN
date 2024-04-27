@@ -5,7 +5,7 @@ const { model: LoaiMon } = require("../../model/LoaiMon");
 const { model: DanhGia } = require("../../model/DanhGia");
 const mongo = require('mongoose');
 const { getTatCaMon, getSoLuongTatCaMon, deleteMonWeb } = require("./mon-controller");
-const { GetDanhSachDanhGiaTheoMonVoiFilter, GetDanhSachTheoTenMon } = require("../danhgia/danhgia-controller");
+const { GetDanhSachDanhGiaTheoMonVoiFilter, GetDanhSachTheoTenMon, XoaDanhGiaWeb } = require("../danhgia/danhgia-controller");
 
 
 const getList =  async (req, res)=>{
@@ -117,11 +117,21 @@ const xoaMon = async (req, res) => {
     });
 
 }
+const xoaDanhGia = async (req, res) => {
+    const idDG = new mongo.Types.ObjectId(req.params.idDG) 
+    const monTim = await DanhGia.findOne({_id:idDG})
+    const idMon =monTim.idMon;
+    await XoaDanhGiaWeb(req, res);
+    res.redirect("/mon/chi-tiet/"+idMon); 
+    
+
+}
 
 
 
 module.exports = {
     getList,
     getChiTietMon,
-    xoaMon
+    xoaMon,
+    xoaDanhGia
 }

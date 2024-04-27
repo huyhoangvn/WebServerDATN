@@ -272,7 +272,7 @@
                                             <label scope="col-2">Đang giao hàng</label>
                                             <%}else if(index.trangThaiMua==3){%>
                                                 <label class="font-weight-normal">Trạng thái mua: </label>
-                                                <label scope="col-2">giao hàng thành công
+                                                <label scope="col-2" class="font-weight-normal">giao hàng thành công
                                                 </label>
                                                 <%}else if(index.trangThaiMua==4){%>
                                                     <label class="font-weight-normal">Trạng thái mua: </label>
@@ -304,6 +304,7 @@
                             <td scope="col-2">Loại Món</td>
                             <td scope="col-2">Cửa hàng</td>
                             <td scope="col-2">Giá tiền đặt</td>
+                            <td scope="col-2">Chức năng</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -323,6 +324,9 @@
                                 </td>
                                 <td scope="col-2">
                                     <%=data[i].giaTienDat%> đ
+                                </td>
+                                <td class="text-primary" scope="col-1">
+                                    <a href="/mon/chi-tiet/<%=data[i].idMon%>">Chi tiết</a>
                                 </td>
                             </tr>
                             <%}%>

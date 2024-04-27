@@ -203,9 +203,6 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <a href="/cua-hang/danh-sach" class="btn btn-dark btn-md">
-              <i class="fas fa-chevron-left"></i>
-            </a>
             <span class="h2" style="margin: 15px;">Chi Tiết Cửa Hàng</span>
           </div>
           <div class="col-sm-6">
@@ -242,9 +239,9 @@
         <br>
         <label class="font-weight-normal">Trạng thái: </label>
         <% if(chiTietCH.trangThai==true){%>
-          <label class="text-success" scope="col-2">Hoạt động</label>
+          <label class="text-success font-weight-normal" scope="col-2">Hoạt động</label>
           <%}else{%>
-            <label class="text-danger" scope="col-2">Khóa</label>
+            <label class="text-danger font-weight-normal" scope="col-2">Khóa</label>
             <%}%>
               <br>
 
@@ -291,7 +288,7 @@
                               class=" <%= NVQL[i].trangThai ? 'text-success' : 'text-danger' %>"
                               data-idch="<%=chiTietCH._id%>" data-idnv="<%=NVQL[i]._id%>"
                               data-trangthai="<%=NVQL[i].trangThai%>">
-                              <%= NVQL[i].trangThai ? 'Hoạt Động' : 'Khóa' %>
+                              <%= NVQL[i].trangThai ? 'Hoạt động' : 'Khóa' %>
                             </a>
                           </td>
 
@@ -326,7 +323,7 @@
                   <tr class="table-secondary">
                     <td scope="col-1" class="col-1">STT</td>
                     <td scope="col-2" class="col-2">Tên món</td>
-                    <td scope="col-2" class="col-2">loại món</td>
+                    <td scope="col-2" class="col-2">Loại món</td>
                     <td scope="col-2" class="col-2">Cửa hàng</td>
                     <td scope="col-2" class="col-1">Giá tiền</td>
                     <td scope="col-2" class="col-2">Trạng thái</td>
@@ -360,14 +357,18 @@
                             <%=monCH[i].tenCH%>
                           </td>
                           <td scope="col-2" class="col-1">
-                            <%=monCH[i].giaTien%>
+                            <%=monCH[i].giaTien.toLocaleString()%>đ
                           </td>
-                          <% if(monCH[i].trangThai==true){%>
-                            <td class="text-success" scope="col-2" class="col-2">Hoạt động</td>
-                            <%}else{%>
-                              <td class="text-danger" scope="col-2" class="col-2">Khóa</td>
-                              <%}%>
-                                <td scope="col-1" class="text-primary col-2">chi tiết</td>
+                          <td class="text-primary scope-col-2">
+                            <a data-toggle="modal" data-target="#suaTrangThaiModalMon"
+                              class=" <%= monCH[i].trangThai ? 'text-success' : 'text-danger' %>" data-idmon="<%=monCH[i]._id%>"
+                              data-trangthai="<%=monCH[i].trangThai%>">
+                              <%= monCH[i].trangThai ? 'Hoạt động' : 'Khóa' %>
+                            </a>
+                          </td>
+                          <td class="text-primary" scope="col-1">
+                            <a href="/mon/chi-tiet/<%=monCH[i]._id%>">Chi tiết</a>
+                          </td>
                         </tr>
                         <%}%>
                           <%}%>
@@ -500,19 +501,44 @@
                           <div class="modal-body">
                             <form id="formSuaTrangThai" action="/cua-hang/xoa/NVQL[i]._id" method="post">
                               <div class="form-group">
-                                <label for="trangThai">Bạn có muốn sửa không?</label>
+                                <label for="trangThai">Bạn có muốn sửa trạng thái không?</label>
                                 <input type="hidden" class="form-control" name="idCH1" id="idCH1"
                                   value="<%=chiTietCH._id%>">
                               </div>
-                              <div class="modal-footer justify-content-end">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                                <button type="submit" class="btn btn-primary">Sửa</button>
+                              <div class="modal-footer justify-content-end row">
+                                <button type="button" class="btn btn-secondary col-3" data-dismiss="modal">Hủy</button>
+                                <button type="submit" class="btn btn-primary col-3">Xác nhận</button>
                               </div>
                             </form>
                           </div>
                         </div>
                       </div>
                     </div>
+
+                    <!-- Modal Sửa Trạng Thái -->
+                    <div class="modal fade" id="suaTrangThaiModalMon" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Sửa Trạng Thái</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <form id="formSuaTrangThaiMon" action="/cua-hang/xoa-mon/monCH[i]._id" method="get">
+                            <div class="form-group">
+                              <label for="trangThai">Bạn có muốn sửa trạng thái không?</label>
+                            </div>
+                            <div class="modal-footer justify-content-end row">
+                              <button type="button" class="btn btn-secondary col-3" data-dismiss="modal">Hủy</button>
+                              <button type="submit" class="btn btn-primary col-3">Xác nhận</button>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
                     <!-- Kết thúc bảng tài khoản quản lý-->
       </div>
@@ -634,6 +660,17 @@
 
         $('#formSuaTrangThai').attr('action', '/cua-hang/xoa/' + idNV);
 
+      });
+    });
+
+    $(document).ready(function () {
+      $('a[data-target="#suaTrangThaiModalMon"]').on('click', function () {
+
+        var idMon = $(this).data('idmon');
+
+        $('#idMon').val(idMon);
+
+        $('#formSuaTrangThaiMon').attr('action', '/cua-hang/xoa-mon/' + idMon);
       });
     });
   </script>
