@@ -67,10 +67,10 @@ const getHoaDon = async (req, res, next) => {
             (typeof req.query.ngayBatDau === 'undefined' && typeof req.query.ngayKetThuc !== 'undefined') ||
             (typeof req.query.ngayBatDau !== 'undefined' && typeof req.query.ngayKetThuc === 'undefined')
         ) {
-            return {
+            return res.json({
                 msg: 'Vui lòng nhập cả ngày bắt đầu và ngày kết thúc',
                 success: false
-            };
+            });
         }
 
         if (typeof (req.query.maHD) !== 'undefined' && req.query.maHD !== "") {
@@ -103,7 +103,7 @@ const getHoaDon = async (req, res, next) => {
         }
 
         // Xử lý tìm kiếm theo thời gian tạo
-        if (typeof req.query.ngayBatDau !== 'undefined' && typeof req.query.ngayKetThuc !== 'undefined') {
+        if (typeof req.query.ngayBatDau !== 'undefined' && req.query.ngayBatDau !== "" && typeof req.query.ngayKetThuc !== 'undefined' && req.query.ngayKetThuc !== "") {
             const ngayBatDauParts = req.query.ngayBatDau.split('/');
             const ngayKetThucParts = req.query.ngayKetThuc.split('/');
 
