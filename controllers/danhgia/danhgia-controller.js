@@ -10,7 +10,7 @@ const ThemDanhGia = async function (req, res) {
         const daDanhGia = await DanhGia.findOne({ idKH: idKH, idMon: idMon })
         if (daDanhGia) {
             if (daDanhGia.trangThai === true) {
-                await DanhGia.updateOne({ idKH, idMon }, { danhGia: danhGia, thoiGianTao: Date.now()});
+                await DanhGia.updateOne({ idKH, idMon }, { danhGia: danhGia, thoiGianTao: Date.now() });
                 const index = await DanhGia.findOne({ idKH: idKH, idMon: idMon });
                 res.json({
                     index,
@@ -414,7 +414,7 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
                     timkiem,
             },
             {
-                $sort: {thoiGianTao: -1}
+                $sort: { thoiGianTao: -1 }
             },
             {
                 $skip: (trang - 1) * 10,
@@ -424,12 +424,14 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
             },
         ]);
         const count = await GetDanhSachTheoTenMon(req, res);
+        const sl = await DanhGia.countDocuments({ idMon });
         const soDanhGiaTrenTrang = 10;
         const totalPages = Math.ceil(count.count / soDanhGiaTrenTrang);
         return ({
             list: query,
             count: count.count,
-            totalPages,
+            soLuong: sl,
+            totalPages: totalPages,
             currentPage: trang,
             msg: 'Get số lượng đánh giá theo tên món thành công',
             success: true
