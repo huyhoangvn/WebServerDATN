@@ -9,7 +9,7 @@ const getView = async (req, res, next) => {
     const AllLoaiMon = await LoaiMon.find({});
     req.query.nam = currentYear
     req.query.thang = currentMonth
-    const monBanChay = await ThongKeCtrl.thongKeMonBanChayTheoNam(req, res);
+    const monBanChay = await ThongKeCtrl.thongKeMonBanChay(req, res);
     res.render("thongke/mon-ban-chay", {
         currentMonth,
         currentYear,
@@ -26,20 +26,20 @@ const getList = async (req, res, next) => {
     const idLM = new mongo.Types.ObjectId(req.query.idLM);
     const tenLM = req.query.tenLM;
     const AllLoaiMon = await LoaiMon.find({});
-    let list = {}
+    let data = {}
     if (tenLM == "" || tenLM == undefined) {
-        const monBanChay = await ThongKeCtrl.thongKeMonBanChayTheoNam(req, res);
-        list = { monBanChay }
+        const monBanChay = await ThongKeCtrl.thongKeMonBanChay(req, res);
+        data = { monBanChay }
     } else {
         const tenLM = req.query.tenLM;
         const monBanChay = await ThongKeCtrl.thongKeMonBanChayTheoTenLoaiMon(req, res);
-        list = { monBanChay }
+        ldataist = { monBanChay }
     }
     res.render("thongke/mon-ban-chay", {
         currentMonth,
         currentYear,
         AllLoaiMon,
-        monBanChay: list.monBanChay.data,
+        monBanChay: data.monBanChay.list,
         admin: req.session.ten,
         msg: ""
     })
