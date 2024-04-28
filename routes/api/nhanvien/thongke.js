@@ -17,6 +17,8 @@ router.get('/tenLM', passport.authenticate('jwt', { session: false }), thongkeCr
 router.get('/nam-tenLM', passport.authenticate('jwt', { session: false }), thongkeCrl.thongKeMonBanChayTheoNamApi);// hàm này dùng để tìm kiếm theo năm và tháng
 
 router.get('/ngay-to-ngay', passport.authenticate('jwt', { session: false }), thongkeCrl.thongKeDoanhThuTheoNgaytoNgayApi);
-router.get('/mon-ban-chay', thongkeCrl.thongKeMonBanChayApi);
+router.get('/mon-ban-chay', passport.authenticate('jwt', { session: false }), thongkeCrl.thongKeMonBanChayApi);
+
+router.get('/mon-ban-chay-web', thongkeCrl.thongKeMonBanChayWebApi);
 
 module.exports = router;
