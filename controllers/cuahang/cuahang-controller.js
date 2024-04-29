@@ -11,17 +11,19 @@ const moment = require('moment');
 
 const addCuaHang = async (req, res, next) => {
     try {
-        // Lấy dữ liệu từ request body
         const tenCH = req.body.tenCH;
         const email = req.body.email;
         const sdt = req.body.sdt;
         const diaChi = req.body.diaChi;
+        const tenTaiKhoan = req.body.tenTaiKhoan;
+        const taiKhoanThanhToan = req.body.taiKhoanThanhToan;
+        const nganHangThuHuong = req.body.nganHangThuHuong;
         const thoiGianMo = req.body.thoiGianMo;
         const thoiGianDong = req.body.thoiGianDong;
         const hinhAnh = 'default_image.png';
         const trangThai = 0; // Đặt trạng thái là 0
         // Kiểm tra tính hợp lệ của dữ liệu
-        if (!tenCH || !email || !sdt || !diaChi) {
+        if (!tenCH || !email || !sdt || !diaChi || tenTaiKhoan || taiKhoanThanhToan || nganHangThuHuong) {
             return res.json({ success: false, msg: 'Vui lòng điền đầy đủ thông tin' });
         }
 
@@ -34,6 +36,9 @@ const addCuaHang = async (req, res, next) => {
         // Tạo mới cửa hàng
         const saveCH = await CuaHang.create({
             tenCH: tenCH,
+            tenTaiKhoan: tenTaiKhoan,
+            nganHangThuHuong: nganHangThuHuong,
+            taiKhoanThanhToan: taiKhoanThanhToan,
             email: email,
             sdt: sdt,
             diaChi: diaChi,
@@ -46,8 +51,6 @@ const addCuaHang = async (req, res, next) => {
                 hinhAnh,
             trangThai: trangThai,
         });
-
-        // Trả về kết quả
         return res.json({ success: true, msg: 'Thêm thành công', index: saveCH });
     } catch (e) {
         // Xử lý lỗi
