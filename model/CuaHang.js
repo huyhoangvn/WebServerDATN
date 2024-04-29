@@ -15,8 +15,8 @@ const CuaHangSchema = new db.mongodb.Schema(
         trangThai: { type: Boolean, required: true },
 
         tenTaiKhoan: { type: String, default: "" },
-        taiKhoanThanhToan: { type: String, default: "" },
-        nganHangThuHuong: { type: String, default: "" }
+        nganHangThuHuong: { type: String, default: "" },
+        taiKhoanThanhToan: { type: String, default: "" }
     }, { collection: 'CuaHang' }
 )
 
