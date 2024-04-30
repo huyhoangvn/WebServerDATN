@@ -559,6 +559,7 @@ const chiTietHoaDon = async (req, res, next) => {
                     tenCH: "$cuahang.tenCH",
                     tenLM: "$loaiMon.tenLM",
                     hinhAnh: 1,
+                    soLuong: 1,
                 }
             }
         ]);
