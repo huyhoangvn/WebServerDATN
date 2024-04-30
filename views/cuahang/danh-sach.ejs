@@ -268,7 +268,7 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form id="formSuaTrangThai" action="/cua-hang/xoa/listCH[i]._id" method="get">
+                <form id="formSuaTrangThai" action="/cua-hang/sua-trang-thai/listCH[i]._id" method="get">
                   <div class="form-group">
                     <label for="">Bạn có muốn sửa trạng thái không?</label>
                   </div>
@@ -320,7 +320,7 @@
 
         $('#idCH').val(idCH);
 
-        $('#formSuaTrangThai').attr('action', '/cua-hang/xoa/' + idCH);
+        $('#formSuaTrangThai').attr('action', '/cua-hang/sua-trang-thai/' + idCH);
       });
     });
   </script>
