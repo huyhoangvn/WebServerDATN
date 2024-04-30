@@ -206,22 +206,14 @@
 
         </form>
 
-        <div class="bg-light rounded text-center mb-1">
-          <div>
             <% if (ngayBatDau !=="" || ngayKetThuc !=="" ) { %>
-              <p>Doanh thu từ <%= ngayBatDau%> đến <%= ngayKetThuc%>
-              </p>
-              <p class="fw-bold">
+              <label class="font-weight-normal">Doanh thu từ <%= ngayBatDau%> đến <%= ngayKetThuc%></label>
+              <label class="fw-bold">
                 <%= ngayToNgay.toLocaleString() %>đ
-              </p>
+              </label>
               <% } else { %>
-                <p>Nhập ngày để thống kê</p>
-                <p class="fw-bold">
-                  0đ
-                </p>
+                <label class="font-weight-normal">Chọn ngày để thống kê</label>
                 <% } %>
-          </div>
-        </div>
 
 
         <!-- bắt đầu doanh thu 3 ô -->
