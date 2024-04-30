@@ -14,7 +14,7 @@ router.use('/loai-mon', require('./loaimon'))
 router.use('/mon', require('./mon'))
 router.use('/thong-ke', require('./thongke'))
 router.use('/hoa-don', require('./hoadon'))
-
+router.use('/slide', require('./slide'))
 //Thanh toán
 router.post('/callback', (req, res) => {
   let result = {};
