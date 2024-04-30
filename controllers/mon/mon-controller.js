@@ -605,6 +605,7 @@ const getMonCuaLoaiMon = async (req, res) => {
           "trangThai": "$trangThai",
           "tenCH": "$KetQuaCuaHang.tenCH", // Thay vì "$tenCH"
           "tenLM": "$KetQuaLoaiMon.tenLM",
+          "hinhAnh": { $concat: [req.protocol, "://", req.get("host"), "/public/images/", "$hinhAnh"] },
           "idMon": "$_id",
         }
       },
