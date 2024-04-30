@@ -186,8 +186,11 @@
 
           <!-- tìm theo tên loại món, theo ngày-->
           <div class="d-flex row justify-content-between mb-1">
+            <div class="col-3">
+              <input type="text" class="form-control" name="tenMon" placeholder="Nhập tên món để tìm kiếm">
+            </div>
 
-            <div class="col-4">
+            <div class="col-3">
               <select class="form-control" name="tenLM">
                 <option value="">Tất cả lọai món</option>
                 <% for (var i=0; i<AllLoaiMon.length; i++) {%>
@@ -198,7 +201,7 @@
               </select>
             </div>
 
-            <div class="col-4">
+            <div class="col-2">
               <select class="form-control" name="thang" id="thangSelect">
                 <option value="">Tháng</option>
                 <% for (var i=1; i <=12; i++) { %>
@@ -271,6 +274,19 @@
           </tbody>
         </table>
         <!--kết thúc bảng -->
+
+        <!-- Phân trang hiển thị-->
+        <nav aria-label="Page navigation">
+          <ul class="pagination justify-content-center">
+            <% for (var i=1; i <=totalPages; i++) { %>
+              <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                <a class="page-link" href="?trang=<%= i %>">
+                  <%= i %>
+                </a>
+              </li>
+              <% } %>
+          </ul>
+        </nav>
       </div>
     </section>
   </div>
@@ -303,9 +319,25 @@
         $('#yearPicker').val('');
       });
     });
+    function getUrlParameter(name) {
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      var results = regex.exec(location.search);
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    function fillFormFieldsFromURL() {
+      var tenMon = getUrlParameter('tenMon') || '';
+      var tenLM = document.querySelector('select[name="tenLM"]').value;
+      var thang = document.querySelector('select[name="thang"]').value;
+      var nam = document.querySelector('input[name="nam"]').value;
+
+      document.querySelector('input[name="tenMon"]').value = tenMon;
+    }
 
 
     window.onload = function () {
+      fillFormFieldsFromURL()
       // Lấy URL hiện tại
       var currentUrl = window.location.href;
 
@@ -331,6 +363,9 @@
       // Đánh dấu trang đã được tải lại từ tìm kiếm
       localStorage.setItem('isReloaded', 'true');
     };
+
+
+    
 
 
 
