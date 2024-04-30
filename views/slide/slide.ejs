@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Food Center</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css" />
@@ -58,7 +59,7 @@
           <li class="nav-item menu-open">
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="/thong-ke/doanh-thu" class="nav-link active">
+                <a href="/thong-ke/doanh-thu" class="nav-link ">
                   <p>Thống kê doanh thu</p>
                 </a>
               </li>
@@ -135,7 +136,7 @@
           <li class="nav-item menu-open">
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="/khach-hang/danh-sach" class="nav-link">
+                <a href="/slide" class="nav-link active">
                   <p>Quản lý slide</p>
                 </a>
               </li>
@@ -292,20 +293,20 @@
                   </button>
                 </div>
                 <form name="update-from" method="post">
-                <div class="modal-body">
-                  <div class="col-8 mx-auto">
-                    <div class="custom-file">
-                      <input type="file" class="custom-file-input" name="imageSlide"
-                        aria-describedby="inputGroupFileAddon01" />
-                      <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                  <div class="modal-body">
+                    <div class="col-8 mx-auto">
+                      <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="imageSlide"
+                          aria-describedby="inputGroupFileAddon01" />
+                        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
-                  <button onclick="updateItem()" type="button" class="btn btn-primary" id="updateButton">Sửa</button>
-                </div>
-              </form>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Hủy</button>
+                    <button onclick="updateItem()" type="button" class="btn btn-primary" id="updateButton">Sửa</button>
+                  </div>
+                </form>
 
               </div>
             </div>
@@ -377,7 +378,7 @@
         // Get the ID value from the button data
         var id = $('#updateButton').data('id');
         updateFrom.action = '/slide/update/' + id + '?_method=POST';
-        updateFrom.enctype="multipart/form-data"
+        updateFrom.enctype = "multipart/form-data"
         $('#confirmUpdateModal').modal('hide');
         updateFrom.submit();
       }
@@ -452,4 +453,5 @@
         });
     </script>
 </body>
+
 </html>
