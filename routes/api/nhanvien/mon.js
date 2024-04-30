@@ -11,7 +11,7 @@ const passport = require('passport')
 router.post("/", passport.authenticate('jwt', { session: false }), multer.upload.fields([{ name: 'hinhAnh', maxCount: 1 }]), monCtrl.themMonApi);
 
 router.get("/",  monCtrl.getTatCaMonApi);
-router.get("/theo-cua-hang/:idCH", passport.authenticate('jwt', { session: false }), monCtrl.getMonCuaCuaHang); //http://localhost:3000/api/nhanvien/mon/65edaf041b25866e0cc9e5ab
+router.get("/theo-cua-hang/:idCH", monCtrl.getMonCuaCuaHang); //http://localhost:3000/api/nhanvien/mon/65edaf041b25866e0cc9e5ab
 router.get("/theo-loai-mon/:idLM", passport.authenticate('jwt', { session: false }), monCtrl.getMonCuaLoaiMon);
 router.delete("/:idMon", passport.authenticate('jwt', { session: false }), monCtrl.deletemonapi);
 router.put("/:idMon", passport.authenticate('jwt', { session: false }), multer.upload.fields([{ name: 'hinhAnh', maxCount: 1 }]), monCtrl.updatemonapi);
