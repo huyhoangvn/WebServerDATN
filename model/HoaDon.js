@@ -42,6 +42,9 @@ const HoaDonSchema = new db.mongodb.Schema(
             default: 0, // 0 tiền mặt ; 1 : đã chuyển khoản
 
         },
+
+        hinhAnhXacNhan: { type: String, default: "default_image.jpg" },
+
     }, { collection: 'HoaDon' }
 );
 
