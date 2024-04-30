@@ -7,7 +7,7 @@ const sessionAdmin = require('../../config/auth/session-admin')
 
 router.get('/danh-sach', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), NhanVienQuanlyCtrl.getList);
 router.get('/duyet/:idNV', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), NhanVienQuanlyCtrl.duyetNhanVienQuanLy);
-router.get('/xoa/:idNV', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), NhanVienQuanlyCtrl.xoaNhanVien);
+router.get('/sua-trang-thai/:idNV', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), NhanVienQuanlyCtrl.xoaNhanVien);
 
 router.get('/chi-tiet/:idNV', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), () => { res.end("Chi tiết") });
 
