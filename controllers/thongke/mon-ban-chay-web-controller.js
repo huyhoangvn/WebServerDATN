@@ -9,12 +9,14 @@ const getView = async (req, res, next) => {
     const AllLoaiMon = await LoaiMon.find({});
     req.query.nam = currentYear
     req.query.thang = currentMonth
-    const monBanChay = await ThongKeCtrl.thongKeMonBanChay(req, res);
+    const monBanChay = await ThongKeCtrl.thongKeMonBanChayWeb(req, res);
     res.render("thongke/mon-ban-chay", {
+        totalPages: monBanChay.totalPages,
+        currentPage: monBanChay.currentPage,
         currentMonth,
         currentYear,
         AllLoaiMon,
-        monBanChay:monBanChay.data,
+        monBanChay:monBanChay.list,
         admin: req.session.ten,
         msg: ""
     })
@@ -28,14 +30,16 @@ const getList = async (req, res, next) => {
     const AllLoaiMon = await LoaiMon.find({});
     let data = {}
     if (tenLM == "" || tenLM == undefined) {
-        const monBanChay = await ThongKeCtrl.thongKeMonBanChay(req, res);
+        const monBanChay = await ThongKeCtrl.thongKeMonBanChayWeb(req, res);
         data = { monBanChay }
     } else {
         const tenLM = req.query.tenLM;
-        const monBanChay = await ThongKeCtrl.thongKeMonBanChayTheoTenLoaiMon(req, res);
-        ldataist = { monBanChay }
+        const monBanChay = await ThongKeCtrl.thongKeMonBanChayWeb(req, res);
+        data = { monBanChay }
     }
     res.render("thongke/mon-ban-chay", {
+        totalPages: data.monBanChay.totalPages,
+        currentPage: data.monBanChay.currentPage,
         currentMonth,
         currentYear,
         AllLoaiMon,

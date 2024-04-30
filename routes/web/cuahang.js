@@ -10,11 +10,11 @@ router.get('/danh-sach', sessionAdmin.setTokenHeader, passport.authenticate('jwt
 router.get('/them-moi', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.getAddView);
 router.post('/add', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.getAdd);
 router.get('/chi-tiet/:idCH', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.chiTietCuaHang);
-router.get('/xoa/:idCH', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.xoaCuaHang);
+router.get('/sua-trang-thai/:idCH', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.xoaCuaHang);
 
 router.post('/them-nv/:idCH', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.themNhanVienQuanLy);
 
-router.post('/xoa/:idNV', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.xoaNhanVien);
-router.get('/xoa-mon/:idMon',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), CuaHangCtrl.xoaMon );
+router.post('/sua-trang-thai/:idNV', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.xoaNhanVien);
+router.get('/xoa-mon/:idMon', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.xoaMon);
 
 module.exports = router;
