@@ -28,5 +28,8 @@ router.post('/giao-hang-that-bai/:id', passport.authenticate('jwt', { session: f
 router.post('/giao-hang-thanh-cong/:id', passport.authenticate('jwt', { session: false }), hoadonctrl.updatetrangThaiMuaGiaoHangThanhCongApi);
 router.post('/delete/:id', passport.authenticate('jwt', { session: false }), hoadonctrl.deleteHoaDonApi);
 
+router.post('/thanh-cong/:id', passport.authenticate('jwt', { session: false }), hoadonctrl.xacNhanThanhToanThanhCongApi);
+router.post('/that-bai/:id', passport.authenticate('jwt', { session: false }), hoadonctrl.xacNhanThanhToanThatBaiApi);
+
 
 module.exports = router;
