@@ -496,6 +496,7 @@ const chiTietHoaDon = async (req, res, next) => {
         // Lấy chi tiết hóa đơn
         const id = req.params.id;
 
+
         if (!id) {
             return ({ msg: "ID không được cung cấp", success: false });
         }
@@ -557,7 +558,7 @@ const chiTietHoaDon = async (req, res, next) => {
                     tenMon: "$mon.tenMon",
                     tenCH: "$cuahang.tenCH",
                     tenLM: "$loaiMon.tenLM",
-                    hinhAnh: 1
+                    hinhAnh: 1,
                 }
             }
         ]);
@@ -595,6 +596,7 @@ const chiTietHoaDon = async (req, res, next) => {
                 trangThaiMua: item.trangThaiMua,
                 trangThai: item.trangThai,
                 maHD: item.maHD,
+                hinhAnhXacNhan: req.protocol + "://" + req.get("host") + "/public/images/" + item.hinhAnhXacNhan,
                 phuongThucThanhToan: item.phuongThucThanhToan,
                 tenKH: khachHang ? khachHang.tenKH : "",
                 sdt: khachHang ? khachHang.sdt : "",
