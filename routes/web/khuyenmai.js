@@ -13,6 +13,6 @@ router.post('/ADD', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { 
 
 router.post('/sua/:idKM', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), KhuyenMaiCtrl.updateKhuyenMai)
 
-router.post('/xoa/:idKM', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), KhuyenMaiCtrl.updateTrangThai)
+router.post('/sua-trang-thai/:idKM', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), KhuyenMaiCtrl.updateTrangThai)
 
 module.exports = router;
