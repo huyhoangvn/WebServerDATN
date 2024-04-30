@@ -185,9 +185,10 @@
           <label for="" class="m-0 mb-2">Thêm ảnh slide </label>
           <br />
           <form action="/slide" method="POST" enctype="multipart/form-data">
-            <div class="d-flex row-5 justify-content-between mb-1">
-              <div class="search_select_box">
-                <select id="selectStore" data-live-search="true" name="idStore">
+            <div class="d-flex row justify-content-between mb-1">
+              
+              <div class="search_select_box col-2 form-group">
+                <select id="selectStore" class="form-control" data-live-search="true" name="idStore">
                   <% dataStore.forEach(function(store) { %>
 
                     <option value="<%= store._id %>">
@@ -198,23 +199,22 @@
                 </select>
               </div>
 
-              <div class="search_select_box">
+              <div class="search_select_box col-2 form-group">
                 <select name="idDish" id="selectMon" data-live-search="true">
                   <!-- Các option sẽ được thêm vào đây bằng JavaScript -->
                 </select>
               </div>
 
-              <div class="col-5">
-                <div class="input-group mb-3">
+                <div class="input-group col-6 form-group">
                   <div class="custom-file">
                     <input type="file" class="custom-file-input" name="imageSlide"
                       aria-describedby="inputGroupFileAddon01" />
                     <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
                   </div>
                 </div>
-              </div>
-              <div class="col-2">
-                <button class="btn btn-dark w-120" type="submit" id="thongKe">
+
+              <div class="col-auto form-group">
+                <button class="btn btn-default btn-dark" type="submit" id="thongKe">
                   Thêm ảnh
                 </button>
               </div>
@@ -224,11 +224,11 @@
           <table class="table table-bordered border-secondary">
             <thead>
               <tr class="table-secondary">
-                <th scope="col" class="text-center">STT</th>
-                <th scope="col" class="text-center">Tên món</th>
-                <th scope="col" class="text-center">Cửa hàng</th>
-                <th scope="col" class="text-center">Hình ảnh</th>
-                <th scope="col" class="text-center">Chức năng</th>
+                <td scope="col" class="text-center">STT</td>
+                <td scope="col" class="text-center">Tên món</td>
+                <td scope="col" class="text-center">Cửa hàng</td>
+                <td scope="col" class="text-center">Hình ảnh</td>
+                <td scope="col" class="text-center">Chức năng</td>
               </tr>
             </thead>
             <tbody>
@@ -331,7 +331,6 @@
       }
 
       .bootstrap-select>.dropdown-toggle {
-        margin-left: 25px;
         width: 110%;
         border: 1px solid rgb(205, 204, 204);
       }
