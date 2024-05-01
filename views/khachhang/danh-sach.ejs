@@ -186,8 +186,8 @@
                 placeholder="Nhập tên khách hàng để tìm kiếm">
             </div>
             <div class="col-4">
-              <input type="text" id="searchTaiKhoanKH" class="form-control" name="taiKhoanKH"
-                placeholder="Nhập tên tài khoản để tìm kiếm">
+              <input type="text" id="searchTaiKhoanKH" class="form-control" name="sdt"
+                placeholder="Nhập số điện thoại để tìm kiếm">
             </div>
 
             <div class="col-2">
@@ -331,27 +331,19 @@
     }
     )
 
-    // Khôi phục các giá trị của các trường khi trang được tải lại
-    window.onload = function () {
-      var searchTenKH = localStorage.getItem('searchTenKH');
-      var searchTaiKhoanKH = localStorage.getItem('searchTaiKhoanKH');
-      var searchTrangThai = localStorage.getItem('searchTrangThai');
+    $(document).ready(function () {
+        // Lấy tham số từ URL
+        var urlParams = new URLSearchParams(window.location.search);
 
-      // Đặt lại giá trị của các trường
-      document.getElementById('searchTenKH').value = searchTenKH;
-      document.getElementById('searchTaiKhoanKH').value = searchTaiKhoanKH;
-      document.getElementById('searchTrangThai').value = searchTrangThai;
-    };
+        // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
+        var tenKHValue = urlParams.get('tenKH') || '';
+        var sdtValue = urlParams.get('sdt') || '';
+        var trangThaiValue = urlParams.get('trangThai') || "-1"; // Chọn giá trị đầu tiên
 
-    // Lưu các giá trị của các trường khi form được submit
-    document.getElementById('searchForm').addEventListener('submit', function () {
-      var searchTenKH = document.getElementById('searchTenKH').value;
-      var searchTaiKhoanKH = document.getElementById('searchTaiKhoanKH').value;
-      var searchTrangThai = document.getElementById('searchTrangThai').value;
-
-      localStorage.setItem('searchTenKH', searchTenKH);
-      localStorage.setItem('searchTaiKhoanKH', searchTaiKhoanKH);
-      localStorage.setItem('searchTrangThai', searchTrangThai);
+        // Điền lại giá trị của các trường
+        $("#searchTenKH").val(tenKHValue);
+        $("#searchTaiKhoanKH").val(sdtValue);
+        $("#searchTrangThai").val(trangThaiValue);
     });
 
     function convertTrangThai(trangThai) {

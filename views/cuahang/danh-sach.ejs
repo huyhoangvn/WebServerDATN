@@ -323,6 +323,22 @@
         $('#formSuaTrangThai').attr('action', '/cua-hang/sua-trang-thai/' + idCH);
       });
     });
+
+
+    $(document).ready(function () {
+        // Lấy tham số từ URL
+        var urlParams = new URLSearchParams(window.location.search);
+
+        // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
+        var tenCHValue = urlParams.get('tenCH') || '';
+        var diaChiValue = urlParams.get('diaChi') || '';
+        var trangThaiValue = urlParams.get('trangThai') || "-1"; // Chọn giá trị đầu tiên
+
+        // Điền lại giá trị của các trường
+        $("#searchMon").val(tenCHValue);
+        $("#searchCuaHang").val(diaChiValue);
+        $("select[name='trangThai']").val(trangThaiValue);
+    });
   </script>
 </body>
 

@@ -108,6 +108,11 @@ const getKhachHangTheoTen = async (req, res) => {
       timkiem.tenKH = { $regex: req.query.tenKH, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
     }
 
+    if (typeof (req.query.sdt) !== 'undefined' && req.query.sdt !== "") {
+
+      timkiem.sdt = { $regex: req.query.sdt, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+    }
+
     if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
       const trangThaiValue = parseInt(req.query.trangThai);
       if (trangThaiValue === 1 || trangThaiValue === 0) {

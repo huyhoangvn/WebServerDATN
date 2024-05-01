@@ -351,6 +351,22 @@
         $('#formSuaTrangThai').attr('action', '/mon/xoa-danh-gia/' + idDG);
       });
     });
+
+
+    $(document).ready(function () {
+        // Lấy tham số từ URL
+        var urlParams = new URLSearchParams(window.location.search);
+
+        // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
+        var tenKHValue = urlParams.get('tenKH') || '';
+        var danhGiaValue = urlParams.get('danhGia') || "-1"; // Chọn giá trị đầu tiên
+        var trangThaiValue = urlParams.get('trangThai') || "-1"; // Chọn giá trị đầu tiên
+
+        // Điền lại giá trị của các trường
+        $("input[name='tenKH']").val(tenKHValue);
+        $("select[name='danhGia']").val(danhGiaValue);
+        $("select[name='trangThai']").val(trangThaiValue);
+    });
   </script>
 </body>
 
