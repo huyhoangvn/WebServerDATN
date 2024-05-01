@@ -478,7 +478,14 @@ const getMonCuaCuaHang = async (req, res) => {
           "tenCH": "$KetQuaCuaHang.tenCH", // Thay vì "$tenCH"
           "tenLM": "$KetQuaLoaiMon.tenLM",
           "idMon": "$idMON",
-          "hinhAnh": "$hinhAnh"
+          "hinhAnh": {
+            $concat: [
+              req.protocol + "://",
+              req.get("host"),
+              "/public/images/",
+              "$hinhAnh"
+            ]
+          },
         }
       },
       {
