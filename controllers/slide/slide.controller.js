@@ -146,13 +146,22 @@ const slideController = {
   },
   getImageSlide: async (req, res, next) => {
     try {
-      const slide = await Slide.find();
-      res.json({ success: true, data: slide });
-    } catch (e) {
-      console.error(e);
-      res.json({ success: false, msg: e });
+      const slides = await Slide.find();
+
+      // Thay đổi đường dẫn hình ảnh của mỗi slide
+      const modifiedSlides = slides.map(slide => {
+        return {
+          ...slide.toObject(),
+          imgSlide: `${req.protocol}://${req.get("host")}/public/images/${slide.imgSlide}`
+        };
+      });
+
+      res.json({ success: true, data: modifiedSlides });
+    } catch (error) {
+      console.error(error);
+      res.json({ success: false, msg: "Lỗi khi lấy danh sách slide", error });
     }
-  },
+  }
 };
 
 module.exports = slideController;

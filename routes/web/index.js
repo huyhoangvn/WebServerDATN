@@ -1,20 +1,25 @@
 var express = require('express');
 var router = express.Router();
 var AdminCtrl = require("../../controllers/admin/dang-nhap-web-controller");
+const passport = require('passport')
+const passportConfig = require('../../config/auth/jwt-decode-admin')
+const sessionAdmin = require('../../config/auth/session-admin')
+
 const CryptoJS = require('crypto-js');
 
 /* GET users listing. */
 router.get('/', AdminCtrl.getViewDangNhapWeb);
 router.use('/auth', require('./auth'))
-router.use('/khach-hang', require('./khachhang'))
-router.use('/quan-ly', require('./quanly'))
-router.use('/cua-hang', require('./cuahang'))
-router.use('/khuyen-mai', require('./khuyenmai'))
-router.use('/loai-mon', require('./loaimon'))
-router.use('/mon', require('./mon'))
-router.use('/thong-ke', require('./thongke'))
-router.use('/hoa-don', require('./hoadon'))
-router.use('/slide', require('./slide'))
+router.use('/khach-hang', sessionAdmin.setTokenHeader, passport.authenticate('admin-jwt', { session: false }), require('./khachhang'))
+router.use('/quan-ly', sessionAdmin.setTokenHeader, passport.authenticate('admin-jwt', { session: false }), require('./quanly'))
+router.use('/cua-hang',sessionAdmin.setTokenHeader, passport.authenticate('admin-jwt', { session: false }), require('./cuahang'))
+router.use('/khuyen-mai',sessionAdmin.setTokenHeader, passport.authenticate('admin-jwt', { session: false }), require('./khuyenmai'))
+router.use('/loai-mon', sessionAdmin.setTokenHeader, passport.authenticate('admin-jwt', { session: false }),require('./loaimon'))
+router.use('/mon',sessionAdmin.setTokenHeader, passport.authenticate('admin-jwt', { session: false }), require('./mon'))
+router.use('/thong-ke',sessionAdmin.setTokenHeader, passport.authenticate('admin-jwt', { session: false }), require('./thongke'))
+router.use('/hoa-don', sessionAdmin.setTokenHeader, passport.authenticate('admin-jwt', { session: false }),require('./hoadon'))
+router.use('/slide',sessionAdmin.setTokenHeader, passport.authenticate('admin-jwt', { session: false }), require('./slide'))
+
 //Thanh toán
 router.post('/callback', (req, res) => {
   let result = {};

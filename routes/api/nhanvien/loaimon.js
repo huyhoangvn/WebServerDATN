@@ -8,17 +8,17 @@ const passport = require('passport')
 //   res.send('respond with a resource');
 // });
 // add loai mon 
-router.post('/', passport.authenticate('jwt', { session: false }), loaimonCtrl.addloaimonApi);
+router.post('/',  loaimonCtrl.addloaimonApi);
 // get all 
-router.get('/:idLM', passport.authenticate('jwt', { session: false }), loaimonCtrl.getchitietloaiMonApi);
+router.get('/:idLM',  loaimonCtrl.getchitietloaiMonApi);
 // get loai mon - tim ten loai mon
-router.get('/', passport.authenticate('jwt', { session: false }), loaimonCtrl.getloaimonApi);
+router.get('/',  loaimonCtrl.getloaimonApi);
 // delete 
-router.delete('/:idLM', passport.authenticate('jwt', { session: false }), loaimonCtrl.deleteLoaiMonApi);
+router.delete('/:idLM',  loaimonCtrl.deleteLoaiMonApi);
 
 //sua 
-router.put('/:idLM', passport.authenticate('jwt', { session: false }), loaimonCtrl.updateLoaiMonApi);
+router.put('/:idLM',  loaimonCtrl.updateLoaiMonApi);
 
-router.post('/kich-hoat/:id', passport.authenticate('jwt', { session: false }), loaimonCtrl.kichhoatLoaiMonapi);
+router.post('/kich-hoat/:id',  loaimonCtrl.kichhoatLoaiMonapi);
 
 module.exports = router;
