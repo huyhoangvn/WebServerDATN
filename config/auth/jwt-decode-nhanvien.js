@@ -12,9 +12,8 @@ opts.issuer = 'WebServerDATN';
 passport.use(new JwtStrategy(opts, async function(payload, done) {
     try {
         const user = await User.model.find({ _id: payload.sub })
-            
-        if (!user) return done(null, false)
-
+        if (!user[0]) return done(null, false)
+        console.log("Config")
         return done(null, user)
     } catch (error) {
         done(error, false)
