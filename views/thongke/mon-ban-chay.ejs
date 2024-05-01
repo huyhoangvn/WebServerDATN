@@ -238,6 +238,7 @@
               <td scope="col-1">Giá tiền</td>
               <td scope="col-1">Loại món</td>
               <td scope="col-8">Doanh thu</td>
+              <td scope="col-8">Chức năng</td>
             </tr>
           </thead>
           <tbody>
@@ -259,12 +260,16 @@
                   <td scope="col-8">
                     <%=monBanChay[i].doanhThu.toLocaleString()%>đ
                   </td>
+                  <td class="text-primary" scope="col-1">
+                    <a href="/mon/chi-tiet/<%=monBanChay[i]._id%>">Chi tiết</a>
+                  </td>
                 </tr>
                 <%}%>
                   <%}else{%>
                     <tr>
                       <td scope="col-1">0</td>
                       <td scope="col-2">0</td>
+                      <td scope="col-9">0</td>
                       <td scope="col-9">0</td>
                       <td scope="col-9">0</td>
                       <td scope="col-9">0</td>
