@@ -496,6 +496,21 @@
       }, 2000);
     }
 
+
+    $(document).ready(function () {
+        // Lấy tham số từ URL
+        var urlParams = new URLSearchParams(window.location.search);
+
+        // Lấy giá trị của các tham số từ URL hoặc giữ nguyên giá trị của select nếu không có trong URL
+        var tenNVValue = urlParams.get('tenNV') || '';
+        var phanQuyenValue = urlParams.get('phanQuyen') || '';
+        var trangThaiValue = urlParams.get('trangThai') || '-1';
+
+        // Điền lại giá trị của các trường
+        $("#tenNV").val(tenNVValue);
+        $("#phanQuyen").val(phanQuyenValue);
+        $("#trangThai").val(trangThaiValue);
+    });
   </script>
 </body>
 
