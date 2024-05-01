@@ -290,6 +290,21 @@
             )
         }
         )
+
+        $(document).ready(function () {
+        // Lấy tham số từ URL
+        var urlParams = new URLSearchParams(window.location.search);
+
+        // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
+        var maHDValue = urlParams.get('maHD') || '';
+        var thoiGianTaoValue = urlParams.get('thoiGianTao') || '';
+        var trangThaiThanhToanValue = urlParams.get('trangThaiThanhToan') || "-1"; // Chọn giá trị đầu tiên
+
+        // Điền lại giá trị của các trường
+        $("#maHD").val(maHDValue);
+        $("#thoiGianTao").val(thoiGianTaoValue);
+        $("#trangThaiThanhToan").val(trangThaiThanhToanValue);
+    });
     </script>
 </body>
 

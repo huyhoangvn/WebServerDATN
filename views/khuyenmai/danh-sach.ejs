@@ -516,34 +516,34 @@
     });
 
     // Lưu trạng thái của các trường dữ liệu đã chọn vào session khi nhấn nút tìm kiếm
-    $(document).ready(function () {
-      $('form[action="/khuyen-mai/danh-sach"]').submit(function (event) {
-        var tieuDe = $('#searchTieuDe').val();
-        var ngayBatDau = $('#ngayBatDau').val();
-        var ngayHetHan = $('#ngayHetHan').val();
-        var trangThai = $('#trangThai').val();
+    // $(document).ready(function () {
+    //   $('form[action="/khuyen-mai/danh-sach"]').submit(function (event) {
+    //     var tieuDe = $('#searchTieuDe').val();
+    //     var ngayBatDau = $('#ngayBatDau').val();
+    //     var ngayHetHan = $('#ngayHetHan').val();
+    //     var trangThai = $('#trangThai').val();
 
-        // Lưu các giá trị vào session
-        sessionStorage.setItem('tieuDe', tieuDe);
-        sessionStorage.setItem('ngayBatDau', ngayBatDau);
-        sessionStorage.setItem('ngayHetHan', ngayHetHan);
-        sessionStorage.setItem('trangThai', trangThai);
-      });
-    });
+    //     // Lưu các giá trị vào session
+    //     sessionStorage.setItem('tieuDe', tieuDe);
+    //     sessionStorage.setItem('ngayBatDau', ngayBatDau);
+    //     sessionStorage.setItem('ngayHetHan', ngayHetHan);
+    //     sessionStorage.setItem('trangThai', trangThai);
+    //   });
+    // });
 
-    // Kiểm tra và đặt lại giá trị cho các trường dữ liệu khi trang được load lại
-    $(document).ready(function () {
-      var tieuDe = sessionStorage.getItem('tieuDe');
-      var ngayBatDau = sessionStorage.getItem('ngayBatDau');
-      var ngayHetHan = sessionStorage.getItem('ngayHetHan');
-      var trangThai = sessionStorage.getItem('trangThai');
+    // // Kiểm tra và đặt lại giá trị cho các trường dữ liệu khi trang được load lại
+    // $(document).ready(function () {
+    //   var tieuDe = sessionStorage.getItem('tieuDe');
+    //   var ngayBatDau = sessionStorage.getItem('ngayBatDau');
+    //   var ngayHetHan = sessionStorage.getItem('ngayHetHan');
+    //   var trangThai = sessionStorage.getItem('trangThai');
 
-      // Đặt giá trị cho các trường dữ liệu nếu đã được lưu trước đó
-      if (tieuDe) $('#searchTieuDe').val(tieuDe);
-      if (ngayBatDau) $('#ngayBatDau').val(ngayBatDau);
-      if (ngayHetHan) $('#ngayHetHan').val(ngayHetHan);
-      if (trangThai) $('#trangThai').val(trangThai);
-    });
+    //   // Đặt giá trị cho các trường dữ liệu nếu đã được lưu trước đó
+    //   if (tieuDe) $('#searchTieuDe').val(tieuDe);
+    //   if (ngayBatDau) $('#ngayBatDau').val(ngayBatDau);
+    //   if (ngayHetHan) $('#ngayHetHan').val(ngayHetHan);
+    //   if (trangThai) $('#trangThai').val(trangThai);
+    // });
 
     var alertContent = document.getElementById("thongBao").value;
     // Kiểm tra xem alertContent có giá trị không
@@ -561,6 +561,24 @@
         modal.modal('hide');
       }, 2000);
     }
+
+
+    $(document).ready(function () {
+        // Lấy tham số từ URL
+        var urlParams = new URLSearchParams(window.location.search);
+
+        // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
+        var tieuDeValue = urlParams.get('tieuDe') || '';
+        var ngayBatDauValue = urlParams.get('ngayBatDau') || '';
+        var ngayHetHanValue = urlParams.get('ngayHetHan') || '';
+        var trangThaiValue = urlParams.get('trangThai') || "-1"; // Chọn giá trị đầu tiên
+
+        // Điền lại giá trị của các trường
+        $("input[name='tieuDe']").val(tieuDeValue);
+        $("input[name='ngayBatDau']").val(ngayBatDauValue);
+        $("input[name='ngayHetHan']").val(ngayHetHanValue);
+        $("select[name='trangThai']").val(trangThaiValue);
+    });
   </script>
 
 </body>
