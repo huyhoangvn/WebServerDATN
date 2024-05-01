@@ -165,12 +165,13 @@ const GetDanhSachTheoTenMon = async function (req, res) {
         if (typeof (req.query.danhGia) !== 'undefined' && req.query.danhGia !== "" && req.query.danhGia !== "-1") {
             timkiem.danhGia = parseInt(req.query.danhGia);
         }
-        if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(typeof (req.query.trangThai))) {
-            const trangThaiValue = typeof (req.query.trangThai);
-            if (trangThaiValue === true || trangThaiValue === false) {
-                timkiem.trangThai = trangThaiValue === true;
+        if (typeof req.query.trangThai !== 'undefined') {
+            const trangThaiValue = req.query.trangThai;
+            if (trangThaiValue === 'true' || trangThaiValue === 'false') {
+                timkiem.trangThai = trangThaiValue === 'true';
             }
         }
+        console.log(timkiem)
         const list = await DanhGia.aggregate([
             {
                 $match: {
@@ -398,10 +399,10 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
         if (typeof (req.query.tenKH) !== 'undefined' && typeof (req.query.tenKH) !== "") {
             timkiem.tenKH = { $regex: req.query.tenKH, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
           }
-        if (typeof (req.query.trangThai) !== 'undefined' && !isNaN(parseInt(req.query.trangThai))) {
-            const trangThaiValue = parseInt(req.query.trangThai);
-            if (trangThaiValue === 1 || trangThaiValue === 0) {
-                timkiem.trangThai = trangThaiValue === 0;
+        if (typeof req.query.trangThai !== 'undefined') {
+            const trangThaiValue = req.query.trangThai;
+            if (trangThaiValue === 'true' || trangThaiValue === 'false') {
+                timkiem.trangThai = trangThaiValue === 'true';
             }
         }
         const query = await DanhGia.aggregate([
@@ -454,7 +455,7 @@ const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
                     timkiem,
             },
             {
-                $sort: { thoiGianTao: -1 }
+                $sort: { thoiGianTao: 1 }
             },
             {
                 $skip: (trang - 1) * 10,
