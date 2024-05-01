@@ -19,6 +19,5 @@ router.get('/nam-tenLM', passport.authenticate('jwt', { session: false }), thong
 router.get('/ngay-to-ngay', passport.authenticate('jwt', { session: false }), thongkeCrl.thongKeDoanhThuTheoNgaytoNgayApi);
 router.get('/mon-ban-chay', passport.authenticate('jwt', { session: false }), thongkeCrl.thongKeMonBanChayApi);
 
-router.get('/mon-ban-chay-web', thongkeCrl.thongKeMonBanChayWebApi);
 
 module.exports = router;

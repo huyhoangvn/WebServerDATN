@@ -12,7 +12,6 @@ router.use('/khuyenmai', require('./khuyenmai'))
 router.use('/loaimon', require('./loaimon'))
 router.use('/mon', require('./mon'))
 router.use('/thongke', require('./thongke'))
-router.use('/slide', require('./slide'))
 router.use('/thanhtoan', require('./thanhtoan'))
 
 module.exports = router;
