@@ -478,7 +478,14 @@ const getMonCuaCuaHang = async (req, res) => {
           "tenCH": "$KetQuaCuaHang.tenCH", // Thay vì "$tenCH"
           "tenLM": "$KetQuaLoaiMon.tenLM",
           "idMon": "$idMON",
-          "hinhAnh": "$hinhAnh"
+          "hinhAnh": {
+            $concat: [
+              req.protocol + "://",
+              req.get("host"),
+              "/public/images/",
+              "$hinhAnh"
+            ]
+          },
         }
       },
       {
@@ -579,6 +586,7 @@ const getMonCuaLoaiMon = async (req, res) => {
       {
         $match: {
           idLM: idLM,
+          trangThai: true
         }
       },
       {
@@ -605,6 +613,7 @@ const getMonCuaLoaiMon = async (req, res) => {
           "trangThai": "$trangThai",
           "tenCH": "$KetQuaCuaHang.tenCH", // Thay vì "$tenCH"
           "tenLM": "$KetQuaLoaiMon.tenLM",
+          "hinhAnh": { $concat: [req.protocol, "://", req.get("host"), "/public/images/", "$hinhAnh"] },
           "idMon": "$_id",
         }
       },

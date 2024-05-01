@@ -2,19 +2,16 @@ var express = require('express');
 var router = express.Router();
 var CuaHangCtrl = require("../../controllers/cuahang/cua-hang-web-controller");
 var MonCtrl = require("../../controllers/mon/mon-web-controller");
-const passport = require('passport')
-const passportConfig = require('../../config/auth/jwt-decode-admin')
-const sessionAdmin = require('../../config/auth/session-admin')
 
-router.get('/danh-sach', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.getList);
-router.get('/them-moi', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.getAddView);
-router.post('/add', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.getAdd);
-router.get('/chi-tiet/:idCH', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.chiTietCuaHang);
-router.get('/xoa/:idCH', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.xoaCuaHang);
+router.get('/danh-sach',  CuaHangCtrl.getList);
+router.get('/them-moi',  CuaHangCtrl.getAddView);
+router.post('/add',  CuaHangCtrl.getAdd);
+router.get('/chi-tiet/:idCH',  CuaHangCtrl.chiTietCuaHang);
+router.get('/sua-trang-thai/:idCH',  CuaHangCtrl.xoaCuaHang);
 
-router.post('/them-nv/:idCH', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.themNhanVienQuanLy);
+router.post('/them-nv/:idCH',  CuaHangCtrl.themNhanVienQuanLy);
 
-router.post('/xoa/:idNV', sessionAdmin.setTokenHeader, passport.authenticate('jwt', { session: false }), CuaHangCtrl.xoaNhanVien);
-router.get('/xoa-mon/:idMon',sessionAdmin.setTokenHeader, passport.authenticate('jwt', {session : false}), CuaHangCtrl.xoaMon );
+router.post('/sua-trang-thai/:idNV',  CuaHangCtrl.xoaNhanVien);
+router.get('/xoa-mon/:idMon', CuaHangCtrl.xoaMon);
 
 module.exports = router;

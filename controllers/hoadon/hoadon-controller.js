@@ -174,7 +174,6 @@ const getHoaDon = async (req, res, next) => {
 }
 const getHoaDonWeb = async (req, res, next) => {
     try {
-
         const trang = parseInt(req.query.trang) || 1;
         const currentPage = trang;
         const filter = {};
@@ -189,7 +188,6 @@ const getHoaDonWeb = async (req, res, next) => {
                 filter.trangThaiThanhToan = trangThaiValue;
             }
         }
-
         // Xử lý tìm kiếm theo trạng thái mua
         if (typeof req.query.trangThaiMua !== 'undefined' && !isNaN(parseInt(req.query.trangThaiMua))) {
             const trangThaiValue = parseInt(req.query.trangThaiMua);
@@ -200,21 +198,32 @@ const getHoaDonWeb = async (req, res, next) => {
 
 
         // Xử lý tìm kiếm theo thời gian tạo
-        if (typeof req.query.thoiGianTao !== 'undefined' && req.query.thoiGianTao !== "") {
-            const parts = req.query.thoiGianTao.split('-');
-            const day = parseInt(parts[2]);
-            const month = parseInt(parts[1]);
-            const year = parseInt(parts[0]);
+        if (typeof req.query.ngayBatDau !== 'undefined' && req.query.ngayBatDau !== "" && typeof req.query.ngayKetThuc !== 'undefined' && req.query.ngayKetThuc !== "") {
+            const ngayBatDauParts = req.query.ngayBatDau.split('-');
+            const ngayKetThucParts = req.query.ngayKetThuc.split('-');
 
-            const startDate = new Date(year, month - 1, day); // Lưu ý: Tháng trong JavaScript bắt đầu từ 0
-            const endDate = new Date(year, month - 1, day + 1); // Ngày kế tiếp
+            // Tạo đối tượng Date từ các thành phần của ngày bắt đầu
+            const ngayBatDau = new Date(
+                parseInt(ngayBatDauParts[0]), // Năm
+                parseInt(ngayBatDauParts[1]) - 1, // Tháng (lưu ý: tháng trong JavaScript bắt đầu từ 0)
+                parseInt(ngayBatDauParts[2]) // Ngày
+            );
+
+            // Tạo đối tượng Date từ các thành phần của ngày kết thúc
+            const ngayKetThuc = new Date(
+                parseInt(ngayKetThucParts[0]), // Năm
+                parseInt(ngayKetThucParts[1]) - 1, // Tháng (lưu ý: tháng trong JavaScript bắt đầu từ 0)
+                parseInt(ngayKetThucParts[2]) // Ngày
+            );
+
+            // Thêm 1 ngày vào ngày kết thúc để bao gồm cả ngày đó trong khoảng thời gian tìm kiếm
+            ngayKetThuc.setDate(ngayKetThuc.getDate() + 1);
 
             filter.thoiGianTao = {
-                $gte: startDate,
-                $lt: endDate
+                $gte: ngayBatDau,
+                $lt: ngayKetThuc
             };
         }
-
         const totalHoaDon = await HoaDon.countDocuments(filter);
 
         const list = await HoaDon.aggregate([
@@ -496,6 +505,7 @@ const chiTietHoaDon = async (req, res, next) => {
         // Lấy chi tiết hóa đơn
         const id = req.params.id;
 
+
         if (!id) {
             return ({ msg: "ID không được cung cấp", success: false });
         }
@@ -557,7 +567,8 @@ const chiTietHoaDon = async (req, res, next) => {
                     tenMon: "$mon.tenMon",
                     tenCH: "$cuahang.tenCH",
                     tenLM: "$loaiMon.tenLM",
-                    hinhAnh: 1
+                    hinhAnh: 1,
+                    soLuong: 1,
                 }
             }
         ]);
@@ -595,6 +606,7 @@ const chiTietHoaDon = async (req, res, next) => {
                 trangThaiMua: item.trangThaiMua,
                 trangThai: item.trangThai,
                 maHD: item.maHD,
+                hinhAnhXacNhan: req.protocol + "://" + req.get("host") + "/public/images/" + item.hinhAnhXacNhan,
                 phuongThucThanhToan: item.phuongThucThanhToan,
                 tenKH: khachHang ? khachHang.tenKH : "",
                 sdt: khachHang ? khachHang.sdt : "",

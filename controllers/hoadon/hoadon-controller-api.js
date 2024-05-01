@@ -414,6 +414,132 @@ const deleteHoaDonCungApi = async (req, res, next) => {
         }
     }
 }
+const xacNhanThanhToanChuyenKhoanApi = async (req, res, next) => {
+    try {
+        const idHD = req.params.idHD;
+
+        let updateFields = {};
+
+        // Kiểm tra từng trường và thêm vào object updateFields nếu tồn tại giá trị
+        if (req.body.phuongThucThanhToan !== undefined) {
+            updateFields.phuongThucThanhToan = req.body.phuongThucThanhToan;
+        }
+        if (req.files.hinhAnhXacNhan && req.files.hinhAnhXacNhan.length > 0) {
+            updateFields.hinhAnhXacNhan = req.files.hinhAnhXacNhan.map((file) => file.filename)[0];
+        }
+        if (req.body.ghiChu !== undefined) {
+            updateFields.ghiChu = req.body.ghiChu;
+        }
+
+        // Nếu không có trường nào cần cập nhật, trả về lỗi
+        if (Object.keys(updateFields).length === 0) {
+            return res.json({ msg: "Không có trường nào cần cập nhật", success: false });
+        }
+
+        // Thực hiện cập nhật chỉ với các trường cần thiết
+        const updatedHoaDon = await HoaDon.findOneAndUpdate(
+            { _id: idHD },
+            { $set: updateFields },
+            { new: true }
+        );
+
+        if (!updatedHoaDon) {
+            return res.json({ msg: "Không tìm thấy hóa đơn", success: false });
+        }
+
+        return res.json({
+            msg: "Xác nhận thanh toán thành công",
+            data: updatedHoaDon,
+            success: true,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.json({ msg: "Đã xảy ra lỗi khi xác nhận thanh toán", success: false });
+    }
+};
+
+const xacNhanThanhToanTienMatApi = async (req, res, next) => {
+    try {
+        const idHD = req.params.idHD;
+        const ghiChu = req.body.ghiChu;
+        const phuongThucThanhToan = req.body.phuongThucThanhToan;
+        const hinhAnhXacNhan = 'default_image.jpg'
+
+        // Thực hiện cập nhật chỉ với các trường cần thiết
+        const updatedHoaDon = await HoaDon.findOneAndUpdate(
+            { _id: idHD },
+            { $set: { ghiChu: ghiChu, phuongThucThanhToan: phuongThucThanhToan, hinhAnhXacNhan: hinhAnhXacNhan } },
+            { new: true }
+        );
+
+        if (!updatedHoaDon) {
+            return res.json({ msg: "Không tìm thấy hóa đơn", success: false });
+        }
+
+        return res.json({
+            msg: "Xác nhận thanh toán thành công",
+            data: updatedHoaDon,
+            success: true,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.json({ msg: "Đã xảy ra lỗi khi xác nhận thanh toán", success: false });
+    }
+};
+const xacNhanThanhToanThanhCongApi = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const ghiChu = req.body.ghiChu;
+        const phuongThucThanhToan = req.body.phuongThucThanhToan;
+
+        // Thực hiện cập nhật chỉ với các trường cần thiết
+        const updatedHoaDon = await HoaDon.findOneAndUpdate(
+            { _id: id },
+            { $set: { ghiChu: ghiChu, phuongThucThanhToan: phuongThucThanhToan, trangThaiThanhToan: 1 } },
+            { new: true }
+        );
+
+        if (!updatedHoaDon) {
+            return res.json({ msg: "Không tìm thấy hóa đơn", success: false });
+        }
+
+        return res.json({
+            msg: "Xác nhận thanh toán thành công",
+            data: updatedHoaDon,
+            success: true,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.json({ msg: "Đã xảy ra lỗi khi xác nhận thanh toán", success: false });
+    }
+};
+const xacNhanThanhToanThatBaiApi = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        const ghiChu = req.body.ghiChu;
+
+        // Thực hiện cập nhật chỉ với các trường cần thiết
+        const updatedHoaDon = await HoaDon.findOneAndUpdate(
+            { _id: id },
+            { $set: { ghiChu: ghiChu, trangThaiThanhToan: 0 } },
+            { new: true }
+        );
+
+        if (!updatedHoaDon) {
+            return res.json({ msg: "Không tìm thấy hóa đơn", success: false });
+        }
+
+        return res.json({
+            msg: "Xác nhận thanh toán thất bại",
+            data: updatedHoaDon,
+            success: true,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.json({ msg: "Đã xảy ra lỗi khi xác nhận thanh toán", success: false });
+    }
+};
+
 
 // Export các hàm API
 module.exports = {
@@ -429,4 +555,8 @@ module.exports = {
     updatetrangThaiMuaGiaoHangThatBaiApi,
     updatetrangThaiMuaGiaoHangThanhCongApi,
     deleteHoaDonCungApi,
+    xacNhanThanhToanChuyenKhoanApi,
+    xacNhanThanhToanTienMatApi,
+    xacNhanThanhToanThanhCongApi,
+    xacNhanThanhToanThatBaiApi
 };

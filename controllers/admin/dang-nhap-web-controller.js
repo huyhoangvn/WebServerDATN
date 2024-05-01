@@ -50,12 +50,11 @@ const dangNhap = async(req, res, next)=>{
                 }
             }
         ]);        
-        console.log(loginResult.length)
         if(loginResult.length > 0){
             success = true,
             index = {
-                id: loginResult.id,
-                ten: loginResult.ten
+                id: loginResult[0]._id,
+                ten: loginResult[0].ten
             }
             msg = "Đăng nhập thành công"
             return {
@@ -83,6 +82,7 @@ const dangNhapWeb = async(req, res, next)=>{
     .then(async(result)=>{
         if(result.success){
             let token = auth.encodedToken(result.index.id)
+            console.log(token)
             req.session.token = token
             req.session.ten = result.index.ten
             res.redirect("/thong-ke/doanh-thu/theo-nam?nam=2024")

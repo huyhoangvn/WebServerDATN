@@ -130,6 +130,19 @@ const thongKeMonBanChayApi = async (req, res, next) => {
         }
     }
 }
+const thongKeMonBanChayWebApi = async (req, res, next) => {
+    try {
+        const index = await thongke.thongKeMonBanChayWeb(req, res, next);
+        res.json(index);  // Send the result directly without using JSON.stringify
+    } catch (error) {
+        // Check if headers have already been sent
+        if (res.headersSent) {
+            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        } else {
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt hóa đơn', error: error.message });
+        }
+    }
+}
 module.exports = {
     //thống kê doanh thu
     thongKeDoanhThuTheoNgayApi,
@@ -142,6 +155,7 @@ module.exports = {
     thongKeMonBanChayTheoTenLoaiMonApi,
     thongKeMonBanChayTheoNamApi,
     thongKeDoanhThuTheoNgaytoNgayApi,
-    thongKeMonBanChayApi
+    thongKeMonBanChayApi,
+    thongKeMonBanChayWebApi
 
 }

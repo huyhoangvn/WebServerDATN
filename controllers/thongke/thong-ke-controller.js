@@ -533,15 +533,7 @@ const thongKeDoanhThuTheoNgayToNgay = async (req, res) => {
 };
 
 
-const getListMon = async () => {
-    try {
-        const listMon = await Mon.find({ trangThai: true });
-        return listMon;
-    } catch (error) {
-        console.error("Lỗi khi lấy danh sách món:", error);
-        throw new Error("Đã xảy ra lỗi khi lấy danh sách món");
-    }
-};
+
 
 const thongKeMonBanChay = async (req, res) => {
     try {
@@ -640,6 +632,174 @@ const thongKeMonBanChay = async (req, res) => {
     }
 }
 
+const getListMon = async () => {
+    try {
+        const listMon = await Mon.aggregate([
+            {
+                $match: { trangThai: true }
+            },
+            {
+                $lookup: {
+                    from: "LoaiMon",
+                    localField: "idLM",
+                    foreignField: "_id",
+                    as: "loaiMon"
+                }
+            },
+            {
+                $unwind: "$loaiMon"
+            },
+            {
+                $project: {
+                    _id: 1,
+                    tenMon: 1,
+                    tenLM: "$loaiMon.tenLM",
+                    giaTien: 1,
+                    hinhAnh: 1
+                }
+            }
+        ]);
+
+        return listMon;
+    } catch (error) {
+        console.error("Lỗi khi lấy danh sách món:", error);
+        return {
+            success: false,
+            msg: "lỗi"
+        }
+    }
+};
+
+
+const thongKeMonBanChayWeb = async (req, res) => {
+    try {
+        const nam = req.query.nam || new Date().getFullYear().toString();
+        const thang = req.query.thang || (new Date().getMonth() + 1).toString();
+        const trang = parseInt(req.query.trang) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+
+        let startDate, endDate;
+        if (!req.query.thang) {
+            startDate = moment({ year: nam, month: 0, day: 1 }).startOf('year').toDate();
+            endDate = moment({ year: nam, month: 11, day: 31 }).endOf('year').toDate();
+        } else {
+            startDate = moment({ year: nam, month: thang - 1, day: 1 }).startOf('month').toDate();
+            endDate = moment({ year: nam, month: thang - 1, day: 1 }).endOf('month').toDate();
+        }
+
+        const matchConditions = [
+            { $expr: { $gte: ["$thoiGianTao", startDate] } },
+            { $expr: { $lte: ["$thoiGianTao", endDate] } },
+            { $expr: { $eq: ["$trangThaiMua", parseInt(req.query.trangThaiMua) || 3] } },
+            { $expr: { $eq: ["$trangThaiThanhToan", parseInt(req.query.trangThaiThanhToan) || 1] } },
+            { $expr: { $eq: ["$trangThai", req.query.trangThai || true] } }
+        ];
+
+        const hoaDon = await HoaDon.aggregate([
+            { $match: { $and: matchConditions } }
+        ]);
+
+        const listMonDatHD = await MonDat.aggregate([
+            {
+                $match: {
+                    idHD: { $in: hoaDon.map(hd => hd._id) }
+                }
+            },
+            {
+                $lookup: {
+                    from: "Mon",
+                    localField: "idMon",
+                    foreignField: "_id",
+                    as: "mon"
+                }
+            },
+            { $unwind: "$mon" },
+            {
+                $lookup: {
+                    from: "LoaiMon",
+                    localField: "mon.idLM",
+                    foreignField: "_id",
+                    as: "loaiMon"
+                }
+            },
+            { $unwind: "$loaiMon" },
+            {
+                $group: {
+                    _id: "$mon._id",
+                    tenMon: { $first: "$mon.tenMon" },
+                    tenLM: { $first: "$loaiMon.tenLM" },
+                    soLuong: { $sum: "$soLuong" },
+                    doanhThu: { $sum: { $multiply: ["$giaTienDat", "$soLuong"] } },
+                    giaTien: { $first: "$mon.giaTien" },
+                    hinhAnh: { $first: "$mon.hinhAnh" }
+                }
+            }
+        ]);
+
+        let filteredResult = listMonDatHD;
+        const listMon = await getListMon();
+
+        let filteredListMon = listMon;
+
+        if (req.query.tenMon) {
+            const tenMonFilter = new RegExp(req.query.tenMon, 'i');
+            filteredListMon = filteredListMon.filter(mon => tenMonFilter.test(mon.tenMon));
+        }
+
+        if (req.query.tenLM) {
+            const tenLMFilter = new RegExp(req.query.tenLM, 'i');
+            filteredListMon = filteredListMon.filter(mon => tenLMFilter.test(mon.tenLM));
+        }
+
+        const finalResult = filteredListMon.map(mon => {
+            const monDatInfo = filteredResult.find(item => item._id.toString() === mon._id.toString());
+            if (monDatInfo) {
+                return {
+                    _id: mon._id,
+                    tenMon: mon.tenMon,
+                    tenLM: mon.tenLM,
+                    soLuong: monDatInfo.soLuong,
+                    giaTien: mon.giaTien,
+                    doanhThu: monDatInfo.doanhThu,
+                    hinhAnh: `${req.protocol}://${req.get("host")}/public/images/${mon.hinhAnh}`
+                };
+            } else {
+                return {
+                    _id: mon._id,
+                    tenMon: mon.tenMon,
+                    tenLM: mon.tenLM,
+                    soLuong: 0,
+                    giaTien: mon.giaTien,
+                    doanhThu: 0,
+                    hinhAnh: `${req.protocol}://${req.get("host")}/public/images/${mon.hinhAnh}`
+                };
+            }
+        });
+
+        finalResult.sort((a, b) => b.doanhThu - a.doanhThu);
+        const totalItems = finalResult.length;
+        const totalPages = Math.ceil(finalResult.length / limit);
+        const startIndex = (trang - 1) * limit;
+        const endIndex = trang * limit;
+        const paginatedResult = finalResult.slice(startIndex, endIndex);
+
+        return {
+            list: paginatedResult,
+            totalItems: totalItems,
+            totalPages: totalPages,
+            currentPage: trang,
+            itemsPerPage: paginatedResult.length,
+            success: true,
+            msg: "Thành công"
+        };
+    } catch (error) {
+        console.error("Lỗi:", error);
+        return {
+            success: false,
+            msg: "Đã xảy ra lỗi khi thực hiện thống kê."
+        };
+    }
+}
 
 
 
@@ -656,7 +816,8 @@ module.exports = {
     thongKeMonBanChayTheoTenLoaiMon,
     thongKeMonBanChayTheoNam,
     thongKeDoanhThuTheoNgayToNgay,
-    thongKeMonBanChay
+    thongKeMonBanChay,
+    thongKeMonBanChayWeb
 
 
 }
