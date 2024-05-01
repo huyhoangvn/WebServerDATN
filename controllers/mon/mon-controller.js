@@ -586,6 +586,7 @@ const getMonCuaLoaiMon = async (req, res) => {
       {
         $match: {
           idLM: idLM,
+          trangThai: true
         }
       },
       {
