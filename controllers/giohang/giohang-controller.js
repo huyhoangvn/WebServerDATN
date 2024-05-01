@@ -44,7 +44,7 @@ const getAllGioHang = async (req, res) => {
   try {
     const gioHangList = await GioHang.aggregate([
       {
-        $match: { idKH: idKH } // Lọc theo idKH
+        $match: { idKH: idKH, trangThai: true } // Lọc theo idKH
       },
       {
         $lookup: {
@@ -56,6 +56,9 @@ const getAllGioHang = async (req, res) => {
       },
       {
         $unwind: "$mon"
+      },
+      {
+        $match: { "mon.trangThai": true } // Lọc các món có trạng thái là true
       },
       {
         $lookup: {
