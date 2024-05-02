@@ -95,10 +95,7 @@ const SuaKhuyenMai = async function (req, res) {
             donToiThieu: donToiThieu,
 
         }
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
         const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
         if (!index) {
             return res.json({
