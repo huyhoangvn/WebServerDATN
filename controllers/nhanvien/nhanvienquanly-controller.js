@@ -200,7 +200,7 @@ const XoaQuanLy = async function (req, res) {
       } else {
         return ({
           index,
-          alert: 'Đổi trạng thái nhân viên thành công',
+          alert: 'Đổi trạng thái thành công',
           success: true
         });
       }
@@ -215,7 +215,7 @@ const XoaQuanLy = async function (req, res) {
       } else {
         return ({
           index,
-          alert: 'kích hoạt thành công',
+          alert: 'Đổi trạng thái thành công',
           success: true
         });
       }

@@ -165,9 +165,9 @@ const deleteMonWeb = async (req, res) => {
     }
 
     if (!monSua) {
-      return ({ error: "Xóa món thất bại !", success: false, msg: "Xóa món thất bại !" }); // Phản hồi 404 nếu không tìm thấy món
+      return ({ error: "Xóa món thất bại !", success: false, msg: "Đổi trạng thái thất bại !" }); // Phản hồi 404 nếu không tìm thấy món
     } else {
-      return ({ message: "Xóa món thành công !", success: true, msg: "Xóa món thành công !" }); // Phản hồi 200 nếu thành công
+      return ({ message: "Xóa món thành công !", success: true, msg: "Đổi trạng thái thành công !" }); // Phản hồi 200 nếu thành công
     }
   } catch (err) {
     return ({ msg: err.msg }); // Phản hồi 500 nếu có lỗi xảy ra
@@ -679,8 +679,6 @@ const updatemon = async (req, res) => {
       })
     }
     if (nhanVienSua.idCH === monCu.idCH) {
-      console.log("day la idCH cua nhanVienSua: ", nhanVienSua.idCH);
-      console.log("day la idCH cua monCu: ", monCu.idCH);
       return ({
         msg: "món khác cửa hàng với nhân viên đang sửa",
         success: false

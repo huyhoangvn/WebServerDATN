@@ -411,7 +411,7 @@
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Cảnh báo</h5>
+                            <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
@@ -462,7 +462,7 @@
                             </button>
                           </div>
                           <div class="modal-body">
-                            <form id="formSuaTrangThai" action="/cua-hang/xoa/NVQL[i]._id" method="post">
+                            <form id="formSuaTrangThai" action="/cua-hang/sua-trang-thai/NVQL[i]._id" method="post">
                               <div class="form-group">
                                 <label for="trangThai">Bạn có muốn sửa trạng thái không?</label>
                                 <input type="hidden" class="form-control" name="idCH1" id="idCH1"
@@ -621,7 +621,7 @@
 
         $('#idNV').val(idNV);
 
-        $('#formSuaTrangThai').attr('action', '/cua-hang/xoa/' + idNV);
+        $('#formSuaTrangThai').attr('action', '/cua-hang/sua-trang-thai/' + idNV);
 
       });
     });
@@ -636,6 +636,33 @@
         $('#formSuaTrangThaiMon').attr('action', '/cua-hang/xoa-mon/' + idMon);
       });
     });
+
+    $(document).ready(function () {
+  // Lấy tham số từ URL
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // Kiểm tra giá trị của tham số 'sua'
+  const sua = urlParams.get('sua');
+
+  // Nếu tham số 'sua' tồn tại và có giá trị true hoặc false
+  if (sua === 'true' || sua === 'false') {
+    // Chọn modal và nội dung thông báo
+    const modal = $('#alertModal');
+    const alertText = $('#alertContent');
+
+    // Kiểm tra giá trị của 'sua' và hiển thị thông báo tương ứng
+    if (sua === 'true') {
+      // Hiển thị thông báo thành công
+      alertText.text('Đổi trạng thái thành công!');
+    } else if (sua === 'false') {
+      // Hiển thị thông báo thất bại
+      alertText.text('Đổi trạng thái thất bại!');
+    }
+
+    // Hiển thị modal
+    modal.modal('show');
+  }
+});
   </script>
 </body>
 

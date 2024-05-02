@@ -362,14 +362,14 @@ const deleteCuaHangWeb = async (req, res) => {
                 const data = await CuaHang.findOneAndUpdate(filter, update, { new: true });
                 const MonSua = await Mon.updateMany(filterMon, update, { new: true });
                 const nhanVienSua = await NhanVien.updateMany(filterNV, update, { new: true });
-                return ({ error: "Xóa của hàng thành công !", success: false });
+                return ({ msg: "Đổi trạng thái thành công !", success: false });
             } else {
                 const update = { trangThai: true };
                 const data = await CuaHang.findOneAndUpdate(filter, update, { new: true });
-                return ({ error: "Xóa cửa hàng thành công !", success: false });
+                return ({ msg: "Đổi trạng thái thành công !", success: false });
             }
         } else {
-            return ({ msg: "Không tìm thấy cửa hàng", success: false });
+            return ({ msg: "Đổi trạng thái thất bại", success: false });
         }
     } catch (e) {
         console.log(e);

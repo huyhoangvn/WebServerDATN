@@ -95,7 +95,10 @@ const SuaKhuyenMai = async function (req, res) {
             donToiThieu: donToiThieu,
 
         }
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
         if (!index) {
             return res.json({
@@ -120,7 +123,7 @@ const SuaKhuyenMai = async function (req, res) {
             return {
                 index,
                 msg: 'Sửa khuyến mãi thành công',
-                aler: 'Sửa khuyến mãi thành công',
+                alert: 'Sửa khuyến mãi thành công',
                 success: true
             };
         }
@@ -158,7 +161,7 @@ const XoaKhuyenMai = async function (req, res) {
             } else {
                 return ({
                     index,
-                    alert: 'khóa khuyến mãi thành công',
+                    alert: 'Đổi trạng thái thành công',
                     msg: 'khóa khuyến mãi thành công',
                     success: true
                 });
@@ -176,7 +179,7 @@ const XoaKhuyenMai = async function (req, res) {
                 return ({
                     index,
                     msg: 'Xóa khuyến mãi thành công',
-                    alert: 'kích hoạt khuyến mãi thành công',
+                    alert: 'Đổi trạng thái thành công',
                     success: true
                 });
             }

@@ -109,7 +109,7 @@ const slideController = {
       deleteImageFile(imagePath);
 
       const { dataStore, dataSlide } = await fetchData();
-      res.render("slide/slide", { dataStore, dataSlide });
+      res.render("slide/slide", { dataStore, dataSlide, alert:"Xóa slide thành công!" });
     } catch (e) {
       console.error(e);
       res.json({ success: false, msg: e });
@@ -127,6 +127,7 @@ const slideController = {
           dataStore,
           dataSlide,
           error: "Vui lòng chọn ảnh",
+          
         });
       }
 
@@ -141,7 +142,7 @@ const slideController = {
       await Slide.findByIdAndUpdate(id, { imgSlide: image }, { new: true });
 
       const { dataStore, dataSlide } = await fetchData();
-      res.render("slide/slide", { dataStore, dataSlide });
+      res.render("slide/slide", { dataStore, dataSlide, alert:"Sửa slide thành công!" });
     } catch (e) {
       console.error(e);
       res.status(500).render("error", { error: e.message });

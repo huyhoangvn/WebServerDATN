@@ -23,13 +23,14 @@ const getList = async (req, res, next) => {
     })
 }
 const xoaCuaHang = async (req, res, next) => {
-    await CuaHangCtrl.deleteCuaHangWeb(req, res)
+    const xoaCH = await CuaHangCtrl.deleteCuaHangWeb(req, res)
     const trang = parseInt(req.query.trang) || 1;
     const listCH = await CuaHangCtrl.GetCuaHang(req, res);
     const soCuaHangTrenTrang = 10;
     const soLuongCuaHang = await CuaHangCtrl.GetSoLuongCuaHang(req, res);
     const totalPages = Math.ceil(soLuongCuaHang.index / soCuaHangTrenTrang);
     res.render("cuahang/danh-sach", {
+        alert:xoaCH.msg,
         count: soLuongCuaHang.index,
         totalPages,
         currentPage: trang,
@@ -267,7 +268,11 @@ const themNhanVienQuanLy = async (req, res) => {
                 phanQuyen: phanQuyen,
                 trangThai: trangThai,
             });
-            res.redirect("/cua-hang/chi-tiet/" + index.idCH);
+            if(index.success){
+                res.redirect("/cua-hang/chi-tiet/" + index.idCH+"?sua=true");   
+            } else {
+                res.redirect("/cua-hang/chi-tiet/" + index.idCH+"?sua=false");   
+            }
         }
     } catch (error) {
         console.error(error);
@@ -282,12 +287,13 @@ const themNhanVienQuanLy = async (req, res) => {
 const xoaNhanVien = async (req, res, next) => {
     try {
         const idCH1 = new mongo.Types.ObjectId(req.body.idCH1);
-        await nhanVien.XoaQuanLy(req, res);
+        const data = await nhanVien.XoaQuanLy(req, res);
 
-        console.log(idCH1);
-
-
-        res.redirect("/cua-hang/chi-tiet/" + idCH1);
+        if(data.success == true){
+            res.redirect("/cua-hang/chi-tiet/"+idCH1+"?sua=true");   
+        } else {
+            res.redirect("/cua-hang/chi-tiet/"+idCH1+"?sua=false");   
+        }
     } catch (error) {
         console.error("Error fetching data:", error);
 
@@ -298,8 +304,12 @@ const xoaMon = async (req, res) => {
     const idMon = new mongo.Types.ObjectId(req.params.idMon) 
     const monTim = await Mon.findOne({_id:idMon})
     const idCH =monTim.idCH;
-    await MonCtrl.deleteMonWeb(req, res);
-    res.redirect("/cua-hang/chi-tiet/"+idCH);   
+    const data = await MonCtrl.deleteMonWeb(req, res);
+    if(data.success == true){
+        res.redirect("/cua-hang/chi-tiet/"+idCH+"?sua=true");   
+    } else {
+        res.redirect("/cua-hang/chi-tiet/"+idCH+"?sua=false");   
+    }
 
 }
 
