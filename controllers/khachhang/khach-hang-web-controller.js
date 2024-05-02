@@ -30,7 +30,7 @@ const getList = async (req, res) => {
 
 const xoaKhachHang = async (req, res) => {
     try {
-        const xoa = KhachHangCtrl.deleteKhachHangWeb(req, res);
+        const xoa = await KhachHangCtrl.deleteKhachHangWeb(req, res);
         const trang = parseInt(req.query.trang) || 1;
         const soKhachHangTrenTrang = 10;
         const soLuongKhachHang = await getSoLuongKhachHang(req, res);
@@ -38,6 +38,7 @@ const xoaKhachHang = async (req, res) => {
         const result = await getKhachHangTheoTen(req, res);
 
         res.render("khachhang/danh-sach", {
+            alert:xoa.msg,
             soLuongKhachHang: soLuongKhachHang.count,
             data: result.list,
             admin: req.session.ten,

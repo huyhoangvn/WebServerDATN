@@ -56,24 +56,28 @@ const getAdd = async (req, res) => {
                 await KhuyenMai.updateOne({ maKhuyenMai }, { trangThai: true });
                 const index = await KhuyenMai.findOne({ maKhuyenMai: maKhuyenMai });
                 res.render("khuyenmai/them-moi", {
+                    alert:"Thêm khuyến mãi lại thành công",
                     index,
                     message: 'Thêm khuyến mãi lại thành công',
                     success: true
                 });
             } else if (khuyenMaiDaCo.trangThai != false) {
                 res.render("khuyenmai/them-moi", {
+                    alert:"Thêm khuyễn mãi lỗi do thiếu thông tin",
                     error: 'Thêm khuyễn mãi lỗi do thiếu thông tin',
                     success: false
                 });
             }
         } else if (tieuDe == "" || ngayBatDau == "" || ngayHetHan == "" || phanTramKhuyenMai == "" || donToiThieu == "") {
             res.render("khuyenmai/them-moi", {
+                alert:"Thêm khuyễn mãi lỗi do thiếu thông tin",
                 error: 'Thêm khuyễn mãi lỗi do thiếu thông tin',
                 success: false
             });
         }
         else if (tieuDe > 50) {
             res.render("khuyenmai/them-moi", {
+                alert:"Tiêu đề đang vượt quá giới hơn ký tự",
                 error: 'Tiêu đề đang vượt quá giới hơn ký tự',
                 success: false
             });
@@ -88,7 +92,10 @@ const getAdd = async (req, res) => {
                 donToiThieu: donToiThieu,
                 trangThai: true
             })
-            res.redirect("/khuyen-mai/danh-sach/");
+            if(index){
+                res.redirect("/khuyen-mai/them-moi/" +"?them=true");
+            }
+            
         }
     } catch (error) {
         console.error(error);

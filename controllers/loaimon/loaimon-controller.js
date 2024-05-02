@@ -13,10 +13,10 @@ const themLoaiMon = async (req, res, next) => {
     });
 
     if (foundLoaiMon) {
-      return res.json({ msg: "Loại món đã tồn tại", success: false });
+      return { msg: "Loại món đã tồn tại" , alert: "Loại món đã tồn tại", success: false };
     }
     if (req.body.tenLM.length > 100) {
-      return res.json({ msg: "tên loại món vượt quá ký tự cho phép", success: false });
+      return { msg: "tên loại món vượt quá ký tự cho phép" , alert: "tên loại món vượt quá ký tự cho phép", success: false };
     }
 
     // Tạo mới loại món
@@ -28,7 +28,6 @@ const themLoaiMon = async (req, res, next) => {
     msg = "Thêm mới loại món thành công";
   } catch (error) {
     msg = "Thêm mới loại món thất bại";
-    console.error(error); // In lỗi ra console để dễ debug
   }
 
   return {
@@ -171,9 +170,9 @@ const deleteLoaiMonWeb = async (req, res) => {
     }
 
     if (!monSua) {
-      return ({ msg: "Xóa món thất bại !", success: false }); // Phản hồi 404 nếu không tìm thấy món
+      return ({ msg: "Đổi trạng thái thất bại !", success: false }); // Phản hồi 404 nếu không tìm thấy món
     } else {
-      return ({ msg: "Xóa món thành công !", success: true }); // Phản hồi 200 nếu thành công
+      return ({ msg: "Đổi trạng thái thành công !", success: true }); // Phản hồi 200 nếu thành công
     }
 
   } catch (err) {

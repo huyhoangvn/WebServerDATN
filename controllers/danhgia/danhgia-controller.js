@@ -143,9 +143,9 @@ const XoaDanhGiaWeb = async function (req, res) {
         }
 
         if (!danhGiaSua) {
-            return ({ msg: "Xóa đánh giá thất bại !", success: false }); // Phản hồi 404 nếu không tìm thấy món
+            return ({ msg: "Đổi trạng thái thất bại !", success: false }); // Phản hồi 404 nếu không tìm thấy món
           } else {
-            return ({ msg: "Xóa đánh giá thành công !", success: true }); // Phản hồi 200 nếu thành công
+            return ({ msg: "Đổi trạng thái thành công !", success: true }); // Phản hồi 200 nếu thành công
           }
     } catch (error) {
         return({
@@ -387,7 +387,7 @@ const getTatCaDanhGiaTheoMonApi = async (req, res) => {
     res.json(result)
 }
 
-const GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
+const   GetDanhSachDanhGiaTheoMonVoiFilter = async function (req, res) {
     try {
         const idMon = new mongo.Types.ObjectId(req.params.idMon);
         const trang = parseInt(req.query.trang) || 1;

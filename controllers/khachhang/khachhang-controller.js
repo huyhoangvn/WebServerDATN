@@ -475,12 +475,12 @@ const deleteKhachHangWeb = async (req, res) => {
     if (!khachHangSua) {
       return ({
         error: "Xóa khách hàng thất bại !",
-        msg: "Xóa khách hàng thất bại !",
+        msg: "Đổi trạng thái thất bại !",
         success: false
       })
     } else {
       return {
-        msg: "Xóa khách hàng thành công !",
+        msg: "Đổi trạng thái thành công !",
         success: true
       }
     }

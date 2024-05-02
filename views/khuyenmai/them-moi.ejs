@@ -13,6 +13,8 @@
     crossorigin="anonymous"></script>
   <script src="https://kit.fontawesome.com/b5123099c5.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <!-- <style>
       .sidebar-dark-primary {
         background-color: #030025 !important; /* Change to green color */
@@ -219,6 +221,31 @@
         </form>
 
 
+        <% if(typeof alert !=='undefined' && alert !==null) { %>
+          <input type="hidden" id="thongBao" value="<%= alert %>">
+        <% } else { %>
+          <input type="hidden" id="thongBao" value="">
+        <% } %>
+
+        <!-- Modal -->
+        <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="alertContent">
+              <!-- Nội dung cảnh báo sẽ được thêm vào đây -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+
       </div>
     </section>
   </div>
@@ -235,6 +262,34 @@
       )
     }
     )
+
+
+    $(document).ready(function () {
+  // Lấy tham số từ URL
+  const urlParams = new URLSearchParams(window.location.search);
+
+  // Kiểm tra giá trị của tham số 'sua'
+  const them = urlParams.get('them');
+
+  // Nếu tham số 'sua' tồn tại và có giá trị true hoặc false
+  if (them === 'true' || them === 'false') {
+    // Chọn modal và nội dung thông báo
+    const modal = $('#alertModal');
+    const alertText = $('#alertContent');
+
+    // Kiểm tra giá trị của 'sua' và hiển thị thông báo tương ứng
+    if (them === 'true') {
+      // Hiển thị thông báo thành công
+      alertText.text('Thêm khuyến mãi thành công!');
+    } else if (them === 'false') {
+      // Hiển thị thông báo thất bại
+      alertText.text('Thêm khuyến mãi thất bại!');
+    }
+
+    // Hiển thị modal
+    modal.modal('show');
+  }
+});
 
   </script>
 </body>
