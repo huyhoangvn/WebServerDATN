@@ -1,6 +1,7 @@
 const { model: KhuyenMai } = require("../../model/KhuyenMai");
 const mongo = require('mongoose');
 const { parse, startOfDay, endOfDay } = require('date-fns');
+const { ObjectId } = require("mongodb");
 
 // Hàm này để lấy ra 6 kí tự ngẫu nhiên có cả chữ cái viết hoa và số 
 function generateRandomString(length) {
@@ -94,7 +95,7 @@ const SuaKhuyenMai = async function (req, res) {
             donToiThieu: donToiThieu,
 
         }
-        console.log(idKM);
+
         const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
         if (!index) {
             return res.json({
@@ -556,6 +557,8 @@ const getSoLuongKhuyenMai = async (req, res) => {
 
 const getTatCaKhuyenMaiApp = async (req, res) => {
     try {
+
+        const idKH = new mongo.Types.ObjectId(req.params.idKH);
         const page = parseInt(req.query.trang) || 1;
         const limit = 10; // Số lượng phần tử trên mỗi trang
         const timkiem = {};
@@ -584,6 +587,8 @@ const getTatCaKhuyenMaiApp = async (req, res) => {
         const totalPages = Math.ceil(totalCount / limit);
         const currentPage = Math.min(page, totalPages);
 
+
+
         const list = await KhuyenMai.aggregate([
             {
                 $match:
@@ -593,8 +598,14 @@ const getTatCaKhuyenMaiApp = async (req, res) => {
             {
                 $lookup: {
                     from: "KhuyenMaiCuaToi",
-                    localField: "_id",
-                    foreignField: "idKM",
+                    let: { idKM: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $and: [{ $eq: ["$idKH", idKH] }, { $eq: ["$idKM", "$$idKM"] }] }
+                            }
+                        }
+                    ],
                     as: "km"
                 }
             },
