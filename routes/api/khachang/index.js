@@ -19,6 +19,6 @@ router.use('/khuyenmaicuatoi', passport.authenticate('khachhang-jwt', { session:
 router.use('/thongke', passport.authenticate('khachhang-jwt', { session: false }), require('./thongke'))
 router.use('/thanhtoan', passport.authenticate('khachhang-jwt', { session: false }), require('./thanhtoan'))
 
-router.use('/verification', require('./verification'))
+router.use('/verification', require('../verification/verification'))
 
 module.exports = router;
