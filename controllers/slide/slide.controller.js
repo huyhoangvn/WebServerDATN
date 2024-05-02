@@ -2,6 +2,9 @@ const fs = require("fs");
 const path = require("path");
 const { model: Slide } = require("../../model/Slide");
 const { model: CuaHang } = require("../../model/CuaHang");
+const { model: Mon } = require("../../model/Mon");
+const mongo = require("mongoose");
+
 const { sl } = require("date-fns/locale");
 
 // Helper function to fetch data from the database
@@ -149,19 +152,152 @@ const slideController = {
       const slides = await Slide.find();
 
       // Thay đổi đường dẫn hình ảnh của mỗi slide
-      const modifiedSlides = slides.map(slide => {
+      const modifiedSlides = slides.map((slide) => {
         return {
           ...slide.toObject(),
-          imgSlide: `${req.protocol}://${req.get("host")}/public/images/${slide.imgSlide}`
+          imgSlide: `${req.protocol}://${req.get("host")}/public/images/${
+            slide.imgSlide
+          }`,
         };
       });
-
       res.json({ success: true, data: modifiedSlides });
     } catch (error) {
       console.error(error);
       res.json({ success: false, msg: "Lỗi khi lấy danh sách slide", error });
     }
-  }
+  },
+
+  getMonCuaCuaHang: async (req, res) => {
+    try {
+      const idCH = new mongo.Types.ObjectId(req.params.idCH);
+
+      const trangThai = req.params.trangThai;
+      const trang = parseInt(req.query.trang) || 1;
+      const timkiem = {};
+      let giaTienMin = 0;
+      let giaTienMax = 100000;
+      if (typeof req.query.tenMon !== "undefined" && req.query.tenMon !== "") {
+        timkiem.tenMon = { $regex: req.query.tenMon, $options: "i" }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+      }
+      if (typeof req.query.tenCH !== "undefined" && req.query.tenCH !== "") {
+        timkiem["KetQuaCuaHang.tenCH"] = {
+          $regex: req.query.tenCH,
+          $options: "i",
+        }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+      }
+      if (typeof req.query.tenLM !== "undefined" && req.query.tenLM !== "") {
+        timkiem["KetQuaCuaHang.tenLM"] = {
+          $regex: req.query.tenLM,
+          $options: "i",
+        }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
+      }
+      if (
+        typeof req.query.trangThai !== "undefined" &&
+        !isNaN(parseInt(req.query.trangThai))
+      ) {
+        const trangThaiValue = parseInt(req.query.trangThai);
+        if (trangThaiValue === 1 || trangThaiValue === 0) {
+          timkiem.trangThai = trangThaiValue === 1;
+        }
+      }
+      if (
+        typeof req.query.giaTienMin !== "undefined" &&
+        !isNaN(parseInt(req.query.giaTienMin))
+      ) {
+        giaTienMin = parseInt(req.query.giaTienMin);
+      }
+      if (
+        typeof req.query.giaTienMax !== "undefined" &&
+        !isNaN(parseInt(req.query.giaTienMax))
+      ) {
+        giaTienMax = parseInt(req.query.giaTienMax);
+      }
+
+      const list = await Mon.aggregate([
+        {
+          $lookup: {
+            from: "CuaHang",
+            localField: "idCH",
+            foreignField: "_id",
+            as: "KetQuaCuaHang",
+          },
+        },
+        {
+          $lookup: {
+            from: "LoaiMon",
+            localField: "idLM",
+            foreignField: "_id",
+            as: "KetQuaLoaiMon",
+          },
+        },
+        {
+          $match: {
+            idCH: idCH,
+          },
+        },
+        {
+          $match: timkiem,
+        },
+
+        {
+          $unwind: {
+            path: "$KetQuaCuaHang",
+            preserveNullAndEmptyArrays: false,
+          },
+        },
+        {
+          $unwind: {
+            path: "$KetQuaLoaiMon",
+            preserveNullAndEmptyArrays: false,
+          },
+        },
+        {
+          $project: {
+            tenMon: "$tenMon",
+            giaTien: "$giaTien",
+            trangThai: "$trangThai",
+            tenCH: "$KetQuaCuaHang.tenCH", // Thay vì "$tenCH"
+            tenLM: "$KetQuaLoaiMon.tenLM",
+            idMon: "$idMON",
+            hinhAnh: {
+              $concat: [
+                req.protocol + "://",
+                req.get("host"),
+                "/public/images/",
+                "$hinhAnh",
+              ],
+            },
+          },
+        },
+        {
+          $match: {
+            giaTien: {
+              $gte: giaTienMin,
+              $lte: giaTienMax,
+            },
+          },
+        },
+        {
+          $skip: (trang - 1) * 10,
+        },
+        {
+          $limit: 10,
+        },
+      ]);
+
+      res.json({
+        count: list.length,
+        list: list,
+        msg: "Get món của cửa hàng thành công",
+        success: true,
+      });
+    } catch (error) {
+      res.json({
+        msg: "Lỗi khi lấy món của cửa hàng",
+        success: false,
+      });
+    }
+  },
 };
 
 module.exports = slideController;

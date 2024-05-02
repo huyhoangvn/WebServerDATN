@@ -56,11 +56,22 @@ const addNhanVienBan = async (req, res, next) => {
 
       const newNhanVien = new NhanVien({
         ...req.body,
-        hinhAnh:
-          req.protocol + "://" + req.get("host") + "/public/images/" + hinhAnh,
+        hinhAnh:hinhAnh,
       });
 
       const savedNhanVien = await newNhanVien.save();
+      const nhanVienSave = {
+        _id:savedNhanVien._id,
+        taiKhoan:savedNhanVien.taiKhoan,
+        matKhau:savedNhanVien.matKhau,
+        tenNV:savedNhanVien.tenNV,
+        thoiGianTao:savedNhanVien.thoiGianTao,
+        hinhAnh:[req.protocol, "://", req.get("host"), "/public/images/", savedNhanVien.hinhAnh].join(''),
+        diaChi:savedNhanVien.diaChi,
+        sdt:savedNhanVien.sdt,
+        trangThai:savedNhanVien.trangThai,
+        phanQuyen:savedNhanVien.phanQuyen
+      }
       if (!savedNhanVien) {
         return res.json({
           success: false,
@@ -70,7 +81,7 @@ const addNhanVienBan = async (req, res, next) => {
 
       return res.json({
         success: true,
-        dataSave: savedNhanVien,
+        dataSave: nhanVienSave,
         msg: "Nhân viên đã được thêm thành công.",
       });
     } else {
@@ -132,7 +143,7 @@ const suaNhanVienBan = async (req, res, next) => {
       sdt: sdt,
     };
     if (hinhAnh) {
-      updateData.hinhAnh = req.protocol + "://" + req.get("host") + "/public/images/" + hinhAnh;
+      updateData.hinhAnh =hinhAnh;
     }
 
     // Thực hiện cập nhật thông tin nhân viên
@@ -147,10 +158,22 @@ const suaNhanVienBan = async (req, res, next) => {
       return res.json({ success: false, msg: "Không tìm thấy hoặc không thể cập nhật thông tin nhân viên." });
     }
 
+    const nhanVienSave = {
+      _id:updateNV._id,
+      taiKhoan:updateNV.taiKhoan,
+      matKhau:updateNV.matKhau,
+      tenNV:updateNV.tenNV,
+      thoiGianTao:updateNV.thoiGianTao,
+      hinhAnh:[req.protocol, "://", req.get("host"), "/public/images/", updateNV.hinhAnh].join(''),
+      diaChi:updateNV.diaChi,
+      sdt:updateNV.sdt,
+      trangThai:updateNV.trangThai,
+      phanQuyen:updateNV.phanQuyen
+    }
     // Trả về kết quả thành công
     res.json({
       success: true,
-      dataUpdate: updateNV,
+      dataUpdate: nhanVienSave,
       msg: "Đã cập nhật thông tin nhân viên thành công",
     });
   } catch (e) {
@@ -264,11 +287,22 @@ const huyKichHoatNhanVien = async (req, res, next) => {
       if (!updateNV) {
         return res.json({ success: false, error: "Không tìm thấy nhân viên" });
       }
-
+      const nhanVienSave = {
+        _id:updateNV._id,
+        taiKhoan:updateNV.taiKhoan,
+        matKhau:updateNV.matKhau,
+        tenNV:updateNV.tenNV,
+        thoiGianTao:updateNV.thoiGianTao,
+        hinhAnh:[req.protocol, "://", req.get("host"), "/public/images/", updateNV.hinhAnh].join(''),
+        diaChi:updateNV.diaChi,
+        sdt:updateNV.sdt,
+        trangThai:updateNV.trangThai,
+        phanQuyen:updateNV.phanQuyen
+      }
       // Cập nhật thành công
       res.json({
         success: true,
-        index: updateNV,// Chỉ trả về trường trangThai
+        index: nhanVienSave,// Chỉ trả về trường trangThai
         msg: "Đã cập nhật trạng thái thành công",
       });
     } else {
@@ -299,16 +333,29 @@ const kichHoatNhanVienBan = async (req, res, next) => {
         { $set: { trangThai: 1 } },
         { new: true }
       );
+      const nhanVienSave = {
+        _id:updateNV._id,
+        taiKhoan:updateNV.taiKhoan,
+        matKhau:updateNV.matKhau,
+        tenNV:updateNV.tenNV,
+        thoiGianTao:updateNV.thoiGianTao,
+        hinhAnh:[req.protocol, "://", req.get("host"), "/public/images/", updateNV.hinhAnh].join(''),
+        diaChi:updateNV.diaChi,
+        sdt:updateNV.sdt,
+        trangThai:updateNV.trangThai,
+        phanQuyen:updateNV.phanQuyen
+      }
 
       // Kiểm tra xem có nhân viên không
       if (!updateNV) {
         return json({ success: false, error: "Không tìm thấy nhân viên" });
       }
+      
       // Cập nhật thành công
       res.json({
         success: true,
         msg: "kích hoạt thành công",
-        dataUpdate: updateNV,
+        dataUpdate: nhanVienSave,
       });
     } else {
       res.json({ success: false, msg: "Nhân viên không có quyền cập nhật" });
@@ -366,18 +413,29 @@ const addNhanVienQuanLy = async (req, res, next) => {
       ...req.body,
       phanQuyen: 0,
       trangThai: true,
-      hinhAnh:
-        req.protocol + "://" + req.get("host") + "/public/images/" + hinhAnh,
+      hinhAnh:hinhAnh,
     });
 
     const savedNhanVien = await newNhanVien.save();
+    const nhanVienSave = {
+      _id:savedNhanVien._id,
+      taiKhoan:savedNhanVien.taiKhoan,
+      matKhau:savedNhanVien.matKhau,
+      tenNV:savedNhanVien.tenNV,
+      thoiGianTao:savedNhanVien.thoiGianTao,
+      hinhAnh:[req.protocol, "://", req.get("host"), "/public/images/", savedNhanVien.hinhAnh].join(''),
+      diaChi:savedNhanVien.diaChi,
+      sdt:savedNhanVien.sdt,
+      trangThai:savedNhanVien.trangThai,
+      phanQuyen:savedNhanVien.phanQuyen
+    }
     if (!savedNhanVien) {
       res.json({ success: false, msg: "Lưu nhân viên không thành công." });
     }
 
     return res.json({
       success: true,
-      dataSave: savedNhanVien,
+      dataSave: nhanVienSave,
       msg: "Nhân viên đã được thêm thành công.",
     });
   } catch (e) {
@@ -429,6 +487,18 @@ const kichHoatNhanVienQuanLy = async (req, res, next) => {
       { $set: { trangThai: 1 } },
       { new: true }
     );
+    const nhanVienSave = {
+      _id:kichHoat._id,
+      taiKhoan:kichHoat.taiKhoan,
+      matKhau:kichHoat.matKhau,
+      tenNV:kichHoat.tenNV,
+      thoiGianTao:kichHoat.thoiGianTao,
+      hinhAnh:[req.protocol, "://", req.get("host"), "/public/images/", kichHoat.hinhAnh].join(''),
+      diaChi:kichHoat.diaChi,
+      sdt:kichHoat.sdt,
+      trangThai:kichHoat.trangThai,
+      phanQuyen:kichHoat.phanQuyen
+    }
 
     // Kiểm tra xem có nhân viên không
     if (!kichHoat) {
@@ -438,7 +508,7 @@ const kichHoatNhanVienQuanLy = async (req, res, next) => {
     res.json({
       success: true,
       msg: "kích hoạt thành công",
-      data: kichHoat,
+      data: nhanVienSave,
     });
   } catch (e) {
     console.error(e);
@@ -483,6 +553,18 @@ const updateCuahang = async (req, res, next) => {
       { $set: { idCH } },
       { new: true }
     );
+    const nhanVienSave = {
+      _id:updateNV._id,
+      taiKhoan:updateNV.taiKhoan,
+      matKhau:updateNV.matKhau,
+      tenNV:updateNV.tenNV,
+      thoiGianTao:updateNV.thoiGianTao,
+      hinhAnh:[req.protocol, "://", req.get("host"), "/public/images/", updateNV.hinhAnh].join(''),
+      diaChi:updateNV.diaChi,
+      sdt:updateNV.sdt,
+      trangThai:updateNV.trangThai,
+      phanQuyen:updateNV.phanQuyen
+    }
 
     if (!updateNV) {
       return json({ success: false, error: "Không tìm thấy nhân viên." });
@@ -491,7 +573,7 @@ const updateCuahang = async (req, res, next) => {
     res.json({
       success: true,
       msg: "Sửa cửa hàng thành công",
-      dataUpdate: updateNV,
+      dataUpdate: nhanVienSave,
     });
   } catch (e) {
     console.error(e);
@@ -541,11 +623,23 @@ const updateNhanvienQuanLy = async (req, res, next) => {
     if (!updateNV) {
       return json({ success: false, msg: "Không tìm thấy nhân viên" });
     }
+    const nhanVienSave = {
+      _id:updateNV._id,
+      taiKhoan:updateNV.taiKhoan,
+      matKhau:updateNV.matKhau,
+      tenNV:updateNV.tenNV,
+      thoiGianTao:updateNV.thoiGianTao,
+      hinhAnh:[req.protocol, "://", req.get("host"), "/public/images/", updateNV.hinhAnh].join(''),
+      diaChi:updateNV.diaChi,
+      sdt:updateNV.sdt,
+      trangThai:updateNV.trangThai,
+      phanQuyen:updateNV.phanQuyen
+    }
     // Cập nhật thành công
     res.json({
       success: true,
       msg: "Đã cập nhật thông tin nhân viên thành công",
-      dataUpdate: updateNV,
+      dataUpdate: nhanVienSave,
     });
   } catch (e) {
     console.error(e);
@@ -588,11 +682,23 @@ const updateMatKhau = async (req, res, next) => {
     // Cập nhật mật khẩu mới
     item.matKhau = matKhauMoi;
     const savedNhanVien = await item.save();
+    const nhanVienSave = {
+      _id:savedNhanVien._id,
+      taiKhoan:savedNhanVien.taiKhoan,
+      matKhau:savedNhanVien.matKhau,
+      tenNV:savedNhanVien.tenNV,
+      thoiGianTao:savedNhanVien.thoiGianTao,
+      hinhAnh:[req.protocol, "://", req.get("host"), "/public/images/", savedNhanVien.hinhAnh].join(''),
+      diaChi:savedNhanVien.diaChi,
+      sdt:savedNhanVien.sdt,
+      trangThai:savedNhanVien.trangThai,
+      phanQuyen:savedNhanVien.phanQuyen
+    }
 
     res.json({
       success: true,
       msg: "Mật khẩu đã được cập nhật thành công.",
-      dataUpdate: savedNhanVien,
+      dataUpdate: nhanVienSave,
     });
   } catch (e) {
     console.error(e);
@@ -668,8 +774,20 @@ const chiTietNhanVienQuanLy = async (req, res, next) => {
     if (!nhanVien) {
       return json({ error: "Không tìm thấy nhân viên" });
     }
+    const nhanVienSave = {
+      _id:nhanVien._id,
+      taiKhoan:nhanVien.taiKhoan,
+      matKhau:nhanVien.matKhau,
+      tenNV:nhanVien.tenNV,
+      thoiGianTao:nhanVien.thoiGianTao,
+      hinhAnh:[req.protocol, "://", req.get("host"), "/public/images/", nhanVien.hinhAnh].join(''),
+      diaChi:nhanVien.diaChi,
+      sdt:nhanVien.sdt,
+      trangThai:nhanVien.trangThai,
+      phanQuyen:nhanVien.phanQuyen
+    }
     res.json({
-      success: true, index: nhanVien, msg: "Lấy dữ liệu thành công",
+      success: true, index: nhanVienSave, msg: "Lấy dữ liệu thành công",
     });
   } catch (error) {
     console.error(error);

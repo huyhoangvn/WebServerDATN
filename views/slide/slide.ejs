@@ -185,6 +185,7 @@
         <% } %>
           <label for="" class="m-0 mb-2">Thêm ảnh slide </label>
           <br />
+          
           <form action="/slide" method="POST" enctype="multipart/form-data">
             <div class="d-flex row justify-content-between mb-1">
               
@@ -244,8 +245,8 @@
                   <td class="align-middle text-center">
                     <%= dataSlide[i].idCH.tenCH %>
                   </td>
-                  <td class="align-middle text-center col-3"><img width="250px" height="120px"
-                      src="http://localhost:3000/public/images/<%= dataSlide[i].imgSlide %>" alt="Slide Image"></td>
+                  <td class="align-middle text-center col-3 "><img style="border-radius: 10px;" width="250px" height="120px"
+                      src="/public/images/<%= dataSlide[i].imgSlide %>" alt="Slide Image"></td>
                   <td class="align-middle text-center col-3">
                     <a onclick="openUpdateModal('<%= dataSlide[i]._id %>')" class="btn btn-primary text-white w-40"
                       style="width: 150px;">Chỉnh sửa</a>
@@ -418,10 +419,11 @@
 
         // Gọi API để lấy dữ liệu mới từ server
         fetch(
-          `http://localhost:3000/api/nhanvien/mon/theo-cua-hang/${selectedValue}`
+          `/slide/theo-cua-hang/${selectedValue}`
         )
           .then((response) => response.json())
           .then((data) => {
+            console.log("🚀 ~ .then ~ data:", data)
             if (data.list.length === 0) {
               // Nếu không có dữ liệu từ server, thêm một option mặc định vào dropdown
               addOption(selectMon, "Không có dữ liệu", "");
