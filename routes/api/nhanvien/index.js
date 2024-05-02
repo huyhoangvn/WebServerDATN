@@ -14,6 +14,7 @@ router.use('/khuyenmai', passport.authenticate('nhanvien-jwt', { session: false 
 router.use('/loaimon', passport.authenticate('nhanvien-jwt', { session: false }), require('./loaimon'))
 router.use('/mon', passport.authenticate('nhanvien-jwt', { session: false }), require('./mon'))
 router.use('/thongke', passport.authenticate('nhanvien-jwt', { session: false }), require('./thongke'))
-router.use('/thanhtoan', passport.authenticate('nhanvien-jwt', { session: false }), require('./thanhtoan'))
+router.use('/thanhtoan', require('./thanhtoan'))
+router.use('/dangky', require('./dangky'))
 
 module.exports = router;
