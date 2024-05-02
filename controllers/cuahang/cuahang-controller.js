@@ -23,7 +23,7 @@ const addCuaHang = async (req, res, next) => {
         const hinhAnh = 'default_image.png';
         const trangThai = 0; // Đặt trạng thái là 0
         // Kiểm tra tính hợp lệ của dữ liệu
-        if (!tenCH || !email || !sdt || !diaChi || tenTaiKhoan || taiKhoanThanhToan || nganHangThuHuong) {
+        if (!tenCH || !email || !sdt || !diaChi || !tenTaiKhoan ||!taiKhoanThanhToan || !nganHangThuHuong) {
             return res.json({ success: false, msg: 'Vui lòng điền đầy đủ thông tin' });
         }
 
