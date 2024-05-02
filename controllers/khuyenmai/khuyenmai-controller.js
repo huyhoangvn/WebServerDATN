@@ -561,7 +561,7 @@ const getTatCaKhuyenMaiApp = async (req, res) => {
         const idKH = new mongo.Types.ObjectId(req.params.idKH);
         const page = parseInt(req.query.trang) || 1;
         const limit = 10; // Số lượng phần tử trên mỗi trang
-        const timkiem = {};
+        const timkiem = { trangThai: true };
         if (typeof (req.query.tieuDe) !== 'undefined' && req.query.tieuDe !== "") {
             timkiem.tieuDe = { $regex: req.query.tieuDe, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
         }
