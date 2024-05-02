@@ -14,7 +14,7 @@ router.get('/12-thang', thongkeCrl.thongKeDoanhThuTheoThangTrongNamApi);
 router.get('/1-ngay/:idCH', thongkeCrl.thongKeDoanhThuTheoNgayByCHApi);
 router.get('/10-ngay/:idCH', thongkeCrl.thongKeDoanhThuTheo10NgayByCHApi);
 router.get('/30-ngay/:idCH', thongkeCrl.thongKeDoanhThuTheo30NgayByCHApi);
-router.get('nam/:idCH', thongkeCrl.thongKeDoanhThuTheoNamByCHApi);
+router.get('/nam/:idCH', thongkeCrl.thongKeDoanhThuTheoNamByCHApi);
 router.get('/12-thang/:idCH', thongkeCrl.thongKeDoanhThuTheoThangTrongNamByCHApi);
 
 // thống kê món bán chạy theo tên loai món
