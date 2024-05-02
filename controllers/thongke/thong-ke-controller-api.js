@@ -74,6 +74,78 @@ const thongKeDoanhThuTheoThangTrongNamApi = async (req, res, next) => {
     }
 }
 
+// by cửa hàng
+
+const thongKeDoanhThuTheoNgayByCHApi = async (req, res, next) => {
+    try {
+        const result = await thongke.thongKeDoanhThuTheoNgaybyCH(req, res, next);
+        res.json(result);
+        // Send the result directly without using JSON.stringify
+
+    } catch (error) {
+        // Check if headers have already been sent
+        if (res.headersSent) {
+            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        } else {
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt hóa đơn', error: error.message });
+        }
+    }
+}
+const thongKeDoanhThuTheo10NgayByCHApi = async (req, res, next) => {
+    try {
+        const result = await thongke.thongKeDoanhThuTheo10NgaybyCH(req, res, next);
+        res.json(result);  // Send the result directly without using JSON.stringify
+    } catch (error) {
+        // Check if headers have already been sent
+        if (res.headersSent) {
+            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        } else {
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt hóa đơn', error: error.message });
+        }
+    }
+}
+const thongKeDoanhThuTheo30NgayByCHApi = async (req, res, next) => {
+    try {
+        const result = await thongke.thongKeDoanhThuTheo30NgaybyCH(req, res, next);
+        res.json(result);  // Send the result directly without using JSON.stringify
+    } catch (error) {
+        // Check if headers have already been sent
+        if (res.headersSent) {
+            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        } else {
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt hóa đơn', error: error.message });
+        }
+    }
+}
+
+const thongKeDoanhThuTheoNamByCHApi = async (req, res, next) => {
+    try {
+        const result = await thongke.thongKeDoanhThuTheoNambyCH(req, res, next);
+        res.json(result);  // Send the result directly without using JSON.stringify
+    } catch (error) {
+        // Check if headers have already been sent
+        if (res.headersSent) {
+            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        } else {
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt hóa đơn', error: error.message });
+        }
+    }
+}
+
+const thongKeDoanhThuTheoThangTrongNamByCHApi = async (req, res, next) => {
+    try {
+        const monthlyRevenue = await thongke.thongKeDoanhThuTheoThangTrongNambyCH(req, res, next);
+        res.json(monthlyRevenue);  // Send the result directly without using JSON.stringify
+    } catch (error) {
+        // Check if headers have already been sent
+        if (res.headersSent) {
+            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        } else {
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt hóa đơn', error: error.message });
+        }
+    }
+}
+
 // thống kê món bán chạy theo tên loại món
 const thongKeMonBanChayTheoTenLoaiMonApi = async (req, res, next) => {
     try {
@@ -106,6 +178,20 @@ const thongKeMonBanChayTheoNamApi = async (req, res, next) => {
 const thongKeDoanhThuTheoNgaytoNgayApi = async (req, res, next) => {
     try {
         const index = await thongke.thongKeDoanhThuTheoNgayToNgay(req, res, next);
+        res.json(index);  // Send the result directly without using JSON.stringify
+    } catch (error) {
+        // Check if headers have already been sent
+        if (res.headersSent) {
+            console.error(" Tiêu đề đã được gửi đi rồi. Không thể gửi phản hồi lỗi.");
+        } else {
+            res.json({ msg: 'Đã xảy ra lỗi khi kích hoạt hóa đơn', error: error.message });
+        }
+    }
+}
+
+const thongKeDoanhThuTheoNgaytoNgaybyCHApi = async (req, res, next) => {
+    try {
+        const index = await thongke.thongKeDoanhThuTheoNgayToNgaybyCH(req, res, next);
         res.json(index);  // Send the result directly without using JSON.stringify
     } catch (error) {
         // Check if headers have already been sent
@@ -150,6 +236,13 @@ module.exports = {
     thongKeDoanhThuTheo30NgayApi,
     thongKeDoanhThuTheoNamApi,
     thongKeDoanhThuTheoThangTrongNamApi,
+
+    thongKeDoanhThuTheoNgayByCHApi,
+    thongKeDoanhThuTheo10NgayByCHApi,
+    thongKeDoanhThuTheo30NgayByCHApi,
+    thongKeDoanhThuTheoNamByCHApi,
+    thongKeDoanhThuTheoThangTrongNamByCHApi,
+    thongKeDoanhThuTheoNgaytoNgaybyCHApi,
 
     // thống kê món bán chạy theo tên loại món
     thongKeMonBanChayTheoTenLoaiMonApi,
