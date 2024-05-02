@@ -10,7 +10,7 @@ const mongo = mongoose.Types.ObjectId;
 
 const addHoaDonVaMonDat = async (req, res, next) => {
     let hoaDonId = null; // Biến để lưu ID của hóa đơn, để sử dụng trong trường hợp cần xóa
-
+    const { idCH, diaChiGiaoHang, list, idKH } = req.body;
     try {
         let idKM = "";
         let phanTramKhuyenMaiDat = 0;
@@ -21,7 +21,7 @@ const addHoaDonVaMonDat = async (req, res, next) => {
 
             phanTramKhuyenMaiDat = khuyenMai.phanTramKhuyenMai;
 
-            const khuyenMaiCuaToi = await KhuyenMaiCuaToi.findOne({ idKM: idKM });
+            const khuyenMaiCuaToi = await KhuyenMaiCuaToi.findOne({ idKM: idKM, idKH: idKH });
 
             if (khuyenMaiCuaToi) {
                 // Cập nhật trạng thái của bảng KhuyenMaiCuaToi
@@ -31,7 +31,6 @@ const addHoaDonVaMonDat = async (req, res, next) => {
         } catch (e) {
 
         }
-        const { idCH, diaChiGiaoHang, list, idKH } = req.body;
 
         if (!idKH || !idCH || !diaChiGiaoHang || !list) {
             return res.json({ msg: 'Vui lòng điền đầy đủ thông tin', success: false });

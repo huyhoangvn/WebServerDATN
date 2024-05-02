@@ -81,6 +81,7 @@ const dangNhapApi = async (req, res, next) => {
         const result = await dangNhap(req, res, next);
 
         if (result.success) {
+            console.log(result.index.id)
             const token = auth.encodedToken(result.index.id);
 
             // Set the Authorization header with the token

@@ -4,16 +4,16 @@ const nhanvienbanController = require('../../../controllers/nhanvien/nhanvienban
 const passportConfig = require('../../../config/auth/jwt-decode-nhanvien')
 const passport = require('passport')
 /* GET users listing. */
-router.get('/:idCuaHang', passport.authenticate('jwt', { session: false }), nhanvienbanController.getListNhanVienApi);
+router.get('/:idCuaHang',  nhanvienbanController.getListNhanVienApi);
 
-router.post('/', passport.authenticate('jwt', { session: false }), nhanvienbanController.addNhanVienApi);
+router.post('/',  nhanvienbanController.addNhanVienApi);
 
-router.put('/:id', passport.authenticate('jwt', { session: false }), nhanvienbanController.updateNhanVienApi)
+router.put('/:id',  nhanvienbanController.updateNhanVienApi)
 
-router.delete('/:id', passport.authenticate('jwt', { session: false }), nhanvienbanController.deleteNhanVienApi);
+router.delete('/:id',  nhanvienbanController.deleteNhanVienApi);
 
-router.post('/doi-mat-khau/:id', passport.authenticate('jwt', { session: false }), nhanvienbanController.doiMatKhauApi);
+router.post('/doi-mat-khau/:id',  nhanvienbanController.doiMatKhauApi);
 
-router.get('/chi-tiet-nhan-vien/:id', passport.authenticate('jwt', { session: false }), nhanvienbanController.chiTietNhanVienApi);
+router.get('/chi-tiet-nhan-vien/:id',  nhanvienbanController.chiTietNhanVienApi);
 
 module.exports = router;

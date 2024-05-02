@@ -64,7 +64,7 @@ const getAllKhuyenMaiCT = async (req, res, next) => {
             },
             {
                 $project: {
-                    idKM: "$_id",
+                    idKM: { $arrayElemAt: ["$km._id", 0] },
                     tieuDe: { $arrayElemAt: ["$km.tieuDe", 0] },
                     ngayBatDau: { $arrayElemAt: ["$km.ngayBatDau", 0] },
                     ngayHetHan: { $arrayElemAt: ["$km.ngayHetHan", 0] },
@@ -105,17 +105,31 @@ const getAllKhuyenMaiCT = async (req, res, next) => {
 
 const deleteKhuyenMaiCT = async (req, res) => {
     try {
-        await KhuyenMaiCuaToi.findByIdAndDelete(req.params.id);
+        const { id, idKH } = req.params;
+
+        // Kiểm tra xem idKMCT và idKH có tồn tại và hợp lệ không
+        const khuyenMaiCuaToi = await KhuyenMaiCuaToi.findOne({ _id: id, idKH: idKH });
+
+        if (!khuyenMaiCuaToi) {
+            return {
+                success: false,
+                msg: "Không tìm thấy Khuyến mãi hoặc Khách hàng"
+            };
+        }
+
+        // Nếu tồn tại, thực hiện xóa
+        await KhuyenMaiCuaToi.findByIdAndDelete(id);
+
         return {
             success: true,
-            message: "Xóa Khuyến mãi thành công",
             msg: "Xóa Khuyến mãi thành công"
         };
     } catch (error) {
-        return ({
-            message: "Lỗi khi xóa Khuyến mãi", error,
+        return {
+            success: false,
+            error,
             msg: "Lỗi khi xóa Khuyến mãi"
-        });
+        };
     }
 };
 

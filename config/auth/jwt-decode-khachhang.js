@@ -8,14 +8,12 @@ var opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken('Authorization');
 opts.secretOrKey = JWT_SECRET;
 opts.issuer = 'WebServerDATN';
-
-passport.use(new JwtStrategy(opts, async function(payload, done) {
+passport.use("khachhang-jwt",new JwtStrategy(opts, async function(payload, done) {
     try {
-        const user = await User.model.find({ _id: payload.sub })
-            
+        const user = await User.model.findOne({ _id: payload.sub });
         if (!user) return done(null, false)
 
-        return done(null, user)
+        return done(null, true)
     } catch (error) {
         done(error, false)
     }

@@ -132,15 +132,15 @@
 
                     <li class="nav-item menu-open">
                         <ul class="nav nav-treeview">
-                          <li class="nav-item">
-                            <a href="/slide" class="nav-link">
-            
-                              <p>Quản lý quảng cáo</p>
-                            </a>
-                          </li>
+                            <li class="nav-item">
+                                <a href="/slide" class="nav-link">
+
+                                    <p>Quản lý quảng cáo</p>
+                                </a>
+                            </li>
                         </ul>
-                      </li>
-            
+                    </li>
+
                     <!-- Đăng xuất -->
                     <li class="nav-item border-top border-1 ">
                         <a href="/auth/sign-out" class="nav-link">
@@ -181,13 +181,17 @@
                 <form action="/hoa-don/danh-sach">
                     <!-- Main content nằm ở dây -->
                     <div class="d-flex row justify-content-between mb-1">
-                        <div class="col-6">
+                        <div class="col-4">
                             <input type="text" id="maHD" class="form-control" name="maHD"
                                 placeholder="Nhập mã hóa đơn để tìm kiếm">
                         </div>
                         <div class="mb-3">
-                            <input type="date" class="form-control" name="thoiGianTao" id="thoiGianTao"
-                                placeholder="Ngày tạo">
+                            <input type="date" class="form-control" name="ngayBatDau" id="ngayBatDau"
+                                placeholder="Từ ngày">
+                        </div>
+                        <div class="mb-3">
+                            <input type="date" class="form-control" name="ngayKetThuc" id="ngayKetThuc"
+                                placeholder="Đến Ngày">
                         </div>
 
                         <div class="mb-3">
@@ -292,19 +296,19 @@
         )
 
         $(document).ready(function () {
-        // Lấy tham số từ URL
-        var urlParams = new URLSearchParams(window.location.search);
+            // Lấy tham số từ URL
+            var urlParams = new URLSearchParams(window.location.search);
 
-        // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
-        var maHDValue = urlParams.get('maHD') || '';
-        var thoiGianTaoValue = urlParams.get('thoiGianTao') || '';
-        var trangThaiThanhToanValue = urlParams.get('trangThaiThanhToan') || "-1"; // Chọn giá trị đầu tiên
+            // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
+            var maHDValue = urlParams.get('maHD') || '';
+            var thoiGianTaoValue = urlParams.get('thoiGianTao') || '';
+            var trangThaiThanhToanValue = urlParams.get('trangThaiThanhToan') || "-1"; // Chọn giá trị đầu tiên
 
-        // Điền lại giá trị của các trường
-        $("#maHD").val(maHDValue);
-        $("#thoiGianTao").val(thoiGianTaoValue);
-        $("#trangThaiThanhToan").val(trangThaiThanhToanValue);
-    });
+            // Điền lại giá trị của các trường
+            $("#maHD").val(maHDValue);
+            $("#thoiGianTao").val(thoiGianTaoValue);
+            $("#trangThaiThanhToan").val(trangThaiThanhToanValue);
+        });
     </script>
 </body>
 
