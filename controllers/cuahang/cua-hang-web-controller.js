@@ -260,18 +260,14 @@ const themNhanVienQuanLy = async (req, res) => {
                 diaChi: diaChi,
                 tenNV: tenNV,
                 gioiTinh: gioiTinh,
-                hinhAnh: req.protocol +
-                    "://" +
-                    req.get("host") +
-                    "/public/images/" +
-                    hinhAnh,
+                hinhAnh: hinhAnh,
                 phanQuyen: phanQuyen,
                 trangThai: trangThai,
             });
             if(index.success){
-                res.redirect("/cua-hang/chi-tiet/" + index.idCH+"?sua=true");   
+                res.redirect("/cua-hang/chi-tiet/" + index.idCH+"?them=true");   
             } else {
-                res.redirect("/cua-hang/chi-tiet/" + index.idCH+"?sua=false");   
+                res.redirect("/cua-hang/chi-tiet/" + index.idCH+"?them=false");   
             }
         }
     } catch (error) {
