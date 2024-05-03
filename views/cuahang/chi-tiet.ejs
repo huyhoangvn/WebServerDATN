@@ -643,9 +643,10 @@
 
   // Kiểm tra giá trị của tham số 'sua'
   const sua = urlParams.get('sua');
+  const them = urlParams.get('them');
 
   // Nếu tham số 'sua' tồn tại và có giá trị true hoặc false
-  if (sua === 'true' || sua === 'false') {
+  if (sua === 'true' || sua === 'false' ||them === 'true' || them==='false') {
     // Chọn modal và nội dung thông báo
     const modal = $('#alertModal');
     const alertText = $('#alertContent');
@@ -657,6 +658,12 @@
     } else if (sua === 'false') {
       // Hiển thị thông báo thất bại
       alertText.text('Đổi trạng thái thất bại!');
+    }else if (them === 'false') {
+      // Hiển thị thông báo thất bại
+      alertText.text('Thêm nhân viên thành công!');
+    }else if (them === 'true') {
+      // Hiển thị thông báo thất bại
+      alertText.text('Thêm nhân viên thất bại!');
     }
 
     // Hiển thị modal
