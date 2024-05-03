@@ -302,12 +302,32 @@
             // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
             var maHDValue = urlParams.get('maHD') || '';
             var thoiGianTaoValue = urlParams.get('thoiGianTao') || '';
+            console.log(urlParams.get('trangThaiThanhToan'))
             var trangThaiThanhToanValue = urlParams.get('trangThaiThanhToan') || "-1"; // Chọn giá trị đầu tiên
 
             // Điền lại giá trị của các trường
             $("#maHD").val(maHDValue);
             $("#thoiGianTao").val(thoiGianTaoValue);
             $("#trangThaiThanhToan").val(trangThaiThanhToanValue);
+        });
+
+        $(document).ready(function() {
+            // Function to update URL query parameters
+            function updateURLParams(page) {
+                var url = new URL(window.location.href);
+                url.searchParams.set('ngayBatDau', $('#ngayBatDau').val() || '');
+                url.searchParams.set('ngayKetThuc', $('#ngayKetThuc').val() || '');
+                url.searchParams.set('trangThaiThanhToan', $('#trangThaiThanhToan').val());
+                url.searchParams.set('maHD', $('#maHD').val());
+                url.searchParams.set('trang', page);
+                window.location.href = url.href;
+            }
+        
+            $(".page-link").click(function(e) {
+                e.preventDefault();
+                var page = $(this).attr('href').split('=')[1];
+                updateURLParams(page);
+            });
         });
     </script>
 </body>
