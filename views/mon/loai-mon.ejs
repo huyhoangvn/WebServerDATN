@@ -200,10 +200,11 @@
         <form action="/loai-mon/danh-sach" method="GET">
           <div class="d-flex row justify-content-between mb-1">
             <div class="col-8">
-              <input type="text" id="tenLM" class="form-control" name="tenLM" placeholder="Nhập tên loại món để tìm kiếm">
+              <input type="text" id="tenLM" class="form-control" name="tenLM"
+                placeholder="Nhập tên loại món để tìm kiếm">
             </div>
-            <div class="col-2" id="trangThai">
-              <select class="form-control" name="trangThai">
+            <div class="col-2">
+              <select class="form-control" name="trangThai" id="trangThai">
                 <option value="-1">Tất cả trạng thái</option>
                 <option value="1">Hoạt động</option>
                 <option value="0">Khóa</option>
@@ -321,6 +322,30 @@
                 </div>
               </div>
 
+              <% if(typeof alertXoa !=='undefined' && alertXoa !==null) { %>
+                <input type="hidden" id="thongBaoThanhCong" value="<%= alertXoa %>">
+                <% } else { %>
+                  <input type="hidden" id="thongBaoThanhCong" value="">
+                  <% } %>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="alertModalThanhCong" tabindex="-1" role="dialog"
+                      aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body" id="alertContentThanhCong">
+                            <!-- Nội dung cảnh báo sẽ được thêm vào đây -->
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
       </div>
     </section>
   </div>
@@ -367,25 +392,61 @@
       }, 2000);
     }
 
-    
+
     $(document).ready(function () {
-        // Lấy tham số từ URL
-        var urlParams = new URLSearchParams(window.location.search);
+      // Lấy tham số từ URL
+      var urlParams = new URLSearchParams(window.location.search);
 
-        // Lấy giá trị của các tham số từ URL
-        var tenLMValue = urlParams.get('tenLM');
-        var trangThaiValue = urlParams.get('trangThai');
+      // Lấy giá trị của các tham số từ URL
+      var tenLMValue = urlParams.get('tenLM');
+      var trangThaiValue = urlParams.get('trangThai');
 
-        // Điền lại giá trị của trường 'tenLM'
-        $("#tenLM").val(tenLMValue);
+      // Điền lại giá trị của trường 'tenLM'
+      $("#tenLM").val(tenLMValue);
 
-        // Kiểm tra nếu 'trangThaiValue' là null, thiết lập hộp select để chọn giá trị mặc định
-        if (trangThaiValue === null) {
-            $("#trangThai select").val("-1"); // Chọn giá trị mặc định
-        } else {
-            // Nếu 'trangThaiValue' không phải là null, thiết lập giá trị của hộp select từ tham số 'trangThai'
-            $("#trangThai select").val(trangThaiValue);
-        }
+      // Kiểm tra nếu 'trangThaiValue' là null, thiết lập hộp select để chọn giá trị mặc định
+      if (trangThaiValue === null) {
+        $("#trangThai select").val("-1"); // Chọn giá trị mặc định
+      } else {
+        // Nếu 'trangThaiValue' không phải là null, thiết lập giá trị của hộp select từ tham số 'trangThai'
+        $("#trangThai select").val(trangThaiValue);
+      }
+    });
+
+
+    // Lấy giá trị của input có id là 'thongBao' từ view
+    var alertContent = document.getElementById("thongBaoThanhCong").value;
+    // Kiểm tra xem alertContent có giá trị không
+    if (alertContent) {
+      // Hiển thị cảnh báo trong modal
+      var modal = $('#alertModalThanhCong');
+      var alertText = $('#alertContentThanhCong');
+      alertText.text(alertContent);
+
+      // Hiển thị modal
+      modal.modal('show');
+
+      // Đóng modal sau một khoảng thời gian (3 giây)
+      setTimeout(function () {
+        modal.modal('hide');
+      }, 2000);
+    }
+
+    $(document).ready(function () {
+      // Function to update URL query parameters
+      function updateURLParams(page) {
+        var url = new URL(window.location.href);
+        url.searchParams.set('trangThai', $('#trangThai').val());
+        url.searchParams.set('tenLM', $('#tenLM').val());
+        url.searchParams.set('trang', page);
+        window.location.href = url.href;
+      }
+
+      $(".page-link").click(function (e) {
+        e.preventDefault();
+        var page = $(this).attr('href').split('=')[1];
+        updateURLParams(page);
+      });
     });
 
   </script>

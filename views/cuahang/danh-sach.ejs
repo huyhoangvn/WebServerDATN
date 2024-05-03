@@ -183,18 +183,18 @@
           <!-- tìm theo tên món và tên cửa hàng -->
           <div class="d-flex row justify-content-between mb-1">
             <div class="col-3">
-              <input type="text" id="searchMon" class="form-control" name="tenCH"
+              <input type="text" id="seachTenCH" class="form-control" name="tenCH"
                 placeholder="Nhập tên cửa hàng để tìm kiếm">
             </div>
             <div class="col-3">
-              <input type="text" id="searchCuaHang" class="form-control" name="diaChi"
+              <input type="text" id="seachDiaChi" class="form-control" name="diaChi"
                 placeholder="Nhập địa chỉ để tìm kiếm">
             </div>
             <div class="col-2">
-              <select class="form-control" name="trangThai">
+              <select class="form-control" name="trangThai" id="seachTrangThai">
                 <option value="-1">Tất cả trạng thái</option>
                 <option value="1">Hoạt động</option>
-                <option value="2">Khóa</option>
+                <option value="0">Khóa</option>
               </select>
             </div>
             <div class="col-2">
@@ -297,6 +297,31 @@
           </ul>
         </nav>
         <!-- kết thúc phân trang -->
+
+        <% if(typeof alert !=='undefined' && alert !==null) { %>
+          <input type="hidden" id="thongBao" value="<%= alert %>">
+          <% } else { %>
+            <input type="hidden" id="thongBao" value="">
+            <% } %>
+
+              <!-- Modal -->
+              <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body" id="alertContent">
+                      <!-- Nội dung cảnh báo sẽ được thêm vào đây -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
       </div>
     </section>
   </div>
@@ -326,18 +351,54 @@
 
 
     $(document).ready(function () {
-        // Lấy tham số từ URL
-        var urlParams = new URLSearchParams(window.location.search);
+      // Lấy tham số từ URL
+      var urlParams = new URLSearchParams(window.location.search);
 
-        // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
-        var tenCHValue = urlParams.get('tenCH') || '';
-        var diaChiValue = urlParams.get('diaChi') || '';
-        var trangThaiValue = urlParams.get('trangThai') || "-1"; // Chọn giá trị đầu tiên
+      // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
+      var tenCHValue = urlParams.get('tenCH') || '';
+      var diaChiValue = urlParams.get('diaChi') || '';
+      var trangThaiValue = urlParams.get('trangThai') || "-1"; // Chọn giá trị đầu tiên
 
-        // Điền lại giá trị của các trường
-        $("#searchMon").val(tenCHValue);
-        $("#searchCuaHang").val(diaChiValue);
-        $("select[name='trangThai']").val(trangThaiValue);
+      // Điền lại giá trị của các trường
+      $("#searchMon").val(tenCHValue);
+      $("#searchCuaHang").val(diaChiValue);
+      $("select[name='trangThai']").val(trangThaiValue);
+    });
+
+    // Lấy giá trị của input có id là 'thongBao' từ view
+    var alertContent = document.getElementById("thongBao").value;
+    // Kiểm tra xem alertContent có giá trị không
+    if (alertContent) {
+      // Hiển thị cảnh báo trong modal
+      var modal = $('#alertModal');
+      var alertText = $('#alertContent');
+      alertText.text(alertContent);
+
+      // Hiển thị modal
+      modal.modal('show');
+
+      // Đóng modal sau một khoảng thời gian (3 giây)
+      setTimeout(function () {
+        modal.modal('hide');
+      }, 2000);
+    }
+
+    $(document).ready(function () {
+      // Function to update URL query parameters
+      function updateURLParams(page) {
+        var url = new URL(window.location.href);
+        url.searchParams.set('seachDiaChi', $('#seachDiaChi').val() || '');
+        url.searchParams.set('seachTrangThai', $('#seachTrangThai').val());
+        url.searchParams.set('seachTenCH', $('#seachTenCH').val());
+        url.searchParams.set('trang', page);
+        window.location.href = url.href;
+      }
+
+      $(".page-link").click(function (e) {
+        e.preventDefault();
+        var page = $(this).attr('href').split('=')[1];
+        updateURLParams(page);
+      });
     });
   </script>
 </body>

@@ -37,6 +37,7 @@ const getList = async (req, res, next) => {
         const monBanChay = await ThongKeCtrl.thongKeMonBanChayWeb(req, res);
         data = { monBanChay }
     }
+    console.log("total" , data.monBanChay.totalPages);
     res.render("thongke/mon-ban-chay", {
         totalPages: data.monBanChay.totalPages,
         currentPage: data.monBanChay.currentPage,

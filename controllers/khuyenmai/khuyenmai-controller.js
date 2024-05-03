@@ -1,6 +1,7 @@
 const { model: KhuyenMai } = require("../../model/KhuyenMai");
 const mongo = require('mongoose');
 const { parse, startOfDay, endOfDay } = require('date-fns');
+const { ObjectId } = require("mongodb");
 
 // Hàm này để lấy ra 6 kí tự ngẫu nhiên có cả chữ cái viết hoa và số 
 function generateRandomString(length) {
@@ -94,7 +95,7 @@ const SuaKhuyenMai = async function (req, res) {
             donToiThieu: donToiThieu,
 
         }
-        console.log(idKM);
+
         const index = await KhuyenMai.findOneAndUpdate(filter, update, { new: true })
         if (!index) {
             return res.json({
@@ -119,7 +120,7 @@ const SuaKhuyenMai = async function (req, res) {
             return {
                 index,
                 msg: 'Sửa khuyến mãi thành công',
-                aler: 'Sửa khuyến mãi thành công',
+                alert: 'Sửa khuyến mãi thành công',
                 success: true
             };
         }
@@ -157,7 +158,7 @@ const XoaKhuyenMai = async function (req, res) {
             } else {
                 return ({
                     index,
-                    alert: 'khóa khuyến mãi thành công',
+                    alert: 'Đổi trạng thái thành công',
                     msg: 'khóa khuyến mãi thành công',
                     success: true
                 });
@@ -175,7 +176,7 @@ const XoaKhuyenMai = async function (req, res) {
                 return ({
                     index,
                     msg: 'Xóa khuyến mãi thành công',
-                    alert: 'kích hoạt khuyến mãi thành công',
+                    alert: 'Đổi trạng thái thành công',
                     success: true
                 });
             }
@@ -556,9 +557,11 @@ const getSoLuongKhuyenMai = async (req, res) => {
 
 const getTatCaKhuyenMaiApp = async (req, res) => {
     try {
+
+        const idKH = new mongo.Types.ObjectId(req.params.idKH);
         const page = parseInt(req.query.trang) || 1;
         const limit = 10; // Số lượng phần tử trên mỗi trang
-        const timkiem = {};
+        const timkiem = { trangThai: true };
         if (typeof (req.query.tieuDe) !== 'undefined' && req.query.tieuDe !== "") {
             timkiem.tieuDe = { $regex: req.query.tieuDe, $options: 'i' }; // Thêm $options: 'i' để tìm kiếm không phân biệt chữ hoa, chữ thường
         }
@@ -584,6 +587,8 @@ const getTatCaKhuyenMaiApp = async (req, res) => {
         const totalPages = Math.ceil(totalCount / limit);
         const currentPage = Math.min(page, totalPages);
 
+
+
         const list = await KhuyenMai.aggregate([
             {
                 $match:
@@ -593,8 +598,14 @@ const getTatCaKhuyenMaiApp = async (req, res) => {
             {
                 $lookup: {
                     from: "KhuyenMaiCuaToi",
-                    localField: "_id",
-                    foreignField: "idKM",
+                    let: { idKM: "$_id" },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: { $and: [{ $eq: ["$idKH", idKH] }, { $eq: ["$idKM", "$$idKM"] }] }
+                            }
+                        }
+                    ],
                     as: "km"
                 }
             },

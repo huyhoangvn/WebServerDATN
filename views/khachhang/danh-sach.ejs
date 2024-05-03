@@ -315,6 +315,30 @@
           </ul>
         </nav>
 
+        <% if(typeof alert !=='undefined' && alert !==null) { %>
+          <input type="hidden" id="thongBao" value="<%= alert %>">
+          <% } else { %>
+            <input type="hidden" id="thongBao" value="">
+            <% } %>
+
+              <!-- Modal -->
+              <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body" id="alertContent">
+                      <!-- Nội dung cảnh báo sẽ được thêm vào đây -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+
       </div>
     </section>
   </div>
@@ -332,18 +356,18 @@
     )
 
     $(document).ready(function () {
-        // Lấy tham số từ URL
-        var urlParams = new URLSearchParams(window.location.search);
+      // Lấy tham số từ URL
+      var urlParams = new URLSearchParams(window.location.search);
 
-        // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
-        var tenKHValue = urlParams.get('tenKH') || '';
-        var sdtValue = urlParams.get('sdt') || '';
-        var trangThaiValue = urlParams.get('trangThai') || "-1"; // Chọn giá trị đầu tiên
+      // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
+      var tenKHValue = urlParams.get('tenKH') || '';
+      var sdtValue = urlParams.get('sdt') || '';
+      var trangThaiValue = urlParams.get('trangThai') || "-1"; // Chọn giá trị đầu tiên
 
-        // Điền lại giá trị của các trường
-        $("#searchTenKH").val(tenKHValue);
-        $("#searchTaiKhoanKH").val(sdtValue);
-        $("#searchTrangThai").val(trangThaiValue);
+      // Điền lại giá trị của các trường
+      $("#searchTenKH").val(tenKHValue);
+      $("#searchTaiKhoanKH").val(sdtValue);
+      $("#searchTrangThai").val(trangThaiValue);
     });
 
     function convertTrangThai(trangThai) {
@@ -390,6 +414,41 @@
         $('#exampleModal').find('#sdt').text(sdt);
         $('#exampleModal').find('#diachi').text(diachi);
         $('#exampleModal').find('#trangthai').text(trangThaiText);
+      });
+    });
+
+    // Lấy giá trị của input có id là 'thongBao' từ view
+    var alertContent = document.getElementById("thongBao").value;
+    // Kiểm tra xem alertContent có giá trị không
+    if (alertContent) {
+      // Hiển thị cảnh báo trong modal
+      var modal = $('#alertModal');
+      var alertText = $('#alertContent');
+      alertText.text(alertContent);
+
+      // Hiển thị modal
+      modal.modal('show');
+
+      // Đóng modal sau một khoảng thời gian (3 giây)
+      setTimeout(function () {
+        modal.modal('hide');
+      }, 2000);
+    }
+    $(document).ready(function () {
+      // Function to update URL query parameters
+      function updateURLParams(page) {
+        var url = new URL(window.location.href);
+        url.searchParams.set('searchTaiKhoanKH', $('#searchTaiKhoanKH').val() || '');
+        url.searchParams.set('searchTrangThai', $('#searchTrangThai').val());
+        url.searchParams.set('searchTenKH', $('#searchTenKH').val());
+        url.searchParams.set('trang', page);
+        window.location.href = url.href;
+      }
+
+      $(".page-link").click(function (e) {
+        e.preventDefault();
+        var page = $(this).attr('href').split('=')[1];
+        updateURLParams(page);
       });
     });
   </script>

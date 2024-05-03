@@ -197,7 +197,7 @@
 
             <div class="col-3">
               <select class="form-control" id="trangThai" name="trangThai">
-                <option value="-1">Trạng thái </option>
+                <option value="-1"> Tất cả trạng thái </option>
                 <option value="1">Hoạt Động</option>
                 <option value="0">Khóa</option>
               </select>
@@ -365,7 +365,7 @@
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">Cảnh báo</h5>
+                      <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
                       <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
@@ -498,18 +498,36 @@
 
 
     $(document).ready(function () {
-        // Lấy tham số từ URL
-        var urlParams = new URLSearchParams(window.location.search);
+      // Lấy tham số từ URL
+      var urlParams = new URLSearchParams(window.location.search);
 
-        // Lấy giá trị của các tham số từ URL hoặc giữ nguyên giá trị của select nếu không có trong URL
-        var tenNVValue = urlParams.get('tenNV') || '';
-        var phanQuyenValue = urlParams.get('phanQuyen') || '';
-        var trangThaiValue = urlParams.get('trangThai') || '-1';
+      // Lấy giá trị của các tham số từ URL hoặc giữ nguyên giá trị của select nếu không có trong URL
+      var tenNVValue = urlParams.get('tenNV') || '';
+      var phanQuyenValue = urlParams.get('phanQuyen') || '';
+      var trangThaiValue = urlParams.get('trangThai') || '-1';
 
-        // Điền lại giá trị của các trường
-        $("#tenNV").val(tenNVValue);
-        $("#phanQuyen").val(phanQuyenValue);
-        $("#trangThai").val(trangThaiValue);
+      // Điền lại giá trị của các trường
+      $("#tenNV").val(tenNVValue);
+      $("#phanQuyen").val(phanQuyenValue);
+      $("#trangThai").val(trangThaiValue);
+    });
+
+    $(document).ready(function () {
+      // Function to update URL query parameters
+      function updateURLParams(page) {
+        var url = new URL(window.location.href);
+        url.searchParams.set('tenNV', $('#tenNV').val() || '');
+        url.searchParams.set('trangThai', $('#trangThai').val());
+        url.searchParams.set('phanQuyen', $('#phanQuyen').val());
+        url.searchParams.set('trang', page);
+        window.location.href = url.href;
+      }
+
+      $(".page-link").click(function (e) {
+        e.preventDefault();
+        var page = $(this).attr('href').split('=')[1];
+        updateURLParams(page);
+      });
     });
   </script>
 </body>

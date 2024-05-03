@@ -8,7 +8,7 @@ const dangKy = async (req, res, next) => {
   const taiKhoan = req.body.taiKhoan.toString().trim();
   const tenKH = req.body.tenKH.toString().trim();
   const matKhau = req.body.matKhau.toString().trim();
-
+  const sdt = req.body.sdt.toString().trim();
   // Validate khách hàng
   if (taiKhoan === "") {
     return res.json({
@@ -17,6 +17,13 @@ const dangKy = async (req, res, next) => {
     });
   }
   if (matKhau === "") {
+    return res.json({
+      success: false,
+      msg: "Mật khẩu không được để trống"
+    });
+  }
+
+  if (sdt === "") {
     return res.json({
       success: false,
       msg: "Mật khẩu không được để trống"
@@ -33,6 +40,7 @@ const dangKy = async (req, res, next) => {
       taiKhoan: taiKhoan,
       tenKH: tenKH,
       matKhau: matKhau,
+      sdt: sdt,
       trangThai: true
     });
 
@@ -467,12 +475,12 @@ const deleteKhachHangWeb = async (req, res) => {
     if (!khachHangSua) {
       return ({
         error: "Xóa khách hàng thất bại !",
-        msg: "Xóa khách hàng thất bại !",
+        msg: "Đổi trạng thái thất bại !",
         success: false
       })
     } else {
       return {
-        msg: "Xóa khách hàng thành công !",
+        msg: "Đổi trạng thái thành công !",
         success: true
       }
     }

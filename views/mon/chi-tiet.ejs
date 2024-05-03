@@ -184,14 +184,21 @@
         <!-- Main content nằm ở dây -->
         <!-- Chi tiết món -->
         <div class="row d-flex d-inline-block h-25">
-          <div class="row col-3 w-25 h-25">
+          <!-- <div class="row col-3 w-25 h-25">
             <img style="height: 300px; width: 300px;" src="../../public/images/<%= index.hinhAnh%>" alt="">
-          </div>
+          </div> -->
 
           <div class="col-9">
             <h2>
               <%= index.tenMon%>
             </h2>
+            <label for="" class="p-0 m-0 font-weight-normal">Hinh ảnh: <a href="../../public/images/<%= index.hinhAnh%>"
+                target="_blank">
+                <%= index.hinhAnh%>
+              </a>
+
+            </label>
+            <br>
             <label for="" class="p-0 m-0 font-weight-normal">Loại món: <%=loaiMon.tenLM%></label>
             <br>
             <label for="" class="p-0 m-0 font-weight-normal">Cửa hàng: <%=cuaHang.tenCH%></label>
@@ -323,6 +330,30 @@
           </ul>
         </nav>
 
+        <% if(typeof alert !=='undefined' && alert !==null) { %>
+          <input type="hidden" id="thongBao" value="<%= alert %>">
+        <% } else { %>
+          <input type="hidden" id="thongBao" value="">
+        <% } %>
+
+        <!-- Modal -->
+        <div class="modal fade" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Thông báo</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" id="alertContent">
+              <!-- Nội dung cảnh báo sẽ được thêm vào đây -->
+            </div>
+          </div>
+        </div>
+      </div>
+
 
       </div>
     </section>
@@ -354,19 +385,37 @@
 
 
     $(document).ready(function () {
-        // Lấy tham số từ URL
-        var urlParams = new URLSearchParams(window.location.search);
+      // Lấy tham số từ URL
+      var urlParams = new URLSearchParams(window.location.search);
 
-        // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
-        var tenKHValue = urlParams.get('tenKH') || '';
-        var danhGiaValue = urlParams.get('danhGia') || "-1"; // Chọn giá trị đầu tiên
-        var trangThaiValue = urlParams.get('trangThai') || "-1"; // Chọn giá trị đầu tiên
+      // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
+      var tenKHValue = urlParams.get('tenKH') || '';
+      var danhGiaValue = urlParams.get('danhGia') || "-1"; // Chọn giá trị đầu tiên
+      var trangThaiValue = urlParams.get('trangThai') || "-1"; // Chọn giá trị đầu tiên
 
-        // Điền lại giá trị của các trường
-        $("input[name='tenKH']").val(tenKHValue);
-        $("select[name='danhGia']").val(danhGiaValue);
-        $("select[name='trangThai']").val(trangThaiValue);
+      // Điền lại giá trị của các trường
+      $("input[name='tenKH']").val(tenKHValue);
+      $("select[name='danhGia']").val(danhGiaValue);
+      $("select[name='trangThai']").val(trangThaiValue);
     });
+
+    // Lấy giá trị của input có id là 'thongBao' từ view
+    var alertContent = document.getElementById("thongBao").value;
+    // Kiểm tra xem alertContent có giá trị không
+    if (alertContent) {
+      // Hiển thị cảnh báo trong modal
+      var modal = $('#alertModal');
+      var alertText = $('#alertContent');
+      alertText.text(alertContent);
+
+      // Hiển thị modal
+      modal.modal('show');
+
+      // Đóng modal sau một khoảng thời gian (3 giây)
+      setTimeout(function () {
+        modal.modal('hide');
+      }, 2000);
+    }
   </script>
 </body>
 
