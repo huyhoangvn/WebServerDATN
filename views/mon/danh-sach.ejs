@@ -196,7 +196,7 @@
           <!-- tìm theo tên loại món, trạng thái, giá tiền -->
           <div class="d-flex row justify-content-between mb-1">
             <div class="col-6">
-              <input type="text" class="form-control" name="tenLM" placeholder="Nhập tên loại món để tìm kiếm">
+              <input type="text" class="form-control" name="tenLM" id="searchLM" placeholder="Nhập tên loại món để tìm kiếm">
             </div>
 
 
@@ -365,6 +365,7 @@
       // Gán giá trị cho các trường trong form
       document.getElementById('searchMon').value = tenMon;
       document.getElementById('searchCuaHang').value = tenCH;
+      document.getElementById('searchTrangThai').value = trangThai;
       document.getElementsByName('tenLM')[0].value = tenLM;
 
       // Duyệt qua tất cả các option trong select giaTien và trangThai để thiết lập selected cho option tương ứng
@@ -417,6 +418,25 @@
         modal.modal('hide');
       }, 2000);
     }
+
+    $(document).ready(function() {
+        // Function to update URL query parameters
+        function updateURLParams(page) {
+            var url = new URL(window.location.href);
+            url.searchParams.set('tenMon', $('#searchMon').val());
+            url.searchParams.set('tenCH', $('#searchCuaHang').val());
+            url.searchParams.set('tenLM', $('#searchLM').val()||'');
+            url.searchParams.set('trangThai', $('#searchTrangThai').val()||'');
+            url.searchParams.set('trang', page);
+            window.location.href = url.href;
+        }
+    
+        $(".page-link").click(function(e) {
+            e.preventDefault();
+            var page = $(this).attr('href').split('=')[1];
+            updateURLParams(page);
+        });
+    });
   </script>
 </body>
 
