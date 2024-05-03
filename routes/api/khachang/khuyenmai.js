@@ -9,7 +9,7 @@ const {
 } = require('../../../controllers/khuyenmai/khuyenmai-controller');
 
 /* GET users listing. */
-router.get("/get-khuyen-mai-theo-id/:idKM",  GetKhuyenMaiTheoId);
+router.get("/get-khuyen-mai-theo-id/:idKM", GetKhuyenMaiTheoId);
 
-router.get("/danh-sach",  getTatCaKhuyenMaiAppApi);
+router.get("/danh-sach/:idKH", getTatCaKhuyenMaiAppApi);
 module.exports = router;

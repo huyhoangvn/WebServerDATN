@@ -4,7 +4,7 @@ const nhanVienQuanLyController = require('../../../controllers/nhanvien/nhanvien
 const CuaHangCtr = require("../../../controllers/cuahang/cuahang-controller");
 
 /* GET users listing. */
-router.post('/',  nhanVienQuanLyController.addNhanVienQuanLy)//-> cả web cả api
-router.post('/',  CuaHangCtr.addCuaHang);
+router.post('/nhanvien',  nhanVienQuanLyController.addNhanVienQuanLy)//-> cả web cả api
+router.post('/cuahang',  CuaHangCtr.addCuaHang);
 
 module.exports = router;
