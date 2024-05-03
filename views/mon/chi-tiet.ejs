@@ -184,14 +184,21 @@
         <!-- Main content nằm ở dây -->
         <!-- Chi tiết món -->
         <div class="row d-flex d-inline-block h-25">
-          <div class="row col-3 w-25 h-25">
+          <!-- <div class="row col-3 w-25 h-25">
             <img style="height: 300px; width: 300px;" src="../../public/images/<%= index.hinhAnh%>" alt="">
-          </div>
+          </div> -->
 
           <div class="col-9">
             <h2>
               <%= index.tenMon%>
             </h2>
+            <label for="" class="p-0 m-0 font-weight-normal">Hinh ảnh: <a href="../../public/images/<%= index.hinhAnh%>"
+                target="_blank">
+                <%= index.hinhAnh%>
+              </a>
+
+            </label>
+            <br>
             <label for="" class="p-0 m-0 font-weight-normal">Loại món: <%=loaiMon.tenLM%></label>
             <br>
             <label for="" class="p-0 m-0 font-weight-normal">Cửa hàng: <%=cuaHang.tenCH%></label>
@@ -378,18 +385,18 @@
 
 
     $(document).ready(function () {
-        // Lấy tham số từ URL
-        var urlParams = new URLSearchParams(window.location.search);
+      // Lấy tham số từ URL
+      var urlParams = new URLSearchParams(window.location.search);
 
-        // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
-        var tenKHValue = urlParams.get('tenKH') || '';
-        var danhGiaValue = urlParams.get('danhGia') || "-1"; // Chọn giá trị đầu tiên
-        var trangThaiValue = urlParams.get('trangThai') || "-1"; // Chọn giá trị đầu tiên
+      // Lấy giá trị của các tham số từ URL hoặc mặc định là giá trị đầu tiên của hộp select
+      var tenKHValue = urlParams.get('tenKH') || '';
+      var danhGiaValue = urlParams.get('danhGia') || "-1"; // Chọn giá trị đầu tiên
+      var trangThaiValue = urlParams.get('trangThai') || "-1"; // Chọn giá trị đầu tiên
 
-        // Điền lại giá trị của các trường
-        $("input[name='tenKH']").val(tenKHValue);
-        $("select[name='danhGia']").val(danhGiaValue);
-        $("select[name='trangThai']").val(trangThaiValue);
+      // Điền lại giá trị của các trường
+      $("input[name='tenKH']").val(tenKHValue);
+      $("select[name='danhGia']").val(danhGiaValue);
+      $("select[name='trangThai']").val(trangThaiValue);
     });
 
     // Lấy giá trị của input có id là 'thongBao' từ view

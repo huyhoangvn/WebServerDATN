@@ -272,6 +272,281 @@ const thongKeDoanhThuTheoThangTrongNam = async (req, res, next) => {
         });
     }
 }
+
+
+const thongKeDoanhThuTheoNgaybyCH = async (req, res, next) => {
+    try {
+        // Lấy ngày cụ thể, ví dụ: ngày hôm nay
+        const currentDate = moment().utc().startOf('day').toDate();
+
+        const idCH = new mongo.Types.ObjectId(req.params.idCH);
+        const result = await HoaDon.aggregate([
+            {
+                $match: {
+                    $expr: {
+                        $and: [
+                            { $gte: ["$thoiGianTao", currentDate] }, // Hóa đơn được tạo trong ngày hôm nay hoặc sau ngày hôm nay
+                            { $lt: ["$thoiGianTao", moment(currentDate).add(1, 'days').toDate()] }, // Hóa đơn được tạo trước ngày hôm sau
+                            { $eq: ["$trangThaiMua", 3] }, // Trạng thái mua là 3
+                            { $eq: ["$trangThaiThanhToan", 1] }, // Trạng thái thanh toán là đã thanh toán
+                            { $eq: ["$idCH", idCH] },
+                            { $eq: ["$trangThai", true] }
+                        ]
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: { $dateToString: { format: "%Y/%m/%d", date: "$thoiGianTao" } }, // Group theo ngày (năm-tháng-ngày)
+                    thanhTien: { $sum: "$thanhTien" } // Tính tổng tiền
+                }
+            }
+        ]);
+
+        // Lấy kết quả cho ngày cụ thể
+        const filteredResult = result.find(item => item._id === moment(currentDate).format("YYYY/MM/DD"));
+
+        // Tính tổng tiền
+        const thanhTien = filteredResult ? filteredResult.thanhTien : 0;
+
+        return {
+            tongTien: thanhTien,
+            success: true,
+            msg: "Thành công"
+        };
+    } catch (error) {
+        console.error("Error:", error);
+        return {
+            success: false,
+            msg: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+        };
+    }
+};
+
+const thongKeDoanhThuTheo10NgaybyCH = async (req, res, next) => {
+    try {
+        // Lấy ngày cụ thể, ví dụ: ngày hôm nay
+        const idCH = new mongo.Types.ObjectId(req.params.idCH);
+        const currentDate = moment().utc().startOf('day').toDate();
+
+        // Lấy ngày 10 ngày trước
+        const startDate = moment(currentDate).subtract(10, 'days').startOf('day').toDate();
+
+        const result = await HoaDon.aggregate([
+
+            {
+                $match: {
+                    $expr: {
+                        $and: [
+                            { $gte: ["$thoiGianTao", startDate] }, // Hóa đơn được tạo từ ngày startDate
+                            { $lt: ["$thoiGianTao", moment(currentDate).add(1, 'days').toDate()] }, // Hóa đơn được tạo trước ngày hôm sau
+                            { $eq: ["$trangThaiMua", 3] }, // Trạng thái mua là 3
+                            { $eq: ["$trangThaiThanhToan", 1] }, // Trạng thái thanh toán là đã thanh toán
+                            { $eq: ["$idCH", idCH] },
+                            { $eq: ["$trangThai", true] }
+                        ]
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    thanhTien: { $sum: "$thanhTien" } // Tính tổng tiền
+                }
+
+            }
+        ]);
+
+        // Tính tổng tiền
+        const thanhTien = result.length > 0 ? result[0].thanhTien : 0;
+
+        return {
+            tongTien: thanhTien,
+            success: true,
+            msg: "Thành công"
+        };
+    } catch (error) {
+        console.error("Error:", error);
+        return {
+            success: false,
+            msg: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+        };
+    }
+};
+
+
+const thongKeDoanhThuTheo30NgaybyCH = async (req, res, next) => {
+    try {
+        // Lấy ngày cụ thể, ví dụ: ngày hôm nay
+        const currentDate = moment().utc().startOf('day').toDate();
+        const idCH = new mongo.Types.ObjectId(req.params.idCH);
+
+        // Lấy ngày 30 ngày trước
+        const startDate = moment(currentDate).subtract(30, 'days').startOf('day').toDate();
+
+        const result = await HoaDon.aggregate([
+
+            {
+                $match: {
+                    $expr: {
+                        $and: [
+                            { $gte: ["$thoiGianTao", startDate] }, // Hóa đơn được tạo từ ngày startDate
+                            { $lt: ["$thoiGianTao", moment(currentDate).add(1, 'days').toDate()] }, // Hóa đơn được tạo trước ngày hôm sau
+                            { $eq: ["$trangThaiMua", 3] }, // Trạng thái mua là 3
+                            { $eq: ["$trangThaiThanhToan", 1] }, // Trạng thái thanh toán là đã thanh toán
+                            { $eq: ["$idCH", idCH] },
+                            { $eq: ["$trangThai", true] }
+                        ]
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    thanhTien: { $sum: "$thanhTien" } // Tính tổng tiền
+                }
+
+            }
+        ]);
+
+        // Tính tổng tiền
+        const thanhTien = result.length > 0 ? result[0].thanhTien : 0;
+
+        return {
+            tongTien: thanhTien,
+            success: true,
+            msg: "Thành công"
+        };
+    } catch (error) {
+        console.error("Error:", error);
+        return {
+            success: false,
+            msg: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+        };
+    }
+};
+
+const thongKeDoanhThuTheoNambyCH = async (req, res, next) => {
+    try {
+        const idCH = new mongo.Types.ObjectId(req.params.idCH);
+        const nam = req.query.nam || new Date().getFullYear().toString();
+
+        const startDate = moment(`${nam}-01-01`).startOf('year').toDate();
+        const endDate = moment(`${nam}-12-31`).endOf('year').toDate();
+
+        const result = await HoaDon.aggregate([
+            {
+                $match: {
+                    $expr: {
+                        $and: [
+                            { $gte: ["$thoiGianTao", startDate] },
+                            { $lte: ["$thoiGianTao", endDate] },
+                            { $eq: ["$trangThaiMua", 3] },
+                            { $eq: ["$trangThaiThanhToan", 1] },
+                            { $eq: ["$trangThai", true] },
+                            { $eq: ["$idCH", idCH] }
+                        ]
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: null, // Thay đổi _id thành idCH để nhóm theo cửa hàng
+                    thanhTien: { $sum: "$thanhTien" }
+                }
+            }
+
+        ]);
+        const thanhTien = result.length > 0 ? result[0].thanhTien : 0;
+
+        return {
+            index: thanhTien,
+            success: true,
+            msg: "Thành công"
+        }
+    } catch (error) {
+        console.error("Lỗi:", error);
+        return {
+            success: false,
+            msg: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+        };
+    }
+}
+
+const thongKeDoanhThuTheoThangTrongNambyCH = async (req, res, next) => {
+    try {
+        // Nhận năm từ request params
+        // Nhận năm từ request params
+        const idCH = new mongo.Types.ObjectId(req.params.idCH);
+        let nam = req.query.nam;
+
+        // Kiểm tra xem năm đã được cung cấp trong query hay chưa
+        if (!nam) {
+            // Nếu không, sử dụng năm hiện tại
+            nam = new Date().getFullYear();
+        }
+
+
+
+        // Tạo mảng chứa tên của các tháng
+        const monthNames = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+        // Khởi tạo mảng để lưu trữ doanh thu của từng tháng
+        const monthlyRevenue = [];
+
+        // Lặp qua từng tháng trong năm
+        for (let month = 0; month < 12; month++) {
+            // Tính ngày đầu tiên và cuối cùng của tháng
+            const startDate = moment(`${nam}-${month + 1}-01`, 'YYYY-MM-DD').startOf('month').toDate();
+            const endDate = moment(startDate).endOf('month').toDate();
+
+            // Thực hiện truy vấn để lấy tổng doanh thu của tháng đó
+            const result = await HoaDon.aggregate([
+                {
+                    $match: {
+                        $expr: {
+                            $and: [
+                                { $gte: ["$thoiGianTao", startDate] },
+                                { $lte: ["$thoiGianTao", endDate] },
+                                { $eq: ["$trangThaiMua", 3] },
+                                { $eq: ["$trangThaiThanhToan", 1] },
+                                { $eq: ["$idCH", idCH] },
+                                { $eq: ["$trangThai", true] }
+                            ]
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: null,
+                        thanhTien: { $sum: "$thanhTien" }
+                    }
+                }
+            ]);
+
+            // Lưu tổng doanh thu vào mảng monthlyRevenue
+            const monthRevenueObj = { month: monthNames[month], tong: 0 };
+            if (result.length > 0) {
+                monthRevenueObj.tong = result[0].thanhTien;
+            }
+            monthlyRevenue.push(monthRevenueObj);
+        }
+
+        // Gửi kết quả dưới dạng mảng
+        return {
+            data: monthlyRevenue,
+            success: true,
+            msg: "Thành công"
+        };
+    } catch (error) {
+        console.error("Error:", error);
+        return ({
+            success: false,
+            msg: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+        });
+    }
+}
+
 // Thông kê món bán chạy tất cả
 
 // thống kê món bán chạy theo query tên loại món
@@ -531,6 +806,63 @@ const thongKeDoanhThuTheoNgayToNgay = async (req, res) => {
         });
     }
 };
+
+const thongKeDoanhThuTheoNgayToNgaybyCH = async (req, res) => {
+    try {
+        const { ngayBatDau, ngayKetThuc } = req.query;
+        const idCH = new mongo.Types.ObjectId(req.params.idCH);
+
+        if (!ngayBatDau || !ngayKetThuc) {
+            return ({
+                success: false,
+                msg: 'Vui lòng cung cấp đầy đủ ngày bắt đầu và ngày kết thúc.'
+            });
+        }
+
+        // Chuyển đổi chuỗi ngày thành đối tượng Date
+        const startDate = moment(ngayBatDau, "DD/MM/YYYY").startOf('day').toDate();
+        const endDate = moment(ngayKetThuc, "DD/MM/YYYY").endOf('day').toDate();
+
+        const result = await HoaDon.aggregate([
+            {
+                $match: {
+                    $expr: {
+                        $and: [
+                            { $gte: ["$thoiGianTao", startDate] }, // Hóa đơn được tạo từ ngày bắt đầu
+                            { $lt: ["$thoiGianTao", moment(endDate).add(1, 'days').toDate()] }, // Hóa đơn được tạo trước ngày kết thúc
+                            { $eq: ["$trangThaiMua", 3] }, // Trạng thái mua là 3
+                            { $eq: ["$trangThaiThanhToan", 1] }, // Trạng thái thanh toán là đã thanh toán
+                            { $eq: ["$idCH", idCH] },
+                            { $eq: ["$trangThai", true] }
+                        ]
+                    }
+                }
+            },
+            {
+                $group: {
+                    _id: null,
+                    thanhTien: { $sum: "$thanhTien" } // Tính tổng tiền
+                }
+            }
+        ]);
+
+        // Tính tổng tiền
+        const thanhTien = result.length > 0 ? result[0].thanhTien : 0;
+
+        return ({
+            index: thanhTien,
+            success: true,
+            msg: "Thành công"
+        });
+    } catch (error) {
+        console.error("Error:", error);
+        return ({
+            success: false,
+            msg: 'Đã xảy ra lỗi khi thực hiện thống kê.'
+        });
+    }
+};
+
 
 
 
@@ -812,6 +1144,12 @@ module.exports = {
     thongKeDoanhThuTheoNam,
     thongKeDoanhThuTheoThangTrongNam,
 
+    thongKeDoanhThuTheoNgaybyCH,
+    thongKeDoanhThuTheo10NgaybyCH,
+    thongKeDoanhThuTheo30NgaybyCH,
+    thongKeDoanhThuTheoNambyCH,
+    thongKeDoanhThuTheoThangTrongNambyCH,
+    thongKeDoanhThuTheoNgayToNgaybyCH,
     //thống kê món bán chạy theo tên loại món
     thongKeMonBanChayTheoTenLoaiMon,
     thongKeMonBanChayTheoNam,

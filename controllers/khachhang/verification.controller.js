@@ -3,7 +3,7 @@ require("dotenv").config();
 const { handleSendMail } = require("../../config/nodemai");
 
 const VerificationControllers = {
-
+  
   verification: asyncHandle(async (req, res) => {
     const { email } = req.body;
     const verificationCode = Math.round(1000 + Math.random() * 9000);

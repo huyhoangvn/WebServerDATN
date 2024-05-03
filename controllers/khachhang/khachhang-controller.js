@@ -8,7 +8,7 @@ const dangKy = async (req, res, next) => {
   const taiKhoan = req.body.taiKhoan.toString().trim();
   const tenKH = req.body.tenKH.toString().trim();
   const matKhau = req.body.matKhau.toString().trim();
-
+  const sdt = req.body.sdt.toString().trim();
   // Validate khách hàng
   if (taiKhoan === "") {
     return res.json({
@@ -17,6 +17,13 @@ const dangKy = async (req, res, next) => {
     });
   }
   if (matKhau === "") {
+    return res.json({
+      success: false,
+      msg: "Mật khẩu không được để trống"
+    });
+  }
+
+  if (sdt === "") {
     return res.json({
       success: false,
       msg: "Mật khẩu không được để trống"
@@ -33,6 +40,7 @@ const dangKy = async (req, res, next) => {
       taiKhoan: taiKhoan,
       tenKH: tenKH,
       matKhau: matKhau,
+      sdt: sdt,
       trangThai: true
     });
 
