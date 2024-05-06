@@ -1,6 +1,6 @@
-Người dùng truy cập đường dẫn để tải ứng dụng mua hàng về thiết bị android: [https://appho.st/d/oisMQWa4](https://appho.st/d/Nw3Sccj4)
-Người dùng truy cập đường dẫn để tải ứng dụng bán hàng (merchant) về thiết bị android: [https://appho.st/d/oisMQWa4](https://appho.st/d/oisMQWa4)
-Website Quản Trị: [https://daisy-oil-delphinium.glitch.me](https://daisy-oil-delphinium.glitch.me)
+Người dùng truy cập đường dẫn để tải ứng dụng mua hàng về thiết bị android: [https://appho.st/d/oisMQWa4](https://appho.st/d/Nw3Sccj4) <br>
+Người dùng truy cập đường dẫn để tải ứng dụng bán hàng (merchant) về thiết bị android: [https://appho.st/d/oisMQWa4](https://appho.st/d/oisMQWa4) <br>
+Website Quản Trị: [https://daisy-oil-delphinium.glitch.me](https://daisy-oil-delphinium.glitch.me) <br>
 
 Tài khoản dùng thử Website quản trị
 +Tài khoản: phuc123
